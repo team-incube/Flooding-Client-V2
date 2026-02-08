@@ -45,7 +45,7 @@
   --color-button: var(--color-button);
   --color-negative: var(--color-negative);
 
-  --font-sans: var(--font-geist-sans);
+  --font-sans: "SUIT Variable", sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -53,7 +53,7 @@
 body {
   background-color: var(--background);
   color: var(--color-main-text);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "SUIT Variable", sans-serif;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
