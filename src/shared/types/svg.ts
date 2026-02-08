@@ -1,4 +1,3 @@
-export interface IconProps {
+export interface SvgProps {
   isActive?: boolean;
-  className?: string;
 }
