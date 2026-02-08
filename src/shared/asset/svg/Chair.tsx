@@ -1,4 +1,5 @@
 import { SvgProps } from "@/shared/types/svg";
+
 export default function Chair({ isActive = false }: SvgProps) {
   if (isActive) {
     return (
