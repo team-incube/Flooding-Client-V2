@@ -1,4 +1,4 @@
-import type { IconProps } from "@/shared/types/icon";
+import type { IconProps } from "@/shared/types/svg";
 
 export default function Grid({ isActive = false, className }: IconProps) {
   if (isActive) {
