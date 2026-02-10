@@ -1,4 +1,4 @@
-import { SvgProps } from "@/shared/types/svg";
+import { SvgProps } from "@/shared/model/svg";
 
 export default function Bed({ isActive = false }: SvgProps) {
   if (isActive) {

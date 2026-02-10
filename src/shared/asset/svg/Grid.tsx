@@ -1,4 +1,4 @@
-import type { SvgProps } from "@/shared/types/svg";
+import type { SvgProps } from "@/shared/model/svg";
 
 export default function Grid({ isActive = false }: SvgProps) {
   if (isActive) {
