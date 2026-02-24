@@ -43,8 +43,9 @@
   --color-main-text: var(--color-main-text);
   --color-sub-1: var(--color-sub-1);
   --color-sub-2: var(--color-sub-2);
+  --color-sub-3: var(--color-sub-3);
+  --color-sub-4: var(--color-sub-4);
 
-  --color-button: var(--color-button);
   --color-negative: var(--color-negative);
 
   /* Fonts */
