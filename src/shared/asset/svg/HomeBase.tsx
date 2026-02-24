@@ -1,6 +1,6 @@
 import { SvgProps } from "@/shared/model/svg";
 
-export default function House({ isActive = false }: SvgProps) {
+export default function HomeBase({ isActive = false }: SvgProps) {
   return (
     <svg
       width="24"
