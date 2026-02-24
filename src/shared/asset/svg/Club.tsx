@@ -1,6 +1,6 @@
 import { SvgProps } from "@/shared/model/svg";
 
-export default function Flag({ isActive = false }: SvgProps) {
+export default function Club({ isActive = false }: SvgProps) {
   return (
     <svg
       width="24"
