@@ -2,8 +2,8 @@ import { SvgProps } from "@/shared/model/svg";
 
 export default function Profile({ isActive = false }: SvgProps) {
   const pathProps = isActive
-    ? { fill: "#CACACA" }
-    : { stroke: "#CACACA", strokeWidth: "1.5" };
+    ? { fill: "#6F7AEC" }
+    : { stroke: "#BBBBCC", strokeWidth: "1.5" };
 
   return (
     <svg
