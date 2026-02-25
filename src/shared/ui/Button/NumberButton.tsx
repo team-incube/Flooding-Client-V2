@@ -13,7 +13,7 @@ const variantStyles = {
 };
 
 const baseStyles =
-  "flex items-center justify-center w-[48px] h-[34px] rounded-lg font-medium text-[15px]";
+  "flex items-center justify-center w-[48px] h-[34px] rounded-lg font-medium text-[15px] outline-none";
 
 export function NumberButton({
   variant = "outlined",
