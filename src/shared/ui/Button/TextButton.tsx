@@ -9,10 +9,9 @@ interface TextButtonProps {
 }
 
 const variantStyles = {
-  filled: "bg-(--color-p-1) text-(--background-surface) cursor-pointer",
-  outlined:
-    "bg-white text-(--color-sub-1) border border-(--color-sub-2) cursor-pointer",
-  disabled: "bg-(--color-p-3) text-(--color-sub-4)",
+  filled: "bg-p-1 text-background-surface cursor-pointer",
+  outlined: "bg-white text-sub-1 border border-sub-2 cursor-pointer",
+  disabled: "bg-p-3 text-sub-4",
 };
 
 const sizeStyles = {

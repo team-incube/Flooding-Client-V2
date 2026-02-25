@@ -16,12 +16,12 @@ export function DarkModeToggle() {
     <button
       onClick={toggle}
       className={`relative w-[70px] h-[39px] rounded-[43px] transition-colors duration-300 cursor-pointer flex items-center p-1 ${
-        isDark ? "bg-(--background-surface)" : "bg-(--color-sub-3)"
+        isDark ? "bg-background-surface" : "bg-sub-3"
       }`}
     >
       <span
         className={`w-[31px] h-[31px] rounded-full flex items-center justify-center transition-transform duration-300 ${
-          isDark ? "bg-(--color-sub-1) translate-x-[30px]" : "translate-x-0"
+          isDark ? "bg-sub-1 translate-x-[30px]" : "translate-x-0"
         }`}
       >
         {isDark ? <Moon /> : <Sun />}
