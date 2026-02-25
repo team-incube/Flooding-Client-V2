@@ -14,63 +14,63 @@ export default function Sun() {
         r="4.8825"
         fill="var(--color-sub-2)"
         stroke="var(--color-sub-2)"
-        stroke-width="1.395"
+        strokeWidth="1.395"
       />
       <path
         d="M15.3704 7V7.36981"
         stroke="var(--color-sub-2)"
-        stroke-width="1.86"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.86"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M15.3704 23.3698V23.7399"
         stroke="var(--color-sub-2)"
-        stroke-width="1.86"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.86"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M7 15.37L7.36981 15.37"
         stroke="var(--color-sub-2)"
-        stroke-width="1.86"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.86"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M23.3698 15.37L23.74 15.37"
         stroke="var(--color-sub-2)"
-        stroke-width="1.86"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.86"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M9.4519 9.45105L9.7134 9.71255"
         stroke="var(--color-sub-2)"
-        stroke-width="1.86"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.86"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M21.0271 21.0262L21.2889 21.288"
         stroke="var(--color-sub-2)"
-        stroke-width="1.86"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.86"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M9.45148 21.2883L9.71297 21.0268"
         stroke="var(--color-sub-2)"
-        stroke-width="1.86"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.86"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M21.0266 9.71326L21.2883 9.4515"
         stroke="var(--color-sub-2)"
-        stroke-width="1.86"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.86"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
