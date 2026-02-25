@@ -21,7 +21,7 @@ const sizeStyles = {
 };
 
 const baseStyles =
-  "flex items-center justify-center font-medium rounded-lg text-[15px]";
+  "flex items-center justify-center font-medium rounded-lg text-[15px] outline-none";
 
 export function TextButton({
   variant = "filled",
