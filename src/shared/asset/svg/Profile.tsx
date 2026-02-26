@@ -1,26 +1,31 @@
-import { SvgProps } from "@/shared/model/svg";
-
-export default function Profile({ isActive = false }: SvgProps) {
-  const pathProps = isActive
-    ? { fill: "var(--color-p-1)" }
-    : { stroke: "var(--color-sub-2)", strokeWidth: "1.5" };
-
+export default function Profile() {
   return (
     <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
+      width="82"
+      height="82"
+      viewBox="0 0 82 82"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M16.125 7.125C16.125 9.40317 14.2782 11.25 12 11.25C9.72183 11.25 7.875 9.40317 7.875 7.125C7.875 4.84683 9.72183 3 12 3C14.2782 3 16.125 4.84683 16.125 7.125Z"
-        {...pathProps}
+      <g clipPath="url(#clip0_498_666)">
+        <rect width="82" height="82" rx="41" fill="var(--color-sub-3)" />
+        <ellipse cx="41" cy="71" rx="29" ry="17" fill="var(--background)" />
+        <circle cx="41" cy="36" r="14" fill="var(--background)" />
+      </g>
+      <rect
+        x="2"
+        y="2"
+        width="78"
+        height="78"
+        rx="39"
+        stroke="var(--color-sub-3)"
+        strokeWidth="4"
       />
-      <path
-        d="M19.125 18C19.125 20.0711 15.935 21 12 21C8.06497 21 4.875 20.0711 4.875 18C4.875 15.9289 8.06497 14.25 12 14.25C15.935 14.25 19.125 15.9289 19.125 18Z"
-        {...pathProps}
-      />
+      <defs>
+        <clipPath id="clip0_498_666">
+          <rect width="82" height="82" rx="41" fill="white" />
+        </clipPath>
+      </defs>
     </svg>
   );
 }
