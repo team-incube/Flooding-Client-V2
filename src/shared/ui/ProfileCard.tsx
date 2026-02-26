@@ -1,17 +1,19 @@
 import Gender from "../asset/svg/Gender";
 import Profile from "../asset/svg/Profile";
 
-interface BasicProfileCardProps {
+interface ProfileCardProps {
   index: number;
   name: string;
   studentId: string;
+  gender: "male" | "female";
 }
 
-export function BasicProfileCard({
+export function ProfileCard({
   index,
   name,
   studentId,
-}: BasicProfileCardProps) {
+  gender,
+}: ProfileCardProps) {
   return (
     <div className="relative w-[170px] h-[165px] bg-sub-4 rounded-2xl">
       <span className="absolute top-3 left-4 text-[12px] text-sub-1">
@@ -23,7 +25,11 @@ export function BasicProfileCard({
         </div>
         <div className="flex items-center">
           <span className="font-medium text-main-text">{name}</span>
-          <Gender isActive size={16} color="var(--color-main-text)" />
+          <Gender
+            isActive={gender === "female"}
+            size={16}
+            color="var(--color-main-text)"
+          />
         </div>
         <span className="font-medium text-sm text-sub-1">{studentId}</span>
       </div>
