@@ -6,15 +6,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export default function TextField({ rightIcon, className, ...props }: InputProps) {
   return (
-    <div className="relative w-125">
+    <div className={`relative ${className}`}>
       <input
         className={`
-          w-full h-[52px] px-4 rounded-[8px] border transition-all outline-none
+          w-full h-[52px] rounded-[8px] border transition-all outline-none
           bg-[var(--background-surface)] border-[var(--color-sub-2)] text-[var(--color-main-text)]
           placeholder:text-[var(--color-sub-2)] focus:border-[var(--color-sub-1)] caret-[#527CD7]
           pl-4 ${rightIcon ? "pr-12" : "pr-4"}
         `}
-        placeholder="text"
         {...props}
       />
       
