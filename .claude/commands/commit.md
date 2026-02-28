@@ -27,3 +27,4 @@ allowed-tools: Read
 - Write commit messages in Korean
 - File/directory naming: kebab-case
 - Keep commits focused and atomic
+- Write commit messages in the smallest possible units.
