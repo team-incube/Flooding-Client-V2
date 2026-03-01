@@ -9,6 +9,7 @@ import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { MOCK_STUDENTS } from "@/entities/user/model/mock";
 import { getClassNumber, getGrade } from "@/entities/user/lib/getUserInfo";
+import { Sex } from "@/entities/user/model/user";
 
 function toggleFilter<T>(arr: T[], value: T): T[] {
   return arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value];
@@ -18,14 +19,14 @@ interface FilterState {
   searchQuery: string;
   selectedGrades: number[];
   selectedClasses: number[];
-  selectedGender: "male" | "female" | null;
+  selectedGender: Sex | null;
 }
 
 type FilterAction =
   | { type: "SET_SEARCH"; payload: string }
   | { type: "TOGGLE_GRADE"; payload: number }
   | { type: "TOGGLE_CLASS"; payload: number }
-  | { type: "SET_GENDER"; payload: "male" | "female" | null }
+  | { type: "SET_GENDER"; payload: "MAN" | "WOMAN" | null }
   | { type: "RESET" };
 
 const initialState: FilterState = {
@@ -78,11 +79,7 @@ export function SelfStudySection() {
       !selectedClasses.includes(getClassNumber(s.studentNumber))
     )
       return false;
-    if (
-      selectedGender &&
-      (s.sex === "MAN" ? "male" : "female") !== selectedGender
-    )
-      return false;
+    if (selectedGender && s.sex !== selectedGender) return false;
     return true;
   });
 
@@ -103,14 +100,12 @@ export function SelfStudySection() {
 
       <div className="flex gap-6">
         <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap gap-4 max-h-150 overflow-y-auto">
+          <div className="flex flex-wrap gap-4 max-h-125 overflow-y-auto">
             {filteredStudents.map((student, index) => (
               <ProfileCard
                 key={student.studentNumber}
-                index={index}
-                name={student.name}
-                studentId={String(student.studentNumber)}
-                gender={student.sex === "MAN" ? "male" : "female"}
+                index={index + 1}
+                student={student}
               />
             ))}
           </div>
@@ -181,24 +176,24 @@ export function SelfStudySection() {
             <span className="text-sub-1 text-[14px] font-medium">성별</span>
             <div className="flex gap-2">
               <TextButton
-                variant={selectedGender === "male" ? "filled" : "outlined"}
+                variant={selectedGender === "MAN" ? "filled" : "outlined"}
                 size="small"
                 onClick={() =>
                   dispatch({
                     type: "SET_GENDER",
-                    payload: selectedGender === "male" ? null : "male",
+                    payload: selectedGender === "MAN" ? null : "MAN",
                   })
                 }
               >
                 남자
               </TextButton>
               <TextButton
-                variant={selectedGender === "female" ? "filled" : "outlined"}
+                variant={selectedGender === "MAN" ? "filled" : "outlined"}
                 size="small"
                 onClick={() =>
                   dispatch({
                     type: "SET_GENDER",
-                    payload: selectedGender === "female" ? null : "female",
+                    payload: selectedGender === "MAN" ? null : "WOMAN",
                   })
                 }
               >
