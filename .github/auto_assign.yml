@@ -5,13 +5,13 @@ numberOfReviewers: 0
 useReviewGroups: true
 reviewGroups:
   Flooding-Client:
-    - 976520
-    - Dino0204
-    - g-hyxn
-    - koreahghg
-    - jyuuuuu0
-    - hyooeunnK
-    - ma94275
+    - "976520"
+    - "Dino0204"
+    - "g-hyxn"
+    - "koreahghg"
+    - "jyuuuuu0"
+    - "hyooeunnK"
+    - "ma94275"
 
 # ── Assignees ─────────────────────────────────────────────────────────────────
 addAssignees: author
