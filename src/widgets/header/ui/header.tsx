@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { DarkModeToggle } from "@/shared/ui/Toggle/DarkModeToggle";
 
-export function DormitoryHeader() {
+export function Header() {
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
 
