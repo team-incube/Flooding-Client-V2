@@ -18,13 +18,13 @@ export function WakeUpMusicSection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Music />
-          <span className="text-main-text font-bold text-[18px]">
+          <span className="text-main-text text-text-1">
             기상음악 신청
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-sub-1 text-[14px]">신청 음악</span>
-          <span className="text-p-1 font-bold text-[14px]">
+          <span className="text-sub-1 text-caption-1">신청 음악</span>
+          <span className="text-p-1 text-caption-1">
             {MOCK_SONGS.length}개
           </span>
         </div>
@@ -46,7 +46,7 @@ export function WakeUpMusicSection() {
         </div>
 
         <div className="w-[330px] shrink-0 flex flex-col gap-4">
-          <span className="text-main-text font-semibold text-[16px]">
+          <span className="text-main-text text-text-2">
             음악 신청
           </span>
           <TextField

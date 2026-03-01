@@ -63,7 +63,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
         >
           <Back />
         </button>
-        <span className="text-main-text font-medium text-[15px]">
+        <span className="text-main-text text-text-4">
           {formatHeader(viewDate)}
         </span>
         <button
@@ -80,7 +80,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
         {DAY_LABELS.map((d) => (
           <div
             key={d}
-            className="flex items-center justify-center h-8 text-sub-1 text-[13px] font-medium"
+            className="flex items-center justify-center h-8 text-sub-1 text-caption-2"
           >
             {d}
           </div>
@@ -101,7 +101,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
                   new Date(viewDate.getFullYear(), viewDate.getMonth(), day),
                 )
               }
-              className={`flex items-center justify-center h-[34px] w-full rounded-lg font-medium text-[15px] outline-none cursor-pointer transition-colors
+              className={`flex items-center justify-center h-[34px] w-full rounded-lg text-text-4 outline-none cursor-pointer transition-colors
                 ${
                   selectedDate &&
                   isSameDay(

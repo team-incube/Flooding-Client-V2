@@ -28,8 +28,8 @@ export function Header() {
   return (
     <header className="flex items-center justify-between px-8 py-4 bg-background-surface border-b border-sub-3">
       <div className="flex items-center gap-4">
-        <h1 className="text-main-text font-bold text-[24px]">기숙사</h1>
-        <div className="flex items-center gap-2 text-sub-1 text-[15px]">
+        <h1 className="text-main-text text-title-2">기숙사</h1>
+        <div className="flex items-center gap-2 text-sub-1 text-text-4">
           <span className="tabular-nums">{time}</span>
           <span className="text-sub-3">|</span>
           <span>{date}</span>

@@ -100,7 +100,74 @@
   --font-size-caption-3--font-weight: 500;
 }
 
-/* 4. 기본 태그 스타일 */
+/* 4. 타이포그래피 복합 유틸리티 */
+@utility text-title-1 {
+  font-size: var(--font-size-title-1);
+  font-weight: var(--font-size-title-1--font-weight);
+  line-height: var(--font-size-title-1--line-height);
+}
+
+@utility text-title-2 {
+  font-size: var(--font-size-title-2);
+  font-weight: var(--font-size-title-2--font-weight);
+  line-height: var(--font-size-title-2--line-height);
+}
+
+@utility text-title-3 {
+  font-size: var(--font-size-title-3);
+  font-weight: var(--font-size-title-3--font-weight);
+  line-height: var(--font-size-title-3--line-height);
+}
+
+@utility text-title-4 {
+  font-size: var(--font-size-title-4);
+  font-weight: var(--font-size-title-4--font-weight);
+  line-height: var(--font-size-title-4--line-height);
+}
+
+@utility text-text-1 {
+  font-size: var(--font-size-text-1);
+  font-weight: var(--font-size-text-1--font-weight);
+  line-height: var(--font-size-text-1--line-height);
+}
+
+@utility text-text-2 {
+  font-size: var(--font-size-text-2);
+  font-weight: var(--font-size-text-2--font-weight);
+  line-height: var(--font-size-text-2--line-height);
+}
+
+@utility text-text-3 {
+  font-size: var(--font-size-text-3);
+  font-weight: var(--font-size-text-3--font-weight);
+  line-height: var(--font-size-text-3--line-height);
+}
+
+@utility text-text-4 {
+  font-size: var(--font-size-text-4);
+  font-weight: var(--font-size-text-4--font-weight);
+  line-height: var(--font-size-text-4--line-height);
+}
+
+@utility text-caption-1 {
+  font-size: var(--font-size-caption-1);
+  font-weight: var(--font-size-caption-1--font-weight);
+  line-height: var(--font-size-caption-1--line-height);
+}
+
+@utility text-caption-2 {
+  font-size: var(--font-size-caption-2);
+  font-weight: var(--font-size-caption-2--font-weight);
+  line-height: var(--font-size-caption-2--line-height);
+}
+
+@utility text-caption-3 {
+  font-size: var(--font-size-caption-3);
+  font-weight: var(--font-size-caption-3--font-weight);
+  line-height: var(--font-size-caption-3--line-height);
+}
+
+/* 5. 기본 태그 스타일 */
 body {
   background-color: var(--background);
   color: var(--color-main-text);

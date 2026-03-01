@@ -20,14 +20,14 @@ export function MusicListItem({ student, music }: MusicListItemProps) {
         )}
       </div>
       <div className="flex flex-1 min-w-0 items-center justify-between">
-        <p className="text-main-text font-medium text-[15px] line-clamp-2 flex-1 min-w-0 pr-4">
+        <p className="text-main-text text-text-4 line-clamp-2 flex-1 min-w-0 pr-4">
           {music.title}
         </p>
         <span className="text-sub-1 text-sm shrink-0 pr-4">
           {student.studentNumber}
           {student.name}
         </span>
-        <span className="text-sub-2 text-[13px] shrink-0">
+        <span className="text-sub-2 text-caption-2 shrink-0">
           {music.appliedAt}
         </span>
       </div>

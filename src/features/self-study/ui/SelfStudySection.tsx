@@ -88,11 +88,11 @@ export function SelfStudySection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <ApplyStudy />
-          <span className="text-main-text font-bold text-[18px]">자습신청</span>
+          <span className="text-main-text text-text-1">자습신청</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-sub-1 text-[14px]">신청인</span>
-          <span className="text-p-1 font-bold text-[14px]">
+          <span className="text-sub-1 text-caption-1">신청인</span>
+          <span className="text-p-1 text-caption-1">
             {filteredStudents.length}명
           </span>
         </div>
@@ -113,13 +113,13 @@ export function SelfStudySection() {
 
         <div className="w-[330px] shrink-0 flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <span className="text-main-text font-semibold text-[16px]">
+            <span className="text-main-text text-text-2">
               필터
             </span>
             <button
               type="button"
               onClick={() => dispatch({ type: "RESET" })}
-              className="text-sub-1 text-[13px] cursor-pointer hover:text-p-1 transition-colors"
+              className="text-sub-1 text-caption-2 cursor-pointer hover:text-p-1 transition-colors"
             >
               초기화
             </button>
@@ -135,7 +135,7 @@ export function SelfStudySection() {
           />
 
           <div className="flex flex-col gap-2">
-            <span className="text-sub-1 text-[14px] font-medium">학년</span>
+            <span className="text-sub-1 text-caption-1">학년</span>
             <div className="flex gap-2">
               {[1, 2, 3].map((grade) => (
                 <NumberButton
@@ -154,7 +154,7 @@ export function SelfStudySection() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="text-sub-1 text-[14px] font-medium">반</span>
+            <span className="text-sub-1 text-caption-1">반</span>
             <div className="flex gap-2">
               {[1, 2, 3, 4].map((cls) => (
                 <NumberButton
@@ -173,7 +173,7 @@ export function SelfStudySection() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="text-sub-1 text-[14px] font-medium">성별</span>
+            <span className="text-sub-1 text-caption-1">성별</span>
             <div className="flex gap-2">
               <TextButton
                 variant={selectedGender === "MAN" ? "filled" : "outlined"}
@@ -208,7 +208,7 @@ export function SelfStudySection() {
             신청하기
           </TextButton>
 
-          <p className="text-sub-2 text-[13px]">
+          <p className="text-sub-2 text-caption-2">
             자습 신청 시간은 20:00 ~ 21:00 입니다
           </p>
         </div>

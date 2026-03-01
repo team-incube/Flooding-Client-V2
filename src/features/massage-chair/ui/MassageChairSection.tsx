@@ -12,11 +12,11 @@ export function MassageChairSection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Chair />
-          <span className="text-main-text font-bold text-[18px]">안마의자</span>
+          <span className="text-main-text text-text-1">안마의자</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-sub-1 text-[14px]">신청인</span>
-          <span className="text-p-1 font-bold text-[14px]">
+          <span className="text-sub-1 text-caption-1">신청인</span>
+          <span className="text-p-1 text-caption-1">
             {MOCK_STUDENTS.slice(0, 5).length}명
           </span>
         </div>
@@ -42,10 +42,10 @@ export function MassageChairSection() {
           <TextButton variant="filled" size="wide" onClick={() => {}}>
             신청하기
           </TextButton>
-          <p className="text-sub-2 text-[13px]">
+          <p className="text-sub-2 text-caption-2">
             안마의자 신청시간은 20:20 ~ 21:00 입니다
           </p>
-          <p className="text-sub-2 text-[13px]">
+          <p className="text-sub-2 text-caption-2">
             ※ 여학생은 여기숙사 별도 신청 바랍니다
           </p>
         </div>
