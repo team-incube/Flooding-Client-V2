@@ -16,6 +16,7 @@ jobs:
   auto-assign:
     name: Auto Assign Reviewers & Assignees
     runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
     steps:
       - name: Auto Assign
         uses: kentaro-m/auto-assign-action@v2.0.1
@@ -28,6 +29,7 @@ jobs:
   labeler:
     name: Auto Label
     runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
     steps:
       - name: Auto Label
         id: labeler
