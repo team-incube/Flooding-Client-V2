@@ -8,8 +8,7 @@ import { MOCK_STUDENTS } from "@/entities/user/model/mock";
 export function MassageChairSection() {
   return (
     <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
-      {/* 섹션 헤더 */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-end gap-3">
         <div className="flex items-center gap-2">
           <Chair />
           <span className="text-main-text text-text-1">안마의자</span>
@@ -22,9 +21,7 @@ export function MassageChairSection() {
         </div>
       </div>
 
-      {/* 본문: 카드 행 + 우측 패널 */}
       <div className="flex gap-6">
-        {/* 좌측: 1행 프로필 카드 */}
         <div className="flex-1 min-w-0">
           <div className="flex gap-4 flex-wrap">
             {MOCK_STUDENTS.slice(0, 5).map((student, index) => (
@@ -37,7 +34,6 @@ export function MassageChairSection() {
           </div>
         </div>
 
-        {/* 우측: 신청 패널 */}
         <div className="w-[330px] shrink-0 flex flex-col gap-3 justify-end">
           <TextButton variant="filled" size="wide" onClick={() => {}}>
             신청하기

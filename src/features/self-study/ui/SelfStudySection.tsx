@@ -85,7 +85,7 @@ export function SelfStudySection() {
 
   return (
     <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-end gap-3">
         <div className="flex items-center gap-2">
           <ApplyStudy />
           <span className="text-main-text text-text-1">자습신청</span>
@@ -113,9 +113,7 @@ export function SelfStudySection() {
 
         <div className="w-[330px] shrink-0 flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <span className="text-main-text text-text-2">
-              필터
-            </span>
+            <span className="text-main-text text-text-2">필터</span>
             <button
               type="button"
               onClick={() => dispatch({ type: "RESET" })}
