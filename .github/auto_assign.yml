@@ -1,42 +1,24 @@
-# kentaro-m/auto-assign-action 설정
-# https://github.com/kentaro-m/auto-assign-action
-
 # ── Reviewers ─────────────────────────────────────────────────────────────────
 
 addReviewers: true
-
-# numberOfReviewers: 0 → 그룹 내 전원 할당 / 숫자 지정 시 랜덤 선택
 numberOfReviewers: 0
-
-# 그룹 기반 리뷰어 할당 활성화
 useReviewGroups: true
-
 reviewGroups:
-  # team-incube 조직의 Flooding-Client 팀원 GitHub 아이디
   Flooding-Client:
-    - 976520
-    - Dino0204
-    - g-hyxn
-    - koreahghg
-    - jyuuuuu0
-    - hyooeunn
-    - ma94275
+    - 송재욱
+    - 김준혁
+    - 문강현
+    - 한국
+    - 지유
+    - 이효은
+    - Kimmina
 
 # ── Assignees ─────────────────────────────────────────────────────────────────
-
-# "author" → PR 작성자를 자동으로 assignee로 지정
 addAssignees: author
-
 numberOfAssignees: 0
-
 useAssigneeGroups: false
-
 # ── 필터링 ────────────────────────────────────────────────────────────────────
-
-# 특정 라벨이 있을 때만 실행 (비워두면 모든 PR에 실행)
 filterLabels:
   include: []
   exclude: []
-
-# Draft PR에도 실행
 runOnDraft: true
