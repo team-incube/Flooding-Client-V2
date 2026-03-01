@@ -1,11 +1,11 @@
 ---
 description: 깃허브 PR 생성
-allowed-tools: Bash
+allowed-tools: Bash, mcp__github__create_pull_request, mcp__github__get_me
 ---
 
 # PR Title & Body Generation
 
-Analyze the changes below and draft a PR title and body.
+Analyze the changes below, draft a PR title and body, then create the PR using GitHub MCP.
 
 Current branch: !`git branch --show-current`
 
@@ -20,14 +20,27 @@ Diff (excluding lock files):
 
 ---
 
+## Branching Strategy
+
+The PR type is determined by the title format.
+
+| Title Format | Base Branch | Condition |
+|---|---|---|
+| `v0.0.0` (version) | `main` | Only allowed when current branch is `develop` |
+| `feat:`, `fix:`, etc. (conventional commit) | `develop` | Allowed from any feature branch |
+
+**Release PR rules** (`v0.0.0` format):
+- Must be created from the `develop` branch only.
+- If the current branch is not `develop`, print an error message and abort.
+
 ## Title Rules
 
-- Format: `<type>: <Korean summary>` (within 50 characters)
-- Types: `feat`, `fix`, `refactor`, `change`, `remove`, `docs`, `chore`
-- Match type to branch prefix (e.g. `feat/xxx` → `feat:`)
-- Examples:
-  - `feat: 기숙사 자습 신청 및 취소 기능 추가`
-  - `fix: 다크모드 전환 시 배경색 깜빡임 수정`
+- **General PR**: `<type>: <Korean summary>` (within 50 characters)
+  - Types: `feat`, `fix`, `refactor`, `change`, `remove`, `docs`, `chore`
+  - Match type to branch prefix (e.g. `feat/xxx` → `feat:`)
+  - Example: `feat: 기숙사 자습 신청 및 취소 기능 추가`
+- **Release PR**: `v<major>.<minor>.<patch>` format
+  - Example: `v1.2.0`
 
 ## Body Structure
 
@@ -59,8 +72,15 @@ Follow the org PR template (`team-incube/.github`). Omit reviewer assignment, la
 <!-- Remove this section if not needed -->
 ```
 
-## Output Format
+## Output & Execution
 
-1. **Title** (code block)
-2. **Body** (code block)
-3. **Example command**: `gh pr create --title "..." --body "..."`
+1. Finalize the **Title** and **Body**.
+2. Determine the base branch:
+   - If the title starts with `v` followed by a digit → `main` (verify current branch is `develop`)
+   - Otherwise → `develop`
+3. Create the PR directly using **GitHub MCP** (`mcp__github__create_pull_request`):
+   - `owner`: `team-incube`
+   - `repo`: `Flooding-Client-V2`
+   - `head`: current branch
+   - `base`: branch determined above
+4. Return the created PR URL to the user.
