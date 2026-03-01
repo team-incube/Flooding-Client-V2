@@ -4,6 +4,7 @@ import MealCard from "@/widgets/main/ui/MealCard";
 import ChairIcon from "@/shared/asset/svg/Chair";
 import BookIcon from "@/shared/asset/svg/ApplyStudy";
 import Header from "@/widgets/main/ui/Header";
+import ProfileCard from "@/widgets/main/ui/ProfileCard";
 
 export default function MainView() {
   return (
@@ -33,6 +34,7 @@ export default function MainView() {
         />
 
         <MealCard />
+        <ProfileCard name="민솔" studentId="2403" />
       </main>
     </div>
   );
