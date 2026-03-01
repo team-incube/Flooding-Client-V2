@@ -1,6 +1,9 @@
-type UserRole = "GENERAL_STUDENT" | "STUDENT_COUNCIL" | "DORMITORY_MANAGER";
+export type UserRole =
+  | "GENERAL_STUDENT"
+  | "STUDENT_COUNCIL"
+  | "DORMITORY_MANAGER";
 
-type Sex = "MAN" | "WOMAN";
+export type Sex = "MAN" | "WOMAN";
 
 export interface User {
   id: number;
