@@ -1,3 +1,6 @@
+import ChevronRight from "@/shared/asset/svg/Back";
+import { TextButton } from "@/shared/ui/Button/TextButton";
+
 interface ApplyCardProps {
   title: string;
   icon: React.ReactNode;
@@ -19,54 +22,44 @@ export default function ApplyCard({
   disabled = false,
   femaleNotice = false,
 }: ApplyCardProps) {
-  const percent = Math.min((current / total) * 100, 100);
-
   return (
-    <div className="w-full bg-background-surface rounded-2xl p-6 shadow-sm">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div className="text-main-text">{icon}</div>
-          <span className="text-size-title-2 font-bold text-main-text">
+    <div className="w-[564px] bg-background-surface rounded-2xl p-6">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-1">
+          <div>{icon}</div>
+          <span className="text-size-text-1 font-semibold text-main-text">
             {title}
           </span>
         </div>
 
-        <button className="text-size-text-3 text-sub-1 hover:text-main-text transition">
+        <button className="flex items-center text-size-text-3 text-sub-2">
           전체보기
+          <ChevronRight direction="right" />
         </button>
       </div>
 
-      <div className="flex items-end gap-1 mb-2">
-        <span className="text-3xl font-bold text-main-text">{current}</span>
-        <span className="text-sub-1 text-sm mb-1">/ {total}</span>
-      </div>
-
-      <div className="w-full h-2 bg-background-muted rounded-full mb-3">
-        <div
-          className="h-2 bg-primary rounded-full transition-all"
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-
-      <p className="text-size-text-3 text-sub-1 mb-2">{timeText}</p>
-
-      {femaleNotice && (
-        <p className="text-size-text-3 text-primary mb-4">
-          ※ 여학생의 경우 여자 사감선생님께 별도로 신청해주세요.
+      <div className="pb-3">
+        <p className="text-4xl font-bold text-main-text text-center mb-3 h-[54px]">
+          {current}/{total}
         </p>
-      )}
+        <div className="w-full h-[32px] bg-sub-4 rounded-lg"></div>
+      </div>
 
-      <button
-        disabled={disabled}
-        className={`w-full rounded-xl py-3 text-sm font-semibold transition
-          ${
-            disabled
-              ? "bg-background-muted text-sub-1 cursor-not-allowed"
-              : "bg-primary text-white hover:opacity-90"
-          }`}
-      >
-        {buttonText}
-      </button>
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="text-size-caption-2 font-medium text-sub-1">
+            {timeText}
+          </p>
+          {femaleNotice && (
+            <p className="text-size-caption-2 text-p-1 mt-0.5 font-medium">
+              ※ 여학생의 경우 여자 사감선생님께 별도로 신청해주시기 바랍니다.
+            </p>
+          )}
+        </div>
+        <TextButton variant={disabled ? "disabled" : "filled"} size="small">
+          {buttonText}
+        </TextButton>
+      </div>
     </div>
   );
 }
