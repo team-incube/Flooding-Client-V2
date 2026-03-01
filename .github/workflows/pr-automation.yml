@@ -54,8 +54,8 @@ jobs:
 
           # ── 상태 & 콘텐츠 ──────────────────────
           status: ${{ job.status }}
-          content: "@FE 새로운 PR이 열렸습니다! 리뷰 부탁드려요 🙏"
-          title: "## ${{ github.event.pull_request.title }}"
+          content: "<@FE> PR 확인해주세요."
+          title: "${{ github.event.pull_request.title }}"
           description: |
             작성자: @${{ github.event.pull_request.user.login }}
             베이스: `${{ github.event.pull_request.base.ref }}` ← `${{ github.event.pull_request.head.ref }}`
