@@ -22,7 +22,7 @@ export default function MealCard() {
             급식표
           </span>
         </div>
-        <div className="flex items-center gap-2 text-size-text-3 text-sub-1">
+        <div className="flex items-center gap-2 text-size-text-3 text-sub-1 font-medium">
           <button>
             <Back direction="left" />
           </button>

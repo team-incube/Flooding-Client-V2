@@ -5,6 +5,7 @@ import ChairIcon from "@/shared/asset/svg/Chair";
 import BookIcon from "@/shared/asset/svg/ApplyStudy";
 import Header from "@/widgets/main/ui/Header";
 import ProfileCard from "@/widgets/main/ui/ProfileCard";
+import TimeTableCard from "@/widgets/main/ui/TimeTableCard";
 
 export default function MainView() {
   return (
@@ -36,10 +37,8 @@ export default function MainView() {
           </div>
           <MealCard />
           <div className="flex flex-col gap-6">
-            <ProfileCard name="민솔" studentId="2403" />
-            <div className="w-[480px] h-[354px] bg-gray-200 rounded-2xl flex items-center justify-center">
-              <span className="text-gray-500">dw</span>
-            </div>
+            <ProfileCard />
+            <TimeTableCard />
           </div>
         </div>
       </main>
