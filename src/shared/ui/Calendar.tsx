@@ -12,18 +12,32 @@ const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 
 const DAY_KO = ["일", "월", "화", "수", "목", "금", "토"];
 
-function buildCalendarGrid(viewDate: Date): (number | null)[] {
+function buildCalendarGrid(viewDate: Date): Date[] {
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
-  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
-  const offset = firstDay === 0 ? 6 : firstDay - 1; // convert to Mon-start
+  const firstDay = new Date(year, month, 1).getDay();
+  const offset = firstDay === 0 ? 6 : firstDay - 1;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthDays = new Date(year, month, 0).getDate();
 
-  const cells: (number | null)[] = [];
-  for (let i = 0; i < offset; i++) cells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
-  while (cells.length % 7 !== 0) cells.push(null);
+  const cells: Date[] = [];
+
+  for (let i = offset - 1; i >= 0; i--) {
+    cells.push(new Date(year, month - 1, prevMonthDays - i));
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push(new Date(year, month, d));
+  }
+  let nextDay = 1;
+  while (cells.length % 7 !== 0) {
+    cells.push(new Date(year, month + 1, nextDay++));
+  }
+
   return cells;
+}
+
+function isSameMonth(a: Date, b: Date): boolean {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
 }
 
 function formatHeader(viewDate: Date): string {
@@ -53,13 +67,12 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
     setViewDate((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1));
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Navigation row */}
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col items-center gap-3">
+      <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={prevMonth}
-          className="-rotate-90 cursor-pointer"
+          className="rotate-90 cursor-pointer"
         >
           <Back />
         </button>
@@ -69,53 +82,49 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
         <button
           type="button"
           onClick={nextMonth}
-          className="rotate-90 cursor-pointer"
+          className="-rotate-90 cursor-pointer"
         >
           <Back />
         </button>
       </div>
 
-      {/* Day headers */}
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 gap-1.5">
         {DAY_LABELS.map((d) => (
           <div
             key={d}
-            className="flex items-center justify-center h-8 text-sub-1 text-caption-2"
+            className="flex items-center justify-center w-10 h-10 p-2 text-sub-1 text-caption-2"
           >
             {d}
           </div>
         ))}
       </div>
 
-      {/* Date grid */}
-      <div className="grid grid-cols-7 gap-y-1">
-        {cells.map((day, i) =>
-          day === null ? (
-            <div key={i} className="h-[34px]" />
-          ) : (
+      <div className="grid grid-cols-7 gap-x-1.5 gap-y-3">
+        {cells.map((date, index) => {
+          const isCurrentMonth = isSameMonth(date, viewDate);
+          const isSelected = selectedDate && isSameDay(selectedDate, date);
+
+          return (
             <button
-              key={i}
+              key={index}
               type="button"
-              onClick={() =>
-                onDateSelect?.(
-                  new Date(viewDate.getFullYear(), viewDate.getMonth(), day),
-                )
-              }
-              className={`flex items-center justify-center h-[34px] w-full rounded-lg text-text-4 outline-none cursor-pointer transition-colors
+              onClick={() => {
+                if (!isCurrentMonth) setViewDate(date);
+                onDateSelect?.(date);
+              }}
+              className={`flex items-center justify-center w-10 h-10 p-2 rounded-lg text-caption-1 outline-none cursor-pointer transition-colors
                 ${
-                  selectedDate &&
-                  isSameDay(
-                    selectedDate,
-                    new Date(viewDate.getFullYear(), viewDate.getMonth(), day),
-                  )
-                    ? "bg-p-1 text-background-surface"
-                    : "bg-background-surface text-sub-1 border border-sub-2"
+                  isSelected
+                    ? "bg-p-1 text-sub-4"
+                    : isCurrentMonth
+                      ? "bg-background-surface text-sub-1"
+                      : "bg-background-surface text-sub-2"
                 }`}
             >
-              {day}
+              {date.getDate()}
             </button>
-          ),
-        )}
+          );
+        })}
       </div>
     </div>
   );
