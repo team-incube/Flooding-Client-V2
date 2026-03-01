@@ -10,22 +10,37 @@ import Logo from "@/shared/asset/svg/Logo";
 import Logout from "@/shared/asset/svg/Logout";
 
 const MENU_ITEMS = [
-  { title: "홈", href: "/", icon: (active: boolean) => <Grid size={32} isActive={active} /> },
-  { title: "기숙사", href: "/dormitory", icon: (active: boolean) => <Bed size={32} isActive={active} /> },
-  { title: "학교", href: "/school", icon: (active: boolean) => <School size={32} isActive={active} /> },
-  { title: "동아리", href: "/club", icon: (active: boolean) => <Club size={32} isActive={active} /> },
+  {
+    title: "홈",
+    href: "/",
+    icon: (active: boolean) => <Grid size={32} isActive={active} />,
+  },
+  {
+    title: "기숙사",
+    href: "/dormitory",
+    icon: (active: boolean) => <Bed size={32} isActive={active} />,
+  },
+  {
+    title: "학교",
+    href: "/school",
+    icon: (active: boolean) => <School size={32} isActive={active} />,
+  },
+  {
+    title: "동아리",
+    href: "/club",
+    icon: (active: boolean) => <Club size={32} isActive={active} />,
+  },
 ];
-
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   const handleLogout = () => {
     //로그아웃 로직 구현
-  }
+  };
 
   return (
-    <div className="flex flex-col w-[258px] h-screen bg-[var(--background-surface)] pt-13 pb-14 px-4 justify-between">
+    <div className="flex flex-col w-[258px] h-screen bg-background-surface pt-13 pb-14 px-4 justify-between">
       <div className="flex flex-col items-center gap-[47px]">
         <div>
           <Logo />
@@ -43,19 +58,18 @@ export default function Sidebar() {
         </nav>
       </div>
 
-        <button 
-          type="button" 
-          className="flex items-center h-14 w-[210px] py-3 px-4 cursor-pointer transition-all"
-          onClick={handleLogout}>
-          <div className="flex items-center gap-6">
-            <div className="flex shrink-0 items-center justify-center">
-              <Logout size={32} />
-            </div>
-            <span className="text-size-text-1 font-[600] text-[var(--color-sub-2)] font-sans">
-              로그아웃
-            </span>
+      <button
+        type="button"
+        className="flex items-center h-14 w-[210px] py-3 px-4 cursor-pointer transition-all"
+        onClick={handleLogout}
+      >
+        <div className="flex items-center gap-6">
+          <div className="flex shrink-0 items-center justify-center">
+            <Logout size={32} />
           </div>
-        </button>
-      </div>
+          <span className="text-text-1 text-sub-2 font-sans">로그아웃</span>
+        </div>
+      </button>
+    </div>
   );
 }
