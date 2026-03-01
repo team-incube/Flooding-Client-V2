@@ -1,16 +1,12 @@
-# actions/labeler v5 설정
-# 브랜치명 기반으로 조직 라벨(labels.json) 자동 할당
+"📩 Type: Feature/Function":
+  - head-branch:
+      ["^feat/.+", "^feature/.+", "^refactor/.+", "^chore/.+", "^ci/.+"]
 
-# ── Type 라벨 (브랜치명 기준) ─────────────────────────────────────────────────
+"🐞 Type: Bug/Function":
+  - head-branch: ["^fix/.+", "^hotfix/.+", "^bugfix/.+"]
 
-'📩 Type: Feature/Function':
-  - head-branch: ['^feat/.+', '^feature/.+', '^refactor/.+', '^chore/.+', '^ci/.+']
+"📜 Type: Feature/Document":
+  - head-branch: ["^docs/.+"]
 
-'🐞 Type: Bug/Function':
-  - head-branch: ['^fix/.+', '^hotfix/.+', '^bugfix/.+']
-
-'📜 Type: Feature/Document':
-  - head-branch: ['^docs/.+']
-
-'🪽 Type: Release':
-  - head-branch: ['^release/.+']
+"🪽 Type: Release":
+  - head-branch: ["^release/.+"]
