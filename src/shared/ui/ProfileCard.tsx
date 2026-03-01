@@ -1,19 +1,13 @@
+import { User } from "@/entities/user/model/user";
 import Gender from "../asset/svg/Gender";
 import Profile from "../asset/svg/Profile";
 
 interface ProfileCardProps {
   index: number;
-  name: string;
-  studentId: string;
-  gender: "male" | "female";
+  student: User;
 }
 
-export function ProfileCard({
-  index,
-  name,
-  studentId,
-  gender,
-}: ProfileCardProps) {
+export function ProfileCard({ index, student }: ProfileCardProps) {
   return (
     <div className="relative w-[170px] h-[165px] bg-sub-4 rounded-2xl">
       <span className="absolute top-3 left-4 text-[12px] text-sub-1">
@@ -24,14 +18,16 @@ export function ProfileCard({
           <Profile />
         </div>
         <div className="flex items-center">
-          <span className="font-medium text-main-text">{name}</span>
+          <span className="font-medium text-main-text">{student.name}</span>
           <Gender
-            isActive={gender === "female"}
+            isActive={student.sex == "WOMAN"}
             size={16}
             color="var(--color-main-text)"
           />
         </div>
-        <span className="font-medium text-sm text-sub-1">{studentId}</span>
+        <span className="font-medium text-sm text-sub-1">
+          {student.studentNumber}
+        </span>
       </div>
     </div>
   );
