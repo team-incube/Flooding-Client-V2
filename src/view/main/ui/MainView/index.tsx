@@ -1,32 +1,16 @@
 import Sidebar from "@/widgets/adaptive-sidebar/ui";
-import { DarkModeToggle } from "@/shared/ui/Toggle/DarkModeToggle";
 import ApplyCard from "@/widgets/main/ui/ApplyCard";
+import MealCard from "@/widgets/main/ui/MealCard";
 import ChairIcon from "@/shared/asset/svg/Chair";
 import BookIcon from "@/shared/asset/svg/ApplyStudy";
+import Header from "@/widgets/main/ui/Header";
 
 export default function MainView() {
   return (
     <div className="flex h-screen">
       <Sidebar />
       <main className="flex-1 overflow-auto px-18 pt-13 pb-25">
-        <div className="flex items-end justify-between">
-          <div className="flex items-end gap-3">
-            <span className="text-size-title-2 font-bold text-main-text leading-none">
-              홈
-            </span>
-
-            <div className="flex items-end gap-2 bg-background-surface rounded-lg px-5 py-2">
-              <span className="text-size-title-2 font-bold text-main-text leading-none">
-                14:02:37
-              </span>
-              <span className="text-size-text-3 text-sub-1 leading-none">
-                26.02.22
-              </span>
-            </div>
-          </div>
-
-          <DarkModeToggle />
-        </div>
+        <Header />
 
         <ApplyCard
           title="자습신청"
@@ -47,6 +31,8 @@ export default function MainView() {
           buttonText="신청"
           femaleNotice
         />
+
+        <MealCard />
       </main>
     </div>
   );
