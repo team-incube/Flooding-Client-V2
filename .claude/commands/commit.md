@@ -19,7 +19,7 @@ allowed-tools: Read
 
 ## Branching Strategy
 
-- Branch format: `feat/기능명`, `fix/버그명`
+- Branch format: `type/description` (e.g., `feat/기능명`, `fix/버그수정`, `docs/문서개선`, `refactor/리팩토링`)
 - Merge via PR → `develop`
 
 ## Rules
