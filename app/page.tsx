@@ -14,7 +14,7 @@ export default function MainPage() {
       <Sidebar />
       <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
         <Header />
-        <div className="flex gap-6 mb-6">
+        <div className="flex gap-6">
           <div className="flex flex-col gap-6">
             <ApplyCard
               title="자습신청"
