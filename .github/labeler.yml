@@ -1,0 +1,12 @@
+"📩 Type: Feature/Function":
+  - head-branch:
+      ["^feat/.+", "^feature/.+", "^refactor/.+", "^chore/.+", "^ci/.+"]
+
+"🐞 Type: Bug/Function":
+  - head-branch: ["^fix/.+", "^hotfix/.+", "^bugfix/.+"]
+
+"📜 Type: Feature/Document":
+  - head-branch: ["^docs/.+"]
+
+"🪽 Type: Release":
+  - head-branch: ["^release/.+"]
