@@ -7,14 +7,15 @@ import Header from "@/widgets/main/ui/Header";
 import ProfileCard from "@/widgets/main/ui/ProfileCard";
 import TimeTableCard from "@/widgets/main/ui/TimeTableCard";
 import MusicRequestCard from "@/widgets/main/ui/MusicRequestCard";
+import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
 
 export default function MainPage() {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
+      <main className="flex-1 overflow-auto px-18 pt-13 pb-25">
         <Header />
-        <div className="flex gap-6">
+        <div className="flex gap-6 mb-6">
           <div className="flex flex-col gap-6">
             <ApplyCard
               title="자습신청"
@@ -43,6 +44,7 @@ export default function MainPage() {
           </div>
         </div>
         <MusicRequestCard />
+        <HomebaseCard />
       </main>
     </div>
   );
