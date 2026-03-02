@@ -186,12 +186,12 @@ export function SelfStudySection() {
                 남자
               </TextButton>
               <TextButton
-                variant={selectedGender === "MAN" ? "filled" : "outlined"}
+                variant={selectedGender === "WOMAN" ? "filled" : "outlined"}
                 size="small"
                 onClick={() =>
                   dispatch({
                     type: "SET_GENDER",
-                    payload: selectedGender === "MAN" ? null : "WOMAN",
+                    payload: selectedGender === "WOMAN" ? null : "WOMAN",
                   })
                 }
               >
