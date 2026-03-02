@@ -7,7 +7,6 @@ import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 import { MOCK_SONGS } from "@/entities/music/model/mock";
-import { MOCK_STUDENTS } from "@/entities/user/model/mock";
 
 export function WakeUpMusicSection() {
   const [urlInput, setUrlInput] = useState("");
@@ -29,15 +28,9 @@ export function WakeUpMusicSection() {
       <div className="flex gap-6">
         <div className="flex-1 min-w-0 max-h-[600px] overflow-y-auto pr-2">
           <div className="flex flex-col">
-            {MOCK_SONGS.map((music) => {
-              const student = MOCK_STUDENTS.find(
-                (u) => u.studentNumber === music.studentNumber,
-              );
-              if (!student) return null;
-              return (
-                <MusicListItem key={music.id} music={music} student={student} />
-              );
-            })}
+            {MOCK_SONGS.map((music) => (
+              <MusicListItem key={music.id} music={music} />
+            ))}
           </div>
         </div>
 

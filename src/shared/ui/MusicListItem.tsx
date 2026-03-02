@@ -1,13 +1,11 @@
 import { Music } from "@/entities/music/model/music";
-import { User } from "@/entities/user/model/user";
 import Image from "next/image";
 
 interface MusicListItemProps {
-  student: User;
   music: Music;
 }
 
-export function MusicListItem({ student, music }: MusicListItemProps) {
+export function MusicListItem({ music }: MusicListItemProps) {
   return (
     <div className="flex items-center gap-4 py-3 border-b border-sub-3 last:border-b-0">
       <div className="w-39 h-22 shrink-0 rounded-xl bg-sub-4 overflow-hidden">
@@ -24,7 +22,7 @@ export function MusicListItem({ student, music }: MusicListItemProps) {
           {music.title}
         </p>
         <span className="text-sub-1 text-sm tabular-nums shrink-0 pr-4">
-          {student.studentNumber} {student.name}
+          {music.studentNumber} {music.studentName}
         </span>
         <span className="text-sub-2 text-caption-2 shrink-0">
           {music.appliedAt}
