@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, develop]
+
+jobs:
+  # ─────────────────────────────────────────────
+  # 1. ESLint 린트 검사
+  # ─────────────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  # ─────────────────────────────────────────────
+  # 2. TypeScript 타입 체크
+  # ─────────────────────────────────────────────
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run type-check
+
+  # ─────────────────────────────────────────────
+  # 3. Next.js 빌드 (lint + type-check 통과 후)
+  # ─────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, type-check]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  # ─────────────────────────────────────────────
+  # 4. Discord 실패 알림
+  # ─────────────────────────────────────────────
+  discord-ci-failure:
+    name: Discord CI 실패 알림
+    runs-on: ubuntu-latest
+    needs: [lint, type-check, build]
+    if: failure()
+    steps:
+      - name: Discord 알림 전송
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: failure
+          title: "CI 검사 실패"
+          description: |
+            PR: ${{ github.event.pull_request.title }}
+            작성자: @${{ github.event.pull_request.user.login }}
+            베이스: `${{ github.event.pull_request.base.ref }}` ← `${{ github.event.pull_request.head.ref }}`
+          url: ${{ github.event.pull_request.html_url }}
+          username: "Flooding Client Bot"
+          avatar_url: ${{ secrets.DISCORD_AVATAR_URL }}
+          color: "0xFF0000"
+          nofail: true
+          nocontext: true
+          noprefix: true
+          notimestamp: false
+          ack_no_webhook: true
