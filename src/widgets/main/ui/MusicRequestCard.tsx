@@ -128,7 +128,7 @@ export default function MusicRequestCard() {
                 <div className="w-[158px] h-[88px] rounded-lg bg-sub-4 flex-shrink-0">
                   <img
                     src={item.thumbnail}
-                    alt="thumbnail"
+                    alt={`${item.title} 썸네일`}
                     className="w-full h-full object-contain"
                   />
                 </div>
