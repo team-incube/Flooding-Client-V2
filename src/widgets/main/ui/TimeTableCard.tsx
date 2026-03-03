@@ -94,7 +94,7 @@ export default function TimeTableCard() {
 
           return (
             <div
-              key={idx}
+              key={it.period}
               className={`flex items-center justify-between px-6 py-4 rounded-lg bg-sub-4 ${
                 active && "border border-p-1"
               }`}
