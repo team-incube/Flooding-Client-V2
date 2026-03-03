@@ -1,9 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import Back from "@/shared/asset/svg/Back";
 import Calendar from "@/shared/asset/svg/Calender";
 
+const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
+
+function formatDate(date: Date): string {
+  const yy = String(date.getFullYear()).slice(2);
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  const day = DAYS[date.getDay()];
+  return `${yy}.${mm}.${dd} (${day})`;
+}
+
 export default function TimeTableCard() {
+  const [offset, setOffset] = useState(0);
+
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + offset);
+
   const selectedIndex = 2;
 
   const items = [
@@ -62,11 +78,11 @@ export default function TimeTableCard() {
         </div>
 
         <div className="flex items-center gap-2 text-size-text-3 text-sub-1 font-medium">
-          <button>
+          <button onClick={() => setOffset((o) => o - 1)}>
             <Back direction="left" />
           </button>
-          <span>25.05.29 (목)</span>
-          <button>
+          <span>{formatDate(currentDate)}</span>
+          <button onClick={() => setOffset((o) => o + 1)}>
             <Back direction="right" />
           </button>
         </div>
