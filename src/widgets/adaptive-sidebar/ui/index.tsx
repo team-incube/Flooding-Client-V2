@@ -8,29 +8,21 @@ import School from "@/shared/asset/svg/School";
 import Club from "@/shared/asset/svg/Club";
 import Logo from "@/shared/asset/svg/Logo";
 import Logout from "@/shared/asset/svg/Logout";
+import { ROUTES } from "@/shared/config/routes";
+import type { ReactNode } from "react";
 
-const MENU_ITEMS = [
-  {
-    title: "홈",
-    href: "/",
-    icon: (active: boolean) => <Grid size={32} isActive={active} />,
-  },
-  {
-    title: "기숙사",
-    href: "/dormitory",
-    icon: (active: boolean) => <Bed size={32} isActive={active} />,
-  },
-  {
-    title: "학교",
-    href: "/school",
-    icon: (active: boolean) => <School size={32} isActive={active} />,
-  },
-  {
-    title: "동아리",
-    href: "/club",
-    icon: (active: boolean) => <Club size={32} isActive={active} />,
-  },
-];
+const ICONS: Record<string, (active: boolean) => ReactNode> = {
+  "/": (active) => <Grid size={32} isActive={active} />,
+  "/dormitory": (active) => <Bed size={32} isActive={active} />,
+  "/school": (active) => <School size={32} isActive={active} />,
+  "/club": (active) => <Club size={32} isActive={active} />,
+};
+
+const MENU_ITEMS = ROUTES.map(({ href, label }) => ({
+  title: label,
+  href,
+  icon: ICONS[href],
+}));
 
 export default function Sidebar() {
   const pathname = usePathname();
