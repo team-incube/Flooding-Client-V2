@@ -65,7 +65,10 @@ export default function MealCard() {
 
       <ul className="flex flex-col gap-3 flex-1 overflow-y-auto">
         {Meals.map((item, index) => (
-          <li key={`${item}-${index}`} className="text-size-caption-1 min-[1600px]:text-size-text-1 text-sub-1 font-semibold">
+          <li
+            key={`${item}-${index}`}
+            className="text-size-caption-1 min-[1600px]:text-size-text-1 text-sub-1 font-semibold"
+          >
             {item}
           </li>
         ))}
