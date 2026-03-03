@@ -100,13 +100,13 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
       </div>
 
       <div className="grid grid-cols-7 gap-x-1.5 gap-y-3">
-        {cells.map((date, index) => {
+        {cells.map((date) => {
           const isCurrentMonth = isSameMonth(date, viewDate);
           const isSelected = selectedDate && isSameDay(selectedDate, date);
 
           return (
             <button
-              key={index}
+              key={date.toISOString()}
               type="button"
               onClick={() => {
                 if (!isCurrentMonth) setViewDate(date);
