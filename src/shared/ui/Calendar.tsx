@@ -77,7 +77,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
           <Back />
         </button>
         <span className="text-main-text text-text-4">
-          {formatHeader(viewDate)}
+          {formatHeader(new Date())}
         </span>
         <button
           type="button"
