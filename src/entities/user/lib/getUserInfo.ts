@@ -1,14 +1,14 @@
-/** 학번에서 학년을 계산합니다. 예: 2501 → 2 */
+/** 학번에서 학년을 계산합니다. 예: 2401 → 2 */
 export function getGrade(studentNumber: number): number {
   return Math.floor(studentNumber / 1000);
 }
 
-/** 학번에서 반을 계산합니다. 예: 2501 → 5 */
+/** 학번에서 반을 계산합니다. 예: 2401 → 4 */
 export function getClassNumber(studentNumber: number): number {
   return Math.floor((studentNumber % 1000) / 100);
 }
 
-/** 학번에서 번호를 계산합니다. 예: 2501 → 1 */
+/** 학번에서 번호를 계산합니다. 예: 2401 → 1 */
 export function getStudentIndex(studentNumber: number): number {
   return studentNumber % 100;
 }
