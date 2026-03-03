@@ -1,5 +1,18 @@
+"use client";
+
+import { useState } from "react";
 import Bowl from "@/shared/asset/svg/Bowl";
 import Back from "@/shared/asset/svg/Back";
+
+const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
+
+function formatDate(date: Date): string {
+  const yy = String(date.getFullYear()).slice(2);
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  const day = DAYS[date.getDay()];
+  return `${yy}.${mm}.${dd} (${day})`;
+}
 
 const Meals = [
   "10곡잡곡밥 05",
@@ -13,6 +26,11 @@ const Meals = [
 ];
 
 export default function MealCard() {
+  const [offset, setOffset] = useState(0);
+
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + offset);
+
   return (
     <div className="w-[426px] min-w-[280px] h-[478px] min-[1600px]:h-[497px] bg-background-surface rounded-2xl p-4 min-[1600px]:p-6 flex flex-col">
       <div className="flex items-center justify-between mb-4">
@@ -23,11 +41,11 @@ export default function MealCard() {
           </span>
         </div>
         <div className="flex items-center gap-2 text-size-text-3 text-sub-1 font-medium">
-          <button>
+          <button onClick={() => setOffset((o) => o - 1)}>
             <Back direction="left" />
           </button>
-          <span>25.05.29 (목)</span>
-          <button>
+          <span>{formatDate(currentDate)}</span>
+          <button onClick={() => setOffset((o) => o + 1)}>
             <Back direction="right" />
           </button>
         </div>
