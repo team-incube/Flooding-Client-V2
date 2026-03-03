@@ -8,7 +8,7 @@ interface ProfileCardProps {
 
 export default function ProfileCard({ photo }: ProfileCardProps) {
   return (
-    <div className="flex items-center gap-6 p-6 bg-background-surface rounded-2xl w-[480px]">
+    <div className="flex items-center gap-6 p-4 min-[1600px]:p-6 bg-background-surface rounded-2xl w-[480px]">
       <div className="w-[72px] h-[72px] flex items-center justify-center">
         {photo ?? <ProfileSvg />}
       </div>

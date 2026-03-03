@@ -14,7 +14,7 @@ const Meals = [
 
 export default function MealCard() {
   return (
-    <div className="w-[426px] h-[497px] bg-background-surface rounded-2xl p-6">
+    <div className="w-[426px] min-w-[280px] h-[478px] min-[1600px]:h-[497px] bg-background-surface rounded-2xl p-4 min-[1600px]:p-6 flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1">
           <Bowl />
@@ -45,9 +45,9 @@ export default function MealCard() {
         </button>
       </div>
 
-      <ul className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-3 flex-1 overflow-y-auto">
         {Meals.map((item, index) => (
-          <li key={index} className="text-size-text-1 text-sub-1 font-semibold">
+          <li key={index} className="text-size-caption-1 min-[1600px]:text-size-text-1 text-sub-1 font-semibold">
             {item}
           </li>
         ))}

@@ -23,7 +23,7 @@ export default function ApplyCard({
   femaleNotice = false,
 }: ApplyCardProps) {
   return (
-    <div className="w-[564px] min-w-[500px] bg-background-surface rounded-2xl p-6">
+    <div className="w-full bg-background-surface rounded-2xl p-4 min-[1600px]:p-6">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-1">
           <div>{icon}</div>
