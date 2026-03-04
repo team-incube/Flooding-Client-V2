@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/api/auth",
-      maxAge: 2592000,
+      maxAge: 30 * 24 * 60 * 60,
     });
 
     return response;
