@@ -45,7 +45,7 @@ export default function ApplyCard({
         <div className="w-full h-[32px] bg-sub-4 rounded-lg overflow-hidden">
           <div
             className="h-full bg-p-1"
-            style={{ width: `${(current / total) * 100}%` }}
+            style={{ width: `${total > 0 ? (current / total) * 100 : 0}%` }}
           />
         </div>
       </div>
