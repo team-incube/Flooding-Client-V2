@@ -6,6 +6,7 @@ import ProfileCard from "@/widgets/main/ui/ProfileCard";
 import TimeTableCard from "@/widgets/main/ui/TimeTableCard";
 import MusicRequestCard from "@/widgets/main/ui/MusicRequestCard";
 import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
+import { MOCK_STUDENTS } from "@/entities/user/model/mock";
 
 export default function MainPage() {
   return (
@@ -35,7 +36,7 @@ export default function MainPage() {
           </div>
           <MealCard />
           <div className="flex flex-col gap-6 flex-1 max-w-[570px]">
-            <ProfileCard />
+            <ProfileCard user={MOCK_STUDENTS[0]} />
             <TimeTableCard />
           </div>
         </div>
