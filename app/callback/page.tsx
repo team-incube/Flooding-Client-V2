@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
+import { instance } from "@/shared/api/instance";
 
 function CallbackInner() {
   const router = useRouter();
@@ -29,25 +30,22 @@ function CallbackInner() {
     const codeVerifier = sessionStorage.getItem("code_verifier");
 
     (async () => {
-      const res = await fetch("/api/auth/callback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, codeVerifier }),
-      });
+      try {
+        const { data } = await instance.post("/api/auth/callback", {
+          code,
+          codeVerifier,
+        });
+        const { accessToken, user } = data;
 
-      if (!res.ok) {
+        sessionStorage.setItem("access_token", accessToken);
+        sessionStorage.setItem("user", JSON.stringify(user));
+        sessionStorage.removeItem("code_verifier");
+        sessionStorage.removeItem("oauth_state");
+
+        router.replace("/");
+      } catch {
         router.replace("/signin");
-        return;
       }
-
-      const { accessToken, user } = await res.json();
-
-      sessionStorage.setItem("access_token", accessToken);
-      sessionStorage.setItem("user", JSON.stringify(user));
-      sessionStorage.removeItem("code_verifier");
-      sessionStorage.removeItem("oauth_state");
-
-      router.replace("/");
     })();
   }, [router, searchParams]);
 
