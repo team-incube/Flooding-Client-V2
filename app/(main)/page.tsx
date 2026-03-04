@@ -10,9 +10,9 @@ import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
 export default function MainPage() {
   return (
     <div className="flex h-screen">
-      <main className="flex-1 overflow-auto p-6">
+      <main className="flex-1 overflow-auto p-6 pb-20">
         <div className="flex gap-6 mb-6">
-          <div className="flex flex-col gap-6 w-[564px] min-w-[440px] 2xl:min-w-[500px]">
+          <div className="flex flex-col gap-6 flex-1 min-w-[440px] 2xl:min-w-[500px] max-w-[648px]">
             <ApplyCard
               title="자습신청"
               icon={<BookIcon />}
@@ -34,7 +34,7 @@ export default function MainPage() {
             />
           </div>
           <MealCard />
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 flex-1 max-w-[570px]">
             <ProfileCard />
             <TimeTableCard />
           </div>

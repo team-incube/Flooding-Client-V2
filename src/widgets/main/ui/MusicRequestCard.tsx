@@ -109,7 +109,7 @@ export default function MusicRequestCard() {
   const [url, setUrl] = useState("");
 
   return (
-    <div className="w-[1518px] h-[520px] bg-background-surface rounded-2xl p-4 2xl:p-6 flex flex-col mb-6">
+    <div className="w-full h-[520px] bg-background-surface rounded-2xl p-4 2xl:p-6 flex flex-col mb-6">
       <div className="flex items-center gap-1 mb-4">
         <Music />
         <span className="text-text-1 font-semibold text-main-text">
