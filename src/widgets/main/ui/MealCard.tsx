@@ -32,7 +32,7 @@ export default function MealCard() {
   currentDate.setDate(currentDate.getDate() + offset);
 
   return (
-    <div className="w-[426px] min-w-[280px] h-[478px] min-[1600px]:h-[497px] bg-background-surface rounded-2xl p-4 min-[1600px]:p-6 flex flex-col">
+    <div className="w-[426px] min-w-[280px] h-[478px] 2xl:h-[497px] bg-background-surface rounded-2xl p-4 2xl:p-6 flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1">
           <Bowl />
@@ -67,7 +67,7 @@ export default function MealCard() {
         {Meals.map((item, index) => (
           <li
             key={`${item}-${index}`}
-            className="text-caption-1 min-[1600px]:text-text-1 text-sub-1 font-semibold"
+            className="text-caption-1 2xl:text-text-1 text-sub-1 font-semibold"
           >
             {item}
           </li>

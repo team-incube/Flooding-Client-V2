@@ -68,7 +68,7 @@ export default function TimeTableCard() {
   ];
 
   return (
-    <div className="w-[480px] h-[354px] bg-background-surface rounded-2xl p-4 min-[1600px]:p-6">
+    <div className="w-[480px] h-[354px] bg-background-surface rounded-2xl p-4 2xl:p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1">
           <Calendar />

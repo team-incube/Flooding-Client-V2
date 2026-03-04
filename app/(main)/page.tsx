@@ -12,7 +12,7 @@ export default function MainPage() {
     <div className="flex h-screen">
       <main className="flex-1 overflow-auto p-6">
         <div className="flex gap-6 mb-6">
-          <div className="flex flex-col gap-6 w-[564px] min-w-[440px] min-[1600px]:min-w-[500px]">
+          <div className="flex flex-col gap-6 w-[564px] min-w-[440px] 2xl:min-w-[500px]">
             <ApplyCard
               title="자습신청"
               icon={<BookIcon />}
