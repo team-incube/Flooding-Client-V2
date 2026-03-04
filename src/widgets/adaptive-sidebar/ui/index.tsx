@@ -7,7 +7,7 @@ import Bed from "@/shared/asset/svg/Bed";
 import School from "@/shared/asset/svg/School";
 import Club from "@/shared/asset/svg/Club";
 import Logo from "@/shared/asset/svg/Logo";
-import Logout from "@/shared/asset/svg/Logout";
+import Signout from "@/shared/asset/svg/Signout";
 import { ROUTES } from "@/shared/config/routes";
 import type { ReactNode } from "react";
 
@@ -28,8 +28,8 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+  const handleSignout = async () => {
+    await fetch("/api/auth/signout", { method: "POST" });
     sessionStorage.removeItem("access_token");
     sessionStorage.removeItem("user");
     router.push("/signin");
@@ -57,11 +57,11 @@ export default function Sidebar() {
       <button
         type="button"
         className="flex items-center h-14 w-[210px] py-3 px-4 cursor-pointer transition-all"
-        onClick={handleLogout}
+        onClick={handleSignout}
       >
         <div className="flex items-center gap-6">
           <div className="flex shrink-0 items-center justify-center">
-            <Logout size={32} />
+            <Signout size={32} />
           </div>
           <span className="text-text-1 text-sub-2 font-sans">로그아웃</span>
         </div>
