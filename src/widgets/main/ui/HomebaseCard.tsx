@@ -62,7 +62,7 @@ export default function HomebaseCard() {
         ))}
       </div>
 
-      <div className="flex justify-between items-start mt-3">
+      <div className="flex justify-between items-start gap-6 mt-3">
         {renderFloor()}
 
         <div className="w-[330px] flex flex-col gap-4">
