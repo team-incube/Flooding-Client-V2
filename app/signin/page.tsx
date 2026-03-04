@@ -1,9 +1,11 @@
 "use client";
 
+import Logo from "@/shared/asset/svg/Logo";
 import {
   generateCodeChallenge,
   generateCodeVerifier,
 } from "@/shared/lib/verify-token";
+import { TextButton } from "@/shared/ui/Button/TextButton";
 
 // @themoment-team/datagsm-oauth-react SDK 사용예정
 export default function Signin() {
@@ -28,8 +30,13 @@ export default function Signin() {
   };
 
   return (
-    <div>
-      <button onClick={handleLogin}>DATA GSM으로 로그인</button>
+    <div className="flex h-screen items-center justify-center overflow-hidden bg-background">
+      <div className="flex flex-col items-center gap-6 w-fit h-fit bg-background-surface px-8 py-13 rounded-2xl">
+        <Logo />
+        <TextButton variant="filled" size="wide" onClick={handleLogin}>
+          Data GSM으로 로그인
+        </TextButton>
+      </div>
     </div>
   );
 }
