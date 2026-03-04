@@ -28,8 +28,6 @@ export async function POST(request: NextRequest) {
       maxAge: 2592000,
     });
 
-    console.log("response:", response);
-
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {
