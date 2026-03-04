@@ -7,7 +7,8 @@ interface NumberButtonProps {
 }
 
 const variantStyles = {
-  outlined: "bg-white text-sub-1 border border-sub-2 cursor-pointer",
+  outlined:
+    "bg-background-surface text-sub-1 border border-sub-2 cursor-pointer",
   filled: "bg-p-1 text-background-surface cursor-pointer",
 };
 
