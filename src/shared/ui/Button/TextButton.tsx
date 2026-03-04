@@ -10,7 +10,8 @@ interface TextButtonProps {
 
 const variantStyles = {
   filled: "bg-p-1 text-background-surface cursor-pointer",
-  outlined: "bg-white text-sub-1 border border-sub-2 cursor-pointer",
+  outlined:
+    "bg-background-surface text-sub-1 border border-sub-2 cursor-pointer",
   disabled: "bg-p-3 text-sub-4",
 };
 
