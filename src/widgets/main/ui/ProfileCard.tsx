@@ -13,9 +13,7 @@ export default function ProfileCard({ photo }: ProfileCardProps) {
         {photo ?? <ProfileSvg />}
       </div>
       <div className="flex flex-col">
-        <span className="font-medium text-title-2">
-          안녕하세요! 민솔님
-        </span>
+        <span className="font-medium text-title-4">안녕하세요! 민솔님</span>
         <span className="text-text-3 font-medium text-sub-1">2403</span>
       </div>
       <div className="ml-auto">
