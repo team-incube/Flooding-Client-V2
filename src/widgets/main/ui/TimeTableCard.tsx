@@ -72,12 +72,12 @@ export default function TimeTableCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1">
           <Calendar />
-          <span className="text-size-text-1 font-semibold text-main-text">
+          <span className="text-text-1 font-semibold text-main-text">
             시간표
           </span>
         </div>
 
-        <div className="flex items-center gap-2 text-size-text-3 text-sub-1 font-medium">
+        <div className="flex items-center gap-2 text-text-3 text-sub-1 font-medium">
           <button onClick={() => setOffset((o) => o - 1)}>
             <Back direction="left" />
           </button>
@@ -100,17 +100,17 @@ export default function TimeTableCard() {
               }`}
             >
               <div className="flex items-center gap-1">
-                <span className="font-medium text-sub-1 text-size-text-3">
+                <span className="font-medium text-sub-1 text-text-3">
                   {it.period}
                 </span>
-                <span className="text-size-caption-1 text-sub-2 font-medium">
+                <span className="text-caption-1 text-sub-2 font-medium">
                   {it.time}
                 </span>
               </div>
 
-              <div className="flex items-center gap-1 text-sub-1 text-size-text-4 font-medium">
+              <div className="flex items-center gap-1 text-sub-1 text-text-4 font-medium">
                 <span>{it.subject}</span>
-                <span className="text-size-caption-1 text-sub-2 font-medium">
+                <span className="text-caption-1 text-sub-2 font-medium">
                   {it.teachers}
                 </span>
               </div>

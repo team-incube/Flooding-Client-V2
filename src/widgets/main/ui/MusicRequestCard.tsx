@@ -112,10 +112,10 @@ export default function MusicRequestCard() {
     <div className="w-[1518px] h-[520px] bg-background-surface rounded-2xl p-4 min-[1600px]:p-6 flex flex-col mb-6">
       <div className="flex items-center gap-1 mb-4">
         <Music />
-        <span className="text-size-text-1 font-semibold text-main-text">
+        <span className="text-text-1 font-semibold text-main-text">
           기상음악 신청
         </span>
-        <span className="text-size-text-4 text-sub-1 font-medium ml-2">
+        <span className="text-text-4 text-sub-1 font-medium ml-2">
           신청 음악 <span className="text-p-1">{mockMusicList.length}</span>개
         </span>
       </div>
@@ -133,14 +133,14 @@ export default function MusicRequestCard() {
                   />
                 </div>
                 <div className="flex w-[888px] h-[40px] items-center gap-6 ml-3">
-                  <span className="flex-1 text-size-text-3 text-main-text font-medium">
+                  <span className="flex-1 text-text-3 text-main-text font-medium">
                     {item.title}
                   </span>
                   <div className="flex items-center gap-6 flex-shrink-0">
-                    <span className="text-size-text-3 text-sub-2 font-medium whitespace-nowrap">
+                    <span className="text-text-3 text-sub-2 font-medium whitespace-nowrap">
                       {item.requester}
                     </span>
-                    <span className="text-size-text-3 text-sub-2 font-medium whitespace-nowrap mr-6">
+                    <span className="text-text-3 text-sub-2 font-medium whitespace-nowrap mr-6">
                       {item.time}
                     </span>
                   </div>
@@ -151,7 +151,7 @@ export default function MusicRequestCard() {
         </div>
 
         <div className="w-[330px] flex flex-col">
-          <span className="text-size-text-1 font-semibold text-main-text mb-3">
+          <span className="text-text-1 font-semibold text-main-text mb-3">
             음악 신청
           </span>
 

@@ -33,13 +33,13 @@ export default function HomebaseCard() {
     <div className="w-[1518px] bg-background-surface rounded-2xl p-4 min-[1600px]:p-6 flex flex-col">
       <div className="flex items-center gap-1">
         <HomeBase />
-        <span className="text-size-text-1 font-semibold text-main-text">
+        <span className="text-text-1 font-semibold text-main-text">
           홈베이스
         </span>
       </div>
 
       <div className="flex items-center gap-3 mt-4">
-        <span className="text-size-text-3 font-medium text-sub-1">층</span>
+        <span className="text-text-3 font-medium text-sub-1">층</span>
         {FLOORS.map((floor) => (
           <TextButton
             key={floor}
@@ -50,7 +50,7 @@ export default function HomebaseCard() {
           </TextButton>
         ))}
 
-        <span className="text-size-text-3 font-medium text-sub-1">교시</span>
+        <span className="text-text-3 font-medium text-sub-1">교시</span>
         {PERIODS.map((period) => (
           <TextButton
             key={period}

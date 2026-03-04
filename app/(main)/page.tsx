@@ -10,7 +10,7 @@ import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
 export default function MainPage() {
   return (
     <div className="flex h-screen">
-      <main className="flex-1 overflow-auto px-9 pt-6 pb-12 min-[1600px]:px-18 min-[1600px]:pt-13 min-[1600px]:pb-25">
+      <main className="flex-1 overflow-auto p-6">
         <div className="flex gap-6 mb-6">
           <div className="flex flex-col gap-6 w-[564px] min-w-[440px] min-[1600px]:min-w-[500px]">
             <ApplyCard

@@ -27,12 +27,12 @@ export default function ApplyCard({
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-1">
           <div>{icon}</div>
-          <span className="text-size-text-1 font-semibold text-main-text">
+          <span className="text-text-1 font-semibold text-main-text">
             {title}
           </span>
         </div>
 
-        <button className="flex items-center text-size-text-3 text-sub-2">
+        <button className="flex items-center text-text-3 text-sub-2">
           전체보기
           <ChevronRight direction="right" />
         </button>
@@ -52,11 +52,11 @@ export default function ApplyCard({
 
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-size-caption-3 min-[1600px]:text-size-caption-2 font-medium text-sub-1">
+          <p className="text-caption-3 min-[1600px]:text-caption-2 font-medium text-sub-1">
             {timeText}
           </p>
           {femaleNotice && (
-            <p className="text-size-caption-3 min-[1600px]:text-size-caption-2 text-p-1 mt-0.5 font-medium">
+            <p className="text-caption-3 min-[1600px]:text-caption-2 text-p-1 mt-0.5 font-medium">
               ※ 여학생의 경우 여자 사감선생님께 별도로 신청해주시기 바랍니다.
             </p>
           )}

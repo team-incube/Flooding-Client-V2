@@ -36,11 +36,11 @@ export default function MealCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1">
           <Bowl />
-          <span className="text-size-text-1 font-semibold text-main-text">
+          <span className="text-text-1 font-semibold text-main-text">
             급식표
           </span>
         </div>
-        <div className="flex items-center gap-2 text-size-text-3 text-sub-1 font-medium">
+        <div className="flex items-center gap-2 text-text-3 text-sub-1 font-medium">
           <button onClick={() => setOffset((o) => o - 1)}>
             <Back direction="left" />
           </button>
@@ -52,13 +52,13 @@ export default function MealCard() {
       </div>
 
       <div className="flex rounded-lg bg-sub-4 p-2 mb-4">
-        <button className="flex-1 py-3 rounded-lg bg-p-1 text-background-surface text-size-text-4 font-medium">
+        <button className="flex-1 py-3 rounded-lg bg-p-1 text-background-surface text-text-4 font-medium">
           조식
         </button>
-        <button className="flex-1 py-3 rounded-lg text-sub-2 text-size-text-4 font-medium">
+        <button className="flex-1 py-3 rounded-lg text-sub-2 text-text-4 font-medium">
           중식
         </button>
-        <button className="flex-1 py-3 rounded-lg text-sub-2 text-size-text-4 font-medium">
+        <button className="flex-1 py-3 rounded-lg text-sub-2 text-text-4 font-medium">
           석식
         </button>
       </div>
@@ -67,7 +67,7 @@ export default function MealCard() {
         {Meals.map((item, index) => (
           <li
             key={`${item}-${index}`}
-            className="text-size-caption-1 min-[1600px]:text-size-text-1 text-sub-1 font-semibold"
+            className="text-caption-1 min-[1600px]:text-text-1 text-sub-1 font-semibold"
           >
             {item}
           </li>
