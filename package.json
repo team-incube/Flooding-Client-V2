@@ -12,6 +12,7 @@
   "dependencies": {
     "@sun-typeface/suit": "^2.0.5",
     "@tanstack/react-query": "^5.90.20",
+    "@themoment-team/datagsm-oauth-react": "^1.0.0",
     "axios": "^1.13.4",
     "next": "16.1.6",
     "react": "19.2.3",
