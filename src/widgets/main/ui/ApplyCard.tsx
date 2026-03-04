@@ -42,11 +42,12 @@ export default function ApplyCard({
         <p className="text-4xl font-bold text-main-text text-center mb-3 h-[54px]">
           {current}/{total}
         </p>
-        <div className="w-full h-[32px] bg-sub-4 rounded-lg overflow-hidden">
+        <div className="w-full h-[32px] flex gap-1">
           <div
-            className="h-full bg-p-1"
+            className="h-full bg-p-1 rounded-lg shrink-0"
             style={{ width: `${total > 0 ? (current / total) * 100 : 0}%` }}
           />
+          <div className="h-full bg-sub-4 rounded-lg flex-1" />
         </div>
       </div>
 
