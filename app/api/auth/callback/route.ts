@@ -6,6 +6,7 @@ export async function POST(request: NextRequest) {
   const { code, codeVerifier } = await request.json();
 
   let accessToken: string;
+  let refreshToken: string;
 
   try {
     const { data: body } = await instance.post(process.env.DATAGSM_TOKEN_URL!, {
@@ -16,6 +17,7 @@ export async function POST(request: NextRequest) {
       code_verifier: codeVerifier,
     });
     accessToken = body.data.access_token;
+    refreshToken = body.data.refresh_token;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return NextResponse.json({ error: "토큰 교환 실패" }, { status: 400 });
@@ -30,7 +32,15 @@ export async function POST(request: NextRequest) {
         headers: { Authorization: `Bearer ${accessToken}` },
       },
     );
-    return NextResponse.json({ accessToken, user });
+    const response = NextResponse.json({ accessToken, user });
+    response.cookies.set("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/api/auth",
+      maxAge: 2592000,
+    });
+    return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return NextResponse.json(
