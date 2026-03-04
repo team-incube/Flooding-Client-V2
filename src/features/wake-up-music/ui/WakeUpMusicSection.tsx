@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import Music from "@/shared/asset/svg/Music";
 import { MusicListItem } from "@/shared/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
@@ -8,12 +8,16 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 import { MOCK_SONGS } from "@/entities/music/model/mock";
 
-export function WakeUpMusicSection() {
+interface WakeUpMusicSectionProps {
+  icon?: ReactNode;
+}
+
+export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
   const [urlInput, setUrlInput] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   return (
-    <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
+    <section className="relative bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-2">
           <Music />
@@ -47,12 +51,20 @@ export function WakeUpMusicSection() {
             </TextButton>
           </div>
 
-          <Calendar
-            selectedDate={selectedDate}
-            onDateSelect={setSelectedDate}
-          />
+          {!icon && (
+            <Calendar
+              selectedDate={selectedDate}
+              onDateSelect={setSelectedDate}
+            />
+          )}
         </div>
       </div>
+
+      {icon && (
+        <button className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center">
+          {icon}
+        </button>
+      )}
     </section>
   );
 }
