@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
         headers: { Authorization: authorization },
       },
     );
-    return NextResponse.json(user);
+    return NextResponse.json(user.data);
   } catch (error) {
     const status = axios.isAxiosError(error)
       ? (error.response?.status ?? 500)
