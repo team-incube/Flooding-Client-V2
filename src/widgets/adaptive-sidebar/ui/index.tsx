@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { SidebarMenu } from "./sidebarMenu";
 import Grid from "@/shared/asset/svg/Grid";
 import Bed from "@/shared/asset/svg/Bed";
@@ -26,9 +26,13 @@ const MENU_ITEMS = ROUTES.map(({ href, label }) => ({
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
 
-  const handleLogout = () => {
-    //로그아웃 로직 구현
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("user");
+    router.push("/signin");
   };
 
   return (
