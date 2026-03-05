@@ -52,6 +52,6 @@
 
 //주석으로 미들웨어 전체를 감싸면 빌드 오류가 생겨서 빈 미들웨어 함수를 추가 하였습니다.
 import { NextResponse } from "next/server";
-export function middleware() {
+export function proxy() {
   return NextResponse.next();
 }
