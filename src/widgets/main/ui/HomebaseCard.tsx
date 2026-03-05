@@ -30,7 +30,7 @@ export default function HomebaseCard() {
   };
 
   return (
-    <div className="w-[1518px] bg-background-surface rounded-2xl p-4 2xl:p-6 flex flex-col">
+    <div className="w-full bg-background-surface rounded-2xl p-4 flex flex-col">
       <div className="flex items-center gap-1">
         <HomeBase />
         <span className="text-text-1 font-semibold text-main-text">
@@ -62,7 +62,7 @@ export default function HomebaseCard() {
         ))}
       </div>
 
-      <div className="flex gap-6 items-start mt-3">
+      <div className="flex justify-between items-start gap-6 mt-3">
         {renderFloor()}
 
         <div className="w-[330px] flex flex-col gap-4">
@@ -79,7 +79,7 @@ export default function HomebaseCard() {
               value={reason}
               maxLength={20}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full h-[120px] rounded-lg border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none p-4 resize-none caret-[var(--color-p-1)] transition-all"
+              className="w-full h-[120px] rounded-lg border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none p-4 resize-none caret-p-1 transition-all"
             />
             <span className="text-right text-sub-2 text-size-caption-1">
               {reason.length}/20
