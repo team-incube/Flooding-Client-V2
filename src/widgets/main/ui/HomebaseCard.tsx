@@ -30,7 +30,7 @@ export default function HomebaseCard() {
   };
 
   return (
-    <div className="w-full bg-background-surface rounded-2xl p-4 flex flex-col">
+    <div className="w-full bg-background-surface rounded-2xl p-4 2xl:p-6 flex flex-col">
       <div className="flex items-center gap-1">
         <HomeBase />
         <span className="text-text-1 font-semibold text-main-text">

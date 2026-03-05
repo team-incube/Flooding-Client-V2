@@ -13,7 +13,7 @@ export default function MainPage() {
   return (
     <main className="flex-1 overflow-auto p-6">
       <div className="flex gap-6 mb-6">
-        <div className="flex flex-col gap-6 flex-1 min-w-[440px] max-w-[648px]">
+        <div className="flex flex-col gap-6 flex-1 min-w-[440px] 2xl:min-w-[500px] max-w-[648px] 2xl:max-w-none">
           <ApplyCard
             title="자습신청"
             icon={<BookIcon />}
@@ -35,7 +35,7 @@ export default function MainPage() {
           />
         </div>
         <MealCard />
-        <div className="flex flex-col gap-6 flex-1 max-w-[570px]">
+        <div className="flex flex-col gap-6 flex-1 max-w-[570px] 2xl:max-w-none">
           <ProfileCard user={MOCK_STUDENTS[0]} />
           <TimeTableCard />
         </div>

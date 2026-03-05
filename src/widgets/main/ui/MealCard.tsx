@@ -32,7 +32,7 @@ export default function MealCard() {
   currentDate.setDate(currentDate.getDate() + offset);
 
   return (
-    <div className="w-[300px] min-w-[272px] h-[458px] bg-background-surface rounded-2xl p-4 flex flex-col">
+    <div className="w-[300px] min-w-[272px] 2xl:w-[426px] h-[458px] 2xl:h-[498px] bg-background-surface rounded-2xl p-4 2xl:p-6 flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1">
           <Bowl />
