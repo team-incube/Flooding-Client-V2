@@ -15,12 +15,14 @@
 //   ],
 // };
 
-// export function middleware(request: NextRequest) {
+// export function proxy(request: NextRequest) {
 //   const { pathname, searchParams } = request.nextUrl;
 
 //   const accessToken = request.cookies.get("accessToken")?.value;
 //   const refreshToken = request.cookies.get("refreshToken")?.value;
-//   const role = request.cookies.get("role")?.value as UserRole | undefined;
+//   const role = (
+//     ["GENERAL_STUDENT", "STUDENT_COUNCIL", "DORMITORY_MANAGER"] as const
+//   ).find((r) => r === request.cookies.get("role")?.value);
 
 //   if (pathname === "/signin" && accessToken && refreshToken) {
 //     const redirectTo = searchParams.get("redirectTo");
