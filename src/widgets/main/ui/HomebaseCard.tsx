@@ -30,7 +30,7 @@ export default function HomebaseCard() {
   };
 
   return (
-    <div className="w-full bg-background-surface rounded-2xl p-4 2xl:p-6 flex flex-col">
+    <div className="w-full bg-background-surface rounded-2xl p-6 flex flex-col">
       <div className="flex items-center gap-1">
         <HomeBase />
         <span className="text-text-1 font-semibold text-main-text">
@@ -62,33 +62,46 @@ export default function HomebaseCard() {
         ))}
       </div>
 
-      <div className="flex justify-between items-start gap-6 mt-3">
-        {renderFloor()}
+      <div className="flex flex-col lg:flex-row items-start gap-6 2xl:justify-between mt-3">
+        <div className="w-full lg:flex-1 min-w-0">{renderFloor()}</div>
 
-        <div className="w-[330px] flex flex-col gap-4">
-          <TextField
-            placeholder="이름, 학번등을 입력해주세요"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            rightIcon={<Search />}
-          />
-
-          <div className="flex flex-col gap-1">
-            <textarea
-              placeholder="이용 사유를 적어주세요"
-              value={reason}
-              maxLength={20}
-              onChange={(e) => setReason(e.target.value)}
-              className="w-full h-[120px] rounded-lg border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none p-4 resize-none caret-p-1 transition-all"
+        <div className="w-full lg:shrink-0 flex flex-col sm:flex-row gap-6 lg:w-[330px] lg:flex-col lg:gap-4">
+          <div className="w-full sm:w-[300px] lg:w-full shrink-0 flex flex-col gap-4">
+            <TextField
+              placeholder="이름, 학번등을 입력해주세요"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              rightIcon={<Search />}
             />
-            <span className="text-right text-sub-2 text-size-caption-1">
-              {reason.length}/20
-            </span>
+
+            <div className="flex flex-col gap-1">
+              <textarea
+                placeholder="이용 사유를 적어주세요"
+                value={reason}
+                maxLength={20}
+                onChange={(e) => setReason(e.target.value)}
+                className="w-full h-[120px] rounded-lg border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none p-4 resize-none caret-p-1 transition-all"
+              />
+              <span className="text-right text-sub-2 text-size-caption-1">
+                {reason.length}/20
+              </span>
+            </div>
+
+            <TextButton variant="disabled" size="wide">
+              신청하기
+            </TextButton>
           </div>
 
-          <TextButton variant="disabled" size="wide">
-            신청하기
-          </TextButton>
+          <div className="flex-1 flex flex-col gap-3 items-center justify-center lg:hidden">
+            <span className="font-semibold text-sub-1 text-text-2">
+              오늘 나의 예약
+            </span>
+            <div className="flex flex-1 items-center justify-center">
+              <span className="text-sub-2 text-text-4">
+                아직 예약을 안하셨어요!
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
