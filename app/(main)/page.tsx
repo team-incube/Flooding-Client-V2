@@ -11,9 +11,9 @@ import Star from "@/shared/asset/svg/Star";
 
 export default function MainPage() {
   return (
-    <main className="flex-1 overflow-auto p-6">
-      <div className="flex gap-6 mb-6">
-        <div className="flex flex-col gap-6 flex-1 min-w-[440px] 2xl:min-w-[500px] max-w-[648px] 2xl:max-w-none">
+    <main className="flex-1 overflow-auto px-8 lg:px-10 2xl:px-18 pb-25">
+      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-[562fr_426fr_480fr] gap-x-4 gap-y-4 lg:gap-x-6 lg:gap-y-5 mb-4 lg:mb-5 2xl:mb-6">
+        <div className="flex flex-col gap-4 lg:gap-6 order-2 2xl:order-none 2xl:row-span-2">
           <ApplyCard
             title="자습신청"
             icon={<BookIcon />}
@@ -23,7 +23,6 @@ export default function MainPage() {
             buttonText="신청 불가"
             disabled
           />
-
           <ApplyCard
             title="안마의자"
             icon={<ChairIcon />}
@@ -34,13 +33,21 @@ export default function MainPage() {
             femaleNotice
           />
         </div>
-        <MealCard />
-        <div className="flex flex-col gap-6 flex-1 max-w-[570px] 2xl:max-w-none">
-          <ProfileCard user={MOCK_STUDENTS[0]} />
-          <TimeTableCard />
+        <div className="order-3 2xl:order-none 2xl:row-span-2">
+          <MealCard />
+        </div>
+        <div className="order-1 2xl:order-none lg:col-span-2 2xl:contents">
+          <div className="flex flex-row gap-3 2xl:contents">
+            <div className="flex-1">
+              <ProfileCard user={MOCK_STUDENTS[0]} />
+            </div>
+            <div className="flex-1">
+              <TimeTableCard />
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 lg:gap-5 2xl:gap-6">
         <WakeUpMusicSection icon={<Star />} />
         <HomebaseCard />
       </div>
