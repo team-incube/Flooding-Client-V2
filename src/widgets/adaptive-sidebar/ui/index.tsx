@@ -64,7 +64,9 @@ export default function Sidebar() {
           <div className="flex shrink-0 items-center justify-center">
             <Logout size={32} />
           </div>
-          <span className="hidden lg:block text-text-1 text-sub-2 font-sans">로그아웃</span>
+          <span className="hidden lg:block text-text-1 text-sub-2 font-sans">
+            로그아웃
+          </span>
         </div>
       </button>
     </div>

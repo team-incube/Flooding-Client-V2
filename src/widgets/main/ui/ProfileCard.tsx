@@ -15,9 +15,7 @@ export default function ProfileCard({ photo, user }: ProfileCardProps) {
         {photo ?? <ProfileSvg />}
       </div>
       <div className="flex flex-col">
-        <span className="font-medium text-title-4">
-          {user?.name ?? ""}
-        </span>
+        <span className="font-medium text-title-4">{user?.name ?? ""}</span>
         <span className="text-text-3 font-medium text-sub-1">
           {user?.studentNumber ?? ""}
         </span>
