@@ -14,7 +14,7 @@ export function SidebarMenu({ title, isActive, href, icon }: SidebarMenuProps) {
     <Link href={href}>
       <div
         className={`
-          group flex items-center h-14 w-[211px] rounded-2xl py-3 px-4 transition-all cursor-pointer
+          group flex items-center justify-center lg:justify-start h-14 w-full rounded-2xl py-3 lg:px-4 transition-all cursor-pointer
           ${isActive ? "bg-p-2" : "bg-transparent hover:bg-p-2"}
         `}
       >
@@ -31,7 +31,7 @@ export function SidebarMenu({ title, isActive, href, icon }: SidebarMenuProps) {
           </div>
           <span
             className={`
-              text-text-1 font-sans transition-all
+              hidden lg:block text-text-1 font-sans transition-all
               ${isActive ? "text-p-1" : "text-sub-2 group-hover:text-p-1"}
             `}
           >
