@@ -52,7 +52,7 @@ export function WakeUpMusicSection({
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
             />
-            <TextButton variant="filled" size="wide" onClick={() => {}}>
+            <TextButton variant="filled" size="wide" className="w-full" onClick={() => {}}>
               신청하기
             </TextButton>
           </div>
