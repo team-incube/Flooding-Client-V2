@@ -18,9 +18,14 @@ export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHovered , setIsHovered] = useState(false);
 
   return (
-    <section className="relative bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
+    <section 
+      className="relative bg-background-surface rounded-2xl p-6 flex flex-col gap-6"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-2">
           <Music />
@@ -64,12 +69,20 @@ export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
       </div>
 
       {icon && (
-        <button
-          className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center"
-          onClick={() => setIsModalOpen(true)}
-        >
-          {icon}
-        </button>
+          <button
+            className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center"
+            onClick={() => setIsModalOpen(true)}
+          >
+            {isHovered && (
+              <div className="absolute bottom-full mb-4 right-0 pointer-events-none">
+                <div className="relative bg-surface text-sub-1 px-4 py-2 rounded-lg shadow-[0_0_24px_rgba(0,0,0,0.1)] whitespace-nowrap text-sm font-medium">
+                  오늘의 노래를 <span className="text-p-1">ai</span>한테 추천 받아봐요!
+                  <div className="absolute -bottom-1.5 right-[22px] w-3 h-3 bg-background-surface rotate-45"></div>
+                </div>
+              </div>
+            )}
+            {icon}
+          </button>
       )}
       <MusicRecommendModal
         open={isModalOpen}
