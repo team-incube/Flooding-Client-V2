@@ -14,10 +14,12 @@ export default function StudentSearch({
   setSelectedStudents,
   isFull,
   }: StudentSearchProps) {
+  const selectedStudentIds = new Set(selectedStudents.map((s) => s.id));
   const filteredStudents = MOCK_STUDENTS.filter(
-    (student) => student.name.includes(search) || 
-    student.studentNumber.toString().includes(search)).filter(
-    (student) => !selectedStudents.some((s) => s.id === student.id)
+    (student) =>
+      !selectedStudentIds.has(student.id) &&
+      (student.name.includes(search) ||
+        student.studentNumber.toString().includes(search))
   );
 
   const addStudent = (student: User) => {
