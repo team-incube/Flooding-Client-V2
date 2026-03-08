@@ -8,24 +8,51 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import { SecondFloor } from "@/shared/ui/homebase/SecondFloor";
 import { ThirdFloor } from "@/shared/ui/homebase/ThirdFloor";
 import { FourthFloor } from "@/shared/ui/homebase/FourthFloor";
+import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem";
+import type { Reservation } from "@/entities/school/model/reservation";
 
-const FLOORS = ["2층", "3층", "4층"];
+const FLOORS = [
+  { value: "2F", label: "2층" },
+  { value: "3F", label: "3층" },
+  { value: "4F", label: "4층" },
+];
 const PERIODS = ["8교시", "9교시", "10교시", "11교시"];
 
-export default function HomebaseCard() {
-  const [selectedFloor, setSelectedFloor] = useState("2층");
+export default function HomebaseCard({
+  children,
+  selectedFloor: selectedFloorProp,
+  onFloorChange,
+  myReservation,
+  reservations = [],
+}: {
+  children?: React.ReactNode;
+  selectedFloor?: string;
+  onFloorChange?: (floor: string) => void;
+  myReservation?: Reservation;
+  reservations?: Reservation[];
+}) {
+  const [internalFloor, setInternalFloor] = useState("2F");
+  const selectedFloor = selectedFloorProp ?? internalFloor;
+
+  const handleFloorChange = (floor: string) => {
+    setInternalFloor(floor);
+    setSelectedTable(null);
+    onFloorChange?.(floor);
+  };
+
+  const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState("8교시");
   const [name, setName] = useState("");
   const [reason, setReason] = useState("");
 
   const renderFloor = () => {
     switch (selectedFloor) {
-      case "2층":
-        return <SecondFloor />;
-      case "3층":
-        return <ThirdFloor />;
-      case "4층":
-        return <FourthFloor />;
+      case "2F":
+        return <SecondFloor reservations={reservations} selectedTable={selectedTable ?? undefined} onTableSelect={setSelectedTable} />;
+      case "3F":
+        return <ThirdFloor reservations={reservations} selectedTable={selectedTable ?? undefined} onTableSelect={setSelectedTable} />;
+      case "4F":
+        return <FourthFloor reservations={reservations} selectedTable={selectedTable ?? undefined} onTableSelect={setSelectedTable} />;
     }
   };
 
@@ -40,13 +67,13 @@ export default function HomebaseCard() {
 
       <div className="flex items-center gap-3 mt-4">
         <span className="text-text-3 font-medium text-sub-1">층</span>
-        {FLOORS.map((floor) => (
+        {FLOORS.map(({ value, label }) => (
           <TextButton
-            key={floor}
-            variant={selectedFloor === floor ? "filled" : "outlined"}
-            onClick={() => setSelectedFloor(floor)}
+            key={value}
+            variant={selectedFloor === value ? "filled" : "outlined"}
+            onClick={() => handleFloorChange(value)}
           >
-            {floor}
+            {label}
           </TextButton>
         ))}
 
@@ -72,7 +99,6 @@ export default function HomebaseCard() {
             onChange={(e) => setName(e.target.value)}
             rightIcon={<Search />}
           />
-
           <div className="flex flex-col gap-1">
             <textarea
               placeholder="이용 사유를 적어주세요"
@@ -85,12 +111,47 @@ export default function HomebaseCard() {
               {reason.length}/20
             </span>
           </div>
+          <div className="flex flex-col gap-1">
+            <TextButton variant="disabled" size="wide">
+              신청하기
+            </TextButton>
+            <p className="text-text-4 text-sub-2">
+              ※ 홈베이스 신청시 연속 신청이 가능해요
+            </p>
+          </div>
 
-          <TextButton variant="disabled" size="wide">
-            신청하기
-          </TextButton>
+          {myReservation && (
+            <div className="flex flex-col gap-4">
+              <span className="text-text-3 font-semibold text-main-text text-center">
+                오늘 나의 예약
+              </span>
+              <ReservationTableItem reservation={myReservation} isOwn />
+            </div>
+          )}
         </div>
       </div>
+      {reservations !== undefined && (
+        <div className="flex flex-col gap-4 mt-4">
+          <span className="text-text-2 font-semibold text-main-text">
+            예약현황
+          </span>
+          <div className="flex flex-wrap gap-3 items-start">
+            {reservations.length === 0 ? (
+              <span className="text-text-3 text-sub-2">
+                현재 모든 테이블 예약이 가능합니다
+              </span>
+            ) : (
+              reservations.map((item) => (
+                <ReservationTableItem
+                  key={`${item.tableName}-${item.floor}`}
+                  reservation={item}
+                />
+              ))
+            )}
+          </div>
+        </div>
+      )}
+      {children}
     </div>
   );
 }
