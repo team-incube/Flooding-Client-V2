@@ -70,9 +70,22 @@ export default function HomebaseCard() {
     }
   };
 
-  const maxPersonnel = selectedTable
-  ? TABLE_MAX_PERSONNEL[selectedFloor as keyof typeof TABLE_MAX_PERSONNEL]?.[selectedTable as keyof typeof TABLE_MAX_PERSONNEL[keyof typeof TABLE_MAX_PERSONNEL]] ?? 0
-  : 0;
+  const getMaxPersonnel = (floor: string, table: string | null): number => {
+    if (!table) {
+      return 0;
+    }
+    const floorKey = floor as keyof typeof TABLE_MAX_PERSONNEL;
+    if (!TABLE_MAX_PERSONNEL[floorKey]) {
+      return 0;
+    }
+
+    const floorTables = TABLE_MAX_PERSONNEL[floorKey];
+    const tableKey = table as keyof typeof floorTables;
+
+    return floorTables[tableKey] ?? 0;
+  };
+
+const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
   const isFull = selectedStudents.length >= maxPersonnel;
   const canSubmit = selectedTable && isFull && reason.trim().length > 0;
 
