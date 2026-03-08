@@ -7,6 +7,7 @@ import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 import { MOCK_SONGS } from "@/entities/music/model/mock";
+import { MusicRecommendModal } from "./MusicRecommendModal";
 
 interface WakeUpMusicSectionProps {
   icon?: ReactNode;
@@ -15,6 +16,8 @@ interface WakeUpMusicSectionProps {
 export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
   const [urlInput, setUrlInput] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <section className="relative bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
@@ -61,10 +64,18 @@ export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
       </div>
 
       {icon && (
-        <button className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center">
+        <button
+          className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center"
+          onClick={() => setIsModalOpen(true)}
+        >
           {icon}
         </button>
       )}
+      <MusicRecommendModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        music={MOCK_SONGS[0]}
+      />
     </section>
   );
 }
