@@ -87,7 +87,6 @@ export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
       <MusicRecommendModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        music={MOCK_SONGS[0]}
       />
     </section>
   );

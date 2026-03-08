@@ -11,7 +11,6 @@ import RetryButton from "@/shared/ui/Button/RetryButton";
 interface MusicRecommendModalProps {
   open: boolean;
   onClose: () => void;
-  music: RecommendMusic;
 }
 
 export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps) {
