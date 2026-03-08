@@ -8,26 +8,73 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import { SecondFloor } from "@/shared/ui/homebase/SecondFloor";
 import { ThirdFloor } from "@/shared/ui/homebase/ThirdFloor";
 import { FourthFloor } from "@/shared/ui/homebase/FourthFloor";
+import StudentSearch from "@/features/homebase/ui/StudentSearch"
+import { User } from "@/entities/user/model/user";
+import SelectedStudent from "@/features/homebase/ui/SelectedStudent";
 
 const FLOORS = ["2층", "3층", "4층"];
 const PERIODS = ["8교시", "9교시", "10교시", "11교시"];
+
+const PERIODS_TIME: Record<string, string> = {
+  "8교시": "16:40",
+  "9교시": "17:40",
+  "10교시": "19:30",
+  "11교시": "20:30"
+}
+
+export const TABLE_MAX_PERSONNEL = {
+  "2층": { "1": 6, "2": 4, "3": 4 },
+  "3층": { "1": 6, "2": 6, "3": 4, "5": 4, "6": 4 },
+  "4층": { "1": 8, "2": 4 },
+} as const;
 
 export default function HomebaseCard() {
   const [selectedFloor, setSelectedFloor] = useState("2층");
   const [selectedPeriod, setSelectedPeriod] = useState("8교시");
   const [name, setName] = useState("");
   const [reason, setReason] = useState("");
+  const [selectedTable, setSelectedTable] = useState<string | null>(null);
+  const [selectedStudents, setSelectedStudents] = useState<User[]>([]);
+
+  const isPeriodStarted = (period: string) => {
+    const now = new Date();
+    const [hour, minute] = PERIODS_TIME[period].split(":").map(Number);
+    const periodTime = new Date();
+    periodTime.setHours(hour, minute, 0, 0);
+    return now >= periodTime;
+  };
 
   const renderFloor = () => {
     switch (selectedFloor) {
       case "2층":
-        return <SecondFloor />;
+        return (
+          <SecondFloor 
+            selectedTable={selectedTable}
+            setSelectedTable={setSelectedTable}
+          />
+        )
       case "3층":
-        return <ThirdFloor />;
+        return (
+          <ThirdFloor 
+            selectedTable={selectedTable}
+            setSelectedTable={setSelectedTable}
+          />
+        )
       case "4층":
-        return <FourthFloor />;
+        return (
+          <FourthFloor 
+            selectedTable={selectedTable}
+            setSelectedTable={setSelectedTable}
+          />
+        )
     }
   };
+
+  const maxPersonnel = selectedTable
+  ? TABLE_MAX_PERSONNEL[selectedFloor as keyof typeof TABLE_MAX_PERSONNEL]?.[selectedTable as keyof typeof TABLE_MAX_PERSONNEL[keyof typeof TABLE_MAX_PERSONNEL]] ?? 0
+  : 0;
+  const isFull = selectedStudents.length >= maxPersonnel;
+  const canSubmit = selectedTable && isFull && reason.trim().length > 0;
 
   return (
     <div className="w-full bg-background-surface rounded-2xl p-4 2xl:p-6 flex flex-col">
@@ -54,8 +101,18 @@ export default function HomebaseCard() {
         {PERIODS.map((period) => (
           <TextButton
             key={period}
-            variant={selectedPeriod === period ? "filled" : "outlined"}
-            onClick={() => setSelectedPeriod(period)}
+            variant={
+              isPeriodStarted(period)
+              ? "disabled"
+              : selectedPeriod === period
+              ? "filled"
+              : "outlined"
+            }
+            onClick={() => {
+              if (!isPeriodStarted(period)) {
+                setSelectedPeriod(period)
+              }
+            }}
           >
             {period}
           </TextButton>
@@ -66,12 +123,21 @@ export default function HomebaseCard() {
         {renderFloor()}
 
         <div className="w-[330px] flex flex-col gap-4">
-          <TextField
-            placeholder="이름, 학번등을 입력해주세요"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            rightIcon={<Search />}
-          />
+          <div className="flex flex-col gap-1">
+            <TextField
+              placeholder="이름, 학번등을 입력해주세요"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              rightIcon={<Search />}
+            />
+
+            <StudentSearch
+              search={name}
+              selectedStudents={selectedStudents}
+              setSelectedStudents={setSelectedStudents}
+              isFull={isFull}
+            />
+          </div>
 
           <div className="flex flex-col gap-1">
             <textarea
@@ -86,9 +152,24 @@ export default function HomebaseCard() {
             </span>
           </div>
 
-          <TextButton variant="disabled" size="wide">
-            신청하기
-          </TextButton>
+          <div className="flex flex-col gap-1">
+            <TextButton 
+              variant={canSubmit ? "filled" : "disabled"} 
+              size="wide">
+              신청하기
+            </TextButton>
+
+            <span
+              className={`${selectedTable && isFull ? "text-negative" : "text-sub-2"}`}
+            >
+              {selectedTable && isFull ? `※ 테이블 ${selectedTable}번의 최대인원은 ${maxPersonnel}명입니다`
+              : "※ 홈베이스 신청시 연속 신청이 가능해요"}
+            </span>
+          </div>
+          <SelectedStudent
+            selectedStudents={selectedStudents}
+            setSelectedStudents={setSelectedStudents}
+          />
         </div>
       </div>
     </div>
