@@ -3,7 +3,7 @@
 import { useState } from "react";
 import SmallStar from "@/shared/asset/svg/SmallStar";
 import Cancel from "@/shared/asset/svg/Cancel";
-import { RECOMMEND_MUSIC, RecommendMusic } from "@/entities/music/model/recommendMock";
+import { RECOMMEND_MUSIC } from "@/entities/music/model/recommendMock";
 import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
