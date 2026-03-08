@@ -65,7 +65,7 @@ export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps)
 
         <div className="flex justify-end gap-4">
           <RetryButton />
-          <div className={!isAcitve ? "point-events-none opacity-50" : "cursor-pointer"}>
+          <div className={!isAcitve ? "pointer-events-none opacity-50" : "cursor-pointer"}>
             <TextButton 
               variant={isAcitve ? "filled" : "outlined"} 
               size="medium"
