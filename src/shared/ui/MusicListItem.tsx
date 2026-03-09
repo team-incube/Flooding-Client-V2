@@ -8,7 +8,7 @@ interface MusicListItemProps {
 export function MusicListItem({ music }: MusicListItemProps) {
   return (
     <div className="flex items-center gap-4 py-3 border-b border-sub-3 last:border-b-0">
-      <div className="relative w-22 h-22 2xl:w-39 2xl:h-22 shrink-0 rounded-xl bg-sub-4 overflow-hidden">
+      <div className="relative w-30 h-17 2xl:w-39 2xl:h-22 shrink-0 rounded-xl bg-sub-4 overflow-hidden">
         {music.thumbnailUrl && (
           <Image
             src={music.thumbnailUrl}
