@@ -7,13 +7,14 @@ import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
 import { MOCK_SONGS } from "@/entities/music/model/mock";
+import { Music } from "@/entities/music/model/music";
 
 interface MusicRecommendModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const randomSongs = (song: typeof MOCK_SONGS, count: number) => {
+const randomSongs = (song: Music[], count: number) => {
   return [...song].sort(() => Math.random() - 0.5).splice(0, count);
 }
 
