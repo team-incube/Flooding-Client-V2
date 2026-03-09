@@ -7,7 +7,7 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 2501,
     studentName: "박건우",
     appliedAt: "08:30",
-    thumbnailUrl: "",
+    thumbnailUrl: "/hq720.jpg",
   },
   {
     id: 2,
@@ -16,7 +16,7 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 2502,
     studentName: "이수진",
     appliedAt: "14:14",
-    thumbnailUrl: "",
+    thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 1301,
     studentName: "김태양",
     appliedAt: "09:22",
-    thumbnailUrl: "",
+    thumbnailUrl: "/hq720.jpg",
   },
   {
     id: 4,
@@ -32,7 +32,7 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 1302,
     studentName: "최아름",
     appliedAt: "07:45",
-    thumbnailUrl: "",
+    thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
   {
     id: 5,
@@ -40,7 +40,7 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 3401,
     studentName: "정민호",
     appliedAt: "11:03",
-    thumbnailUrl: "",
+    thumbnailUrl: "/hq720.jpg",
   },
   {
     id: 6,
@@ -48,7 +48,7 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 2201,
     studentName: "한지원",
     appliedAt: "13:55",
-    thumbnailUrl: "",
+    thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
   {
     id: 7,
@@ -56,7 +56,7 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 1101,
     studentName: "오준혁",
     appliedAt: "08:17",
-    thumbnailUrl: "",
+    thumbnailUrl: "/hq720.jpg",
   },
   {
     id: 8,
@@ -64,7 +64,7 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 2302,
     studentName: "윤서연",
     appliedAt: "10:40",
-    thumbnailUrl: "",
+    thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
   {
     id: 9,
@@ -72,7 +72,7 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 3201,
     studentName: "강동현",
     appliedAt: "12:00",
-    thumbnailUrl: "",
+    thumbnailUrl: "/hq720.jpg",
   },
   {
     id: 10,
@@ -80,6 +80,6 @@ export const MOCK_SONGS: Music[] = [
     studentNumber: 1402,
     studentName: "신예린",
     appliedAt: "15:30",
-    thumbnailUrl: "",
+    thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
 ];

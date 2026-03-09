@@ -11,8 +11,8 @@ export function Table({ name, capacity, className = "", onClick }: TableProps) {
       onClick={onClick}
       className={`flex flex-col items-center justify-center gap-1 cursor-pointer ${className}`}
     >
-      <div className="text-sub-2 text-[18.93px] font-medium">{name}</div>
-      <div className="text-p-1 text-[16.82px] font-medium">{capacity}</div>
+      <div className="text-sub-2 text-text-1 font-medium">{name}</div>
+      <div className="text-p-1 text-text-3 font-medium">{capacity}</div>
     </button>
   );
 }

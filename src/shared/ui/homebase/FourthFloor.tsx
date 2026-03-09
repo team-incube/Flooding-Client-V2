@@ -4,14 +4,14 @@ import { Table } from "./Table";
 export function FourthFloor() {
   return (
     <FloorLayout floor="4F">
-      <div className="grid grid-cols-[1fr_80px_1fr] h-[209px]">
+      <div className="grid grid-cols-[1fr_86px_1fr] h-[85px] lg:h-[144px] 2xl:h-[209px]">
         <Table
           name="테이블 1"
           capacity="6명"
           className="border-b border-sub-2"
         />
         <div className="flex items-center justify-center border-x border-b border-sub-2">
-          <span className="text-sub-2 text-[16.82px] font-medium">칸막이</span>
+          <span className="text-sub-2 text-text-3 font-medium">칸막이</span>
         </div>
         <Table
           name="테이블 2"
@@ -20,7 +20,7 @@ export function FourthFloor() {
         />
       </div>
 
-      <div className="flex h-[209px]">
+      <div className="flex h-[85px] lg:h-[144px] 2xl:h-[209px]">
         <Table
           name="테이블 3"
           capacity="4명"
