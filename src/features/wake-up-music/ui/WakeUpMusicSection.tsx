@@ -70,7 +70,7 @@ export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
 
       {icon && (
           <button
-            className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center"
+            className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center cursor-pointer"
             onClick={() => setIsModalOpen(true)}
           >
             {isHovered && (
