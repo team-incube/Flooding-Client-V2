@@ -44,3 +44,4 @@ CLAUDE.md
 # Claude Code
 .claude/*
 !.claude/commands/
+.claude/commands/pr.md
