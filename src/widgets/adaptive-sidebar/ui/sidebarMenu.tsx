@@ -31,7 +31,7 @@ export function SidebarMenu({ title, isActive, href, icon }: SidebarMenuProps) {
           </div>
           <span
             className={`
-              hidden lg:block text-text-1 font-sans transition-all
+              hidden lg:block text-text-1 transition-all
               ${isActive ? "text-p-1" : "text-sub-2 group-hover:text-p-1"}
             `}
           >
