@@ -87,7 +87,11 @@ export default function HomebaseCard() {
               </span>
             </div>
 
-            <TextButton variant="disabled" size="wide">
+            <TextButton
+              variant="disabled"
+              size="wide"
+              className="!w-[300px] lg:!w-[330px]"
+            >
               신청하기
             </TextButton>
           </div>
