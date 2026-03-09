@@ -1,19 +1,16 @@
-import { useState } from "react";
 import Retry  from "@/shared/asset/svg/Retry";
 
-export default function RetryButton() {
-  const [count, setCount] = useState(0);
-  const max = 3;
+interface RetryButtonProps {
+  onClick: () => void;
+  count: number;
+  max: number;
+}
 
-  const handleClick = () => {
-    if (count < max) {
-      setCount(count + 1);
-    }
-  };
+export default function RetryButton({ onClick, count, max }: RetryButtonProps) {
 
   return (
     <button
-      onClick={handleClick}
+      onClick={onClick}
       disabled={count === max}
       className="flex flex-col items-center cursor-pointer"
     >

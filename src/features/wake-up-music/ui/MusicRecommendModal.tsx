@@ -3,18 +3,34 @@
 import { useState } from "react";
 import SmallStar from "@/shared/asset/svg/SmallStar";
 import Cancel from "@/shared/asset/svg/Cancel";
-import { RECOMMEND_MUSIC } from "@/entities/music/model/recommendMock";
 import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
+import { MOCK_SONGS } from "@/entities/music/model/mock";
 
 interface MusicRecommendModalProps {
   open: boolean;
   onClose: () => void;
 }
 
+const randomSongs = (song: typeof MOCK_SONGS, count: number) => {
+  return [...song].sort(() => Math.random() - 0.5).splice(0, count);
+}
+
 export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps) {
   const [selected, setSelected] = useState<number[]>([]);
+  const [retryCount, setRetryCount] = useState(0);
+  const [displaySongs, setDisplaySongs] = useState(() => randomSongs(MOCK_SONGS, 3));
+  const maxRetry = 3;
+
+  const handleRetry = () => {
+    if (retryCount < maxRetry) {
+      setRetryCount(prev => prev + 1);
+      
+      const newSongs = randomSongs(MOCK_SONGS, 3);
+      setDisplaySongs(newSongs)
+    }
+  }
 
   const handleSelect = (id: number) => {
     if (selected.includes(id)) {
@@ -51,7 +67,7 @@ export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps)
         </div>
 
         <div className="flex gap-3 overflow-x-auto">
-          {RECOMMEND_MUSIC.map((music) => (
+          {displaySongs.map((music) => (
             <MusicRecommendCard
               key={music.id}
               title={music.title}
@@ -63,7 +79,11 @@ export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps)
         </div>
 
         <div className="flex justify-end gap-4">
-          <RetryButton />
+          <RetryButton
+            onClick={handleRetry}
+            count={retryCount}
+            max={maxRetry}
+          />
           <div className={!isAcitve ? "pointer-events-none opacity-50" : "cursor-pointer"}>
             <TextButton 
               variant={isAcitve ? "filled" : "outlined"} 
