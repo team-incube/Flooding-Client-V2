@@ -23,7 +23,7 @@ export default function ApplyCard({
   femaleNotice = false,
 }: ApplyCardProps) {
   return (
-    <div className="w-full bg-background-surface rounded-2xl p-4">
+    <div className="w-full bg-background-surface rounded-2xl p-6">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-1">
           <div>{icon}</div>
@@ -42,7 +42,7 @@ export default function ApplyCard({
         <p className="text-4xl font-bold text-main-text text-center mb-3 h-[54px]">
           {current}/{total}
         </p>
-        <div className="w-full h-7 2xl:h-8 flex gap-1">
+        <div className="w-full h-8 flex gap-1">
           <div
             className="h-full bg-p-1 rounded-lg shrink-0"
             style={{ width: `${total > 0 ? (current / total) * 100 : 0}%` }}
@@ -53,11 +53,11 @@ export default function ApplyCard({
 
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-caption-3 font-medium text-sub-1">
+          <p className="text-caption-3 font-medium text-sub-1 line-clamp-1">
             {timeText}
           </p>
           {femaleNotice && (
-            <p className="text-caption-3 text-p-1 mt-0.5 font-medium">
+            <p className="text-caption-3 text-p-1 mt-0.5 font-medium line-clamp-1">
               ※ 여학생의 경우 여자 사감선생님께 별도로 신청해주시기 바랍니다.
             </p>
           )}

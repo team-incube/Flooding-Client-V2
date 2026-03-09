@@ -68,7 +68,7 @@ export default function TimeTableCard() {
   ];
 
   return (
-    <div className="w-full min-w-[280px] h-[334px] 2xl:h-[354px] bg-background-surface rounded-2xl p-4 2xl:p-6">
+    <div className="w-full h-[140px] flex flex-col bg-background-surface rounded-2xl p-6 2xl:h-[354px] 2xl:block">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1">
           <Calendar />
@@ -88,19 +88,19 @@ export default function TimeTableCard() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 h-[262px] overflow-auto">
+      <div className="flex flex-col gap-3 overflow-auto flex-1 h-auto 2xl:flex-none 2xl:h-[262px]">
         {items.map((it, idx) => {
           const active = idx === selectedIndex;
 
           return (
             <div
               key={it.period}
-              className={`flex items-center justify-between px-3 p-3 2xl:px-6 2xl:py-4 rounded-lg bg-sub-4 ${
-                active && "border border-p-1"
+              className={`flex items-center justify-between px-6 py-4 rounded-lg bg-sub-4 ${
+                active && "ring-1 ring-p-1 ring-inset"
               }`}
             >
               <div className="flex items-center gap-1">
-                <span className="font-medium text-sub-1 text-text-4 2xl:text-text-3">
+                <span className="font-medium text-sub-1 text-text-3">
                   {it.period}
                 </span>
                 <span className="text-caption-1 text-sub-2 font-medium">
@@ -108,9 +108,9 @@ export default function TimeTableCard() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-1 text-sub-1 text-caption-1 2xl:text-text-4 font-medium">
+              <div className="flex items-center gap-1 text-sub-1 text-text-4 font-medium">
                 <span>{it.subject}</span>
-                <span className="text-caption-2 2xl:text-caption-1 text-sub-2 font-medium">
+                <span className="text-caption-1 text-sub-2 font-medium">
                   {it.teachers}
                 </span>
               </div>

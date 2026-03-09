@@ -7,7 +7,7 @@ export default function DormitoryPage() {
     <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
       <SelfStudySection />
       <MassageChairSection />
-      <WakeUpMusicSection />
+      <WakeUpMusicSection className="flex-1 !h-auto" />
     </main>
   );
 }

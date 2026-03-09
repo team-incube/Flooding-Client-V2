@@ -10,14 +10,20 @@ import { MOCK_SONGS } from "@/entities/music/model/mock";
 
 interface WakeUpMusicSectionProps {
   icon?: ReactNode;
+  className?: string;
 }
 
-export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
+export function WakeUpMusicSection({
+  icon,
+  className,
+}: WakeUpMusicSectionProps) {
   const [urlInput, setUrlInput] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   return (
-    <section className="relative bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
+    <section
+      className={`relative bg-background-surface rounded-2xl p-6 flex flex-col gap-6 h-[424px] 2xl:h-[520px] ${className ?? ""}`}
+    >
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-2">
           <Music />
@@ -29,8 +35,8 @@ export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
         </div>
       </div>
 
-      <div className="flex gap-6">
-        <div className="flex-1 min-w-0 max-h-[600px] overflow-y-auto pr-2">
+      <div className="flex gap-6 flex-1 overflow-hidden">
+        <div className="flex-1 min-w-0 overflow-y-auto pr-2">
           <div className="flex flex-col">
             {MOCK_SONGS.map((music) => (
               <MusicListItem key={music.id} music={music} />
@@ -38,7 +44,7 @@ export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
           </div>
         </div>
 
-        <div className="w-[330px] shrink-0 flex flex-col gap-20">
+        <div className="w-[240px] lg:w-[330px] shrink-0 flex flex-col gap-20">
           <div className="flex flex-col gap-3">
             <span className="text-main-text text-text-2">음악 신청</span>
             <TextField
@@ -46,7 +52,12 @@ export function WakeUpMusicSection({ icon }: WakeUpMusicSectionProps) {
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
             />
-            <TextButton variant="filled" size="wide" onClick={() => {}}>
+            <TextButton
+              variant="filled"
+              size="wide"
+              className="w-full"
+              onClick={() => {}}
+            >
               신청하기
             </TextButton>
           </div>
