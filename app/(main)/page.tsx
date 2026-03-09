@@ -37,7 +37,7 @@ export default function MainPage() {
           <MealCard />
         </div>
         <div className="order-1 2xl:order-none lg:col-span-2 2xl:contents">
-          <div className="flex flex-row gap-3 2xl:contents">
+          <div className="flex flex-row gap-3 lg:gap-6 2xl:contents">
             <div className="flex-1">
               <ProfileCard user={MOCK_STUDENTS[0]} />
             </div>
