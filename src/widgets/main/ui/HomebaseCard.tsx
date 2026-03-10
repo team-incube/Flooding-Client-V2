@@ -24,12 +24,14 @@ export default function HomebaseCard({
   onFloorChange,
   myReservation,
   reservations = [],
+  showReservations = true,
 }: {
   children?: React.ReactNode;
   selectedFloor?: string;
   onFloorChange?: (floor: string) => void;
   myReservation?: Reservation;
   reservations?: Reservation[];
+  showReservations?: boolean;
 }) {
   const [internalFloor, setInternalFloor] = useState("2F");
   const selectedFloor = selectedFloorProp ?? internalFloor;
@@ -141,7 +143,7 @@ export default function HomebaseCard({
         </div>
       </div>
 
-      {reservations !== undefined && (
+      {showReservations && reservations !== undefined && (
         <div className="flex flex-col gap-4 mt-4">
           <span className="text-text-2 font-semibold text-main-text">
             예약현황

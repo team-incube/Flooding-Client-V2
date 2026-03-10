@@ -49,7 +49,7 @@ export default function MainPage() {
       </div>
       <div className="flex flex-col gap-4 lg:gap-5 2xl:gap-6">
         <WakeUpMusicSection icon={<Star />} />
-        <HomebaseCard />
+        <HomebaseCard showReservations={false} />
       </div>
     </main>
   );
