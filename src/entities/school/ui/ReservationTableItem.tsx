@@ -52,7 +52,7 @@ export function ReservationTableItem({
             className="flex items-center justify-center gap-2 py-3 cursor-pointer"
           >
             <span className="text-text-3 text-negative">삭제하기</span>
-            <div className="[--color-sub-2:var(--color-negative)]">
+            <div className="text-negative">
               <Delete />
             </div>
           </button>
