@@ -12,7 +12,10 @@ import StudentSearch from "@/features/homebase/ui/StudentSearch";
 import SelectedStudent from "@/features/homebase/ui/SelectedStudent";
 import { User } from "@/entities/user/model/user";
 import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem";
-import { MOCK_RESERVATIONS, MOCK_MY_RESERVATION } from "@/entities/school/model/mock";
+import {
+  MOCK_RESERVATIONS,
+  MOCK_MY_RESERVATION,
+} from "@/entities/school/model/mock";
 
 const FLOORS = [
   { value: "2F", label: "2층" },
@@ -35,7 +38,11 @@ export const TABLE_MAX_PERSONNEL = {
   "4F": { "1": 6, "2": 6, "3": 4, "4": 4 },
 } as const;
 
-export default function HomebaseCard({ showReservations = false }: { showReservations?: boolean }) {
+export default function HomebaseCard({
+  showReservations = false,
+}: {
+  showReservations?: boolean;
+}) {
   const [selectedFloor, setSelectedFloor] = useState("2F");
   const [selectedPeriod, setSelectedPeriod] = useState("8교시");
   const [name, setName] = useState("");
@@ -59,11 +66,26 @@ export default function HomebaseCard({ showReservations = false }: { showReserva
   const renderFloor = () => {
     switch (selectedFloor) {
       case "2F":
-        return <SecondFloor selectedTable={selectedTable} setSelectedTable={setSelectedTable} />;
+        return (
+          <SecondFloor
+            selectedTable={selectedTable}
+            setSelectedTable={setSelectedTable}
+          />
+        );
       case "3F":
-        return <ThirdFloor selectedTable={selectedTable} setSelectedTable={setSelectedTable} />;
+        return (
+          <ThirdFloor
+            selectedTable={selectedTable}
+            setSelectedTable={setSelectedTable}
+          />
+        );
       case "4F":
-        return <FourthFloor selectedTable={selectedTable} setSelectedTable={setSelectedTable} />;
+        return (
+          <FourthFloor
+            selectedTable={selectedTable}
+            setSelectedTable={setSelectedTable}
+          />
+        );
     }
   };
 
@@ -88,7 +110,9 @@ export default function HomebaseCard({ showReservations = false }: { showReserva
     <div className="w-full bg-background-surface rounded-2xl p-6 flex flex-col">
       <div className="flex items-center gap-1">
         <HomeBase />
-        <span className="text-text-1 font-semibold text-main-text">홈베이스</span>
+        <span className="text-text-1 font-semibold text-main-text">
+          홈베이스
+        </span>
       </div>
 
       <div className="flex items-center gap-3 mt-4">
@@ -111,8 +135,8 @@ export default function HomebaseCard({ showReservations = false }: { showReserva
               isPeriodStarted(period)
                 ? "disabled"
                 : selectedPeriod === period
-                ? "filled"
-                : "outlined"
+                  ? "filled"
+                  : "outlined"
             }
             onClick={() => {
               if (!isPeriodStarted(period)) setSelectedPeriod(period);
@@ -127,7 +151,6 @@ export default function HomebaseCard({ showReservations = false }: { showReserva
         <div className="w-full lg:flex-1 min-w-0">{renderFloor()}</div>
 
         <div className="w-full lg:shrink-0 flex flex-col sm:flex-row gap-6 lg:w-[330px] lg:flex-col lg:gap-4">
-          {/* 신청 폼 */}
           <div className="w-full sm:w-[300px] lg:w-full shrink-0 flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <TextField
@@ -158,10 +181,17 @@ export default function HomebaseCard({ showReservations = false }: { showReserva
             </div>
 
             <div className="flex flex-col gap-1">
-              <TextButton variant={canSubmit ? "filled" : "disabled"} size="wide">
+              <TextButton
+                variant={canSubmit ? "filled" : "disabled"}
+                size="wide"
+              >
                 신청하기
               </TextButton>
-              <span className={selectedTable && isFull ? "text-negative" : "text-sub-2"}>
+              <span
+                className={
+                  selectedTable && isFull ? "text-negative" : "text-sub-2"
+                }
+              >
                 {selectedTable && isFull
                   ? `※ 테이블 ${selectedTable}번의 최대인원은 ${maxPersonnel}명입니다`
                   : "※ 홈베이스 신청시 연속 신청이 가능해요"}
@@ -174,7 +204,6 @@ export default function HomebaseCard({ showReservations = false }: { showReserva
             setSelectedStudents={setSelectedStudents}
           />
 
-          {/* 내 예약현황 */}
           {showReservations && (
             <div className="flex-1 flex flex-col gap-3">
               <span className="font-semibold text-sub-1 text-text-2 text-center">
@@ -184,7 +213,9 @@ export default function HomebaseCard({ showReservations = false }: { showReserva
                 <ReservationTableItem reservation={MOCK_MY_RESERVATION} isOwn />
               ) : (
                 <div className="flex flex-1 items-center justify-center">
-                  <span className="text-sub-2 text-text-4">아직 예약을 안하셨어요!</span>
+                  <span className="text-sub-2 text-text-4">
+                    아직 예약을 안하셨어요!
+                  </span>
                 </div>
               )}
             </div>
@@ -194,10 +225,14 @@ export default function HomebaseCard({ showReservations = false }: { showReserva
 
       {showReservations && (
         <div className="flex flex-col gap-4 mt-4">
-          <span className="text-text-2 font-semibold text-main-text">예약현황</span>
+          <span className="text-text-2 font-semibold text-main-text">
+            예약현황
+          </span>
           <div className="flex flex-wrap gap-3 items-start">
             {filteredReservations.length === 0 ? (
-              <span className="text-text-3 text-sub-2">현재 모든 테이블 예약이 가능합니다</span>
+              <span className="text-text-3 text-sub-2">
+                현재 모든 테이블 예약이 가능합니다
+              </span>
             ) : (
               filteredReservations.map((item, index) => (
                 <ReservationTableItem
