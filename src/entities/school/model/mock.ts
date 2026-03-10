@@ -49,4 +49,11 @@ export const MOCK_RESERVATIONS = [
     periods: ["2교시"],
     reason: "프로젝트 발표 준비",
   },
+  {
+    tableName: "테이블 1",
+    floor: "2F",
+    members: ["2501 박건우", "1301 김태양", "3201 강동현"],
+    periods: ["11교시"],
+    reason: "팀 프로젝트",
+  },
 ];
