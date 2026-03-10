@@ -234,9 +234,9 @@ export default function HomebaseCard({
                 현재 모든 테이블 예약이 가능합니다
               </span>
             ) : (
-              filteredReservations.map((item, index) => (
+              filteredReservations.map((item) => (
                 <ReservationTableItem
-                  key={`${item.tableName}-${item.floor}-${index}`}
+                  key={item.id}
                   reservation={item}
                 />
               ))

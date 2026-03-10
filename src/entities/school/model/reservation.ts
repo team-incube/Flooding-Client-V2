@@ -1,4 +1,5 @@
 export interface Reservation {
+  id: number;
   tableName: string;
   floor: string;
   members: string[];
