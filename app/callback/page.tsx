@@ -2,11 +2,13 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
+import { useOAuth } from "@themoment-team/datagsm-oauth-react";
 import { instance } from "@/shared/api/instance";
 
 function CallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { getCodeVerifier, clearVerifier } = useOAuth();
   const didRun = useRef(false);
 
   useEffect(() => {
@@ -14,20 +16,13 @@ function CallbackInner() {
     didRun.current = true;
 
     const code = searchParams.get("code");
-    const state = searchParams.get("state");
 
     if (!code) {
       router.replace("/signin");
       return;
     }
 
-    const savedState = sessionStorage.getItem("oauth_state");
-    if (state !== savedState) {
-      router.replace("/signin");
-      return;
-    }
-
-    const codeVerifier = sessionStorage.getItem("code_verifier");
+    const codeVerifier = getCodeVerifier();
 
     (async () => {
       try {
@@ -39,15 +34,14 @@ function CallbackInner() {
 
         sessionStorage.setItem("access_token", accessToken);
         sessionStorage.setItem("user", JSON.stringify(user));
-        sessionStorage.removeItem("code_verifier");
-        sessionStorage.removeItem("oauth_state");
+        clearVerifier();
 
         router.replace("/");
       } catch {
         router.replace("/signin");
       }
     })();
-  }, [router, searchParams]);
+  }, [router, searchParams, getCodeVerifier, clearVerifier]);
 
   return <div>로그인 처리 중...</div>;
 }
