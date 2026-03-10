@@ -1,19 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import Music from "@/shared/asset/svg/Music";
 import { MusicListItem } from "@/shared/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 import { MOCK_SONGS } from "@/entities/music/model/mock";
+import { MusicRecommendModal } from "./MusicRecommendModal";
 
-export function WakeUpMusicSection() {
+interface WakeUpMusicSectionProps {
+  icon?: ReactNode;
+  className?: string;
+}
+
+export function WakeUpMusicSection({
+  icon,
+  className,
+}: WakeUpMusicSectionProps) {
   const [urlInput, setUrlInput] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHovered , setIsHovered] = useState(false);
+
   return (
-    <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
+    <section
+      className={`relative bg-background-surface rounded-2xl p-6 flex flex-col gap-6 h-[424px] 2xl:h-[520px] ${className ?? ""}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-2">
           <Music />
@@ -25,8 +41,8 @@ export function WakeUpMusicSection() {
         </div>
       </div>
 
-      <div className="flex gap-6">
-        <div className="flex-1 min-w-0 max-h-[600px] overflow-y-auto pr-2">
+      <div className="flex gap-6 flex-1 overflow-hidden">
+        <div className="flex-1 min-w-0 overflow-y-auto pr-2">
           <div className="flex flex-col">
             {MOCK_SONGS.map((music) => (
               <MusicListItem key={music.id} music={music} />
@@ -34,7 +50,7 @@ export function WakeUpMusicSection() {
           </div>
         </div>
 
-        <div className="w-[330px] shrink-0 flex flex-col gap-20">
+        <div className="w-[240px] lg:w-[330px] shrink-0 flex flex-col gap-20">
           <div className="flex flex-col gap-3">
             <span className="text-main-text text-text-2">음악 신청</span>
             <TextField
@@ -42,17 +58,45 @@ export function WakeUpMusicSection() {
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
             />
-            <TextButton variant="filled" size="wide" onClick={() => {}}>
+            <TextButton
+              variant="filled"
+              size="wide"
+              className="w-full"
+              onClick={() => {}}
+            >
               신청하기
             </TextButton>
           </div>
 
-          <Calendar
-            selectedDate={selectedDate}
-            onDateSelect={setSelectedDate}
-          />
+          {!icon && (
+            <Calendar
+              selectedDate={selectedDate}
+              onDateSelect={setSelectedDate}
+            />
+          )}
         </div>
       </div>
+
+      {icon && (
+          <button
+            className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center cursor-pointer"
+            onClick={() => setIsModalOpen(true)}
+          >
+            {isHovered && (
+              <div className="absolute bottom-full mb-4 right-0 pointer-events-none">
+                <div className="relative bg-surface text-sub-1 px-4 py-2 rounded-lg shadow-[0_0_24px_rgba(0,0,0,0.1)] whitespace-nowrap text-sm font-medium">
+                  오늘의 노래를 <span className="text-p-1">ai</span>한테 추천 받아봐요!
+                  <div className="absolute -bottom-1.5 right-[22px] w-3 h-3 bg-background-surface rotate-45"></div>
+                </div>
+              </div>
+            )}
+            {icon}
+          </button>
+      )}
+      <MusicRecommendModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </section>
   );
 }

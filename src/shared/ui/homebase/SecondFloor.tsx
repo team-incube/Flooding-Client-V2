@@ -1,30 +1,41 @@
 import { FloorLayout } from "./FloorLayout";
 import { Table } from "./Table";
+import { FloorProps } from "@/shared/model/homebase/Floor";
 
-export function SecondFloor() {
+export function SecondFloor({ selectedTable, setSelectedTable }: FloorProps) {
+  const handleSelect = (table: string) => {
+    setSelectedTable(selectedTable === table ? null : table);
+  };
+
   return (
     <FloorLayout floor="2F">
-      <div className="grid grid-cols-[1fr_80px_1fr] h-[209px]">
+      <div className="grid grid-cols-[1fr_86px_1fr] h-[85px] lg:h-[144px] 2xl:h-[209px]">
         <Table
           name="테이블 1"
           capacity="6명"
           className="border-b border-sub-2"
+          onClick={() => handleSelect("1")}
+          selected={selectedTable === "1"}
         />
         <div className="flex items-center justify-center border-x border-b border-sub-2">
-          <span className="text-sub-2 text-[16.82px] font-medium">칸막이</span>
+          <span className="text-sub-2 text-text-3 font-medium">칸막이</span>
         </div>
         <Table
           name="테이블 2"
           capacity="4명"
           className="border-b border-sub-2"
+          onClick={() => handleSelect("2")}
+          selected={selectedTable === "2"}
         />
       </div>
 
-      <div className="grid grid-cols-[1fr_80px_1fr] h-[209px]">
+      <div className="grid grid-cols-[1fr_86px_1fr] h-[85px] lg:h-[144px] 2xl:h-[209px]">
         <Table
           name="테이블 3"
           capacity="4명"
           className="border-r border-sub-2"
+          onClick={() => handleSelect("3")}
+          selected={selectedTable === "3"}
         />
       </div>
     </FloorLayout>
