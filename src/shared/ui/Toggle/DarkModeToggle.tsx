@@ -5,7 +5,7 @@ import Sun from "@/shared/asset/svg/Sun";
 import { useEffect, useState } from "react";
 
 export function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState<boolean | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("theme");
