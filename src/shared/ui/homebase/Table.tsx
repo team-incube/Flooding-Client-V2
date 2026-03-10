@@ -17,13 +17,13 @@ export function Table({
   selected = false,
   members = [],
 }: TableProps) {
-  const bgClass = reserved ? "bg-sub-4" : selected ? "bg-p-2" : "bg-transparent";
+  const bgClass = reserved ? "bg-sub-4" : selected ? "bg-p-2" : "bg-background-surface";
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-col items-center justify-center cursor-pointer px-4 focus:outline-none ${bgClass} ${className}`}
+      className={`flex flex-col items-center justify-center gap-1 cursor-pointer px-4 focus:outline-none ${bgClass} ${className}`}
     >
       {reserved ? (
         <div className="flex flex-col items-center gap-1">
