@@ -1,5 +1,5 @@
 type ButtonVariant = "filled" | "outlined" | "disabled";
-type ButtonSize = "small" | "wide";
+type ButtonSize = "small" | "wide" | "medium";
 
 interface TextButtonProps {
   variant?: ButtonVariant;
@@ -19,6 +19,7 @@ const variantStyles = {
 const sizeStyles = {
   small: "w-[91px] h-[43px]",
   wide: "w-[330px] h-[47px]",
+  medium: "w-[147px] h-[43px]",
 };
 
 const baseStyles =
