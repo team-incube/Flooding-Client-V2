@@ -11,6 +11,8 @@ import { FourthFloor } from "@/shared/ui/homebase/FourthFloor";
 import StudentSearch from "@/features/homebase/ui/StudentSearch";
 import SelectedStudent from "@/features/homebase/ui/SelectedStudent";
 import { User } from "@/entities/user/model/user";
+import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem";
+import { MOCK_RESERVATIONS, MOCK_MY_RESERVATION } from "@/entities/school/model/mock";
 
 const FLOORS = [
   { value: "2F", label: "2층" },
@@ -33,7 +35,7 @@ export const TABLE_MAX_PERSONNEL = {
   "4F": { "1": 6, "2": 6, "3": 4, "4": 4 },
 } as const;
 
-export default function HomebaseCard() {
+export default function HomebaseCard({ showReservations = false }: { showReservations?: boolean }) {
   const [selectedFloor, setSelectedFloor] = useState("2F");
   const [selectedPeriod, setSelectedPeriod] = useState("8교시");
   const [name, setName] = useState("");
@@ -77,6 +79,10 @@ export default function HomebaseCard() {
   const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
   const isFull = maxPersonnel > 0 && selectedStudents.length >= maxPersonnel;
   const canSubmit = selectedTable && isFull && reason.trim().length > 0;
+
+  const filteredReservations = MOCK_RESERVATIONS.filter(
+    (r) => r.floor === selectedFloor,
+  );
 
   return (
     <div className="w-full bg-background-surface rounded-2xl p-6 flex flex-col">
@@ -168,17 +174,41 @@ export default function HomebaseCard() {
             setSelectedStudents={setSelectedStudents}
           />
 
-          {/* 오늘 나의 예약 (모바일) */}
-          <div className="flex-1 flex flex-col gap-3 lg:hidden">
-            <span className="font-semibold text-sub-1 text-text-2 text-center">
-              오늘 나의 예약
-            </span>
-            <div className="flex flex-1 items-center justify-center">
-              <span className="text-sub-2 text-text-4">아직 예약을 안하셨어요!</span>
+          {/* 내 예약현황 */}
+          {showReservations && (
+            <div className="flex-1 flex flex-col gap-3">
+              <span className="font-semibold text-sub-1 text-text-2 text-center">
+                내 예약현황
+              </span>
+              {MOCK_MY_RESERVATION ? (
+                <ReservationTableItem reservation={MOCK_MY_RESERVATION} isOwn />
+              ) : (
+                <div className="flex flex-1 items-center justify-center">
+                  <span className="text-sub-2 text-text-4">아직 예약을 안하셨어요!</span>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
+
+      {showReservations && (
+        <div className="flex flex-col gap-4 mt-4">
+          <span className="text-text-2 font-semibold text-main-text">예약현황</span>
+          <div className="flex flex-wrap gap-3 items-start">
+            {filteredReservations.length === 0 ? (
+              <span className="text-text-3 text-sub-2">현재 모든 테이블 예약이 가능합니다</span>
+            ) : (
+              filteredReservations.map((item, index) => (
+                <ReservationTableItem
+                  key={`${item.tableName}-${item.floor}-${index}`}
+                  reservation={item}
+                />
+              ))
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
