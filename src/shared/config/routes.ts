@@ -6,5 +6,5 @@ export const ROUTES = [
 ] as const;
 
 export const PATH_LABEL_MAP: Record<string, string> = Object.fromEntries(
-  ROUTES.map(({ href, label }) => [href, label])
+  ROUTES.map(({ href, label }) => [href, label]),
 );
