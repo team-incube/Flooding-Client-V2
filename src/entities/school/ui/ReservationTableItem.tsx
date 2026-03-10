@@ -73,8 +73,8 @@ export function ReservationTableItem({
         <div className="flex flex-col gap-1">
           {[members.slice(0, 3), members.slice(3, 6)]
             .filter((row) => row.length > 0)
-            .map((row) => (
-              <p key={row[0]} className="text-text-4 text-sub-1">
+            .map((row, index) => (
+              <p key={index} className="text-text-4 text-sub-1">
                 {row.join(", ")}
               </p>
             ))}
