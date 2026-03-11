@@ -1,13 +1,13 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { SidebarMenu } from "./sidebarMenu";
 import Grid from "@/shared/asset/svg/Grid";
 import Bed from "@/shared/asset/svg/Bed";
 import School from "@/shared/asset/svg/School";
 import Club from "@/shared/asset/svg/Club";
 import Logo from "@/shared/asset/svg/Logo";
-import Logout from "@/shared/asset/svg/Logout";
+import Signout from "@/shared/asset/svg/Signout";
 import { ROUTES } from "@/shared/config/routes";
 import type { ReactNode } from "react";
 
@@ -26,9 +26,13 @@ const MENU_ITEMS = ROUTES.map(({ href, label }) => ({
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
 
-  const handleLogout = () => {
-    //로그아웃 로직 구현
+  const handleLogout = async () => {
+    await fetch("/api/auth/signout", { method: "POST" });
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("user");
+    router.push("/signin");
   };
 
   return (
@@ -62,7 +66,7 @@ export default function Sidebar() {
       >
         <div className="flex items-center gap-6">
           <div className="flex shrink-0 items-center justify-center">
-            <Logout size={32} />
+            <Signout size={32} />
           </div>
           <span className="hidden lg:block text-text-1 text-sub-2">
             로그아웃
