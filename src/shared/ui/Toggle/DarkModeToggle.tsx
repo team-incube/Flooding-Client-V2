@@ -5,26 +5,24 @@ import Sun from "@/shared/asset/svg/Sun";
 import { useEffect, useState } from "react";
 
 export function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-    const shouldBeDark = stored ? stored === "dark" : prefersDark;
-
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsDark(shouldBeDark);
-    document.documentElement.classList.toggle("dark", shouldBeDark);
+    setIsDark(document.documentElement.classList.contains("dark"));
   }, []);
 
   const toggle = () => {
+    if (isDark === null) return;
     const next = !isDark;
     setIsDark(next);
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
   };
+
+  if (isDark === null) {
+    return <div className="w-[70px] h-[39px]" />;
+  }
 
   return (
     <button
