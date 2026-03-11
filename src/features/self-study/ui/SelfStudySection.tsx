@@ -84,9 +84,9 @@ export function SelfStudySection() {
   });
 
   return (
-    <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
+    <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-4">
       <div className="flex items-end gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <ApplyStudy />
           <span className="text-main-text text-text-1">자습신청</span>
         </div>
