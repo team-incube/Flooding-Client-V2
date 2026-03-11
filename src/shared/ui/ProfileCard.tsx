@@ -10,7 +10,7 @@ interface ProfileCardProps {
 export function ProfileCard({ index, student }: ProfileCardProps) {
   return (
     <div className="relative w-[170px] h-[165px] bg-sub-4 rounded-2xl">
-      <span className="absolute top-3 left-4 text-caption-3 text-sub-1">
+      <span className="absolute top-4 left-4 text-caption-3 text-sub-1">
         {index}
       </span>
       <div className="flex flex-col items-center justify-center gap-2 py-6">
