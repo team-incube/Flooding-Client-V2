@@ -28,7 +28,7 @@ export default function ClubCard({ club }: ClubCardProps) {
         <p className="text-caption-1 text-sub-1 line-clamp-3">
           {club.description}
         </p>
-        <span className="text-caption-1 text-p-1">
+        <span className="text-caption-1 text-sub-2">
           동아리 인원: {club.memberCount}명
         </span>
       </div>
