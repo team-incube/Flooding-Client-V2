@@ -28,9 +28,13 @@ export function ClubSection() {
           <div className="flex items-center gap-2">
             <Club isActive={false} size={20} />
             <span className="text-text-1 text-main-text">동아리</span>
-            <span className="text-caption-1 text-sub-2">
-              동아리 수 {filteredClubs.length}개
-            </span>
+            <div>
+              <span className="text-caption-1 text-sub-1">동아리 수</span>
+              <span className="text-caption-1 text-p-1">
+                {" "}
+                {filteredClubs.length}개
+              </span>
+            </div>
           </div>
         </div>
         <div className="flex min-h-0 flex-1 flex-row items-stretch gap-4">
