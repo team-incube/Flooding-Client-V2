@@ -7,6 +7,7 @@ export default function DefaultClubThumbnail() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <rect width="231" height="134" fill="#F2F2F4" />
       <ellipse
         cx="50.7212"
         cy="63.3223"

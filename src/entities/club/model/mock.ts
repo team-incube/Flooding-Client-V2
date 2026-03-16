@@ -7,7 +7,7 @@ export const MOCK_CLUBS: Club[] = [
     description:
       "동아리 설명동아리 설명동아리 설명동아리 설명동아리 설명동아리 설명동아리 설명동아리 설명동아리 설명동아리 설명",
     tags: ["세탁기", "디자이너_급구"],
-    thumbnailUrl: "/hq720.jpg",
+    thumbnailUrl: "",
     presidentName: "박건우",
     memberCount: 12,
   },
