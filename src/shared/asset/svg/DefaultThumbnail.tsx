@@ -1,4 +1,8 @@
-export default function DefaultClubThumbnail() {
+interface DefaultClubThumbnailProps {
+  className?: string;
+}
+
+export default function DefaultClubThumbnail({ className }: DefaultClubThumbnailProps) {
   return (
     <svg
       width="231"
@@ -6,6 +10,7 @@ export default function DefaultClubThumbnail() {
       viewBox="0 0 231 134"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <rect width="231" height="134" fill="#F2F2F4" />
       <ellipse
