@@ -1,3 +1,5 @@
+import { Sex } from "@/entities/user/model/user";
+
 export interface Club {
   id: number;
   name: string;
@@ -12,7 +14,7 @@ export interface ClubMember {
   id: number;
   name: string;
   studentNumber: number;
-  sex: string;
+  sex: Sex;
   major: string;
   role: string;
   generation: number;
