@@ -4,15 +4,19 @@ import { Club } from "../model/club";
 
 interface ClubCardProps {
   club: Club;
+  onClick?: () => void;
 }
 
-export default function ClubCard({ club }: ClubCardProps) {
+export default function ClubCard({ club, onClick }: ClubCardProps) {
   return (
-    <div className="flex flex-col gap-4 bg-sub-4 rounded-2xl px-4 py-6 cursor-pointer w-65.75">
+    <div
+      className="flex flex-col gap-4 bg-sub-4 rounded-2xl px-4 py-6 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="relative w-full bg-sub-3 rounded-2xl overflow-hidden h-33.5">
-        {club.thumbnailUrl ? (
+        {club.imageUrl ? (
           <Image
-            src={club.thumbnailUrl}
+            src={club.imageUrl}
             alt={club.name}
             fill
             className="object-cover"
@@ -28,9 +32,7 @@ export default function ClubCard({ club }: ClubCardProps) {
         <p className="text-caption-1 text-sub-1 line-clamp-3">
           {club.description}
         </p>
-        <span className="text-caption-1 text-sub-2">
-          동아리 인원: {club.memberCount}명
-        </span>
+        <span className="text-caption-1 text-sub-2">부장: {club.leader}</span>
       </div>
     </div>
   );
