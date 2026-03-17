@@ -37,8 +37,8 @@ export function ClubSection() {
   };
 
   return (
-    <div className="flex flex-1 w-full px-18 pb-6">
-      <div className="flex h-auto w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+    <div className="flex min-h-0 flex-1 w-full overflow-hidden px-18 pb-6">
+      <div className="flex h-full min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Club isActive={false} size={20} />
@@ -56,13 +56,13 @@ export function ClubSection() {
         </div>
 
         {selectedDetail ? (
-          <div className="flex min-h-0 flex-1 overflow-hidden">
+          <div className="flex h-full min-h-0 flex-1 overflow-hidden">
             <ClubDetail detail={selectedDetail} />
           </div>
         ) : (
-          <div className="flex min-h-0 flex-1 flex-row items-stretch gap-4">
+          <div className="flex h-full min-h-0 flex-1 flex-row items-stretch gap-4">
             <div className="h-full min-h-0 flex-1 overflow-y-scroll pr-2">
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(263px,1fr))] gap-4">
                 {filteredClubs.map((club) => (
                   <ClubCard
                     key={club.id}
