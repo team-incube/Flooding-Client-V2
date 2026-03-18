@@ -1,12 +1,19 @@
 import { Sex } from "@/entities/user/model/user";
 
-export interface Club {
+interface ClubBase {
   id: number;
   name: string;
   type: string;
-  leader: string;
   description: string;
   imageUrl?: string;
+}
+
+export interface Club extends ClubBase {
+  totalMember: number;
+}
+
+export interface ClubDetailInfo extends ClubBase {
+  leader: string;
   maxMember?: number;
 }
 
@@ -16,8 +23,8 @@ export interface ClubMember {
   studentNumber: number;
   sex: Sex;
   major: string;
-  role: string;
-  generation: number;
+  role?: string;
+  generation?: number;
   isLeader?: boolean;
 }
 
@@ -38,7 +45,7 @@ export interface ClubProject {
 }
 
 export interface ClubDetail {
-  club: Club;
+  club: ClubDetailInfo;
   member: ClubMember[];
   project: ClubProject[];
 }
