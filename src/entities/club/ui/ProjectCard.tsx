@@ -8,8 +8,8 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <div className="flex gap-6 bg-sub-4 rounded-2xl h-37.75 p-3">
-      <div className="relative shrink-0 self-stretch w-29.75 aspect-square rounded-xl overflow-hidden bg-sub-3">
+    <div className="flex h-auto flex-col gap-4 rounded-2xl bg-sub-4 p-4 sm:flex-row sm:gap-6">
+      <div className="relative h-40 w-full rounded-xl overflow-hidden bg-sub-3 sm:h-29.75 sm:w-29.75 sm:shrink-0">
         {project.imageUrl ? (
           <Image
             src={project.imageUrl}
@@ -19,23 +19,23 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           />
         ) : (
           <div className="flex items-center justify-center w-full h-full">
-            <DefaultClubThumbnail />
+            <DefaultClubThumbnail className="h-full w-full" />
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-1 flex-1 min-w-0 py-1">
-        <span className="text-text-2 text-main-text">{project.name}</span>
-        <p className="text-caption-1 text-sub-1 line-clamp-2">
+      <div className="flex flex-col gap-1 flex-1 min-w-0">
+        <span className="text-title-3 text-main-text">{project.name}</span>
+        <p className="text-text-2 text-sub-1 line-clamp-2">
           {project.description}
         </p>
-        <p className="text-caption-1">
+        <p className="text-text-4">
           <span className="text-sub-1">참여인원 - </span>
           {project.participants.member.map((m, i) => (
             <span key={m.id}>
               <span className={m.isLeader ? "text-p-1" : "text-main-text"}>
                 {m.name}
               </span>
-              <span className="text-sub-1"> ({m.role})</span>
+              {m.role && <span className="text-sub-1"> ({m.role})</span>}
               {i < project.participants.member.length - 1 && (
                 <span className="text-sub-1">, </span>
               )}
