@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { DarkModeToggle } from "@/shared/ui/Toggle/DarkModeToggle";
-import { PATH_LABEL_MAP } from "@/shared/config/routes";
+import { getPathLabel } from "@/shared/config/routes";
 import { usePathname } from "next/navigation";
 
 export function Header() {
@@ -32,9 +32,7 @@ export function Header() {
   return (
     <header className="flex items-center justify-between px-8 lg:px-10 2xl:px-18 pt-8 lg:pt-13 pb-6 2xl:pb-8 bg-transparent">
       <div className="flex items-center gap-4">
-        <h1 className="text-main-text text-title-2">
-          {PATH_LABEL_MAP[path] ?? path}
-        </h1>
+        <h1 className="text-main-text text-title-2">{getPathLabel(path)}</h1>
         <div className="flex bg-background-surface items-end p-2 gap-2 rounded-lg">
           <span className="tabular-nums text-title-2 text-main-text">
             {time}
