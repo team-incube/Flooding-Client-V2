@@ -12,9 +12,9 @@ export default function ClubDetail({ detail }: ClubDetailProps) {
   const { club, member, project } = detail;
 
   return (
-    <div className="flex gap-6 w-full">
-      <div className="flex flex-col gap-6 w-121 shrink-0">
-        <div className="relative w-121 h-70.25 rounded-2xl overflow-hidden bg-sub-3">
+    <div className="flex w-full flex-col gap-6 xl:flex-row">
+      <div className="flex w-full 2xl:w-121 lg:w-100 flex-col 2xl:gap-6 lg:gap-4">
+        <div className="relative w-full rounded-2xl overflow-hidden bg-sub-4">
           {club.imageUrl ? (
             <Image
               src={club.imageUrl}
@@ -23,23 +23,29 @@ export default function ClubDetail({ detail }: ClubDetailProps) {
               className="object-cover"
             />
           ) : (
-            <div className="flex items-center justify-center w-full h-full">
+            <div className="flex items-center justify-center 2xl:w-full 2xl:h-full lg:w-100 lg:h-52">
               <DefaultClubThumbnail className="w-full h-full" />
             </div>
           )}
         </div>
 
-        <span className="text-title-1 text-main-text">{club.name}</span>
+        <span className="2xl:text-title-1 lg:text-title-2 text-main-text">
+          {club.name}
+        </span>
 
-        <div className="flex flex-col gap-1">
-          <span className="text-title-4 text-main-text">동아리 소개</span>
-          <p className="text-text-1 text-sub-1">{club.description}</p>
+        <div className="flex flex-col gap-1.5">
+          <span className="2xl:text-title-4 lg:text-text-1 text-main-text">
+            동아리 소개
+          </span>
+          <p className="2xl:text-text-1 lg:text-text-2 text-sub-1">
+            {club.description}
+          </p>
         </div>
 
         <ClubMemberList members={member} />
       </div>
 
-      <div className="flex flex-col gap-4 flex-1 min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col gap-4">
         <span className="text-text-1 text-main-text">동아리 프로젝트</span>
         {project.length > 0 ? (
           <div className="flex flex-col gap-4">
