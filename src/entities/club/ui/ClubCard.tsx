@@ -13,7 +13,7 @@ export default function ClubCard({ club, onClick }: ClubCardProps) {
       className="flex flex-col gap-4 bg-sub-4 rounded-2xl px-4 py-6 cursor-pointer"
       onClick={onClick}
     >
-      <div className="relative w-full bg-sub-3 rounded-2xl overflow-hidden h-33.5">
+      <div className="relative w-full bg-sub-4 rounded-2xl overflow-hidden h-33.5">
         {club.imageUrl ? (
           <Image
             src={club.imageUrl}
@@ -32,7 +32,9 @@ export default function ClubCard({ club, onClick }: ClubCardProps) {
         <p className="text-caption-1 text-sub-1 line-clamp-3">
           {club.description}
         </p>
-        <span className="text-caption-1 text-sub-2">부장: {club.leader}</span>
+        <span className="text-caption-1 text-sub-2">
+          동아리 인원: {club.totalMember}명
+        </span>
       </div>
     </div>
   );
