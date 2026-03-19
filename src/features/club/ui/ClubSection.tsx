@@ -35,7 +35,7 @@ export function ClubSection() {
               <span className="text-caption-1 text-sub-1">동아리 수</span>
               <span className="text-caption-1 text-p-1">
                 {" "}
-                {filteredClubs.length}개
+                {MOCK_CLUBS.length}개
               </span>
             </div>
           </div>
