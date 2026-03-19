@@ -16,7 +16,8 @@ export function ClubSection() {
   const filteredClubs = isSearching
     ? MOCK_CLUBS.filter(
         (club) =>
-          club.name.includes(searchValue) || club.type.includes(searchValue),
+          club.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+          club.leader.toLowerCase().includes(searchValue.toLowerCase()),
       )
     : MOCK_CLUBS;
 
