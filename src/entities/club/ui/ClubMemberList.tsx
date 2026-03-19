@@ -1,28 +1,30 @@
+import { getGrade } from "@/entities/user/lib/getUserInfo";
 import { ClubMember } from "../model/club";
 
 interface ClubMemberListProps {
   members: ClubMember[];
+  leader?: string;
 }
 
-function groupByGeneration(members: ClubMember[]): Map<string, ClubMember[]> {
-  const map = new Map<string, ClubMember[]>();
-  for (const m of members) {
-    if (m.generation === undefined) continue;
-    const key = String(m.generation);
-    const list = map.get(key) ?? [];
-    list.push(m);
-    map.set(key, list);
-  }
-  return map;
-}
+export default function ClubMemberList({
+  members,
+  leader,
+}: ClubMemberListProps) {
+  if (members.length === 0) return null;
 
-export default function ClubMemberList({ members }: ClubMemberListProps) {
-  const generationMap = groupByGeneration(members);
-  const generations = Array.from(generationMap.keys()).sort(
-    (a, b) => Number(a) - Number(b)
+  const groupedMembers = members.reduce<Record<number, ClubMember[]>>(
+    (acc, member) => {
+      const grade = getGrade(member.studentNumber);
+      if (!acc[grade]) acc[grade] = [];
+      acc[grade].push(member);
+      return acc;
+    },
+    {},
   );
 
-  if (generations.length === 0) return null;
+  const sortedGrades = Object.keys(groupedMembers)
+    .map(Number)
+    .sort((a, b) => b - a);
 
   return (
     <div className="flex flex-col gap-2">
@@ -30,31 +32,29 @@ export default function ClubMemberList({ members }: ClubMemberListProps) {
         팀원
       </span>
       <div className="flex flex-col gap-1">
-        {generations.map((gen) => {
-          const genMembers = generationMap.get(gen)!;
+        {sortedGrades.map((grade) => {
+          const gradeMembers = groupedMembers[grade];
           return (
-            <div key={gen} className="flex gap-1 text-text-1">
-              <span className="text-sub-1 shrink-0">
-                {`${gen}기 -`}
-              </span>
-              <span>
-                {genMembers.map((m, i) => (
+            <div key={grade} className="text-text-1">
+              <span className="text-sub-1">{grade}학년 - </span>
+              {gradeMembers.map((m, i) => {
+                const isLeader = m.name === leader;
+                return (
                   <span key={m.id}>
-                    <span className={m.isLeader ? "text-p-1" : "text-sub-1"}>
+                    <span className={isLeader ? "text-p-1" : "text-sub-1"}>
                       {m.name}
                     </span>
-                    {m.role && <span className="text-sub-1"> ({m.role})</span>}
-                    {i < genMembers.length - 1 && (
+                    {i < gradeMembers.length - 1 && (
                       <span className="text-sub-1">, </span>
                     )}
                   </span>
-                ))}
-              </span>
+                );
+              })}
             </div>
           );
         })}
         <p className="2xl:text-text-4 lg:text-caption-1 text-sub-2 mt-1">
-          ※ 보라색 이름은 부장, 차장이에요
+          ※ 보라색 이름은 부장이에요
         </p>
       </div>
     </div>
