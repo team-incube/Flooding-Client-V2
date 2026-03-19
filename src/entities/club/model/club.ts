@@ -29,14 +29,13 @@ export interface ClubMember {
   name: string;
   studentNumber: number;
   sex: Sex;
-  major: string;
 }
 
 export interface ProjectParticipant {
   id: number;
+  name?: string;
   studentNumber: number;
   sex: Sex;
-  major: string;
 }
 
 export interface ProjectLink {
@@ -48,6 +47,7 @@ export interface Project {
   id: number;
   name: string;
   description: string;
+  imageUrl?: string;
   participants: ProjectParticipant[];
   links: ProjectLink[];
 }
