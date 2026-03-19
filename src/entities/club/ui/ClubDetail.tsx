@@ -1,6 +1,6 @@
 import Image from "next/image";
 import DefaultClubThumbnail from "@/shared/asset/svg/DefaultThumbnail";
-import { ClubDetail as ClubDetailType } from "../model/club";
+import { ClubDetailResponse as ClubDetailType } from "../model/club";
 import ProjectCard from "./ProjectCard";
 import ClubMemberList from "./ClubMemberList";
 
@@ -42,7 +42,7 @@ export default function ClubDetail({ detail }: ClubDetailProps) {
           </p>
         </div>
 
-        <ClubMemberList members={member} />
+        <ClubMemberList members={member} leader={club.leader} />
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-4">
@@ -50,7 +50,7 @@ export default function ClubDetail({ detail }: ClubDetailProps) {
         {project.length > 0 ? (
           <div className="flex flex-col gap-4">
             {project.map((p) => (
-              <ProjectCard key={p.id} project={p} />
+              <ProjectCard key={p.id} project={p} leader={club.leader} />
             ))}
           </div>
         ) : (
