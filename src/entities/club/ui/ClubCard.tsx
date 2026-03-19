@@ -29,7 +29,7 @@ export default function ClubCard({ club, onClick }: ClubCardProps) {
       </div>
       <div className="flex flex-col gap-1 items-start">
         <span className="text-text-2 text-main-text">{club.name}</span>
-        <p className="text-caption-1 text-sub-1 line-clamp-3">
+        <p className="text-caption-1 text-sub-1 line-clamp-2">
           {club.description}
         </p>
         <span className="text-caption-1 text-sub-2">
