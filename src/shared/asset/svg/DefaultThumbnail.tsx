@@ -12,7 +12,7 @@ export default function DefaultClubThumbnail({ className }: DefaultClubThumbnail
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      <rect width="231" height="134" fill="#F2F2F4" />
+
       <ellipse
         cx="50.7212"
         cy="63.3223"
