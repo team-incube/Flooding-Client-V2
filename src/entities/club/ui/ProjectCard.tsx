@@ -1,12 +1,13 @@
 import Image from "next/image";
 import DefaultClubThumbnail from "@/shared/asset/svg/DefaultThumbnail";
-import { ClubProject } from "../model/club";
+import { Project } from "../model/club";
 
 interface ProjectCardProps {
-  project: ClubProject;
+  project: Project;
+  leader?: string;
 }
 
-export default function ProjectCard({ project }: ProjectCardProps) {
+export default function ProjectCard({ project, leader }: ProjectCardProps) {
   return (
     <div className="flex h-auto flex-col gap-4 rounded-2xl bg-sub-4 p-4 sm:flex-row sm:gap-6">
       <div className="relative h-40 w-full rounded-xl overflow-hidden bg-sub-3 sm:h-29.75 sm:w-29.75 sm:shrink-0">
@@ -30,22 +31,24 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </p>
         <p className="text-text-4">
           <span className="text-sub-1">참여인원 - </span>
-          {project.participants.member.map((m, i) => (
-            <span key={m.id}>
-              <span className={m.isLeader ? "text-p-1" : "text-main-text"}>
-                {m.name}
-              </span>
-              {m.role && <span className="text-sub-1"> ({m.role})</span>}
-              {i < project.participants.member.length - 1 && (
-                <span className="text-sub-1">, </span>
-              )}
-            </span>
-          ))}
+          <span className="text-sub-1">
+            {project.participants.map((p, i) => {
+              const participantName = p.name ?? String(p.studentNumber);
+              const isLeader = participantName === leader;
+
+              return (
+                <span key={p.id} className={isLeader ? "text-p-1" : undefined}>
+                  {participantName}
+                  {i < project.participants.length - 1 && ", "}
+                </span>
+              );
+            })}
+          </span>
         </p>
         <p className="text-caption-1 text-sub-1">
           프로젝트 링크 -{" "}
-          {project.links.map((l, i) => (
-            <span key={i}>
+          {project.links.map((l, i: number) => (
+            <span key={l.link}>
               <a
                 href={l.link}
                 target="_blank"
