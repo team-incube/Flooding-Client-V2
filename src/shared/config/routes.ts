@@ -8,3 +8,17 @@ export const ROUTES = [
 export const PATH_LABEL_MAP: Record<string, string> = Object.fromEntries(
   ROUTES.map(({ href, label }) => [href, label]),
 );
+
+export function getPathLabel(pathname: string): string {
+  const exact = PATH_LABEL_MAP[pathname];
+
+  if (exact) {
+    return exact;
+  }
+
+  const nestedRoute = ROUTES.find(
+    ({ href }) => href !== "/" && pathname.startsWith(`${href}/`),
+  );
+
+  return nestedRoute?.label ?? pathname;
+}
