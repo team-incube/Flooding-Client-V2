@@ -32,11 +32,10 @@ export function TextButton({
   className,
   children,
   onClick,
-  disabled,
 }: TextButtonProps) {
   return (
     <button
-      disabled={disabled || variant === "disabled"}
+      disabled={variant === "disabled"}
       className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className ?? ""}`}
       onClick={onClick}
     >
