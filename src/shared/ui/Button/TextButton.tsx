@@ -7,6 +7,7 @@ interface TextButtonProps {
   className?: string;
   children: React.ReactNode;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const variantStyles = {
@@ -31,10 +32,11 @@ export function TextButton({
   className,
   children,
   onClick,
+  disabled,
 }: TextButtonProps) {
   return (
     <button
-      disabled={variant === "disabled"}
+      disabled={disabled || variant === "disabled"}
       className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className ?? ""}`}
       onClick={onClick}
     >
