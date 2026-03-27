@@ -6,14 +6,17 @@ import Club from "@/shared/asset/svg/Club";
 import ClubCard from "@/entities/club/ui/ClubCard";
 import { MOCK_CLUBS } from "@/entities/club/model/mock";
 import ClubSearch from "./ClubSearch";
+import ClubRegistrationSection from "./ClubRegistrationSection";
 
 export function ClubSection() {
   const router = useRouter();
+  const isRegistrationPeriod = true;
+
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
   const isSearching = searchValue !== "";
-  const filteredClubs = isSearching
+  const filteredClubs = (isSearching && !isRegistrationPeriod)
     ? MOCK_CLUBS.filter(
         (club) =>
           club.name.toLowerCase().includes(searchValue.toLowerCase()) ||
@@ -35,32 +38,36 @@ export function ClubSection() {
               <span className="text-caption-1 text-sub-1">동아리 수</span>
               <span className="text-caption-1 text-p-1">
                 {" "}
-                {MOCK_CLUBS.length}개
+                {isRegistrationPeriod ? 0 : MOCK_CLUBS.length}개
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
-          <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:overflow-y-scroll lg:pr-2">
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(263px,1fr))] gap-4">
-              {filteredClubs.map((club) => (
-                <ClubCard
-                  key={club.id}
-                  club={club}
-                  onClick={() => handleSelectClub(club.id)}
-                />
-              ))}
+        {isRegistrationPeriod ? (
+          <ClubRegistrationSection />
+        ) : (
+          <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
+            <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:overflow-y-scroll lg:pr-2">
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(263px,1fr))] gap-4">
+                {filteredClubs.map((club) => (
+                  <ClubCard
+                    key={club.id}
+                    club={club}
+                    onClick={() => handleSelectClub(club.id)}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="order-1 self-stretch lg:order-2 lg:shrink-0 lg:self-start">
+              <ClubSearch
+                query={query}
+                setQuery={setQuery}
+                onSearch={handleSearch}
+              />
             </div>
           </div>
-          <div className="order-1 self-stretch lg:order-2 lg:shrink-0 lg:self-start">
-            <ClubSearch
-              query={query}
-              setQuery={setQuery}
-              onSearch={handleSearch}
-            />
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
