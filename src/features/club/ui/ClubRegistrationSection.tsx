@@ -31,7 +31,7 @@ const initialFormState: RegistrationData = {
   clubImage: null,
 };
 
-export default function ClubRegistrationSection({ isSubmitted = false}: Props) {
+export default function ClubRegistrationSection({ isSubmitted = false }: Props) {
   const [submitted, setSubmitted] = useState(isSubmitted);
   const [formData, setFormData] = useState<RegistrationData>(initialFormState);
   const [initialData, setInitialData] = useState<RegistrationData | null>(null);
@@ -69,6 +69,8 @@ export default function ClubRegistrationSection({ isSubmitted = false}: Props) {
     setSubmitted(true);
     setInitialData({ ...formData });
   };
+
+  const isActionable = !submitted ? canSubmit : isChanged;
 
   return (
     <div className='flex gap-10 h-full min-h-0 flex-1 flex-col lg:flex-row'>
@@ -156,6 +158,7 @@ export default function ClubRegistrationSection({ isSubmitted = false}: Props) {
               <div className="flex flex-col gap-1">
                 <span className='text-text-3'>현재 모인 대략적인 인원</span>
                 <TextField 
+                  type="number"
                   placeholder="대략적 인원을 적어주세요" 
                   onChange={(e) => handleChange("memberCount", e.target.value)}
                   value={memberCount}
@@ -170,9 +173,8 @@ export default function ClubRegistrationSection({ isSubmitted = false}: Props) {
 
           <TextButton
             size='wide'
-            variant={(!submitted ? canSubmit : isChanged) ? "filled" : "disabled"}
+            variant={isActionable ? 'filled' : 'disabled'}
             onClick={handleSubmit}
-            disabled={!submitted ? !canSubmit : !isChanged}
           >
             {!submitted ? "동아리 신청" : "동아리 신청 수정하기"}
           </TextButton>
