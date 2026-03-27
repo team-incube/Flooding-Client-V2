@@ -10,7 +10,7 @@ import ClubRegistrationSection from "./ClubRegistrationSection";
 
 export function ClubSection() {
   const router = useRouter();
-  const isRegistrationPeriod = true;
+  const isRegistrationPeriod = true; // API 연동 시 서버 응답 값으로 교체 예정
 
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
