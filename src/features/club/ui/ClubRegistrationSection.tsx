@@ -1,0 +1,184 @@
+"use client";
+
+import { useMemo, useState } from 'react';
+import FileOff from '@/shared/asset/svg/FileOff';
+import TextField from '@/shared/ui/textField';
+import { TextButton } from '@/shared/ui/Button/TextButton';
+import ImageUpload from '@/shared/ui/ImageUpload';
+import Great from '@/shared/asset/svg/Great';
+
+interface Props {
+  isSubmitted?: boolean;
+}
+
+interface RegistrationData {
+  clubType: "NEW" | "MAINTAIN" | null;
+  clubName: string;
+  leaderInfo: string;
+  clubDetail: string;
+  desiredTeacher: string;
+  memberCount: string;
+  clubImage: File | string | null;
+}
+
+const initialFormState: RegistrationData = {
+  clubType: null,
+  clubName: "",
+  leaderInfo: "",
+  clubDetail: "",
+  desiredTeacher: "",
+  memberCount: "",
+  clubImage: null,
+};
+
+export default function ClubRegistrationSection({ isSubmitted = false}: Props) {
+  const [submitted, setSubmitted] = useState(isSubmitted);
+  const [formData, setFormData] = useState<RegistrationData>(initialFormState);
+  const [initialData, setInitialData] = useState<RegistrationData | null>(null);
+
+  const { clubName, clubType, leaderInfo, clubDetail, desiredTeacher, memberCount, clubImage } = formData;
+
+  const handleChange = (
+    key: keyof RegistrationData, 
+    value: RegistrationData[keyof RegistrationData]
+  ) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const canSubmit = useMemo(() => {
+    const isBasicFilled = !!(clubName && clubType && leaderInfo && clubDetail);
+    
+    if (clubType === "NEW") return isBasicFilled && !!memberCount;
+    return isBasicFilled;
+  }, [clubName, clubType, leaderInfo, clubDetail, memberCount]);
+
+  const isChanged = useMemo(() => {
+    if (!initialData) return false;
+    return (
+      clubName !== initialData.clubName ||
+      clubType !== initialData.clubType ||
+      leaderInfo !== initialData.leaderInfo ||
+      clubDetail !== initialData.clubDetail ||
+      desiredTeacher !== initialData.desiredTeacher ||
+      memberCount !== initialData.memberCount ||
+      clubImage !== initialData.clubImage
+    );
+  }, [clubName, clubType, leaderInfo, clubDetail, desiredTeacher, memberCount, clubImage, initialData]);
+
+  const handleSubmit = () => {
+    setSubmitted(true);
+    setInitialData({ ...formData });
+  };
+
+  return (
+    <div className='flex gap-10 h-full min-h-0 flex-1 flex-col lg:flex-row'>
+      {!submitted ? (
+        <div className='flex flex-1 flex-col h-[762px] items-center justify-center min-h'>
+          <FileOff />
+          <span className='text-sub-2 text-text-1 mt-4'>
+            지금은 동아리 개설 기간입니다
+          </span>
+        </div>
+      ) : (
+        <div className='flex flex-1 flex-col h-[762px] items-center justify-center min-h'>
+          <Great />
+          <span className='text-sub-2 text-text-1 mt-4'>
+            동아리 개설이 성공적으로 완료 되었습니다
+          </span>
+        </div>
+      )}
+
+      <div className='flex w-full flex-col lg:w-[330px]'>
+        
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <span className='text-text-3'>동아리명 (추후 변경 가능)</span>
+            <TextField
+              placeholder="동아리명을 적어주세요"
+              onChange={(e) => handleChange("clubName", e.target.value)}
+              value={clubName}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className='text-text-3'>유지, 신설 여부</span>
+            <div className="flex gap-1 w-full">
+              <TextButton
+                variant={clubType === "NEW" ? "filled" : "outlined"}
+                size='wide'
+                onClick={() => handleChange("clubType", clubType === "NEW" ? null : "NEW")}
+              >
+                신설
+              </TextButton>
+              <TextButton
+                variant={clubType === "MAINTAIN" ? "filled" : "outlined"}
+                size='wide'
+                onClick={() => handleChange("clubType", clubType === "MAINTAIN" ? null : "MAINTAIN")}
+              >
+                유지
+              </TextButton>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className='text-text-3'>부장 이름/학번 </span>
+            <TextField
+              placeholder="ex. 1101 김**"
+              onChange={(e) => handleChange("leaderInfo", e.target.value)}
+              value={leaderInfo}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className='text-text-3'>동아리 활동 내용 및 소개</span>
+            <textarea 
+              placeholder="동아리 활동 내용 및 소개를 적어주세요" 
+              onChange={(e) => handleChange("clubDetail", e.target.value)}
+              maxLength={200}
+              value={clubDetail}
+              className="w-full h-[52px] rounded-lg border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none py-3 px-4 resize-none caret-p-1 transition-all"
+            />
+            <span className="text-xs text-right text-sub-2">
+              {clubDetail.length}/200
+            </span>
+          </div>
+
+          {clubType === "NEW" && (
+            <>
+              <div className="flex flex-col gap-1">
+                <span className='text-text-3'>배정 희망 전공 선생님 (없으면 공란)</span>
+                <TextField 
+                  placeholder="배정 희망 전공 선생님을 적어주세요" 
+                  onChange={(e) => handleChange("desiredTeacher", e.target.value)}
+                  value={desiredTeacher}
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className='text-text-3'>현재 모인 대략적인 인원</span>
+                <TextField 
+                  placeholder="대략적 인원을 적어주세요" 
+                  onChange={(e) => handleChange("memberCount", e.target.value)}
+                  value={memberCount}
+                />
+              </div>
+            </>
+          )}
+
+          <div className="flex flex-col gap-2">
+            <ImageUpload onImageChange={(file) => handleChange("clubImage", file)} />
+          </div>
+
+          <TextButton
+            size='wide'
+            variant={(!submitted ? canSubmit : isChanged) ? "filled" : "disabled"}
+            onClick={handleSubmit}
+            disabled={!submitted ? !canSubmit : !isChanged}
+          >
+            {!submitted ? "동아리 신청" : "동아리 신청 수정하기"}
+          </TextButton>
+
+        </div>
+      </div>
+    </div>
+  );
+}
