@@ -1,4 +1,6 @@
-export default function Delete() {
+import { SvgProps } from "@/shared/model/svg";
+
+export default function Delete({ className }: SvgProps) {
   return (
     <svg
       width="24"
@@ -6,6 +8,7 @@ export default function Delete() {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <path
         d="M6 19.4998V8.49976H18V19.4998C18 20.6043 17.1046 21.4998 16 21.4998H8C6.89543 21.4998 6 20.6043 6 19.4998Z"
