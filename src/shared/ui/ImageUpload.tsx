@@ -1,10 +1,12 @@
 "use client";
 
-import { ChangeEvent, useRef, useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
 import Delete from "../asset/svg/Delete";
 import Camera from "../asset/svg/Camera";
 import Image from "next/image";
 import { DashedBorder } from "../asset/svg/DashedBorder";
+import { on } from "events";
 
 interface ImageUploadProps {
   onImageChange?: (file: File | null) => void;
@@ -12,28 +14,32 @@ interface ImageUploadProps {
   disabled?: boolean;
 }
 
-export default function ImageUpload({ onImageChange, className, disabled }: ImageUploadProps) {
+export default function ImageUpload({
+  onImageChange,
+  className,
+  disabled,
+}: ImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleBoxClick = () => {
-    if (disabled) return;
-    fileRef.current?.click();
-  }
+  const onDrop = useCallback(
+    (accetedFiles: File[]) => {
+      const file = accetedFiles[0];
+      if (file) {
+        onImageChange?.(file);
+        if (preview) URL.revokeObjectURL(preview);
+        const objectUrl = URL.createObjectURL(file);
+        setPreview(objectUrl);
+      }
+    },
+    [onImageChange, preview],
+  );
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      onImageChange?.(file);
-
-      if (preview) {
-      URL.revokeObjectURL(preview);
-    }
-
-    const objectUrl = URL.createObjectURL(file);
-    setPreview(objectUrl);
-    }
-  };
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/*": [] },
+    multiple: false,
+    disabled,
+  });
 
   useEffect(() => {
     return () => {
@@ -48,32 +54,27 @@ export default function ImageUpload({ onImageChange, className, disabled }: Imag
     e.stopPropagation();
 
     if (preview) {
-    URL.revokeObjectURL(preview);
-  }
+      URL.revokeObjectURL(preview);
+    }
 
+    if (preview) URL.revokeObjectURL(preview);
     setPreview(null);
     onImageChange?.(null);
-    if (fileRef.current) fileRef.current.value = "";
-  }
-
+  };
 
   return (
     <div className={`relative flex flex-col gap-2 ${className}`}>
-      <input 
-        type="file"
-        ref={fileRef}
-        onChange={handleFileChange}
-        accept="image/*"
-        className="hidden"
-        disabled={disabled}
-      />
 
       <div
-        onClick={preview ? undefined : handleBoxClick}
+        {...getRootProps({
+          onClick: preview ? (e) => e.stopPropagation() : undefined,
+        })}
         className={`relative w-full rounded-[6.85px]
           ${preview ? "" : "border-p-1 "}
         `}
       >
+        <input {...getInputProps()} />
+        
         {preview ? (
           <div className="relative w-full h-[191.43px] rounded-[6.85px] overflow-hidden">
             <Image
@@ -93,12 +94,12 @@ export default function ImageUpload({ onImageChange, className, disabled }: Imag
             )}
           </div>
         ) : (
-          <div
-            className="flex flex-col gap-2 items-center justify-center w-full h-[191.43px] bg-background cursor-pointer rounded-[6.85px]"
-          >
+          <div className="flex flex-col gap-2 items-center justify-center w-full h-[191.43px] bg-background cursor-pointer rounded-[6.85px]">
             <DashedBorder />
             <Camera />
-            <span className="text-text-4 text-sub-2">동아리 대표 사진을 등록하세요</span>
+            <span className="text-text-4 text-sub-2">
+              동아리 대표 사진을 등록하세요
+            </span>
           </div>
         )}
       </div>
