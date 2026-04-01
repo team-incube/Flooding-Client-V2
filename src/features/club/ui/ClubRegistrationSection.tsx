@@ -1,18 +1,20 @@
 "use client";
 
-import { useMemo, useState } from 'react';
-import FileOff from '@/shared/asset/svg/FileOff';
-import TextField from '@/shared/ui/textField';
-import { TextButton } from '@/shared/ui/Button/TextButton';
-import ImageUpload from '@/shared/ui/ImageUpload';
-import Great from '@/shared/asset/svg/Great';
+import { useMemo, useState } from "react";
+import FileOff from "@/shared/asset/svg/FileOff";
+import TextField from "@/shared/ui/textField";
+import { TextButton } from "@/shared/ui/Button/TextButton";
+import ImageUpload from "@/shared/ui/ImageUpload";
+import Great from "@/shared/asset/svg/Great";
 
 interface Props {
   isSubmitted?: boolean;
 }
 
 interface RegistrationData {
-  clubType: "NEW" | "MAINTAIN" | null;
+  regType: "NEW" | "MAINTAIN" | null;
+  clubType: "MAJOR_CLUB" | "AUTONOMOUS_CLUB";
+  status: "ACTIVE" | "ABOLISHED";
   clubName: string;
   leaderInfo: string;
   clubDetail: string;
@@ -22,8 +24,10 @@ interface RegistrationData {
 }
 
 const initialFormState: RegistrationData = {
-  clubType: null,
+  regType: null,
+  clubType: "MAJOR_CLUB",
   clubName: "",
+  status: "ACTIVE",
   leaderInfo: "",
   clubDetail: "",
   desiredTeacher: "",
@@ -31,30 +35,42 @@ const initialFormState: RegistrationData = {
   clubImage: null,
 };
 
-export default function ClubRegistrationSection({ isSubmitted = false }: Props) {
+export default function ClubRegistrationSection({
+  isSubmitted = false,
+}: Props) {
   const [submitted, setSubmitted] = useState(isSubmitted);
   const [formData, setFormData] = useState<RegistrationData>(initialFormState);
   const [initialData, setInitialData] = useState<RegistrationData | null>(null);
 
-  const { clubName, clubType, leaderInfo, clubDetail, desiredTeacher, memberCount, clubImage } = formData;
+  const {
+    regType,
+    clubName,
+    clubType,
+    leaderInfo,
+    clubDetail,
+    desiredTeacher,
+    memberCount,
+    clubImage,
+  } = formData;
 
   const handleChange = (
-    key: keyof RegistrationData, 
-    value: RegistrationData[keyof RegistrationData]
+    key: keyof RegistrationData,
+    value: RegistrationData[keyof RegistrationData],
   ) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const canSubmit = useMemo(() => {
     const isBasicFilled = !!(clubName && clubType && leaderInfo && clubDetail);
-    
-    if (clubType === "NEW") return isBasicFilled && !!memberCount;
+
+    if (regType === "NEW") return isBasicFilled && !!memberCount;
     return isBasicFilled;
-  }, [clubName, clubType, leaderInfo, clubDetail, memberCount]);
+  }, [clubName, clubType, leaderInfo, clubDetail, memberCount, regType]);
 
   const isChanged = useMemo(() => {
     if (!initialData) return false;
     return (
+      regType !== initialData.regType ||
       clubName !== initialData.clubName ||
       clubType !== initialData.clubType ||
       leaderInfo !== initialData.leaderInfo ||
@@ -63,7 +79,17 @@ export default function ClubRegistrationSection({ isSubmitted = false }: Props) 
       memberCount !== initialData.memberCount ||
       clubImage !== initialData.clubImage
     );
-  }, [clubName, clubType, leaderInfo, clubDetail, desiredTeacher, memberCount, clubImage, initialData]);
+  }, [
+    regType,
+    clubName,
+    clubType,
+    leaderInfo,
+    clubDetail,
+    desiredTeacher,
+    memberCount,
+    clubImage,
+    initialData,
+  ]);
 
   const handleSubmit = () => {
     setSubmitted(true);
@@ -73,28 +99,27 @@ export default function ClubRegistrationSection({ isSubmitted = false }: Props) 
   const isActionable = !submitted ? canSubmit : isChanged;
 
   return (
-    <div className='flex gap-10 h-full min-h-0 flex-1 flex-col lg:flex-row'>
+    <div className="flex gap-10 h-full min-h-0 flex-1 flex-col lg:flex-row">
       {!submitted ? (
-        <div className='flex flex-1 flex-col h-[762px] items-center justify-center min-h'>
+        <div className="flex flex-1 flex-col h-[762px] items-center justify-center min-h-0">
           <FileOff />
-          <span className='text-sub-2 text-text-1 mt-4'>
+          <span className="text-sub-2 text-text-1 mt-4">
             지금은 동아리 개설 기간입니다
           </span>
         </div>
       ) : (
-        <div className='flex flex-1 flex-col h-[762px] items-center justify-center min-h'>
+        <div className="flex flex-1 flex-col h-[762px] items-center justify-center min-h-0">
           <Great />
-          <span className='text-sub-2 text-text-1 mt-4'>
+          <span className="text-sub-2 text-text-1 mt-4">
             동아리 개설이 성공적으로 완료 되었습니다
           </span>
         </div>
       )}
 
-      <div className='flex w-full flex-col lg:w-[330px]'>
-        
+      <div className="flex w-full flex-col lg:w-[330px]">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <span className='text-text-3'>동아리명 (추후 변경 가능)</span>
+            <span className="text-text-3">동아리명 (추후 변경 가능)</span>
             <TextField
               placeholder="동아리명을 적어주세요"
               onChange={(e) => handleChange("clubName", e.target.value)}
@@ -103,19 +128,26 @@ export default function ClubRegistrationSection({ isSubmitted = false }: Props) 
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className='text-text-3'>유지, 신설 여부</span>
+            <span className="text-text-3">유지, 신설 여부</span>
             <div className="flex gap-1 w-full">
               <TextButton
-                variant={clubType === "NEW" ? "filled" : "outlined"}
-                size='wide'
-                onClick={() => handleChange("clubType", clubType === "NEW" ? null : "NEW")}
+                variant={regType === "NEW" ? "filled" : "outlined"}
+                size="wide"
+                onClick={() =>
+                  handleChange("regType", regType === "NEW" ? null : "NEW")
+                }
               >
                 신설
               </TextButton>
               <TextButton
-                variant={clubType === "MAINTAIN" ? "filled" : "outlined"}
-                size='wide'
-                onClick={() => handleChange("clubType", clubType === "MAINTAIN" ? null : "MAINTAIN")}
+                variant={regType === "MAINTAIN" ? "filled" : "outlined"}
+                size="wide"
+                onClick={() =>
+                  handleChange(
+                    "regType",
+                    regType === "MAINTAIN" ? null : "MAINTAIN",
+                  )
+                }
               >
                 유지
               </TextButton>
@@ -123,7 +155,7 @@ export default function ClubRegistrationSection({ isSubmitted = false }: Props) 
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className='text-text-3'>부장 이름/학번 </span>
+            <span className="text-text-3">부장 이름/학번 </span>
             <TextField
               placeholder="ex. 1101 김**"
               onChange={(e) => handleChange("leaderInfo", e.target.value)}
@@ -132,9 +164,9 @@ export default function ClubRegistrationSection({ isSubmitted = false }: Props) 
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className='text-text-3'>동아리 활동 내용 및 소개</span>
-            <textarea 
-              placeholder="동아리 활동 내용 및 소개를 적어주세요" 
+            <span className="text-text-3">동아리 활동 내용 및 소개</span>
+            <textarea
+              placeholder="동아리 활동 내용 및 소개를 적어주세요"
               onChange={(e) => handleChange("clubDetail", e.target.value)}
               maxLength={200}
               value={clubDetail}
@@ -145,21 +177,25 @@ export default function ClubRegistrationSection({ isSubmitted = false }: Props) 
             </span>
           </div>
 
-          {clubType === "NEW" && (
+          {regType === "NEW" && (
             <>
               <div className="flex flex-col gap-1">
-                <span className='text-text-3'>배정 희망 전공 선생님 (없으면 공란)</span>
-                <TextField 
-                  placeholder="배정 희망 전공 선생님을 적어주세요" 
-                  onChange={(e) => handleChange("desiredTeacher", e.target.value)}
+                <span className="text-text-3">
+                  배정 희망 전공 선생님 (없으면 공란)
+                </span>
+                <TextField
+                  placeholder="배정 희망 전공 선생님을 적어주세요"
+                  onChange={(e) =>
+                    handleChange("desiredTeacher", e.target.value)
+                  }
                   value={desiredTeacher}
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <span className='text-text-3'>현재 모인 대략적인 인원</span>
-                <TextField 
+                <span className="text-text-3">현재 모인 대략적인 인원</span>
+                <TextField
                   type="number"
-                  placeholder="대략적 인원을 적어주세요" 
+                  placeholder="대략적 인원을 적어주세요"
                   onChange={(e) => handleChange("memberCount", e.target.value)}
                   value={memberCount}
                 />
@@ -168,17 +204,18 @@ export default function ClubRegistrationSection({ isSubmitted = false }: Props) 
           )}
 
           <div className="flex flex-col gap-2">
-            <ImageUpload onImageChange={(file) => handleChange("clubImage", file)} />
+            <ImageUpload
+              onImageChange={(file) => handleChange("clubImage", file)}
+            />
           </div>
 
           <TextButton
-            size='wide'
-            variant={isActionable ? 'filled' : 'disabled'}
-            onClick={handleSubmit}
+            size="wide"
+            variant={isActionable ? "filled" : "disabled"}
+            onClick={isActionable ? handleSubmit : undefined}
           >
             {!submitted ? "동아리 신청" : "동아리 신청 수정하기"}
           </TextButton>
-
         </div>
       </div>
     </div>
