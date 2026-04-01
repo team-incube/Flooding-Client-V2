@@ -4,7 +4,7 @@ import { ChangeEvent, useRef, useState, useEffect } from "react";
 import Delete from "../asset/svg/Delete";
 import Camera from "../asset/svg/Camera";
 import Image from "next/image";
-
+import { DashedBorder } from "../asset/svg/DashedBorder";
 
 interface ImageUploadProps {
   onImageChange?: (file: File | null) => void;
@@ -96,20 +96,7 @@ export default function ImageUpload({ onImageChange, className, disabled }: Imag
           <div
             className="flex flex-col gap-2 items-center justify-center w-full h-[191.43px] bg-background cursor-pointer rounded-[6.85px]"
           >
-            <svg className="absolute inset-0 w-full h-full pointer-events-none">
-              <rect
-                x="1"
-                y="1"
-                width="calc(100% - 2px)"
-                height="calc(100% - 2px)"
-                rx="6.85"
-                ry="6.85"
-                fill="none"
-                stroke="var(--color-p-1)"
-                strokeWidth="1"
-                strokeDasharray="8 8"
-              />
-            </svg>
+            <DashedBorder />
             <Camera />
             <span className="text-text-4 text-sub-2">동아리 대표 사진을 등록하세요</span>
           </div>
