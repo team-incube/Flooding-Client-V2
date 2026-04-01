@@ -35,6 +35,20 @@ const initialFormState: RegistrationData = {
   clubImage: null,
 };
 
+const isFileEqual = (f1: File | string | null, f2: File | string | null) => {
+  if (f1 === f2) return true;
+
+  if (f1 instanceof File && f2 instanceof File) {
+    return (
+      f1.name === f2.name &&
+      f1.size === f2.size &&
+      f1.lastModified === f2.lastModified
+    );
+  }
+
+  return false;
+};
+
 export default function ClubRegistrationSection({
   isSubmitted = false,
 }: Props) {
@@ -69,27 +83,27 @@ export default function ClubRegistrationSection({
 
   const isChanged = useMemo(() => {
     if (!initialData) return false;
-    return (
-      regType !== initialData.regType ||
-      clubName !== initialData.clubName ||
-      clubType !== initialData.clubType ||
-      leaderInfo !== initialData.leaderInfo ||
-      clubDetail !== initialData.clubDetail ||
-      desiredTeacher !== initialData.desiredTeacher ||
-      memberCount !== initialData.memberCount ||
-      clubImage !== initialData.clubImage
+
+    const fieldsToCompare: (keyof RegistrationData)[] = [
+      "regType",
+      "clubName",
+      "clubType",
+      "leaderInfo",
+      "clubDetail",
+      "desiredTeacher",
+      "memberCount",
+    ];
+
+    const isFieldChanged = fieldsToCompare.some(
+      (key) => formData[key] !== initialData[key],
     );
-  }, [
-    regType,
-    clubName,
-    clubType,
-    leaderInfo,
-    clubDetail,
-    desiredTeacher,
-    memberCount,
-    clubImage,
-    initialData,
-  ]);
+
+    const isImageChanged = !isFileEqual(
+      formData.clubImage,
+      initialData.clubImage,
+    );
+    return isFieldChanged || isImageChanged;
+  }, [formData, initialData]);
 
   const handleSubmit = () => {
     setSubmitted(true);
