@@ -6,7 +6,6 @@ import Delete from "../asset/svg/Delete";
 import Camera from "../asset/svg/Camera";
 import Image from "next/image";
 import { DashedBorder } from "../asset/svg/DashedBorder";
-import { on } from "events";
 
 interface ImageUploadProps {
   onImageChange?: (file: File | null) => void;
@@ -34,7 +33,7 @@ export default function ImageUpload({
     [onImageChange, preview],
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: { "image/*": [] },
     multiple: false,

@@ -64,7 +64,6 @@ export default function ClubRegistrationSection({
     clubDetail,
     desiredTeacher,
     memberCount,
-    clubImage,
   } = formData;
 
   const handleChange = (
