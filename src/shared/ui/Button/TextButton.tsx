@@ -7,6 +7,7 @@ interface TextButtonProps {
   className?: string;
   children: React.ReactNode;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const variantStyles = {
