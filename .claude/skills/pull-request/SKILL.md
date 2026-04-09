@@ -1,5 +1,5 @@
 ---
-name: pull request
+name: pull-request
 description: 깃허브 PR 생성
 allowed-tools: Bash, mcp__github__create_pull_request, mcp__github__get_me
 ---
