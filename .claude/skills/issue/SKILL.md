@@ -71,7 +71,7 @@ Recent commits:
 3. 컨텍스트(브랜치, 커밋 로그)를 참고해 본문 내용을 채운다.
 4. `mcp__github__issue_write`로 이슈를 생성한다:
    - `owner`: `Dino0204`
-   - `repo`: `Train`
+   - `repo`: `Flooding-Client-V2`
    - `title`: `[BUG] 내용` 또는 `[Task] 내용`
    - `body`: 작성된 본문
    - `labels`: 타입에 맞는 라벨
