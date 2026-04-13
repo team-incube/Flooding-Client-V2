@@ -1,4 +1,5 @@
 ---
+name: commit
 description: 깃허브 커밋 메시지 작성
 allowed-tools: Read
 ---

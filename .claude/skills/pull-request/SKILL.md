@@ -1,4 +1,5 @@
 ---
+name: pull-request
 description: 깃허브 PR 생성
 allowed-tools: Bash, mcp__github__create_pull_request, mcp__github__get_me
 ---
@@ -24,12 +25,13 @@ Diff (excluding lock files):
 
 The PR type is determined by the title format.
 
-| Title Format | Base Branch | Condition |
-|---|---|---|
-| `v0.0.0` (version) | `main` | Only allowed when current branch is `develop` |
-| `feat:`, `fix:`, etc. (conventional commit) | `develop` | Allowed from any feature branch |
+| Title Format                                | Base Branch | Condition                                     |
+| ------------------------------------------- | ----------- | --------------------------------------------- |
+| `v0.0.0` (version)                          | `main`      | Only allowed when current branch is `develop` |
+| `feat:`, `fix:`, etc. (conventional commit) | `develop`   | Allowed from any feature branch               |
 
 **Release PR rules** (`v0.0.0` format):
+
 - Must be created from the `develop` branch only.
 - If the current branch is not `develop`, print an error message and abort.
 
