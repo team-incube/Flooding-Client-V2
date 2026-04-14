@@ -1,0 +1,17 @@
+import { instance } from '@/shared/api/instance';
+import type { DormitoryStudent, DormitoryMusic } from '../model/types';
+
+export async function getDormitoryMusic(): Promise<DormitoryMusic[]> {
+  const { data } = await instance.get<DormitoryMusic[]>('/dormitory/music');
+  return data;
+}
+
+export async function getMassageApplicants(): Promise<DormitoryStudent[]> {
+  const { data } = await instance.get<DormitoryStudent[]>('/dormitory/massage');
+  return data;
+}
+
+export async function getSelfStudyApplicants(): Promise<DormitoryStudent[]> {
+  const { data } = await instance.get<DormitoryStudent[]>('/dormitory/study');
+  return data;
+}
