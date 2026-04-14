@@ -1,13 +1,17 @@
 "use client";
 
 import { useReducer } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
 import Search from "@/shared/asset/svg/Search";
 import { ProfileCard } from "@/shared/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
-import { MOCK_STUDENTS } from "@/entities/user/model/mock";
+import {
+  dormitoryQueries,
+  dormitoryMutations,
+} from "@/entities/dormitory/api/dormitory.queries";
 import { getClassNumber, getGrade } from "@/entities/user/lib/getUserInfo";
 import { Sex } from "@/entities/user/model/user";
 
@@ -58,11 +62,20 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
 }
 
 export function SelfStudySection() {
+  const queryClient = useQueryClient();
   const [state, dispatch] = useReducer(filterReducer, initialState);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
 
-  const filteredStudents = MOCK_STUDENTS.filter((s) => {
+  const { data: students = [] } = useQuery(dormitoryQueries.study());
+
+  const applyMutation = useMutation({
+    mutationFn: dormitoryMutations.applyStudy,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["dormitory", "study"] }),
+  });
+
+  const filteredStudents = students.filter((s) => {
     if (
       searchQuery &&
       !s.name.includes(searchQuery) &&
@@ -202,7 +215,11 @@ export function SelfStudySection() {
 
           <div className="flex-1" />
 
-          <TextButton variant="filled" size="wide" onClick={() => {}}>
+          <TextButton
+            variant="filled"
+            size="wide"
+            onClick={() => applyMutation.mutate()}
+          >
             신청하기
           </TextButton>
 
