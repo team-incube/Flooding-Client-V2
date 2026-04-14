@@ -1,12 +1,16 @@
 "use client";
 
 import { ReactNode, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Music from "@/shared/asset/svg/Music";
 import { MusicListItem } from "@/shared/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
-import { MOCK_SONGS } from "@/entities/music/model/mock";
+import {
+  dormitoryQueries,
+  dormitoryMutations,
+} from "@/entities/dormitory/api/dormitory.queries";
 import { MusicRecommendModal } from "./MusicRecommendModal";
 
 interface WakeUpMusicSectionProps {
@@ -18,8 +22,19 @@ export function WakeUpMusicSection({
   icon,
   className,
 }: WakeUpMusicSectionProps) {
+  const queryClient = useQueryClient();
   const [urlInput, setUrlInput] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  const { data: songs = [] } = useQuery(dormitoryQueries.music());
+
+  const applyMutation = useMutation({
+    mutationFn: () => dormitoryMutations.applyMusic({ url: urlInput }),
+    onSuccess: () => {
+      setUrlInput("");
+      queryClient.invalidateQueries({ queryKey: ["dormitory", "music"] });
+    },
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered , setIsHovered] = useState(false);
@@ -37,14 +52,14 @@ export function WakeUpMusicSection({
         </div>
         <div className="flex items-center gap-1">
           <span className="text-sub-1 text-caption-1">신청 음악</span>
-          <span className="text-p-1 text-caption-1">{MOCK_SONGS.length}개</span>
+          <span className="text-p-1 text-caption-1">{songs.length}개</span>
         </div>
       </div>
 
       <div className="flex gap-6 flex-1 overflow-hidden">
         <div className="flex-1 min-w-0 overflow-y-auto pr-2">
           <div className="flex flex-col">
-            {MOCK_SONGS.map((music) => (
+            {songs.map((music) => (
               <MusicListItem key={music.id} music={music} />
             ))}
           </div>
@@ -62,7 +77,7 @@ export function WakeUpMusicSection({
               variant="filled"
               size="wide"
               className="w-full"
-              onClick={() => {}}
+              onClick={() => applyMutation.mutate()}
             >
               신청하기
             </TextButton>
