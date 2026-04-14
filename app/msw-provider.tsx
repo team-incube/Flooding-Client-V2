@@ -1,6 +1,6 @@
 'use client';
 
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 async function enableMocking() {
   if (process.env.NODE_ENV !== 'development') return;
@@ -17,7 +17,7 @@ export function MSWProvider({ children }: MSWProviderProps) {
     process.env.NODE_ENV !== 'development'
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     enableMocking().then(() => setMswReady(true));
   }, []);
 
