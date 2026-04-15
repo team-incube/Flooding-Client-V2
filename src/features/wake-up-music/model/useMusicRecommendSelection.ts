@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { Music } from "@/entities/music/model/music";
-import { randomSongs } from "@/entities/music/lib/utils";
+import { randomSongs } from "@/entities/music/lib/randomSongs";
 
 const MAX_RETRY = 3;
 
