@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
-import { ProfileCard } from "@/shared/ui/ProfileCard";
+import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
   dormitoryQueries,

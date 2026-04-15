@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
 import Search from "@/shared/asset/svg/Search";
-import { ProfileCard } from "@/shared/ui/ProfileCard";
+import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 async function enableMocking() {
   if (process.env.NODE_ENV !== 'development') return;
-  const { worker } = await import('@/shared/api/msw/worker');
+  const { worker } = await import("./msw/worker");
   return worker.start({ onUnhandledRequest: 'bypass' });
 }
 
