@@ -17,25 +17,29 @@ export function Table({
   selected = false,
   members = [],
 }: TableProps) {
-  const bgClass = reserved ? "bg-sub-4" : selected ? "bg-p-2" : "bg-background-surface";
+  const bgClass = reserved
+    ? "bg-sub-4"
+    : selected
+      ? "bg-p-2"
+      : "bg-background-surface";
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-col items-center justify-center gap-1 cursor-pointer px-4 focus:outline-none ${bgClass} ${className}`}
+      className={`flex cursor-pointer flex-col items-center justify-center gap-1 px-4 focus:outline-none ${bgClass} ${className}`}
     >
       {reserved ? (
         <div className="flex flex-col items-center gap-1">
-          <span className="text-text-1 text-sub-1 font-medium">{name}</span>
-          <span className="text-text-3 text-sub-2 text-center">
+          <span className="text-text-1 font-medium text-sub-1">{name}</span>
+          <span className="text-center text-text-3 text-sub-2">
             {members.join(", ")}
           </span>
         </div>
       ) : (
         <div className="flex flex-col items-center gap-1">
-          <div className="text-sub-2 text-[18.93px] font-medium">{name}</div>
-          <div className="text-p-1 text-[16.82px] font-medium">{capacity}</div>
+          <div className="text-[18.93px] font-medium text-sub-2">{name}</div>
+          <div className="text-[16.82px] font-medium text-p-1">{capacity}</div>
         </div>
       )}
     </button>

@@ -1,15 +1,15 @@
+import type { FloorProps } from "@/features/homebase/model/floor";
 import { FloorLayout } from "./FloorLayout";
 import { Table } from "./Table";
-import { FloorProps } from "@/shared/model/homebase/Floor";
 
-export function FourthFloor({ selectedTable, setSelectedTable }: FloorProps) {
+export function SecondFloor({ selectedTable, setSelectedTable }: FloorProps) {
   const handleSelect = (table: string) => {
     setSelectedTable(selectedTable === table ? null : table);
   };
 
   return (
-    <FloorLayout floor="4F">
-      <div className="grid grid-cols-[1fr_86px_1fr] h-[85px] lg:h-[144px] 2xl:h-[209px]">
+    <FloorLayout floor="2F">
+      <div className="grid h-[85px] grid-cols-[1fr_86px_1fr] lg:h-[144px] 2xl:h-[209px]">
         <Table
           name="테이블 1"
           capacity="6명"
@@ -18,31 +18,24 @@ export function FourthFloor({ selectedTable, setSelectedTable }: FloorProps) {
           onClick={() => handleSelect("1")}
         />
         <div className="flex items-center justify-center border-x border-b border-sub-2">
-          <span className="text-sub-2 text-text-3 font-medium">칸막이</span>
+          <span className="text-text-3 font-medium text-sub-2">칸막이</span>
         </div>
         <Table
           name="테이블 2"
-          capacity="6명"
+          capacity="4명"
           className="border-b border-sub-2"
           selected={selectedTable === "2"}
           onClick={() => handleSelect("2")}
         />
       </div>
 
-      <div className="flex h-[85px] lg:h-[144px] 2xl:h-[209px]">
+      <div className="grid h-[85px] grid-cols-[1fr_86px_1fr] lg:h-[144px] 2xl:h-[209px]">
         <Table
           name="테이블 3"
           capacity="4명"
-          className="flex-1 border-r border-sub-2"
+          className="border-r border-sub-2"
           selected={selectedTable === "3"}
           onClick={() => handleSelect("3")}
-        />
-        <Table
-          name="테이블 4"
-          capacity="4명"
-          className="flex-1"
-          selected={selectedTable === "4"}
-          onClick={() => handleSelect("4")}
         />
       </div>
     </FloorLayout>
