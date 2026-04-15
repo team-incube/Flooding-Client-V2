@@ -38,26 +38,27 @@ export const TABLE_MAX_PERSONNEL = {
   "4F": { "1": 6, "2": 6, "3": 4, "4": 4 },
 } as const;
 
-// homebaseId ↔ { floor, tableName } 매핑
+// homebaseId ↔ { floor, tableId, tableName } 매핑
+// tableId: Floor 컴포넌트의 selectedTable 값과 일치하는 식별자
 // 실제 백엔드 homebaseId 값에 맞게 수정 필요
-const HOMEBASE_ID_MAP: Record<number, { floor: string; tableName: string }> = {
-  1: { floor: "2F", tableName: "테이블 1" },
-  2: { floor: "2F", tableName: "테이블 2" },
-  3: { floor: "2F", tableName: "테이블 3" },
-  4: { floor: "3F", tableName: "테이블 1" },
-  5: { floor: "3F", tableName: "테이블 2" },
-  6: { floor: "3F", tableName: "테이블 3" },
-  7: { floor: "3F", tableName: "테이블 5" },
-  8: { floor: "3F", tableName: "테이블 6" },
-  9: { floor: "4F", tableName: "테이블 1" },
-  10: { floor: "4F", tableName: "테이블 2" },
-  11: { floor: "4F", tableName: "테이블 3" },
-  12: { floor: "4F", tableName: "테이블 4" },
+const HOMEBASE_ID_MAP: Record<number, { floor: string; tableId: string; tableName: string }> = {
+  1: { floor: "2F", tableId: "1", tableName: "테이블 1" },
+  2: { floor: "2F", tableId: "2", tableName: "테이블 2" },
+  3: { floor: "2F", tableId: "3", tableName: "테이블 3" },
+  4: { floor: "3F", tableId: "1", tableName: "테이블 1" },
+  5: { floor: "3F", tableId: "2", tableName: "테이블 2" },
+  6: { floor: "3F", tableId: "3", tableName: "테이블 3" },
+  7: { floor: "3F", tableId: "5", tableName: "테이블 5" },
+  8: { floor: "3F", tableId: "6", tableName: "테이블 6" },
+  9: { floor: "4F", tableId: "1", tableName: "테이블 1" },
+  10: { floor: "4F", tableId: "2", tableName: "테이블 2" },
+  11: { floor: "4F", tableId: "3", tableName: "테이블 3" },
+  12: { floor: "4F", tableId: "4", tableName: "테이블 4" },
 };
 
 const FLOOR_TABLE_TO_ID: Record<string, number> = Object.fromEntries(
-  Object.entries(HOMEBASE_ID_MAP).map(([id, { floor, tableName }]) => [
-    `${floor}-${tableName.replace("테이블 ", "")}`,
+  Object.entries(HOMEBASE_ID_MAP).map(([id, { floor, tableId }]) => [
+    `${floor}-${tableId}`,
     Number(id),
   ])
 );
