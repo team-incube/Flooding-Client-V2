@@ -1,5 +1,5 @@
-import { http, HttpResponse } from 'msw';
-import type { HomebaseReservation } from '../model/types';
+import { http, HttpResponse } from "msw";
+import type { HomebaseReservation } from "../model/types";
 
 const mockHomebaseList: HomebaseReservation[] = [
   {
@@ -7,9 +7,10 @@ const mockHomebaseList: HomebaseReservation[] = [
     startPeriod: 8,
     endPeriod: 9,
     homebaseId: 1,
+    reason: "회의",
     members: [
-      { studentNumber: '2501', name: '박건우' },
-      { studentNumber: '2502', name: '이수진' },
+      { studentNumber: "2501", name: "박건우" },
+      { studentNumber: "2502", name: "이수진" },
     ],
   },
   {
@@ -17,26 +18,29 @@ const mockHomebaseList: HomebaseReservation[] = [
     startPeriod: 10,
     endPeriod: 11,
     homebaseId: 4,
+    reason: "스터디",
     members: [
-      { studentNumber: '1301', name: '김태양' },
-      { studentNumber: '1302', name: '최아름' },
-      { studentNumber: '3401', name: '정민호' },
+      { studentNumber: "1301", name: "김태양" },
+      { studentNumber: "1302", name: "최아름" },
+      { studentNumber: "3401", name: "정민호" },
     ],
   },
 ];
 
 export const homebaseHandlers = [
-  http.get('/homebase', () => HttpResponse.json(mockHomebaseList)),
+  http.get("/homebase", () => HttpResponse.json(mockHomebaseList)),
 
-  http.post('/homebase/:homebaseId', () =>
-    HttpResponse.json({}, { status: 201 })
+  http.post("/homebase/:homebaseId", () =>
+    HttpResponse.json({}, { status: 201 }),
   ),
 
-  http.delete('/homebase/:homebaseId', () =>
-    new HttpResponse(null, { status: 204 })
+  http.delete(
+    "/homebase/:homebaseId",
+    () => new HttpResponse(null, { status: 204 }),
   ),
 
-  http.patch('/homebase/:homebaseId', () =>
-    new HttpResponse(null, { status: 204 })
+  http.patch(
+    "/homebase/:homebaseId",
+    () => new HttpResponse(null, { status: 204 }),
   ),
 ];
