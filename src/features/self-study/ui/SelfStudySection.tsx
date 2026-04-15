@@ -1,6 +1,5 @@
 "use client";
 
-import { useReducer } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
 import Search from "@/shared/asset/svg/Search";
@@ -12,88 +11,19 @@ import {
   dormitoryQueries,
   dormitoryMutations,
 } from "@/entities/dormitory/api/dormitory.queries";
-import { getClassNumber, getGrade } from "@/entities/user/lib/getUserInfo";
-import { Sex } from "@/entities/user/model/user";
-
-function toggleFilter<T>(arr: T[], value: T): T[] {
-  return arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value];
-}
-
-interface FilterState {
-  searchQuery: string;
-  selectedGrades: number[];
-  selectedClasses: number[];
-  selectedGender: Sex | null;
-}
-
-type FilterAction =
-  | { type: "SET_SEARCH"; payload: string }
-  | { type: "TOGGLE_GRADE"; payload: number }
-  | { type: "TOGGLE_CLASS"; payload: number }
-  | { type: "SET_GENDER"; payload: "MAN" | "WOMAN" | null }
-  | { type: "RESET" };
-
-const initialState: FilterState = {
-  searchQuery: "",
-  selectedGrades: [],
-  selectedClasses: [],
-  selectedGender: null,
-};
-
-function filterReducer(state: FilterState, action: FilterAction): FilterState {
-  switch (action.type) {
-    case "SET_SEARCH":
-      return { ...state, searchQuery: action.payload };
-    case "TOGGLE_GRADE":
-      return {
-        ...state,
-        selectedGrades: toggleFilter(state.selectedGrades, action.payload),
-      };
-    case "TOGGLE_CLASS":
-      return {
-        ...state,
-        selectedClasses: toggleFilter(state.selectedClasses, action.payload),
-      };
-    case "SET_GENDER":
-      return { ...state, selectedGender: action.payload };
-    case "RESET":
-      return initialState;
-  }
-}
+import { useStudyFilter } from "../model/useStudyFilter";
 
 export function SelfStudySection() {
   const queryClient = useQueryClient();
-  const [state, dispatch] = useReducer(filterReducer, initialState);
+  const { data: students = [] } = useQuery(dormitoryQueries.study());
+  const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
-
-  const { data: students = [] } = useQuery(dormitoryQueries.study());
 
   const applyMutation = useMutation({
     mutationFn: dormitoryMutations.applyStudy,
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["dormitory", "study"] }),
-  });
-
-  const filteredStudents = students.filter((s) => {
-    if (
-      searchQuery &&
-      !s.name.includes(searchQuery) &&
-      !String(s.studentNumber).includes(searchQuery)
-    )
-      return false;
-    if (
-      selectedGrades.length > 0 &&
-      !selectedGrades.includes(getGrade(s.studentNumber))
-    )
-      return false;
-    if (
-      selectedClasses.length > 0 &&
-      !selectedClasses.includes(getClassNumber(s.studentNumber))
-    )
-      return false;
-    if (selectedGender && s.sex !== selectedGender) return false;
-    return true;
   });
 
   return (
