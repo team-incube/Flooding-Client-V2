@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { User } from "@/entities/user/model/user";
 import { MOCK_RESERVATIONS } from "@/entities/school/model/mock";
-import { getMaxPersonnel } from "../lib/homebase";
+import { getMaxPersonnel } from "../lib/getMaxPersonnel";
 
 export function useHomebaseForm() {
   const [selectedFloor, setSelectedFloor] = useState("2F");

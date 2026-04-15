@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import HomeBase from "@/shared/asset/svg/HomeBase";
 import Search from "@/shared/asset/svg/Search";
 import TextField from "@/shared/ui/textField";
@@ -10,58 +9,35 @@ import { ThirdFloor } from "@/shared/ui/homebase/ThirdFloor";
 import { FourthFloor } from "@/shared/ui/homebase/FourthFloor";
 import StudentSearch from "@/features/homebase/ui/StudentSearch";
 import SelectedStudent from "@/features/homebase/ui/SelectedStudent";
-import { User } from "@/entities/user/model/user";
 import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem";
-import {
-  MOCK_RESERVATIONS,
-  MOCK_MY_RESERVATION,
-} from "@/entities/school/model/mock";
-
-const FLOORS = [
-  { value: "2F", label: "2층" },
-  { value: "3F", label: "3층" },
-  { value: "4F", label: "4층" },
-];
-
-const PERIODS = ["8교시", "9교시", "10교시", "11교시"];
-
-const PERIODS_TIME: Record<string, string> = {
-  "8교시": "16:40",
-  "9교시": "17:40",
-  "10교시": "19:30",
-  "11교시": "20:30",
-};
-
-export const TABLE_MAX_PERSONNEL = {
-  "2F": { "1": 6, "2": 4, "3": 4 },
-  "3F": { "1": 6, "2": 6, "3": 4, "5": 4, "6": 4 },
-  "4F": { "1": 6, "2": 6, "3": 4, "4": 4 },
-} as const;
+import { MOCK_MY_RESERVATION } from "@/entities/school/model/mock";
+import { FLOORS, PERIODS } from "@/features/homebase/model/constants";
+import { isPeriodStarted } from "@/features/homebase/lib/isPeriodStarted";
+import { useHomebaseForm } from "@/features/homebase/model/useHomebaseForm";
 
 export default function HomebaseCard({
   showReservations = false,
 }: {
   showReservations?: boolean;
 }) {
-  const [selectedFloor, setSelectedFloor] = useState("2F");
-  const [selectedPeriod, setSelectedPeriod] = useState("8교시");
-  const [name, setName] = useState("");
-  const [reason, setReason] = useState("");
-  const [selectedTable, setSelectedTable] = useState<string | null>(null);
-  const [selectedStudents, setSelectedStudents] = useState<User[]>([]);
-
-  const isPeriodStarted = (period: string) => {
-    const now = new Date();
-    const [hour, minute] = PERIODS_TIME[period].split(":").map(Number);
-    const periodTime = new Date();
-    periodTime.setHours(hour, minute, 0, 0);
-    return now >= periodTime;
-  };
-
-  const handleFloorChange = (floor: string) => {
-    setSelectedFloor(floor);
-    setSelectedTable(null);
-  };
+  const {
+    selectedFloor,
+    selectedPeriod,
+    setSelectedPeriod,
+    name,
+    setName,
+    reason,
+    setReason,
+    selectedTable,
+    setSelectedTable,
+    selectedStudents,
+    setSelectedStudents,
+    handleFloorChange,
+    maxPersonnel,
+    isFull,
+    canSubmit,
+    filteredReservations,
+  } = useHomebaseForm();
 
   const renderFloor = () => {
     switch (selectedFloor) {
@@ -88,23 +64,6 @@ export default function HomebaseCard({
         );
     }
   };
-
-  const getMaxPersonnel = (floor: string, table: string | null): number => {
-    if (!table) return 0;
-    const floorKey = floor as keyof typeof TABLE_MAX_PERSONNEL;
-    if (!TABLE_MAX_PERSONNEL[floorKey]) return 0;
-    const floorTables = TABLE_MAX_PERSONNEL[floorKey];
-    const tableKey = table as keyof typeof floorTables;
-    return floorTables[tableKey] ?? 0;
-  };
-
-  const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
-  const isFull = maxPersonnel > 0 && selectedStudents.length >= maxPersonnel;
-  const canSubmit = selectedTable && isFull && reason.trim().length > 0;
-
-  const filteredReservations = MOCK_RESERVATIONS.filter(
-    (r) => r.floor === selectedFloor,
-  );
 
   return (
     <div className="w-full bg-background-surface rounded-2xl p-6 flex flex-col">
@@ -235,10 +194,7 @@ export default function HomebaseCard({
               </span>
             ) : (
               filteredReservations.map((item) => (
-                <ReservationTableItem
-                  key={item.id}
-                  reservation={item}
-                />
+                <ReservationTableItem key={item.id} reservation={item} />
               ))
             )}
           </div>
