@@ -1,14 +1,21 @@
-import { User } from "@/entities/user/model/user";
+import type { Dispatch, SetStateAction } from "react";
+import type { User } from "@/entities/user/model/user";
 import Cancel from "@/shared/asset/svg/Cancel";
+import { removeSelectedStudent } from "../lib/student-selection";
 
 interface SelectedStudentProps {
   selectedStudents: User[];
-  setSelectedStudents: React.Dispatch<React.SetStateAction<User[]>>;
+  setSelectedStudents: Dispatch<SetStateAction<User[]>>;
 }
 
-export default function SelectedStudent({ selectedStudents, setSelectedStudents}: SelectedStudentProps) {
-  const removeStudent = (id: number) => {
-    setSelectedStudents((prev) => prev.filter((s) => s.id !== id));
+export default function SelectedStudent({
+  selectedStudents,
+  setSelectedStudents,
+}: SelectedStudentProps) {
+  const handleRemoveStudent = (studentId: number) => {
+    setSelectedStudents((prev) =>
+      removeSelectedStudent(prev, studentId),
+    );
   };
 
   return (
@@ -23,7 +30,7 @@ export default function SelectedStudent({ selectedStudents, setSelectedStudents}
           </span>
 
           <button
-            onClick={() => removeStudent(student.id)}
+            onClick={() => handleRemoveStudent(student.id)}
             className="cursor-pointer"
           >
             <Cancel />

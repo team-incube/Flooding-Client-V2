@@ -13,6 +13,9 @@ import {
 } from "@/entities/dormitory/api/dormitory.queries";
 import { useStudyFilter } from "../model/useStudyFilter";
 
+const GRADE_OPTIONS = [1, 2, 3] as const;
+const CLASS_OPTIONS = [1, 2, 3, 4] as const;
+
 export function SelfStudySection() {
   const queryClient = useQueryClient();
   const { data: students = [] } = useQuery(dormitoryQueries.study());
@@ -25,6 +28,20 @@ export function SelfStudySection() {
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["dormitory", "study"] }),
   });
+
+  const handleResetFilters = () => dispatch({ type: "RESET" });
+  const handleSearchQueryChange = (value: string) =>
+    dispatch({ type: "SET_SEARCH", payload: value });
+  const handleToggleGrade = (grade: number) =>
+    dispatch({ type: "TOGGLE_GRADE", payload: grade });
+  const handleToggleClass = (classNumber: number) =>
+    dispatch({ type: "TOGGLE_CLASS", payload: classNumber });
+  const handleToggleGender = (gender: "MAN" | "WOMAN") =>
+    dispatch({
+      type: "SET_GENDER",
+      payload: selectedGender === gender ? null : gender,
+    });
+  const handleApplyStudy = () => applyMutation.mutate();
 
   return (
     <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-4">
@@ -59,7 +76,7 @@ export function SelfStudySection() {
             <span className="text-main-text text-text-2">필터</span>
             <button
               type="button"
-              onClick={() => dispatch({ type: "RESET" })}
+              onClick={handleResetFilters}
               className="text-sub-1 text-caption-2 cursor-pointer hover:text-p-1 transition-colors"
             >
               초기화
@@ -69,24 +86,20 @@ export function SelfStudySection() {
           <TextField
             placeholder="학생 이름, 학번을 입력해주세요"
             value={searchQuery}
-            onChange={(e) =>
-              dispatch({ type: "SET_SEARCH", payload: e.target.value })
-            }
+            onChange={(e) => handleSearchQueryChange(e.target.value)}
             rightIcon={<Search />}
           />
 
           <div className="flex flex-col gap-2">
             <span className="text-sub-1 text-caption-1">학년</span>
             <div className="flex gap-2">
-              {[1, 2, 3].map((grade) => (
+              {GRADE_OPTIONS.map((grade) => (
                 <NumberButton
                   key={grade}
                   variant={
                     selectedGrades.includes(grade) ? "filled" : "outlined"
                   }
-                  onClick={() =>
-                    dispatch({ type: "TOGGLE_GRADE", payload: grade })
-                  }
+                  onClick={() => handleToggleGrade(grade)}
                 >
                   {grade}
                 </NumberButton>
@@ -97,17 +110,17 @@ export function SelfStudySection() {
           <div className="flex flex-col gap-2">
             <span className="text-sub-1 text-caption-1">반</span>
             <div className="flex gap-2">
-              {[1, 2, 3, 4].map((cls) => (
+              {CLASS_OPTIONS.map((classNumber) => (
                 <NumberButton
-                  key={cls}
+                  key={classNumber}
                   variant={
-                    selectedClasses.includes(cls) ? "filled" : "outlined"
+                    selectedClasses.includes(classNumber)
+                      ? "filled"
+                      : "outlined"
                   }
-                  onClick={() =>
-                    dispatch({ type: "TOGGLE_CLASS", payload: cls })
-                  }
+                  onClick={() => handleToggleClass(classNumber)}
                 >
-                  {cls}
+                  {classNumber}
                 </NumberButton>
               ))}
             </div>
@@ -119,24 +132,14 @@ export function SelfStudySection() {
               <TextButton
                 variant={selectedGender === "MAN" ? "filled" : "outlined"}
                 size="small"
-                onClick={() =>
-                  dispatch({
-                    type: "SET_GENDER",
-                    payload: selectedGender === "MAN" ? null : "MAN",
-                  })
-                }
+                onClick={() => handleToggleGender("MAN")}
               >
                 남자
               </TextButton>
               <TextButton
                 variant={selectedGender === "WOMAN" ? "filled" : "outlined"}
                 size="small"
-                onClick={() =>
-                  dispatch({
-                    type: "SET_GENDER",
-                    payload: selectedGender === "WOMAN" ? null : "WOMAN",
-                  })
-                }
+                onClick={() => handleToggleGender("WOMAN")}
               >
                 여자
               </TextButton>
@@ -148,7 +151,7 @@ export function SelfStudySection() {
           <TextButton
             variant="filled"
             size="wide"
-            onClick={() => applyMutation.mutate()}
+            onClick={handleApplyStudy}
           >
             신청하기
           </TextButton>
