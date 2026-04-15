@@ -11,11 +11,3 @@ export function groupMembersByGrade(
     return acc;
   }, {});
 }
-
-export function getSortedGrades(
-  grouped: Record<number, ClubMember[]>,
-): number[] {
-  return Object.keys(grouped)
-    .map(Number)
-    .sort((a, b) => b - a);
-}

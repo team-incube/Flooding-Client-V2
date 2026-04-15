@@ -1,5 +1,6 @@
-import { getGrade } from "@/entities/user/lib/getUserInfo";
 import { ClubMember } from "../model/club";
+import { groupMembersByGrade } from "../lib/groupMembersByGrade";
+import { getSortedGrades } from "../lib/getSortedGrades";
 
 interface ClubMemberListProps {
   members: ClubMember[];
@@ -12,19 +13,8 @@ export default function ClubMemberList({
 }: ClubMemberListProps) {
   if (members.length === 0) return null;
 
-  const groupedMembers = members.reduce<Record<number, ClubMember[]>>(
-    (acc, member) => {
-      const grade = getGrade(member.studentNumber);
-      if (!acc[grade]) acc[grade] = [];
-      acc[grade].push(member);
-      return acc;
-    },
-    {},
-  );
-
-  const sortedGrades = Object.keys(groupedMembers)
-    .map(Number)
-    .sort((a, b) => b - a);
+  const groupedMembers = groupMembersByGrade(members);
+  const sortedGrades = getSortedGrades(groupedMembers);
 
   return (
     <div className="flex flex-col gap-2">
