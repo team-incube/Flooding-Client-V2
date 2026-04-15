@@ -79,7 +79,7 @@ function toReservation(r: HomebaseReservation): Reservation {
     floor,
     members: r.members.map((m) => `${m.studentNumber} ${m.name}`),
     periods,
-    reason: "",
+    reason: r.reason,
   };
 }
 
@@ -174,6 +174,7 @@ export default function HomebaseCard({
         homebaseId,
         startPeriod,
         endPeriod: startPeriod,
+        reason,
         members: selectedStudents.map((s) => ({
           studentNumber: String(s.studentNumber),
           name: s.name,
