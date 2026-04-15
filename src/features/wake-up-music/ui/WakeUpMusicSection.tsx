@@ -10,7 +10,7 @@ import TextField from "@/shared/ui/textField";
 import {
   dormitoryQueries,
   dormitoryMutations,
-} from "@/entities/dormitory/api/dormitory.queries";
+} from "@/entities/dormitory/api/dormitoryQueries";
 import { MusicRecommendModal } from "./MusicRecommendModal";
 
 interface WakeUpMusicSectionProps {

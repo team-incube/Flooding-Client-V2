@@ -4,8 +4,8 @@ import {
   getDormitoryMusic,
   getMassageApplicants,
   getSelfStudyApplicants,
-} from './get-dormitory';
-import type { MusicApplyRequest } from '../model/types';
+} from './getDormitory';
+import type { MusicApplyRequest } from '../model/dormitory';
 
 export const dormitoryQueries = {
   music: () =>

@@ -1,7 +1,7 @@
 import { http, HttpResponse } from "msw";
-import type { HomebaseReservation } from "../model/types";
+import type { HomebaseReservation } from "../model/homebase";
 
-const mockHomebaseList: HomebaseReservation[] = [
+const mockHomebaseReservations: HomebaseReservation[] = [
   {
     id: 1,
     startPeriod: 8,
@@ -28,19 +28,17 @@ const mockHomebaseList: HomebaseReservation[] = [
 ];
 
 export const homebaseHandlers = [
-  http.get("/homebase", () => HttpResponse.json(mockHomebaseList)),
+  http.get("/homebase", () => HttpResponse.json(mockHomebaseReservations)),
 
   http.post("/homebase/:homebaseId", () =>
-    HttpResponse.json({}, { status: 201 }),
+    HttpResponse.json({ success: true }, { status: 201 }),
   ),
 
-  http.delete(
-    "/homebase/:homebaseId",
-    () => new HttpResponse(null, { status: 204 }),
+  http.delete("/homebase/:homebaseId", () =>
+    new HttpResponse(null, { status: 204 }),
   ),
 
-  http.patch(
-    "/homebase/:homebaseId",
-    () => new HttpResponse(null, { status: 204 }),
+  http.patch("/homebase/:homebaseId", () =>
+    new HttpResponse(null, { status: 204 }),
   ),
 ];

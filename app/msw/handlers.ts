@@ -1,4 +1,4 @@
-import { dormitoryHandlers } from "@/entities/dormitory/api/dormitory.handlers";
-import { homebaseHandlers } from "@/features/homebase/api/homebase.handlers";
+import { dormitoryHandlers } from "@/entities/dormitory/api/dormitoryHandlers";
+import { homebaseHandlers } from "@/entities/homebase/api/homebaseHandlers";
 
 export const handlers = [...dormitoryHandlers, ...homebaseHandlers];

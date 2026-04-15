@@ -7,7 +7,7 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
   dormitoryQueries,
   dormitoryMutations,
-} from "@/entities/dormitory/api/dormitory.queries";
+} from "@/entities/dormitory/api/dormitoryQueries";
 
 export function MassageChairSection() {
   const queryClient = useQueryClient();

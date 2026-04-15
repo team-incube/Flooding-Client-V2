@@ -2,17 +2,18 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { Reservation } from "@/entities/school/model/reservation";
+import { homebaseMutations, homebaseQueries } from "@/entities/homebase/api/homebaseQueries";
+import {
+  getHomebaseId,
+  getHomebaseLocation,
+  toSchoolReservation,
+} from "@/entities/homebase/lib/homebaseReservation";
+import type { HomebaseApplyRequest } from "@/entities/homebase/model/homebase";
 import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem";
 import type { User } from "@/entities/user/model/user";
-import { homebaseMutations, homebaseQueries } from "@/features/homebase/api/homebase.queries";
 import { getMaxPersonnel } from "@/features/homebase/lib/getMaxPersonnel";
 import { isPeriodStarted } from "@/features/homebase/lib/isPeriodStarted";
 import { FLOORS, PERIODS } from "@/features/homebase/model/constants";
-import type {
-  HomebaseApplyRequest,
-  HomebaseReservation,
-} from "@/features/homebase/model/types";
 import { FourthFloor } from "@/features/homebase/ui/FourthFloor";
 import SelectedStudent from "@/features/homebase/ui/SelectedStudent";
 import { SecondFloor } from "@/features/homebase/ui/SecondFloor";
@@ -22,55 +23,6 @@ import HomeBase from "@/shared/asset/svg/HomeBase";
 import Search from "@/shared/asset/svg/Search";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
-
-const HOMEBASE_ID_MAP: Record<
-  number,
-  { floor: string; tableId: string; tableName: string }
-> = {
-  1: { floor: "2F", tableId: "1", tableName: "테이블 1" },
-  2: { floor: "2F", tableId: "2", tableName: "테이블 2" },
-  3: { floor: "2F", tableId: "3", tableName: "테이블 3" },
-  4: { floor: "3F", tableId: "1", tableName: "테이블 1" },
-  5: { floor: "3F", tableId: "2", tableName: "테이블 2" },
-  6: { floor: "3F", tableId: "3", tableName: "테이블 3" },
-  7: { floor: "3F", tableId: "5", tableName: "테이블 5" },
-  8: { floor: "3F", tableId: "6", tableName: "테이블 6" },
-  9: { floor: "4F", tableId: "1", tableName: "테이블 1" },
-  10: { floor: "4F", tableId: "2", tableName: "테이블 2" },
-  11: { floor: "4F", tableId: "3", tableName: "테이블 3" },
-  12: { floor: "4F", tableId: "4", tableName: "테이블 4" },
-};
-
-const FLOOR_TABLE_TO_ID: Record<string, number> = Object.fromEntries(
-  Object.entries(HOMEBASE_ID_MAP).map(([id, { floor, tableId }]) => [
-    `${floor}-${tableId}`,
-    Number(id),
-  ]),
-);
-
-function toReservation(reservation: HomebaseReservation): Reservation {
-  const { floor, tableName } = HOMEBASE_ID_MAP[reservation.homebaseId] ?? {
-    floor: "?F",
-    tableName: `테이블 ${reservation.homebaseId}`,
-  };
-
-  const periods: string[] = [];
-
-  for (let period = reservation.startPeriod; period <= reservation.endPeriod; period += 1) {
-    periods.push(`${period}교시`);
-  }
-
-  return {
-    id: reservation.id,
-    tableName,
-    floor,
-    members: reservation.members.map(
-      (member) => `${member.studentNumber} ${member.name}`,
-    ),
-    periods,
-    reason: reservation.reason,
-  };
-}
 
 interface HomebaseCardProps {
   showReservations?: boolean;
@@ -97,17 +49,33 @@ export default function HomebaseCard({
       homebaseId: number;
       body: HomebaseApplyRequest;
     }) => homebaseMutations.apply(homebaseId, body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["homebase"] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["homebase", "list"] }),
   });
 
   const cancelMutation = useMutation({
     mutationFn: (homebaseId: number) => homebaseMutations.cancel(homebaseId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["homebase"] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["homebase", "list"] }),
   });
 
   const handleFloorChange = (floor: string) => {
     setSelectedFloor(floor);
     setSelectedTable(null);
+  };
+
+  const handleNameChange = (value: string) => {
+    setName(value);
+  };
+
+  const handleReasonChange = (value: string) => {
+    setReason(value);
+  };
+
+  const handlePeriodSelect = (period: string) => {
+    if (!isPeriodStarted(period)) {
+      setSelectedPeriod(period);
+    }
   };
 
   const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
@@ -120,7 +88,7 @@ export default function HomebaseCard({
 
     const periodIndex = PERIODS.indexOf(selectedPeriod);
     const startPeriod = 8 + periodIndex;
-    const homebaseId = FLOOR_TABLE_TO_ID[`${selectedFloor}-${selectedTable}`];
+    const homebaseId = getHomebaseId(selectedFloor, selectedTable);
 
     if (!homebaseId) return;
 
@@ -142,13 +110,14 @@ export default function HomebaseCard({
   const filteredReservations = reservations
     .filter(
       (reservation) =>
-        (HOMEBASE_ID_MAP[reservation.homebaseId]?.floor ?? "") ===
-        selectedFloor,
+        getHomebaseLocation(reservation.homebaseId).floor === selectedFloor,
     )
-    .map(toReservation);
+    .map(toSchoolReservation);
 
-  const myReservation =
-    reservations.length > 0 ? toReservation(reservations[0]) : null;
+  const myReservationSource = reservations[0];
+  const myReservation = myReservationSource
+    ? toSchoolReservation(myReservationSource)
+    : null;
 
   const renderFloor = () => {
     switch (selectedFloor) {
@@ -179,7 +148,7 @@ export default function HomebaseCard({
   };
 
   return (
-    <div className="w-full rounded-2xl bg-background-surface p-6 flex flex-col">
+    <div className="flex w-full flex-col rounded-2xl bg-background-surface p-6">
       <div className="flex items-center gap-1">
         <HomeBase />
         <span className="text-text-1 font-semibold text-main-text">
@@ -210,11 +179,7 @@ export default function HomebaseCard({
                   ? "filled"
                   : "outlined"
             }
-            onClick={() => {
-              if (!isPeriodStarted(period)) {
-                setSelectedPeriod(period);
-              }
-            }}
+            onClick={() => handlePeriodSelect(period)}
           >
             {period}
           </TextButton>
@@ -230,7 +195,7 @@ export default function HomebaseCard({
               <TextField
                 placeholder="이름, 학번등을 입력해주세요"
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(event) => handleNameChange(event.target.value)}
                 rightIcon={<Search />}
               />
               <StudentSearch
@@ -246,7 +211,7 @@ export default function HomebaseCard({
                 placeholder="이용 사유를 적어주세요"
                 value={reason}
                 maxLength={20}
-                onChange={(event) => setReason(event.target.value)}
+                onChange={(event) => handleReasonChange(event.target.value)}
                 className="h-[120px] w-full resize-none rounded-lg border border-sub-2 bg-background-surface p-4 text-main-text outline-none transition-all caret-p-1 placeholder:text-sub-2 focus:border-sub-1"
               />
               <span className="text-right text-size-caption-1 text-sub-2">
@@ -284,12 +249,12 @@ export default function HomebaseCard({
               <span className="text-center text-text-2 font-semibold text-sub-1">
                 내 예약현황
               </span>
-              {myReservation ? (
+              {myReservation && myReservationSource ? (
                 <ReservationTableItem
                   reservation={myReservation}
                   isOwn
                   onDelete={() =>
-                    cancelMutation.mutate(reservations[0].homebaseId)
+                    cancelMutation.mutate(myReservationSource.homebaseId)
                   }
                   onEdit={() => {}}
                 />

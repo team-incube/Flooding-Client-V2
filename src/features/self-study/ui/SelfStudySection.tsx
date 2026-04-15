@@ -10,7 +10,7 @@ import TextField from "@/shared/ui/textField";
 import {
   dormitoryQueries,
   dormitoryMutations,
-} from "@/entities/dormitory/api/dormitory.queries";
+} from "@/entities/dormitory/api/dormitoryQueries";
 import { useStudyFilter } from "../model/useStudyFilter";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;

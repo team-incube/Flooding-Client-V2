@@ -1,5 +1,5 @@
 import { getClassNumber, getGrade } from "@/entities/user/lib/getUserInfo";
-import type { DormitoryStudent } from "@/entities/dormitory/model/types";
+import type { DormitoryStudent } from "@/entities/dormitory/model/dormitory";
 import type { FilterState } from "../model/studyFilterReducer";
 
 interface FilterStudyStudentsParams {

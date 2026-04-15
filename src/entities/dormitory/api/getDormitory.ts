@@ -1,5 +1,5 @@
 import { instance } from '@/shared/api/instance';
-import type { DormitoryStudent, DormitoryMusic } from '../model/types';
+import type { DormitoryStudent, DormitoryMusic } from '../model/dormitory';
 
 export async function getDormitoryMusic(): Promise<DormitoryMusic[]> {
   const { data } = await instance.get<DormitoryMusic[]>('/dormitory/music');
