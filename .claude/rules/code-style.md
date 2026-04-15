@@ -5,13 +5,19 @@
 - 모든 응답과 작업 설명은 한국어를 사용한다.
 - TypeScript `strict` 기준을 깨는 우회는 금지한다.
 - 폴더명은 kebab-case를 사용한다.
-- 파일명은 역할과 프로젝트 관례에 맞게 작성하고, 문서 차원에서 kebab-case를 강제하지 않는다.
+- 파일명은 역할별 규칙을 따른다.
+- React 컴포넌트 파일은 PascalCase를 사용한다.
+- 컴포넌트가 아닌 파일은 kebab-case를 사용하지 않는다.
+- 여러 단어로 된 비컴포넌트 파일은 lowerCamelCase를 사용한다.
+- 한 단어로 충분한 도메인 파일은 lowercase를 사용할 수 있다.
+- 새 비컴포넌트 파일에 PascalCase를 쓰지 않는다.
 - Markdown 문서는 위 파일명 규칙의 예외다.
 - 불필요한 축약어보다 의미가 분명한 이름을 우선한다.
 
 ## 컴포넌트와 타입 네이밍
 
 - React 컴포넌트는 PascalCase를 사용한다.
+- React 컴포넌트 파일도 PascalCase를 우선한다.
 - props 인터페이스는 `ComponentNameProps` 형식을 우선한다.
 - 타입과 인터페이스 이름은 역할이 드러나야 한다.
 - hook은 반드시 `useXxx` 형식을 사용한다.

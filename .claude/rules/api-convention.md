@@ -23,7 +23,7 @@
 ## Mutation 규칙
 
 - mutation 함수는 도메인 객체 형태로 묶어 export한다.
-- body 타입은 `model/types` 또는 도메인 타입 파일에서 가져온다.
+- body 타입은 `model/[domain]` 같은 도메인 타입 파일에서 가져온다.
 - API 경로 문자열은 같은 도메인 안에서 일관된 네이밍을 유지한다.
 
 ## 인증 규칙

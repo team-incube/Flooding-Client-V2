@@ -3,7 +3,8 @@
 ## 기본 규칙
 
 - 폴더명은 kebab-case를 사용한다.
-- 컴포넌트 파일명은 역할과 프로젝트 관례에 맞게 작성하며, kebab-case를 강제하지 않는다.
+- React 컴포넌트 파일명은 PascalCase를 사용한다.
+- 컴포넌트가 아닌 파일은 이 규칙의 대상이 아니며, 별도 규칙에 따라 lowerCamelCase 또는 lowercase를 사용한다.
 - 컴포넌트는 PascalCase로 선언한다.
 - props 타입은 `ComponentNameProps` 형식을 우선한다.
 
