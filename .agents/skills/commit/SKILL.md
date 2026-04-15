@@ -26,6 +26,7 @@ allowed-tools: Read
 ## Rules
 
 - Write commit messages in Korean
-- File/directory naming: kebab-case
+- Directory naming: kebab-case
+- File naming follows project conventions by role; Markdown documents are an exception
 - Keep commits focused and atomic
 - Write commit messages in the smallest possible units.

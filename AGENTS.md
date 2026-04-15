@@ -50,7 +50,8 @@ Theme is defined via CSS variables in `app/globals.css` — **no tailwind.config
 
 ## Code Conventions
 
-- **File names**: kebab-case (e.g., `profile-card.tsx`)
+- **Directory names**: kebab-case
+- **File names**: Follow project conventions by role; Markdown documents are an exception
 - **Components**: PascalCase with `ComponentNameProps` interface pattern
 - **Styling**: Tailwind utility classes only — no inline styles
 - **Variants**: Define a `const variantStyles = {}` object, index into it for conditional classes

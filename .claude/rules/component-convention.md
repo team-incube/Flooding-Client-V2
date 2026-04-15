@@ -2,7 +2,8 @@
 
 ## 기본 규칙
 
-- 컴포넌트 파일명은 kebab-case를 사용한다.
+- 폴더명은 kebab-case를 사용한다.
+- 컴포넌트 파일명은 역할과 프로젝트 관례에 맞게 작성하며, kebab-case를 강제하지 않는다.
 - 컴포넌트는 PascalCase로 선언한다.
 - props 타입은 `ComponentNameProps` 형식을 우선한다.
 
