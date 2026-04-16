@@ -51,7 +51,7 @@ export const dormitoryHandlers = [
     new HttpResponse(null, { status: 204 })
   ),
 
-  //PUT - 벌점 설정
+  // PUT — 벌점 설정
   http.put('/dormitory/penalties/:userId', () =>
     new HttpResponse(null, { status: 204 })
   ),

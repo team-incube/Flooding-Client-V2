@@ -8,12 +8,12 @@ export interface MusicApplyRequest {
   url: string;
 }
 
-export interface PenaltyApplyRequest {
+export interface UpdatePenaltyRequest {
   score: number;
   reason: string;
 }
 
-export interface CleaningZoneApplyRequest {
+export interface CreateCleaningZoneRequest {
   name: string;
   description: string;
 }
