@@ -4,7 +4,7 @@ import type {
   DormitoryMusic, 
   MyPenaltyResponse, 
   AllPenaltiesResponse, 
-  CleaningZone, 
+  CleaningZones, 
   CleaningZoneDetail 
 } from '../model/dormitory';
 
@@ -33,8 +33,8 @@ export async function getAllPenalties(): Promise<AllPenaltiesResponse> {
   return data;
 }
 
-export async function getCleaningZones(): Promise<CleaningZone[]> {
-  const { data } = await instance.get<CleaningZone[]>('/dormitory/cleaning-zones');
+export async function getCleaningZones(): Promise<CleaningZones[]> {
+  const { data } = await instance.get<CleaningZones []>('/dormitory/cleaning-zones');
   return data;
 }
 

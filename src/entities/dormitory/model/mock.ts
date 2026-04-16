@@ -1,7 +1,7 @@
 import { 
   MyPenaltyResponse, 
   AllPenaltiesResponse, 
-  CleaningZone, 
+  CleaningZones, 
   CleaningZoneDetail 
 } from "./dormitory";
 
@@ -40,7 +40,7 @@ export const MOCK_ALL_PENALTIES : AllPenaltiesResponse = {
   empty: false
 }
 
-export const MOCK_CLEANING_ZONES : CleaningZone[] = [
+export const MOCK_CLEANING_ZONES : CleaningZones[] = [
       {
       id: 1,
       name: "1층 복도",
