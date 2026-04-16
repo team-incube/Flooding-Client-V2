@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import ClubCard from "@/entities/club/ui/ClubCard";
 import { MOCK_CLUBS } from "@/entities/club/model/mock";
-import { filterClubs } from "../lib/filter-clubs";
+import { filterClubs } from "../lib/filterClubs";
 import ClubSearch from "./ClubSearch";
 import ClubRegistrationSection from "./ClubRegistrationSection";
 

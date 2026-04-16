@@ -1,6 +1,6 @@
 import { useReducer } from "react";
 import type { DormitoryStudent } from "@/entities/dormitory/model/dormitory";
-import { filterStudyStudents } from "../lib/filter-study-students";
+import { filterStudyStudents } from "../lib/filterStudyStudents";
 import {
   filterReducer,
   initialFilterState,

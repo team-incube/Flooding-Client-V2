@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import { MOCK_STUDENTS } from "@/entities/user/model/mock";
 import type { User } from "@/entities/user/model/user";
-import { filterAvailableStudents } from "../lib/student-selection";
+import { filterAvailableStudents } from "../lib/studentSelection";
 
 interface StudentSearchProps {
   search: string;

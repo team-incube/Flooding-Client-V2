@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { User } from "@/entities/user/model/user";
 import Cancel from "@/shared/asset/svg/Cancel";
-import { removeSelectedStudent } from "../lib/student-selection";
+import { removeSelectedStudent } from "../lib/studentSelection";
 
 interface SelectedStudentProps {
   selectedStudents: User[];
