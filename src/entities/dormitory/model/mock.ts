@@ -3,7 +3,7 @@ import {
   AllPenaltiesResponse, 
   CleaningZone, 
   CleaningZoneDetail 
-} from "./types";
+} from "./dormitory";
 
 export const MOCK_MY_PENALTY : MyPenaltyResponse = {
   penaltyScore: 3

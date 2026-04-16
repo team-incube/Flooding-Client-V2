@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import ClubCard from "@/entities/club/ui/ClubCard";
 import { MOCK_CLUBS } from "@/entities/club/model/mock";
+import { filterClubs } from "../lib/filterClubs";
 import ClubSearch from "./ClubSearch";
 import ClubRegistrationSection from "./ClubRegistrationSection";
 
@@ -15,14 +16,12 @@ export function ClubSection() {
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
-  const isSearching = searchValue !== "";
-  const filteredClubs = (isSearching && !isRegistrationPeriod)
-    ? MOCK_CLUBS.filter(
-        (club) =>
-          club.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-          club.leader.toLowerCase().includes(searchValue.toLowerCase()),
-      )
-    : MOCK_CLUBS;
+  const filteredClubs = filterClubs({
+    clubs: MOCK_CLUBS,
+    isRegistrationPeriod,
+    searchValue,
+  });
+  const visibleClubCount = isRegistrationPeriod ? 0 : MOCK_CLUBS.length;
 
   const handleSearch = () => setSearchValue(query);
   const handleSelectClub = (clubId: number) => router.push(`/club/${clubId}`);
@@ -38,7 +37,7 @@ export function ClubSection() {
               <span className="text-caption-1 text-sub-1">동아리 수</span>
               <span className="text-caption-1 text-p-1">
                 {" "}
-                {isRegistrationPeriod ? 0 : MOCK_CLUBS.length}개
+                {visibleClubCount}개
               </span>
             </div>
           </div>

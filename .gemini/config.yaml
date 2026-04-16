@@ -1,3 +1,0 @@
-ignore_patterns:
-  - ".claude/**"
-  - ".agents/**"

@@ -2,12 +2,12 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
-import { ProfileCard } from "@/shared/ui/ProfileCard";
+import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
   dormitoryQueries,
   dormitoryMutations,
-} from "@/entities/dormitory/api/dormitory.queries";
+} from "@/entities/dormitory/api/dormitoryQueries";
 
 export function MassageChairSection() {
   const queryClient = useQueryClient();
