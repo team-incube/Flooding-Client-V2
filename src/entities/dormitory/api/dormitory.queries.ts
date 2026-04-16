@@ -4,6 +4,10 @@ import {
   getDormitoryMusic,
   getMassageApplicants,
   getSelfStudyApplicants,
+  getMyPenalties,
+  getAllPenalties,
+  getCleaningZones,
+  getCleaningZoneDetail,
 } from './get-dormitory';
 import type { MusicApplyRequest } from '../model/types';
 
@@ -24,6 +28,30 @@ export const dormitoryQueries = {
     queryOptions({
       queryKey: ['dormitory', 'study'],
       queryFn: getSelfStudyApplicants,
+    }),
+
+  myPenalties: () =>
+    queryOptions({
+      queryKey: ['dormitory', 'penalties', 'me'],
+      queryFn: getMyPenalties,
+    }),
+
+  allPenalties: () =>
+    queryOptions({
+      queryKey: ['dormitory', 'penalties'],
+      queryFn: getAllPenalties,
+    }),
+
+  cleaningZones: () =>
+    queryOptions({
+      queryKey: ['dormitory', 'cleaning-zones'],
+      queryFn: getCleaningZones,
+    }),
+
+  cleaningZoneDetail: (zoneId: number) =>
+    queryOptions({
+      queryKey: ['dormitory', 'cleaning-zones', zoneId],
+      queryFn: () => getCleaningZoneDetail(zoneId),
     }),
 } as const;
 
@@ -50,4 +78,10 @@ export const dormitoryMutations = {
 
   banStudy: (userId: number) =>
     instance.patch(`/dormitory/study/${userId}`),
+
+  updatePenalties: (userId: number) => 
+    instance.put(`/dormitory/penalties/${userId}`),
+
+  createCleaningZone: () => 
+    instance.post('/dormitory/cleaning-zones'),
 };

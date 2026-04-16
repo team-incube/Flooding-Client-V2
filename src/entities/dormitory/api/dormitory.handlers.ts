@@ -10,6 +10,11 @@ export const dormitoryHandlers = [
   ),
   http.get('/dormitory/study', () => HttpResponse.json(MOCK_STUDENTS)),
 
+  http.get('/dormitory/penalties/me', () => HttpResponse.json({})),
+  http.get('/dormitory/penalties', () => HttpResponse.json([])),
+  http.get('/dormitory/cleaning-zones', () => HttpResponse.json([])),
+  http.get('/dormitory/cleaning-zones/:zoneId', () => HttpResponse.json({})),
+
   // POST — 신청
   http.post('/dormitory/music', () =>
     HttpResponse.json({ success: true }, { status: 201 })
@@ -28,6 +33,10 @@ export const dormitoryHandlers = [
     HttpResponse.json({ success: true }, { status: 201 })
   ),
 
+  http.post('/dormitory/cleaning-zones', () =>
+    HttpResponse.json({ success: true }, { status: 201 })
+  ),
+
   // DELETE — 취소/삭제 (구체적인 경로 먼저)
   http.delete('/dormitory/massage', () => new HttpResponse(null, { status: 204 })),
   http.delete('/dormitory/study', () => new HttpResponse(null, { status: 204 })),
@@ -35,6 +44,11 @@ export const dormitoryHandlers = [
 
   // PATCH — 자습 금지
   http.patch('/dormitory/study/:userId', () =>
+    new HttpResponse(null, { status: 204 })
+  ),
+
+  //PUT - 벌점 설정
+  http.put('/dormitory/penalties/:userId', () =>
     new HttpResponse(null, { status: 204 })
   ),
 ];
