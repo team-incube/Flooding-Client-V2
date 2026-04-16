@@ -1,6 +1,12 @@
 import { http, HttpResponse } from 'msw';
 import { MOCK_STUDENTS } from '@/entities/user/model/mock';
 import { MOCK_SONGS } from '@/entities/music/model/mock';
+import { 
+  MOCK_MY_PENALTY, 
+  MOCK_ALL_PENALTIES, 
+  MOCK_CLEANING_ZONES, 
+  MOCK_CLEANING_ZONE_DETAIL 
+} from '../model/mock';
 
 export const dormitoryHandlers = [
   // GET — 목록 조회
@@ -9,11 +15,10 @@ export const dormitoryHandlers = [
     HttpResponse.json(MOCK_STUDENTS.slice(0, 5))
   ),
   http.get('/dormitory/study', () => HttpResponse.json(MOCK_STUDENTS)),
-
-  http.get('/dormitory/penalties/me', () => HttpResponse.json({})),
-  http.get('/dormitory/penalties', () => HttpResponse.json([])),
-  http.get('/dormitory/cleaning-zones', () => HttpResponse.json([])),
-  http.get('/dormitory/cleaning-zones/:zoneId', () => HttpResponse.json({})),
+  http.get('/dormitory/penalties/me', () => HttpResponse.json(MOCK_MY_PENALTY)),
+  http.get('/dormitory/penalties', () => HttpResponse.json(MOCK_ALL_PENALTIES)),
+  http.get('/dormitory/cleaning-zones', () => HttpResponse.json(MOCK_CLEANING_ZONES)),
+  http.get('/dormitory/cleaning-zones/:zoneId', () => HttpResponse.json(MOCK_CLEANING_ZONE_DETAIL)),
 
   // POST — 신청
   http.post('/dormitory/music', () =>
@@ -32,7 +37,6 @@ export const dormitoryHandlers = [
   http.post('/dormitory/inquiry', () =>
     HttpResponse.json({ success: true }, { status: 201 })
   ),
-
   http.post('/dormitory/cleaning-zones', () =>
     HttpResponse.json({ success: true }, { status: 201 })
   ),

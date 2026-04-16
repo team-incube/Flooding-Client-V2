@@ -9,7 +9,11 @@ import {
   getCleaningZones,
   getCleaningZoneDetail,
 } from './get-dormitory';
-import type { MusicApplyRequest } from '../model/types';
+import type { 
+  MusicApplyRequest, 
+  PenaltyApplyRequest, 
+  CleaningZoneApplyRequest 
+} from '../model/types';
 
 export const dormitoryQueries = {
   music: () =>
@@ -79,9 +83,9 @@ export const dormitoryMutations = {
   banStudy: (userId: number) =>
     instance.patch(`/dormitory/study/${userId}`),
 
-  updatePenalties: (userId: number) => 
-    instance.put(`/dormitory/penalties/${userId}`),
+  updatePenalties: (userId: number, body: PenaltyApplyRequest) => 
+    instance.put(`/dormitory/penalties/${userId}`, body),
 
-  createCleaningZone: () => 
-    instance.post('/dormitory/cleaning-zones'),
+  createCleaningZone: (body: CleaningZoneApplyRequest) => 
+    instance.post('/dormitory/cleaning-zones', body),
 };

@@ -1,5 +1,12 @@
 import { instance } from "@/shared/api/instance";
-import type { DormitoryStudent, DormitoryMusic } from "../model/types";
+import type { 
+  DormitoryStudent, 
+  DormitoryMusic, 
+  MyPenaltyResponse, 
+  AllPenaltiesResponse, 
+  CleaningZone, 
+  CleaningZoneDetail 
+} from "../model/types";
 
 export async function getDormitoryMusic(): Promise<DormitoryMusic[]> {
   const { data } = await instance.get<DormitoryMusic[]>("/dormitory/music");
@@ -17,21 +24,21 @@ export async function getSelfStudyApplicants(): Promise<DormitoryStudent[]> {
 }
 
 export async function getMyPenalties() {
-  const { data } = await instance.get("/dormitory/penalties/me");
+  const { data } = await instance.get<MyPenaltyResponse>("/dormitory/penalties/me");
   return data;
 }
 
 export async function getAllPenalties() {
-  const { data } = await instance.get("/dormitory/penalties");
+  const { data } = await instance.get<AllPenaltiesResponse>("/dormitory/penalties");
   return data;
 }
 
 export async function getCleaningZones() {
-  const { data } = await instance.get("/dormitory/cleaning-zones");
+  const { data } = await instance.get<CleaningZone[]>("/dormitory/cleaning-zones");
   return data;
 }
 
 export async function getCleaningZoneDetail(zoneId: number) {
-  const { data } = await instance.get(`/dormitory/cleaning-zones/${zoneId}`);
+  const { data } = await instance.get<CleaningZoneDetail>(`/dormitory/cleaning-zones/${zoneId}`);
   return data;
 }
