@@ -1,32 +1,32 @@
 # API Convention
 
-## 공용 원칙
+## Shared Principles
 
-- HTTP 클라이언트는 `src/shared/api/instance.ts`의 Axios 인스턴스를 사용한다.
-- 임의의 `fetch`와 별도 Axios 인스턴스를 새로 만들지 않는다.
-- 공용 React Query 설정은 `src/shared/api/queryClient.ts`를 기준으로 한다.
+- Use the Axios instance in `src/shared/api/instance.ts` as the HTTP client.
+- Do not introduce arbitrary `fetch` calls or separate Axios instances.
+- Use `src/shared/api/queryClient.ts` as the source of shared React Query configuration.
 
-## 배치 규칙
+## Placement Rules
 
-- 도메인 API 호출 함수는 `entities/[domain]/api`에 둔다.
-- React Query `queryOptions` 정의도 같은 도메인 `api` 폴더에서 관리한다.
-- 실제 서버 호출 함수와 query option 정의는 분리할 수 있지만 같은 도메인 맥락에 둔다.
+- Place domain API call functions in `entities/[domain]/api`.
+- Manage React Query `queryOptions` definitions in the same domain `api` directory.
+- Actual server call functions and query option definitions may be separated, but keep them in the same domain context.
 
-## Query 규칙
+## Query Rules
 
-- query key는 도메인 이름부터 시작한다.
-- 예:
+- Query keys must start with the domain name.
+- Examples:
   - `['dormitory', 'music']`
   - `['dormitory', 'massage']`
-- query key는 상수처럼 일관된 구조를 유지한다.
+- Keep query keys structurally consistent like constants.
 
-## Mutation 규칙
+## Mutation Rules
 
-- mutation 함수는 도메인 객체 형태로 묶어 export한다.
-- body 타입은 `model/[domain]` 같은 도메인 타입 파일에서 가져온다.
-- API 경로 문자열은 같은 도메인 안에서 일관된 네이밍을 유지한다.
+- Export mutation functions grouped as domain objects.
+- Import body types from domain type files such as `model/[domain]`.
+- Keep API path strings consistently named within the same domain.
 
-## 인증 규칙
+## Authentication Rules
 
-- access token 주입과 401 재시도는 Axios interceptor에 맡긴다.
-- 개별 호출부에서 중복으로 토큰 주입 로직을 작성하지 않는다.
+- Let the Axios interceptor handle access-token injection and 401 retries.
+- Do not duplicate token injection logic in individual call sites.

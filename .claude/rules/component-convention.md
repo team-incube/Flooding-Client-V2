@@ -1,32 +1,32 @@
 # Component Convention
 
-## 기본 규칙
+## Basic Rules
 
-- 폴더명은 kebab-case를 사용한다.
-- React 컴포넌트 파일명은 PascalCase를 사용한다.
-- 컴포넌트가 아닌 파일은 이 규칙의 대상이 아니며, 별도 규칙에 따라 lowerCamelCase 또는 lowercase를 사용한다.
-- 컴포넌트는 PascalCase로 선언한다.
-- props 타입은 `ComponentNameProps` 형식을 우선한다.
+- Use kebab-case for directory names.
+- Use PascalCase for React component file names.
+- Non-component files are outside the scope of this rule and should follow the separate lowerCamelCase or lowercase naming rules.
+- Declare components in PascalCase.
+- Prefer the `ComponentNameProps` pattern for props types.
 
-## 스타일링
+## Styling
 
-- 스타일은 Tailwind utility class만 사용한다.
-- inline style은 금지한다.
-- 색상, 배경, 타이포는 `app/globals.css`의 토큰 유틸리티를 우선 사용한다.
+- Use Tailwind utility classes only for styling.
+- Inline styles are forbidden.
+- Prefer the token utilities from `app/globals.css` for color, background, and typography.
 
 ## variants
 
-- variant가 있는 컴포넌트는 `const variantStyles = {}` 패턴을 사용한다.
-- size가 있으면 `sizeStyles`처럼 별도 객체로 분리한다.
-- 공통 클래스는 `baseStyles`로 분리할 수 있다.
+- For components with variants, use the `const variantStyles = {}` pattern.
+- If the component has sizes, separate them into another object such as `sizeStyles`.
+- Shared classes may be separated into `baseStyles`.
 
-## 상태와 렌더링
+## State And Rendering
 
-- 컴포넌트는 렌더링과 상호작용 연결에 집중한다.
-- 길거나 재사용 가능한 계산은 컴포넌트 밖으로 분리한다.
-- 조건부 렌더링은 JSX에서 표현하되, 복잡한 파생 로직은 hook이나 lib로 뺀다.
+- Components should focus on rendering and interaction wiring.
+- Extract long or reusable calculations outside the component.
+- Keep conditional rendering in JSX, but move complex derived logic into a hook or `lib`.
 
-## 폼 컴포넌트
+## Form Components
 
-- 입력 변경 핸들러는 `handleChange`, `handleSubmit`처럼 역할이 드러나게 작성한다.
-- 파생 가능 여부 값은 `canSubmit`, `isChanged`처럼 읽히는 이름을 사용한다.
+- Name input change handlers clearly, such as `handleChange` or `handleSubmit`.
+- Use readable names for derived boolean values, such as `canSubmit` or `isChanged`.

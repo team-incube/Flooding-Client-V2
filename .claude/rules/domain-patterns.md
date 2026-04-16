@@ -1,37 +1,37 @@
 # Domain Patterns
 
-## 목적
+## Purpose
 
-- 이 문서는 `features`, `entities`, `widgets`, `shared`에서 어떤 구현 패턴을 사용하는지 정의한다.
+- This document defines the implementation patterns used in `features`, `entities`, `widgets`, and `shared`.
 
 ## entities
 
-- 도메인 타입, mock 데이터, 도메인 API, 도메인별 UI 조각을 둔다.
-- 도메인에 종속된 데이터 변환 함수는 `entities/[domain]/lib`에 둔다.
-- 예:
+- Place domain types, mock data, domain APIs, and domain-specific UI fragments here.
+- Place data transformation functions tied to a domain in `entities/[domain]/lib`.
+- Examples:
   - `src/entities/dormitory/api`
   - `src/entities/club/model`
   - `src/entities/music/lib`
 
 ## features
 
-- 사용자 액션 중심의 상태와 UI를 둔다.
-- custom hook, reducer, feature 전용 순수 함수는 `features/[feature]/model` 또는 `lib`에 둔다.
-- 화면에서 직접 사용하는 폼 상태, 선택 상태, 모달 상태는 feature 레이어에서 다룬다.
+- Place state and UI centered around user actions here.
+- Place custom hooks, reducers, and feature-specific pure functions in `features/[feature]/model` or `lib`.
+- Handle form state, selection state, and modal state used directly by the screen in the feature layer.
 
 ## widgets
 
-- 페이지에서 바로 사용하는 조합형 UI를 둔다.
-- 여러 feature/entity/shared를 엮는 역할만 하며, 도메인 정책 자체를 새로 만들지 않는다.
+- Place composition-oriented UI used directly by pages here.
+- Widgets should only combine multiple feature/entity/shared modules and must not define new domain policies on their own.
 
 ## shared
 
-- 전역 재사용 가능한 API 인프라, UI, 설정, 공용 타입만 둔다.
-- 특정 도메인에만 유효한 로직은 `shared`로 올리지 않는다.
+- Only place globally reusable API infrastructure, UI, configuration, and shared types here.
+- Do not move logic that is valid for only one domain into `shared`.
 
-## UI와 로직 분리 기준
+## UI And Logic Separation
 
-- JSX 렌더링, 단순 클릭 핸들러 연결은 UI에 둔다.
-- 재사용 가능한 계산, 정렬, 필터링, 비교 로직은 `lib`로 분리한다.
-- reducer와 custom hook은 `model`에 둔다.
-- 서버 상태 사용 지점은 feature/widget UI에 두되, query option 정의와 API 호출 함수는 하위 레이어에 둔다.
+- Keep JSX rendering and simple click-handler wiring in the UI layer.
+- Extract reusable calculation, sorting, filtering, and comparison logic into `lib`.
+- Place reducers and custom hooks in `model`.
+- Keep server-state usage in feature/widget UI, while placing query option definitions and API call functions in lower layers.

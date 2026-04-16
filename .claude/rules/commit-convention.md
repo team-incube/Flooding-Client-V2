@@ -1,26 +1,26 @@
 # Commit Convention
 
-## 브랜치 규칙
+## Branch Rules
 
-- 브랜치명 형식은 `type/description`을 사용한다.
-- 예:
-  - `feat/기능명`
-  - `fix/버그수정`
-  - `docs/문서정리`
-  - `refactor/구조개선`
+- Use the `type/description` format for branch names.
+- Examples:
+  - `feat/add-login`
+  - `fix/token-refresh`
+  - `docs/update-rules`
+  - `refactor/improve-layout`
 
-## 커밋 타입
+## Commit Types
 
-- `feat:` 새로운 기능
-- `change:` 기존 기능 수정
-- `refactor:` 구조 개선 또는 리팩토링
-- `fix:` 버그 수정
-- `remove:` 코드 또는 파일 삭제
-- `docs:` 문서 변경
-- `chore:` 빌드, 설정, 패키지 관리
+- `feat:` new feature
+- `change:` modification to an existing feature
+- `refactor:` structural improvement or refactoring
+- `fix:` bug fix
+- `remove:` code or file removal
+- `docs:` documentation change
+- `chore:` build, configuration, or package management
 
-## 메시지 규칙
+## Message Rules
 
-- 커밋 메시지는 한국어로 작성한다.
-- 하나의 커밋은 하나의 의도를 가져야 한다.
-- 파일 이동, 규칙 문서 변경, 기능 수정은 가능하면 분리 커밋한다.
+- Write commit messages in Korean.
+- A single commit should represent a single intent.
+- When possible, separate file moves, rule document changes, and feature changes into different commits.
