@@ -1,51 +1,29 @@
 "use client";
 
-import { useState } from "react";
 import SmallStar from "@/shared/asset/svg/SmallStar";
 import Cancel from "@/shared/asset/svg/Cancel";
 import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
 import { MOCK_SONGS } from "@/entities/music/model/mock";
-import { Music } from "@/entities/music/model/music";
+import { useMusicRecommendSelection } from "../model/useMusicRecommendSelection";
 
 interface MusicRecommendModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const randomSongs = (song: Music[], count: number) => {
-  return [...song].sort(() => Math.random() - 0.5).splice(0, count);
-}
-
 export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps) {
-  const [selected, setSelected] = useState<number[]>([]);
-  const [retryCount, setRetryCount] = useState(0);
-  const [displaySongs, setDisplaySongs] = useState(() => randomSongs(MOCK_SONGS, 3));
-  const maxRetry = 3;
+  const {
+    selected,
+    displaySongs,
+    retryCount,
+    maxRetry,
+    isActive,
+    handleSelect,
+    handleRetry,
+  } = useMusicRecommendSelection(MOCK_SONGS);
 
-  const handleRetry = () => {
-    if (retryCount < maxRetry) {
-      setRetryCount(prev => prev + 1);
-      
-      const newSongs = randomSongs(MOCK_SONGS, 3);
-      setDisplaySongs(newSongs)
-    }
-  }
-
-  const handleSelect = (id: number) => {
-    if (selected.includes(id)) {
-      setSelected(selected.filter((v) => v !== id));
-      return;
-    }
-
-    if (selected.length >= 3) return;
-
-    setSelected([...selected, id]);
-  };
-
-  const isAcitve = selected.length > 0;
-  
   if (!open) return null;
 
   return (
@@ -85,9 +63,9 @@ export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps)
             count={retryCount}
             max={maxRetry}
           />
-          <div className={!isAcitve ? "pointer-events-none opacity-50" : "cursor-pointer"}>
-            <TextButton 
-              variant={isAcitve ? "filled" : "outlined"} 
+          <div className={!isActive ? "pointer-events-none opacity-50" : "cursor-pointer"}>
+            <TextButton
+              variant={isActive ? "filled" : "outlined"}
               size="medium"
               onClick={() => {}}
             >

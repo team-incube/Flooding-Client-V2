@@ -1,6 +1,6 @@
-import { InputHTMLAttributes, ReactNode } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   rightIcon?: ReactNode;
 }
 
@@ -8,7 +8,7 @@ export default function TextField({
   rightIcon,
   className,
   ...props
-}: InputProps) {
+}: TextFieldProps) {
   return (
     <div className={`relative ${className}`}>
       <input

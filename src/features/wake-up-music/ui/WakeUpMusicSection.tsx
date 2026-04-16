@@ -3,14 +3,14 @@
 import { ReactNode, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Music from "@/shared/asset/svg/Music";
-import { MusicListItem } from "@/shared/ui/MusicListItem";
+import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 import {
   dormitoryQueries,
   dormitoryMutations,
-} from "@/entities/dormitory/api/dormitory.queries";
+} from "@/entities/dormitory/api/dormitoryQueries";
 import { MusicRecommendModal } from "./MusicRecommendModal";
 
 interface WakeUpMusicSectionProps {

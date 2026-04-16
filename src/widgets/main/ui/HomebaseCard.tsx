@@ -1,94 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { homebaseMutations, homebaseQueries } from "@/entities/homebase/api/homebaseQueries";
+import {
+  getHomebaseId,
+  getHomebaseLocation,
+  toSchoolReservation,
+} from "@/entities/homebase/lib/homebaseReservation";
+import type { HomebaseApplyRequest } from "@/entities/homebase/model/homebase";
+import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem";
+import type { User } from "@/entities/user/model/user";
+import { getMaxPersonnel } from "@/features/homebase/lib/getMaxPersonnel";
+import { isPeriodStarted } from "@/features/homebase/lib/isPeriodStarted";
+import { FLOORS, PERIODS } from "@/features/homebase/model/constants";
+import { FourthFloor } from "@/features/homebase/ui/FourthFloor";
+import SelectedStudent from "@/features/homebase/ui/SelectedStudent";
+import { SecondFloor } from "@/features/homebase/ui/SecondFloor";
+import StudentSearch from "@/features/homebase/ui/StudentSearch";
+import { ThirdFloor } from "@/features/homebase/ui/ThirdFloor";
 import HomeBase from "@/shared/asset/svg/HomeBase";
 import Search from "@/shared/asset/svg/Search";
-import TextField from "@/shared/ui/textField";
 import { TextButton } from "@/shared/ui/Button/TextButton";
-import { SecondFloor } from "@/shared/ui/homebase/SecondFloor";
-import { ThirdFloor } from "@/shared/ui/homebase/ThirdFloor";
-import { FourthFloor } from "@/shared/ui/homebase/FourthFloor";
-import StudentSearch from "@/features/homebase/ui/StudentSearch";
-import SelectedStudent from "@/features/homebase/ui/SelectedStudent";
-import { User } from "@/entities/user/model/user";
-import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem";
-import { homebaseQueries, homebaseMutations } from "@/features/homebase/api/homebase.queries";
-import type { HomebaseReservation, HomebaseApplyRequest } from "@/features/homebase/model/types";
-import type { Reservation } from "@/entities/school/model/reservation";
+import TextField from "@/shared/ui/textField";
 
-const FLOORS = [
-  { value: "2F", label: "2층" },
-  { value: "3F", label: "3층" },
-  { value: "4F", label: "4층" },
-];
-
-const PERIODS = ["8교시", "9교시", "10교시", "11교시"];
-
-const PERIODS_TIME: Record<string, string> = {
-  "8교시": "16:40",
-  "9교시": "17:40",
-  "10교시": "19:30",
-  "11교시": "20:30",
-};
-
-export const TABLE_MAX_PERSONNEL = {
-  "2F": { "1": 6, "2": 4, "3": 4 },
-  "3F": { "1": 6, "2": 6, "3": 4, "5": 4, "6": 4 },
-  "4F": { "1": 6, "2": 6, "3": 4, "4": 4 },
-} as const;
-
-// homebaseId ↔ { floor, tableId, tableName } 매핑
-// tableId: Floor 컴포넌트의 selectedTable 값과 일치하는 식별자
-// 실제 백엔드 homebaseId 값에 맞게 수정 필요
-const HOMEBASE_ID_MAP: Record<number, { floor: string; tableId: string; tableName: string }> = {
-  1: { floor: "2F", tableId: "1", tableName: "테이블 1" },
-  2: { floor: "2F", tableId: "2", tableName: "테이블 2" },
-  3: { floor: "2F", tableId: "3", tableName: "테이블 3" },
-  4: { floor: "3F", tableId: "1", tableName: "테이블 1" },
-  5: { floor: "3F", tableId: "2", tableName: "테이블 2" },
-  6: { floor: "3F", tableId: "3", tableName: "테이블 3" },
-  7: { floor: "3F", tableId: "5", tableName: "테이블 5" },
-  8: { floor: "3F", tableId: "6", tableName: "테이블 6" },
-  9: { floor: "4F", tableId: "1", tableName: "테이블 1" },
-  10: { floor: "4F", tableId: "2", tableName: "테이블 2" },
-  11: { floor: "4F", tableId: "3", tableName: "테이블 3" },
-  12: { floor: "4F", tableId: "4", tableName: "테이블 4" },
-};
-
-const FLOOR_TABLE_TO_ID: Record<string, number> = Object.fromEntries(
-  Object.entries(HOMEBASE_ID_MAP).map(([id, { floor, tableId }]) => [
-    `${floor}-${tableId}`,
-    Number(id),
-  ])
-);
-
-function toReservation(r: HomebaseReservation): Reservation {
-  const { floor, tableName } = HOMEBASE_ID_MAP[r.homebaseId] ?? {
-    floor: "?F",
-    tableName: `테이블 ${r.homebaseId}`,
-  };
-
-  const periods: string[] = [];
-  for (let p = r.startPeriod; p <= r.endPeriod; p++) {
-    periods.push(`${p}교시`);
-  }
-
-  return {
-    id: r.id,
-    tableName,
-    floor,
-    members: r.members.map((m) => `${m.studentNumber} ${m.name}`),
-    periods,
-    reason: r.reason,
-  };
+interface HomebaseCardProps {
+  showReservations?: boolean;
 }
 
 export default function HomebaseCard({
   showReservations = false,
-}: {
-  showReservations?: boolean;
-}) {
+}: HomebaseCardProps) {
   const [selectedFloor, setSelectedFloor] = useState("2F");
   const [selectedPeriod, setSelectedPeriod] = useState("8교시");
   const [name, setName] = useState("");
@@ -100,28 +42,82 @@ export default function HomebaseCard({
   const { data: reservations = [] } = useQuery(homebaseQueries.list());
 
   const applyMutation = useMutation({
-    mutationFn: ({ homebaseId, body }: { homebaseId: number; body: HomebaseApplyRequest }) =>
-      homebaseMutations.apply(homebaseId, body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["homebase"] }),
+    mutationFn: ({
+      homebaseId,
+      body,
+    }: {
+      homebaseId: number;
+      body: HomebaseApplyRequest;
+    }) => homebaseMutations.apply(homebaseId, body),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["homebase", "list"] }),
   });
 
   const cancelMutation = useMutation({
     mutationFn: (homebaseId: number) => homebaseMutations.cancel(homebaseId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["homebase"] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["homebase", "list"] }),
   });
-
-  const isPeriodStarted = (period: string) => {
-    const now = new Date();
-    const [hour, minute] = PERIODS_TIME[period].split(":").map(Number);
-    const periodTime = new Date();
-    periodTime.setHours(hour, minute, 0, 0);
-    return now >= periodTime;
-  };
 
   const handleFloorChange = (floor: string) => {
     setSelectedFloor(floor);
     setSelectedTable(null);
   };
+
+  const handleNameChange = (value: string) => {
+    setName(value);
+  };
+
+  const handleReasonChange = (value: string) => {
+    setReason(value);
+  };
+
+  const handlePeriodSelect = (period: string) => {
+    if (!isPeriodStarted(period)) {
+      setSelectedPeriod(period);
+    }
+  };
+
+  const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
+  const isFull = maxPersonnel > 0 && selectedStudents.length >= maxPersonnel;
+  const canSubmit =
+    selectedTable !== null && isFull && reason.trim().length > 0;
+
+  const handleSubmit = () => {
+    if (!canSubmit || !selectedTable) return;
+
+    const periodIndex = PERIODS.indexOf(selectedPeriod);
+    const startPeriod = 8 + periodIndex;
+    const homebaseId = getHomebaseId(selectedFloor, selectedTable);
+
+    if (!homebaseId) return;
+
+    applyMutation.mutate({
+      homebaseId,
+      body: {
+        homebaseId,
+        startPeriod,
+        endPeriod: startPeriod,
+        reason,
+        members: selectedStudents.map((student) => ({
+          studentNumber: String(student.studentNumber),
+          name: student.name,
+        })),
+      },
+    });
+  };
+
+  const filteredReservations = reservations
+    .filter(
+      (reservation) =>
+        getHomebaseLocation(reservation.homebaseId).floor === selectedFloor,
+    )
+    .map(toSchoolReservation);
+
+  const myReservationSource = reservations[0];
+  const myReservation = myReservationSource
+    ? toSchoolReservation(myReservationSource)
+    : null;
 
   const renderFloor = () => {
     switch (selectedFloor) {
@@ -146,53 +142,13 @@ export default function HomebaseCard({
             setSelectedTable={setSelectedTable}
           />
         );
+      default:
+        return null;
     }
   };
 
-  const getMaxPersonnel = (floor: string, table: string | null): number => {
-    if (!table) return 0;
-    const floorKey = floor as keyof typeof TABLE_MAX_PERSONNEL;
-    if (!TABLE_MAX_PERSONNEL[floorKey]) return 0;
-    const floorTables = TABLE_MAX_PERSONNEL[floorKey];
-    const tableKey = table as keyof typeof floorTables;
-    return floorTables[tableKey] ?? 0;
-  };
-
-  const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
-  const isFull = maxPersonnel > 0 && selectedStudents.length >= maxPersonnel;
-  const canSubmit = selectedTable && isFull && reason.trim().length > 0;
-
-  const handleSubmit = () => {
-    if (!canSubmit || !selectedTable) return;
-
-    const periodIndex = PERIODS.indexOf(selectedPeriod);
-    const startPeriod = 8 + periodIndex;
-    const homebaseId = FLOOR_TABLE_TO_ID[`${selectedFloor}-${selectedTable}`];
-
-    applyMutation.mutate({
-      homebaseId,
-      body: {
-        homebaseId,
-        startPeriod,
-        endPeriod: startPeriod,
-        reason,
-        members: selectedStudents.map((s) => ({
-          studentNumber: String(s.studentNumber),
-          name: s.name,
-        })),
-      },
-    });
-  };
-
-  const filteredReservations = reservations
-    .filter((r) => (HOMEBASE_ID_MAP[r.homebaseId]?.floor ?? "") === selectedFloor)
-    .map(toReservation);
-
-  // 내 예약: 로그인 유저 기준으로 필터링 필요 — 임시로 첫 번째 항목
-  const myReservation = reservations.length > 0 ? toReservation(reservations[0]) : null;
-
   return (
-    <div className="w-full bg-background-surface rounded-2xl p-6 flex flex-col">
+    <div className="flex w-full flex-col rounded-2xl bg-background-surface p-6">
       <div className="flex items-center gap-1">
         <HomeBase />
         <span className="text-text-1 font-semibold text-main-text">
@@ -200,7 +156,7 @@ export default function HomebaseCard({
         </span>
       </div>
 
-      <div className="flex items-center gap-3 mt-4">
+      <div className="mt-4 flex items-center gap-3">
         <span className="text-text-3 font-medium text-sub-1">층</span>
         {FLOORS.map(({ value, label }) => (
           <TextButton
@@ -223,25 +179,23 @@ export default function HomebaseCard({
                   ? "filled"
                   : "outlined"
             }
-            onClick={() => {
-              if (!isPeriodStarted(period)) setSelectedPeriod(period);
-            }}
+            onClick={() => handlePeriodSelect(period)}
           >
             {period}
           </TextButton>
         ))}
       </div>
 
-      <div className="flex flex-col lg:flex-row items-start gap-6 2xl:justify-between mt-3">
-        <div className="w-full lg:flex-1 min-w-0">{renderFloor()}</div>
+      <div className="mt-3 flex flex-col items-start gap-6 lg:flex-row 2xl:justify-between">
+        <div className="w-full min-w-0 lg:flex-1">{renderFloor()}</div>
 
-        <div className="w-full lg:shrink-0 flex flex-col sm:flex-row gap-6 lg:w-82.5 lg:flex-col lg:gap-4">
-          <div className="w-full sm:w-75 lg:w-full shrink-0 flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-6 sm:flex-row lg:w-[330px] lg:shrink-0 lg:flex-col lg:gap-4">
+          <div className="flex w-full shrink-0 flex-col gap-4 sm:w-[300px] lg:w-full">
             <div className="flex flex-col gap-1">
               <TextField
                 placeholder="이름, 학번등을 입력해주세요"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(event) => handleNameChange(event.target.value)}
                 rightIcon={<Search />}
               />
               <StudentSearch
@@ -257,10 +211,10 @@ export default function HomebaseCard({
                 placeholder="이용 사유를 적어주세요"
                 value={reason}
                 maxLength={20}
-                onChange={(e) => setReason(e.target.value)}
-                className="w-full h-30 rounded-lg border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none p-4 resize-none caret-p-1 transition-all"
+                onChange={(event) => handleReasonChange(event.target.value)}
+                className="h-[120px] w-full resize-none rounded-lg border border-sub-2 bg-background-surface p-4 text-main-text outline-none transition-all caret-p-1 placeholder:text-sub-2 focus:border-sub-1"
               />
-              <span className="text-right text-sub-2 text-size-caption-1">
+              <span className="text-right text-size-caption-1 text-sub-2">
                 {reason.length}/20
               </span>
             </div>
@@ -291,20 +245,22 @@ export default function HomebaseCard({
           />
 
           {showReservations && (
-            <div className="flex-1 flex flex-col gap-3">
-              <span className="font-semibold text-sub-1 text-text-2 text-center">
+            <div className="flex flex-1 flex-col gap-3">
+              <span className="text-center text-text-2 font-semibold text-sub-1">
                 내 예약현황
               </span>
-              {myReservation ? (
+              {myReservation && myReservationSource ? (
                 <ReservationTableItem
                   reservation={myReservation}
                   isOwn
-                  onDelete={() => cancelMutation.mutate(reservations[0].homebaseId)}
+                  onDelete={() =>
+                    cancelMutation.mutate(myReservationSource.homebaseId)
+                  }
                   onEdit={() => {}}
                 />
               ) : (
                 <div className="flex flex-1 items-center justify-center">
-                  <span className="text-sub-2 text-text-4">
+                  <span className="text-text-4 text-sub-2">
                     아직 예약을 안하셨어요!
                   </span>
                 </div>
@@ -315,21 +271,18 @@ export default function HomebaseCard({
       </div>
 
       {showReservations && (
-        <div className="flex flex-col gap-4 mt-4">
+        <div className="mt-4 flex flex-col gap-4">
           <span className="text-text-2 font-semibold text-main-text">
             예약현황
           </span>
-          <div className="flex flex-wrap gap-3 items-start">
+          <div className="flex flex-wrap items-start gap-3">
             {filteredReservations.length === 0 ? (
               <span className="text-text-3 text-sub-2">
                 현재 모든 테이블 예약이 가능합니다
               </span>
             ) : (
               filteredReservations.map((item) => (
-                <ReservationTableItem
-                  key={item.id}
-                  reservation={item}
-                />
+                <ReservationTableItem key={item.id} reservation={item} />
               ))
             )}
           </div>
