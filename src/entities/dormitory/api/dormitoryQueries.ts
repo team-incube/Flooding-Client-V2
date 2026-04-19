@@ -4,8 +4,16 @@ import {
   getDormitoryMusic,
   getMassageApplicants,
   getSelfStudyApplicants,
+  getMyPenalties,
+  getAllPenalties,
+  getCleaningZones,
+  getCleaningZoneDetail,
 } from './getDormitory';
-import type { MusicApplyRequest } from '../model/dormitory';
+import type { 
+  MusicApplyRequest, 
+  UpdatePenaltyRequest, 
+  CreateCleaningZoneRequest 
+} from '../model/dormitory';
 
 export const dormitoryQueries = {
   music: () =>
@@ -24,6 +32,30 @@ export const dormitoryQueries = {
     queryOptions({
       queryKey: ['dormitory', 'study'],
       queryFn: getSelfStudyApplicants,
+    }),
+
+  myPenalties: () =>
+    queryOptions({
+      queryKey: ['dormitory', 'penalties', 'me'],
+      queryFn: getMyPenalties,
+    }),
+
+  allPenalties: () =>
+    queryOptions({
+      queryKey: ['dormitory', 'penalties'],
+      queryFn: getAllPenalties,
+    }),
+
+  cleaningZones: () =>
+    queryOptions({
+      queryKey: ['dormitory', 'cleaning-zones'],
+      queryFn: getCleaningZones,
+    }),
+
+  cleaningZoneDetail: (zoneId: number) =>
+    queryOptions({
+      queryKey: ['dormitory', 'cleaning-zones', zoneId],
+      queryFn: () => getCleaningZoneDetail(zoneId),
     }),
 } as const;
 
@@ -50,4 +82,10 @@ export const dormitoryMutations = {
 
   banStudy: (userId: number) =>
     instance.patch(`/dormitory/study/${userId}`),
+
+  updatePenalties: (userId: number, body: UpdatePenaltyRequest) => 
+    instance.put(`/dormitory/penalties/${userId}`, body),
+
+  createCleaningZone: (body: CreateCleaningZoneRequest) => 
+    instance.post('/dormitory/cleaning-zones', body),
 };
