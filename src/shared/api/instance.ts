@@ -4,6 +4,12 @@ export const instance = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+const authPathsWithoutRefresh = [
+  "/api/auth/callback",
+  "/api/auth/refresh",
+  "/api/auth/signout",
+];
+
 if (typeof window !== "undefined") {
   instance.interceptors.request.use((config) => {
     const token = sessionStorage.getItem("access_token");
@@ -21,14 +27,17 @@ if (typeof window !== "undefined") {
       if (
         error.response?.status === 401 &&
         !originalRequest._retried &&
-        !originalRequest.url?.includes("/api/auth/refresh")
+        !authPathsWithoutRefresh.some((path) =>
+          originalRequest.url?.includes(path),
+        )
       ) {
         originalRequest._retried = true;
 
         try {
           const { data } = await axios.post("/api/auth/refresh");
-          sessionStorage.setItem("access_token", data.accessToken);
-          originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+          const accessToken = data.data?.accessToken ?? data.accessToken;
+          sessionStorage.setItem("access_token", accessToken);
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return instance(originalRequest);
         } catch {
           sessionStorage.removeItem("access_token");
