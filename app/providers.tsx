@@ -12,7 +12,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <OAuthProvider
           clientId={process.env.NEXT_PUBLIC_DG_CLIENT_ID!}
           redirectUri={process.env.NEXT_PUBLIC_DG_REDIRECT_URL!}
-          authMode="PKCE"
+          authMode="STANDARD"
         >
           {children}
         </OAuthProvider>

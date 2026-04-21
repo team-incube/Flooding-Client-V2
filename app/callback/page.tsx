@@ -1,15 +1,15 @@
 "use client";
 
+import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef } from "react";
-import { useOAuth } from "@themoment-team/datagsm-oauth-react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { instance } from "@/shared/api/instance";
 
 function CallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { getCodeVerifier, clearVerifier } = useOAuth();
   const didRun = useRef(false);
+  const [responseBody, setResponseBody] = useState<unknown>(null);
 
   useEffect(() => {
     if (didRun.current) return;
@@ -17,33 +17,40 @@ function CallbackInner() {
 
     const code = searchParams.get("code");
 
+    console.log(code);
+
     if (!code) {
       router.replace("/signin");
       return;
     }
 
-    const codeVerifier = getCodeVerifier();
-
     (async () => {
       try {
         const { data } = await instance.post("/api/auth/callback", {
           code,
-          codeVerifier,
         });
-        const { accessToken, user } = data;
 
-        sessionStorage.setItem("access_token", accessToken);
-        sessionStorage.setItem("user", JSON.stringify(user));
-        clearVerifier();
+        setResponseBody(data);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          setResponseBody(error.response.data);
+          return;
+        }
 
-        router.replace("/");
-      } catch {
-        router.replace("/signin");
+        setResponseBody({ error: String(error) });
       }
     })();
-  }, [router, searchParams, getCodeVerifier, clearVerifier]);
+  }, [router, searchParams]);
 
-  return <div>로그인 처리 중...</div>;
+  return (
+    <main className="min-h-screen bg-background p-6 text-main-text">
+      <pre className="whitespace-pre-wrap wrap-break-word rounded-lg bg-background-surface p-4 text-text-2">
+        {responseBody === null
+          ? "로그인 처리 중..."
+          : JSON.stringify(responseBody, null, 2)}
+      </pre>
+    </main>
+  );
 }
 
 export default function Callback() {
