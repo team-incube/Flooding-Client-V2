@@ -20,8 +20,17 @@ allowed-tools: Read
 
 ## Branching Strategy
 
-- Branch format: `type/description` (e.g., `feat/기능명`, `fix/버그수정`, `docs/문서개선`, `refactor/리팩토링`)
+- Branch format: `type/description` (e.g., `feat/add-login`, `fix/token-refresh`, `docs/update-rules`, `refactor/improve-layout`)
 - Merge via PR → `develop`
+
+## Commit Workflow
+
+- Before committing, check the current branch.
+- If the current branch is `develop`, do not commit directly.
+- Propose a new branch name using the `type/description` format based on the intended commit.
+- Confirm the branch name with the user before creating it.
+- After confirmation, create and checkout the branch with `git checkout -b <branch-name>`, then commit on that branch.
+- If the current branch is not `develop`, continue with the normal commit flow.
 
 ## Rules
 
