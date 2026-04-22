@@ -31,6 +31,17 @@ allowed-tools: Read
 - Confirm the branch name with the user before creating it.
 - After confirmation, create and checkout the branch with `git checkout -b <branch-name>`, then commit on that branch.
 - If the current branch is not `develop`, continue with the normal commit flow.
+- Before staging or committing, inspect the current changes with `git status --short`, `git diff --stat`, and file-level diffs as needed.
+- Group changed files by commit intent autonomously. Do not default to a single commit when unrelated changes are present.
+- Present the planned commit groups to the user before staging:
+  - files included in each group
+  - commit type
+  - Korean commit message
+- Get explicit user approval for each commit group before staging or committing that group.
+- Request any required tool or sandbox permission approvals before running `git add`, `git commit`, or `git checkout -b`.
+- Treat tool/sandbox permission approval separately from commit-content approval. A permission approval does not approve the commit contents.
+- After each approved commit, re-check the remaining changes and repeat the grouping and approval flow until no intended changes remain.
+- If the user says "commit now" or "바로 커밋", still split commits by intent when multiple independent changes are present.
 
 ## Rules
 
@@ -39,3 +50,6 @@ allowed-tools: Read
 - File naming follows project conventions by role; Markdown documents are an exception
 - Keep commits focused and atomic
 - Write commit messages in the smallest possible units.
+- A single commit must represent a single intent.
+- Split package updates, configuration changes, documentation changes, feature changes, refactors, and file moves into separate commits when possible.
+- Keep related lockfile and manifest changes together, such as `package.json` with `package-lock.json`.
