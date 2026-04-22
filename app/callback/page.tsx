@@ -2,13 +2,11 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
-import { useOAuth } from "@themoment-team/datagsm-oauth-react";
 import { instance } from "@/shared/api/instance";
 
 function CallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { getCodeVerifier, clearVerifier } = useOAuth();
   const didRun = useRef(false);
 
   useEffect(() => {
@@ -22,26 +20,21 @@ function CallbackInner() {
       return;
     }
 
-    const codeVerifier = getCodeVerifier();
-
     (async () => {
       try {
         const { data } = await instance.post("/api/auth/callback", {
           code,
-          codeVerifier,
         });
-        const { accessToken, user } = data;
+        const accessToken = data.data?.accessToken ?? data.accessToken;
 
         sessionStorage.setItem("access_token", accessToken);
-        sessionStorage.setItem("user", JSON.stringify(user));
-        clearVerifier();
 
         router.replace("/");
       } catch {
         router.replace("/signin");
       }
     })();
-  }, [router, searchParams, getCodeVerifier, clearVerifier]);
+  }, [router, searchParams]);
 
   return <div>로그인 처리 중...</div>;
 }
