@@ -1,5 +1,7 @@
 # Flooding-Client-V2 Style Guide
 
+Please respond and work in Korean.
+
 This repository uses the rule files in `.claude/rules` as the source of truth for code review. When reviewing code in this repository, apply the referenced files directly and prefer them over inferred defaults or external conventions.
 
 Referenced rule files:
