@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { instance } from "@/shared/api/instance";
 
@@ -6,7 +6,10 @@ export async function POST(request: NextRequest) {
   const refreshToken = request.cookies.get("refresh_token")?.value;
 
   if (!refreshToken) {
-    return NextResponse.json({ error: "refresh_token 없음" }, { status: 401 });
+    return NextResponse.json(
+      { error: "refresh_token 없음" },
+      { status: HttpStatusCode.Unauthorized },
+    );
   }
 
   try {
@@ -19,12 +22,27 @@ export async function POST(request: NextRequest) {
       status: response.status,
     });
   } catch (error) {
+    const fallbackBody = { error: "Internal Server Error" };
+
     if (axios.isAxiosError(error) && error.response) {
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
-      });
+      const { data, status } = error.response;
+      const body = data ?? fallbackBody;
+
+      if (status === HttpStatusCode.BadRequest) {
+        return NextResponse.json(body, { status });
+      }
+
+      if (status === HttpStatusCode.Unauthorized) {
+        return NextResponse.json(body, { status });
+      }
+
+      if (status === HttpStatusCode.InternalServerError) {
+        return NextResponse.json(body, { status });
+      }
     }
 
-    throw error;
+    return NextResponse.json(fallbackBody, {
+      status: HttpStatusCode.InternalServerError,
+    });
   }
 }

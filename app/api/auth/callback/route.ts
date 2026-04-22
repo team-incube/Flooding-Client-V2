@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { instance } from "@/shared/api/instance";
 
@@ -12,35 +12,33 @@ export async function POST(request: NextRequest) {
       redirectUri: process.env.NEXT_PUBLIC_DG_REDIRECT_URL!,
     };
 
-    console.log("auth/signin request:", {
-      url: signinUrl,
-      body: signinBody,
-    });
-
     const response = await instance.post(signinUrl, signinBody);
-
-    console.log("auth/signin response:", {
-      status: response.status,
-      headers: response.headers,
-      data: response.data,
-    });
 
     return NextResponse.json(response.data, {
       status: response.status,
     });
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      console.log("auth/signin error:", {
-        status: error.response.status,
-        headers: error.response.headers,
-        data: error.response.data,
-      });
+    const fallbackBody = { error: "Internal Server Error" };
 
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
-      });
+    if (axios.isAxiosError(error) && error.response) {
+      const { data, status } = error.response;
+      const body = data ?? fallbackBody;
+
+      if (status === HttpStatusCode.BadRequest) {
+        return NextResponse.json(body, { status });
+      }
+
+      if (status === HttpStatusCode.Unauthorized) {
+        return NextResponse.json(body, { status });
+      }
+
+      if (status === HttpStatusCode.InternalServerError) {
+        return NextResponse.json(body, { status });
+      }
     }
 
-    throw error;
+    return NextResponse.json(fallbackBody, {
+      status: HttpStatusCode.InternalServerError,
+    });
   }
 }
