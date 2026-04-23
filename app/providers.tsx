@@ -2,6 +2,7 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { OAuthProvider } from "@themoment-team/datagsm-oauth-react";
+import { Toaster } from "sonner";
 import { queryClient } from "@/shared/api/queryClient";
 import { MSWProvider } from "./msw-provider";
 
@@ -16,6 +17,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         >
           {children}
         </OAuthProvider>
+        <Toaster richColors />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </MSWProvider>
