@@ -2,6 +2,7 @@ import type { Music } from "@/entities/music/model/music";
 import type { YoutubeVideoMetadata } from "@/entities/music/api/youtubeQueries";
 import { getYoutubeThumbnailUrl } from "@/entities/music/lib/youtube";
 import Heart from "@/shared/asset/svg/Heart";
+import Delete from "@/shared/asset/svg/Delete";
 import Image from "next/image";
 
 interface MusicListItemProps {
@@ -9,6 +10,8 @@ interface MusicListItemProps {
   youtubeMetadata?: YoutubeVideoMetadata;
   onToggleLike?: () => void;
   isLikePending?: boolean;
+  onDelete?: () => void;
+  isDeletePending?: boolean;
 }
 
 function formatAppliedDate(appliedAt: string) {
@@ -20,6 +23,8 @@ export function MusicListItem({
   youtubeMetadata,
   onToggleLike,
   isLikePending = false,
+  onDelete,
+  isDeletePending = false,
 }: MusicListItemProps) {
   const thumbnailUrl =
     youtubeMetadata?.thumbnailUrl ??
@@ -57,16 +62,31 @@ export function MusicListItem({
         </div>
       </div>
 
-      <div className="flex shrink-0 flex-col items-center justify-center gap-1">
-        <button
-          type="button"
-          className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-sub-4 transition-opacity disabled:cursor-default disabled:opacity-60"
-          disabled={isLikePending}
-          onClick={onToggleLike}
-        >
-          <Heart isActive={music.isLiked} />
-        </button>
-        <span className="text-caption-1 text-sub-1">{music.likeCount}</span>
+      <div className="flex shrink-0 items-center gap-2">
+        {onDelete && (
+          <button
+            type="button"
+            className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-sub-4 transition-opacity disabled:cursor-default disabled:opacity-60"
+            disabled={isDeletePending}
+            onClick={onDelete}
+          >
+            <Delete />
+          </button>
+        )}
+
+        <div className="relative flex shrink-0 flex-col items-center">
+          <button
+            type="button"
+            className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-sub-4 transition-opacity disabled:cursor-default disabled:opacity-60"
+            disabled={isLikePending}
+            onClick={onToggleLike}
+          >
+            <Heart isActive={music.isLiked} />
+          </button>
+          <span className="absolute top-full mt-1 text-caption-1 text-sub-1">
+            {music.likeCount}
+          </span>
+        </div>
       </div>
     </div>
   );
