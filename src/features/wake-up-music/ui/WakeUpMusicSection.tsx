@@ -6,7 +6,6 @@ import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
-import { MOCK_SONGS } from "@/entities/music/model/mock";
 import Music from "@/shared/asset/svg/Music";
 import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendModal";
 import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
@@ -28,6 +27,7 @@ export function WakeUpMusicSection({
     songs,
     youtubeVideos,
     applyMutation,
+    handleSubmitRecommendedMusic,
     likeMutation,
     cancelMutation,
   } = useWakeUpMusic();
@@ -126,12 +126,13 @@ export function WakeUpMusicSection({
         </button>
       )}
 
-      <MusicRecommendModal
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        songs={MOCK_SONGS}
-        onSubmit={() => setIsModalOpen(false)}
-      />
+      {isModalOpen && (
+        <MusicRecommendModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleSubmitRecommendedMusic}
+        />
+      )}
     </section>
   );
 }

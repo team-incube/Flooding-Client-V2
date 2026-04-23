@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios, { HttpStatusCode } from "axios";
 import { toast } from "sonner";
 import type { Music } from "@/entities/music/model/music";
 import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
@@ -35,8 +36,41 @@ export function useWakeUpMusic() {
       setUrlInput("");
       queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
     },
-    onError: () => toast.error("기상음악 신청에 실패했습니다."),
+    onError: (error) => {
+      const status = axios.isAxiosError(error)
+        ? error.response?.status
+        : undefined;
+
+      if (status === HttpStatusCode.Conflict) {
+        toast.error("이미 기상음악을 신청했습니다.");
+        return;
+      }
+
+      toast.error("기상음악 신청에 실패했습니다.");
+    },
   });
+
+  const handleSubmitRecommendedMusic = async (selectedUrls: string[]) => {
+    try {
+      for (const url of selectedUrls) {
+        await dormitoryMutations.applyMusic({ musicUrl: url });
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ["dormitory", "music"] });
+    } catch (error) {
+      const status = axios.isAxiosError(error)
+        ? error.response?.status
+        : undefined;
+
+      if (status === HttpStatusCode.Conflict) {
+        toast.error("이미 기상음악을 신청했습니다.");
+        throw error;
+      }
+
+      toast.error("기상음악 신청에 실패했습니다.");
+      throw error;
+    }
+  };
 
   const likeMutation = useMutation({
     mutationFn: (music: Music) =>
@@ -99,6 +133,7 @@ export function useWakeUpMusic() {
     songs,
     youtubeVideos,
     applyMutation,
+    handleSubmitRecommendedMusic,
     likeMutation,
     cancelMutation,
   };

@@ -1,41 +1,43 @@
 "use client";
 
-import type { RecommendedMusic } from "@/entities/music/model/music";
 import SmallStar from "@/shared/asset/svg/SmallStar";
 import Cancel from "@/shared/asset/svg/Cancel";
 import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
-import { useMusicRecommendSelection } from "@/features/wake-up-music/model/useMusicRecommendSelection";
+import { useAiMusicRecommend } from "@/features/wake-up-music/model/useAiMusicRecommend";
 
 interface MusicRecommendModalProps {
   open: boolean;
   onClose: () => void;
-  songs: RecommendedMusic[];
-  onSubmit: (selectedIds: number[]) => void;
+  onSubmit: (selectedUrls: string[]) => Promise<void> | void;
 }
 
 export function MusicRecommendModal({
   open,
   onClose,
-  songs,
   onSubmit,
 }: MusicRecommendModalProps) {
   const {
-    selected,
-    displaySongs,
+    displayCards,
+    selectedUrls,
     retryCount,
     maxRetry,
     isActive,
+    isPending,
     handleSelect,
     handleRetry,
-  } = useMusicRecommendSelection(songs);
+  } = useAiMusicRecommend(open);
 
   if (!open) return null;
 
-  const handleSubmit = () => {
-    onSubmit(selected);
-    onClose();
+  const handleSubmit = async () => {
+    try {
+      await onSubmit(selectedUrls);
+      onClose();
+    } catch {
+      return;
+    }
   };
 
   return (
@@ -45,7 +47,9 @@ export function MusicRecommendModal({
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1">
               <SmallStar />
-              <span className="text-main-text text-text-1">오늘의 노래 추천</span>
+              <span className="text-main-text text-text-1">
+                오늘의 노래 추천
+              </span>
             </div>
 
             <button onClick={onClose} className="cursor-pointer">
@@ -57,16 +61,23 @@ export function MusicRecommendModal({
           </span>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto">
-          {displaySongs.map((music) => (
-            <MusicRecommendCard
-              key={music.id}
-              title={music.title}
-              thumbnailUrl={music.thumbnailUrl}
-              checked={selected.includes(music.id)}
-              onChange={() => handleSelect(music.id)}
-            />
-          ))}
+        <div className="flex gap-3 overflow-x-auto min-h-[203px]">
+          {isPending
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="w-90 h-[203px] bg-sub-4 rounded-xl shrink-0 animate-pulse"
+                />
+              ))
+            : displayCards.map((card) => (
+                <MusicRecommendCard
+                  key={card.url}
+                  title={card.title}
+                  thumbnailUrl={card.thumbnailUrl}
+                  checked={selectedUrls.includes(card.url)}
+                  onChange={() => handleSelect(card.url)}
+                />
+              ))}
         </div>
 
         <div className="flex justify-end gap-4">
