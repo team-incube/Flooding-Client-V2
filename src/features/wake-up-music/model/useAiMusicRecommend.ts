@@ -11,7 +11,7 @@ import { youtubeQueries } from "@/entities/music/api/youtubeQueries";
 const MAX_RETRY = 3;
 
 export function useAiMusicRecommend(enabled: boolean) {
-  const [selectedUrls, setSelectedUrls] = useState<string[]>([]);
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [youtubeLinks, setYoutubeLinks] = useState<string[]>([]);
 
@@ -22,20 +22,20 @@ export function useAiMusicRecommend(enabled: boolean) {
     mutationFn: () => aiMutations.recommendSong({ recent_songs: [] }),
     onMutate: () => {
       setYoutubeLinks([]);
-      setSelectedUrls([]);
+      setSelectedUrl(null);
     },
     onSuccess: ({ data }) => {
       const youtubeLinks = data.data?.youtube_links;
 
       if (!Array.isArray(youtubeLinks) || youtubeLinks.length === 0) {
         setYoutubeLinks([]);
-        setSelectedUrls([]);
+        setSelectedUrl(null);
         toast.error("추천된 노래가 없습니다.");
         return;
       }
 
       setYoutubeLinks(youtubeLinks);
-      setSelectedUrls([]);
+      setSelectedUrl(null);
     },
     onError: (error) => {
       const status = axios.isAxiosError(error)
@@ -86,9 +86,7 @@ export function useAiMusicRecommend(enabled: boolean) {
   });
 
   const handleSelect = (url: string) => {
-    setSelectedUrls((prev) =>
-      prev.includes(url) ? prev.filter((u) => u !== url) : [...prev, url],
-    );
+    setSelectedUrl((prev) => (prev === url ? null : url));
   };
 
   const handleRetry = () => {
@@ -100,10 +98,10 @@ export function useAiMusicRecommend(enabled: boolean) {
 
   return {
     displayCards,
-    selectedUrls,
+    selectedUrl,
     retryCount,
     maxRetry: MAX_RETRY,
-    isActive: selectedUrls.length > 0,
+    isActive: selectedUrl !== null,
     isPending,
     handleSelect,
     handleRetry,

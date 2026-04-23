@@ -50,11 +50,9 @@ export function useWakeUpMusic() {
     },
   });
 
-  const handleSubmitRecommendedMusic = async (selectedUrls: string[]) => {
+  const handleSubmitRecommendedMusic = async (selectedUrl: string) => {
     try {
-      await Promise.all(
-        selectedUrls.map((url) => dormitoryMutations.applyMusic({ musicUrl: url })),
-      );
+      await dormitoryMutations.applyMusic({ musicUrl: selectedUrl });
 
       await queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
     } catch (error) {

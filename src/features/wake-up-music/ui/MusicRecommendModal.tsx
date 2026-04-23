@@ -10,7 +10,7 @@ import { useAiMusicRecommend } from "@/features/wake-up-music/model/useAiMusicRe
 interface MusicRecommendModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (selectedUrls: string[]) => Promise<void> | void;
+  onSubmit: (selectedUrl: string) => Promise<void> | void;
 }
 
 export function MusicRecommendModal({
@@ -20,7 +20,7 @@ export function MusicRecommendModal({
 }: MusicRecommendModalProps) {
   const {
     displayCards,
-    selectedUrls,
+    selectedUrl,
     retryCount,
     maxRetry,
     isActive,
@@ -32,8 +32,10 @@ export function MusicRecommendModal({
   if (!open) return null;
 
   const handleSubmit = async () => {
+    if (!selectedUrl) return;
+
     try {
-      await onSubmit(selectedUrls);
+      await onSubmit(selectedUrl);
       onClose();
     } catch {
       return;
@@ -74,7 +76,7 @@ export function MusicRecommendModal({
                   key={card.url}
                   title={card.title}
                   thumbnailUrl={card.thumbnailUrl}
-                  checked={selectedUrls.includes(card.url)}
+                  checked={selectedUrl === card.url}
                   onChange={() => handleSelect(card.url)}
                 />
               ))}
