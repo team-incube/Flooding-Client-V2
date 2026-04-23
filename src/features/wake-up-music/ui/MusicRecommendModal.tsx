@@ -49,8 +49,8 @@ export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps)
           {displaySongs.map((music) => (
             <MusicRecommendCard
               key={music.id}
-              title={music.title}
-              thumbnailUrl={music.thumbnailUrl}
+              title={music.title ?? music.musicUrl}
+              thumbnailUrl={music.thumbnailUrl ?? ""}
               checked={selected.includes(music.id)}
               onChange={() => handleSelect(music.id)}
             />

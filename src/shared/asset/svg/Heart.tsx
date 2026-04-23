@@ -1,4 +1,10 @@
-export default function Heart() {
+interface HeartProps {
+  isActive?: boolean;
+}
+
+export default function Heart({ isActive = false }: HeartProps) {
+  const color = isActive ? "var(--color-p-1)" : "var(--color-sub-2)";
+
   return (
     <svg
       width="24"
@@ -9,7 +15,8 @@ export default function Heart() {
     >
       <path
         d="M21 8.25C21 5.765 18.901 3.75 16.312 3.75C14.377 3.75 12.715 4.876 12 6.483C11.285 4.876 9.623 3.75 7.687 3.75C5.1 3.75 3 5.765 3 8.25C3 15.47 12 20.25 12 20.25C12 20.25 21 15.47 21 8.25Z"
-        stroke="var(--color-sub-2)"
+        fill={isActive ? color : "none"}
+        stroke={color}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

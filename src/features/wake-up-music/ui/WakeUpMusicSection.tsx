@@ -2,6 +2,11 @@
 
 import { ReactNode, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "sonner";
+import type { Music as MusicModel } from "@/entities/music/model/music";
+import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
+import { youtubeQueries } from "@/entities/music/api/youtubeQueries";
 import Music from "@/shared/asset/svg/Music";
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
@@ -18,6 +23,31 @@ interface WakeUpMusicSectionProps {
   className?: string;
 }
 
+function formatDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function getErrorMessage(error: unknown) {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data;
+
+    if (
+      data &&
+      typeof data === "object" &&
+      "message" in data &&
+      typeof data.message === "string"
+    ) {
+      return data.message;
+    }
+  }
+
+  return "기상음악 신청에 실패했습니다.";
+}
+
 export function WakeUpMusicSection({
   icon,
   className,
@@ -25,14 +55,62 @@ export function WakeUpMusicSection({
   const queryClient = useQueryClient();
   const [urlInput, setUrlInput] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const selectedDateString = formatDate(selectedDate);
+  const musicQuery = dormitoryQueries.music(selectedDateString);
 
-  const { data: songs = [] } = useQuery(dormitoryQueries.music());
+  const { data: songs = [] } = useQuery(musicQuery);
+  const youtubeVideoIds = songs
+    .map((music) => extractYoutubeVideoId(music.musicUrl))
+    .filter((id): id is string => Boolean(id));
+  const { data: youtubeVideos = {} } = useQuery(
+    youtubeQueries.videos(youtubeVideoIds),
+  );
 
   const applyMutation = useMutation({
-    mutationFn: () => dormitoryMutations.applyMusic({ url: urlInput }),
+    mutationFn: () => dormitoryMutations.applyMusic({ musicUrl: urlInput }),
     onSuccess: () => {
       setUrlInput("");
-      queryClient.invalidateQueries({ queryKey: ["dormitory", "music"] });
+      queryClient.invalidateQueries({
+        queryKey: ["dormitory", "music", selectedDateString],
+      });
+    },
+    onError: (error) => toast.error(getErrorMessage(error)),
+  });
+
+  const likeMutation = useMutation({
+    mutationFn: (music: MusicModel) =>
+      music.isLiked
+        ? dormitoryMutations.cancelLikeMusic(music.id)
+        : dormitoryMutations.likeMusic(music.id),
+    onMutate: async (music) => {
+      await queryClient.cancelQueries({ queryKey: musicQuery.queryKey });
+
+      const previousSongs =
+        queryClient.getQueryData<MusicModel[]>(musicQuery.queryKey);
+
+      queryClient.setQueryData<MusicModel[]>(musicQuery.queryKey, (current) =>
+        current?.map((item) => {
+          if (item.id !== music.id) {
+            return item;
+          }
+
+          const isLiked = !Boolean(item.isLiked);
+          const likeCount = isLiked
+            ? item.likeCount + 1
+            : Math.max(0, item.likeCount - 1);
+
+          return { ...item, isLiked, likeCount };
+        }),
+      );
+
+      return { previousSongs };
+    },
+    onError: (error, _music, context) => {
+      if (context?.previousSongs) {
+        queryClient.setQueryData(musicQuery.queryKey, context.previousSongs);
+      }
+
+      toast.error(getErrorMessage(error));
     },
   });
 
@@ -60,7 +138,18 @@ export function WakeUpMusicSection({
         <div className="flex-1 min-w-0 overflow-y-auto pr-2">
           <div className="flex flex-col">
             {songs.map((music) => (
-              <MusicListItem key={music.id} music={music} />
+              <MusicListItem
+                key={music.id}
+                music={music}
+                youtubeMetadata={
+                  youtubeVideos[extractYoutubeVideoId(music.musicUrl) ?? ""]
+                }
+                isLikePending={
+                  likeMutation.isPending &&
+                  likeMutation.variables?.id === music.id
+                }
+                onToggleLike={() => likeMutation.mutate(music)}
+              />
             ))}
           </div>
         </div>
@@ -74,10 +163,14 @@ export function WakeUpMusicSection({
               onChange={(e) => setUrlInput(e.target.value)}
             />
             <TextButton
-              variant="filled"
+              variant={applyMutation.isPending ? "disabled" : "filled"}
               size="wide"
               className="w-full"
-              onClick={() => applyMutation.mutate()}
+              onClick={() => {
+                if (!applyMutation.isPending) {
+                  applyMutation.mutate();
+                }
+              }}
             >
               신청하기
             </TextButton>
