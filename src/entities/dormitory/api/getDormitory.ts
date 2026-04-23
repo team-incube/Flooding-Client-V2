@@ -6,9 +6,14 @@ import type {
   AllPenaltiesResponse, 
   CleaningZones, 
   CleaningZoneDetail 
-} from '../model/dormitory';
+} from '@/entities/dormitory/model/dormitory';
 
-type DormitoryMusicResponse = DormitoryMusic[] | { data?: DormitoryMusic[] };
+type DormitoryMusicResponseItem = Omit<DormitoryMusic, "isLiked"> & {
+  isLiked?: boolean;
+};
+type DormitoryMusicResponse =
+  | DormitoryMusicResponseItem[]
+  | { data?: DormitoryMusicResponseItem[] };
 
 export async function getDormitoryMusic(date?: string): Promise<DormitoryMusic[]> {
   const { data } = await instance.get<DormitoryMusicResponse>('/dormitory/music', {

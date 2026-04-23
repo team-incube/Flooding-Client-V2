@@ -2,7 +2,6 @@
 
 import { ReactNode, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { toast } from "sonner";
 import type { Music as MusicModel } from "@/entities/music/model/music";
 import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
@@ -16,7 +15,7 @@ import {
   dormitoryQueries,
   dormitoryMutations,
 } from "@/entities/dormitory/api/dormitoryQueries";
-import { MusicRecommendModal } from "./MusicRecommendModal";
+import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendModal";
 
 interface WakeUpMusicSectionProps {
   icon?: ReactNode;
@@ -29,23 +28,6 @@ function formatDate(date: Date) {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
-}
-
-function getErrorMessage(error: unknown) {
-  if (axios.isAxiosError(error)) {
-    const data = error.response?.data;
-
-    if (
-      data &&
-      typeof data === "object" &&
-      "message" in data &&
-      typeof data.message === "string"
-    ) {
-      return data.message;
-    }
-  }
-
-  return "기상음악 신청에 실패했습니다.";
 }
 
 export function WakeUpMusicSection({
@@ -74,7 +56,7 @@ export function WakeUpMusicSection({
         queryKey: ["dormitory", "music", selectedDateString],
       });
     },
-    onError: (error) => toast.error(getErrorMessage(error)),
+    onError: () => toast.error("기상음악 신청에 실패했습니다."),
   });
 
   const likeMutation = useMutation({
@@ -105,12 +87,12 @@ export function WakeUpMusicSection({
 
       return { previousSongs };
     },
-    onError: (error, _music, context) => {
+    onError: (_error, _music, context) => {
       if (context?.previousSongs) {
         queryClient.setQueryData(musicQuery.queryKey, context.previousSongs);
       }
 
-      toast.error(getErrorMessage(error));
+      toast.error("기상음악 신청에 실패했습니다.");
     },
   });
 

@@ -23,9 +23,8 @@ export function MusicListItem({
 }: MusicListItemProps) {
   const thumbnailUrl =
     youtubeMetadata?.thumbnailUrl ??
-    music.thumbnailUrl ??
     getYoutubeThumbnailUrl(music.musicUrl);
-  const title = youtubeMetadata?.title ?? music.title ?? music.musicUrl;
+  const title = youtubeMetadata?.title ?? music.musicUrl;
 
   return (
     <div className="flex items-center justify-between gap-4 border-b border-sub-3 py-3 pr-6 last:border-b-0">
@@ -51,11 +50,6 @@ export function MusicListItem({
             {title}
           </p>
           <div className="flex shrink-0 items-center justify-between 2xl:justify-start 2xl:gap-6">
-            {music.studentNumber && music.studentName && (
-              <span className="text-text-3 text-sub-1">
-                {music.studentNumber} {music.studentName}
-              </span>
-            )}
             <span className="shrink-0 text-caption-2 text-sub-2">
               {formatAppliedDate(music.appliedAt)}
             </span>

@@ -3,9 +3,12 @@ export interface Music {
   musicUrl: string;
   appliedAt: string;
   likeCount: number;
-  isLiked?: boolean;
-  title?: string;
-  studentNumber?: number;
-  studentName?: string;
-  thumbnailUrl?: string;
+  isLiked: boolean;
+}
+
+export interface RecommendedMusic extends Music {
+  title: string;
+  studentNumber: number;
+  studentName: string;
+  thumbnailUrl: string;
 }

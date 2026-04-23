@@ -6,7 +6,7 @@ import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
 import { MOCK_SONGS } from "@/entities/music/model/mock";
-import { useMusicRecommendSelection } from "../model/useMusicRecommendSelection";
+import { useMusicRecommendSelection } from "@/features/wake-up-music/model/useMusicRecommendSelection";
 
 interface MusicRecommendModalProps {
   open: boolean;
@@ -49,8 +49,8 @@ export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps)
           {displaySongs.map((music) => (
             <MusicRecommendCard
               key={music.id}
-              title={music.title ?? music.musicUrl}
-              thumbnailUrl={music.thumbnailUrl ?? ""}
+              title={music.title}
+              thumbnailUrl={music.thumbnailUrl}
               checked={selected.includes(music.id)}
               onChange={() => handleSelect(music.id)}
             />

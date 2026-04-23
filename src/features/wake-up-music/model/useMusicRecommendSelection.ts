@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import type { Music } from "@/entities/music/model/music";
+import type { RecommendedMusic } from "@/entities/music/model/music";
 import { randomSongs } from "@/entities/music/lib/randomSongs";
 
 const MAX_RETRY = 3;
 
-export function useMusicRecommendSelection(songs: Music[]) {
+export function useMusicRecommendSelection(songs: RecommendedMusic[]) {
   const [selected, setSelected] = useState<number[]>([]);
   const [retryCount, setRetryCount] = useState(0);
   const [displaySongs, setDisplaySongs] = useState(() =>

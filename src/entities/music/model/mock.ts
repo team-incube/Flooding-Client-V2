@@ -1,6 +1,6 @@
-import { Music } from "./music";
+import type { RecommendedMusic } from "@/entities/music/model/music";
 
-export const MOCK_SONGS: Music[] = [
+export const MOCK_SONGS: RecommendedMusic[] = [
   {
     id: 1,
     musicUrl: "https://www.youtube.com/watch?v=wDfqXR_5yyQ",
@@ -9,6 +9,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "박건우",
     appliedAt: "08:30",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/hq720.jpg",
   },
   {
@@ -20,6 +21,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "이수진",
     appliedAt: "14:14",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
   {
@@ -30,6 +32,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "김태양",
     appliedAt: "09:22",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/hq720.jpg",
   },
   {
@@ -40,6 +43,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "최아름",
     appliedAt: "07:45",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
   {
@@ -50,6 +54,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "정민호",
     appliedAt: "11:03",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/hq720.jpg",
   },
   {
@@ -60,6 +65,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "한지원",
     appliedAt: "13:55",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
   {
@@ -70,6 +76,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "오준혁",
     appliedAt: "08:17",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/hq720.jpg",
   },
   {
@@ -80,6 +87,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "윤서연",
     appliedAt: "10:40",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
   {
@@ -90,6 +98,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "강동현",
     appliedAt: "12:00",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/hq720.jpg",
   },
   {
@@ -100,6 +109,7 @@ export const MOCK_SONGS: Music[] = [
     studentName: "신예린",
     appliedAt: "15:30",
     likeCount: 0,
+    isLiked: false,
     thumbnailUrl: "/3a6c5821165edd682ddaca9d45502579921fc556.png",
   },
 ];
