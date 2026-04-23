@@ -8,12 +8,12 @@ import {
   getAllPenalties,
   getCleaningZones,
   getCleaningZoneDetail,
-} from './getDormitory';
+} from '@/entities/dormitory/api/getDormitory';
 import type { 
   MusicApplyRequest, 
   UpdatePenaltyRequest, 
   CreateCleaningZoneRequest 
-} from '../model/dormitory';
+} from '@/entities/dormitory/model/dormitory';
 
 export const dormitoryQueries = {
   music: (date?: string) =>

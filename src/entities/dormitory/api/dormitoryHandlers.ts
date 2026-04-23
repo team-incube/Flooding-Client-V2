@@ -5,7 +5,7 @@ import {
   MOCK_ALL_PENALTIES, 
   MOCK_CLEANING_ZONES, 
   MOCK_CLEANING_ZONE_DETAIL 
-} from '../model/mock';
+} from '@/entities/dormitory/model/mock';
 
 export const dormitoryHandlers = [
   // GET — 목록 조회

@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw";
-import type { HomebaseReservation } from "../model/homebase";
+import type { HomebaseReservation } from "@/entities/homebase/model/homebase";
 
 const mockHomebaseReservations: HomebaseReservation[] = [
   {
