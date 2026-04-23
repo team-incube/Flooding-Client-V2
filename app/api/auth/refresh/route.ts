@@ -1,6 +1,6 @@
 import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { instance } from "@/shared/api/instance";
+import { serverInstance } from "@/shared/api/instance";
 
 export async function POST(request: NextRequest) {
   const refreshToken = request.cookies.get("refresh_token")?.value;
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const reissueUrl = process.env.NEXT_PUBLIC_BASE_URL! + "/auth/reissue";
     const reissueBody = { refreshToken };
 
-    const response = await instance.post(reissueUrl, reissueBody);
+    const response = await serverInstance.post(reissueUrl, reissueBody);
 
     return NextResponse.json(response.data, {
       status: response.status,

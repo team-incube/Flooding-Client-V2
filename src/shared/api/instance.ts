@@ -5,6 +5,10 @@ export const instance = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+export const serverInstance = axios.create({
+  headers: { "Content-Type": "application/json" },
+});
+
 const authPathsWithoutRefresh = [
   "/api/auth/callback",
   "/api/auth/refresh",

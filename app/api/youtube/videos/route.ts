@@ -1,6 +1,7 @@
 import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { formatYoutubeDuration } from "@/entities/music/lib/youtube";
+import { serverInstance } from "@/shared/api/instance";
 
 interface YoutubeVideoItem {
   id: string;
@@ -44,7 +45,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const { data } = await axios.get<YoutubeVideosResponse>(
+    const { data } = await serverInstance.get<YoutubeVideosResponse>(
       "https://www.googleapis.com/youtube/v3/videos",
       {
         params: {
@@ -80,7 +81,9 @@ export async function GET(request: NextRequest) {
 
     if (axios.isAxiosError(error) && error.response) {
       const { data, status } = error.response;
-      return NextResponse.json(data ?? fallbackBody, { status });
+      return NextResponse.json(data ?? fallbackBody, {
+        status: status ?? HttpStatusCode.InternalServerError,
+      });
     }
 
     return NextResponse.json(fallbackBody, {
