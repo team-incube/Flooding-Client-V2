@@ -1,19 +1,26 @@
 "use client";
 
+import type { RecommendedMusic } from "@/entities/music/model/music";
 import SmallStar from "@/shared/asset/svg/SmallStar";
 import Cancel from "@/shared/asset/svg/Cancel";
 import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
-import { MOCK_SONGS } from "@/entities/music/model/mock";
 import { useMusicRecommendSelection } from "@/features/wake-up-music/model/useMusicRecommendSelection";
 
 interface MusicRecommendModalProps {
   open: boolean;
   onClose: () => void;
+  songs: RecommendedMusic[];
+  onSubmit: (selectedIds: number[]) => void;
 }
 
-export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps) {
+export function MusicRecommendModal({
+  open,
+  onClose,
+  songs,
+  onSubmit,
+}: MusicRecommendModalProps) {
   const {
     selected,
     displaySongs,
@@ -22,9 +29,14 @@ export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps)
     isActive,
     handleSelect,
     handleRetry,
-  } = useMusicRecommendSelection(MOCK_SONGS);
+  } = useMusicRecommendSelection(songs);
 
   if (!open) return null;
+
+  const handleSubmit = () => {
+    onSubmit(selected);
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#F7F7F9]/50 z-50">
@@ -36,7 +48,7 @@ export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps)
               <span className="text-main-text text-text-1">오늘의 노래 추천</span>
             </div>
 
-            <button onClick={onClose} className="cursor-pointer ">
+            <button onClick={onClose} className="cursor-pointer">
               <Cancel />
             </button>
           </div>
@@ -63,11 +75,15 @@ export function MusicRecommendModal({ open, onClose }: MusicRecommendModalProps)
             count={retryCount}
             max={maxRetry}
           />
-          <div className={!isActive ? "pointer-events-none opacity-50" : "cursor-pointer"}>
+          <div
+            className={
+              !isActive ? "pointer-events-none opacity-50" : "cursor-pointer"
+            }
+          >
             <TextButton
               variant={isActive ? "filled" : "outlined"}
               size="medium"
-              onClick={() => {}}
+              onClick={handleSubmit}
             >
               음악 신청하기
             </TextButton>

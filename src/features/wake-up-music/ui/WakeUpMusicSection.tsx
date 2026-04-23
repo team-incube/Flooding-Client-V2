@@ -1,103 +1,39 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { Music as MusicModel } from "@/entities/music/model/music";
 import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
-import { youtubeQueries } from "@/entities/music/api/youtubeQueries";
-import Music from "@/shared/asset/svg/Music";
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
-import {
-  dormitoryQueries,
-  dormitoryMutations,
-} from "@/entities/dormitory/api/dormitoryQueries";
+import { MOCK_SONGS } from "@/entities/music/model/mock";
+import Music from "@/shared/asset/svg/Music";
 import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendModal";
+import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
 
 interface WakeUpMusicSectionProps {
   icon?: ReactNode;
   className?: string;
 }
 
-function formatDate(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
 export function WakeUpMusicSection({
   icon,
   className,
 }: WakeUpMusicSectionProps) {
-  const queryClient = useQueryClient();
-  const [urlInput, setUrlInput] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const selectedDateString = formatDate(selectedDate);
-  const musicQuery = dormitoryQueries.music(selectedDateString);
-
-  const { data: songs = [] } = useQuery(musicQuery);
-  const youtubeVideoIds = songs
-    .map((music) => extractYoutubeVideoId(music.musicUrl))
-    .filter((id): id is string => Boolean(id));
-  const { data: youtubeVideos = {} } = useQuery(
-    youtubeQueries.videos(youtubeVideoIds),
-  );
-
-  const applyMutation = useMutation({
-    mutationFn: () => dormitoryMutations.applyMusic({ musicUrl: urlInput }),
-    onSuccess: () => {
-      setUrlInput("");
-      queryClient.invalidateQueries({
-        queryKey: ["dormitory", "music", selectedDateString],
-      });
-    },
-    onError: () => toast.error("기상음악 신청에 실패했습니다."),
-  });
-
-  const likeMutation = useMutation({
-    mutationFn: (music: MusicModel) =>
-      music.isLiked
-        ? dormitoryMutations.cancelLikeMusic(music.id)
-        : dormitoryMutations.likeMusic(music.id),
-    onMutate: async (music) => {
-      await queryClient.cancelQueries({ queryKey: musicQuery.queryKey });
-
-      const previousSongs =
-        queryClient.getQueryData<MusicModel[]>(musicQuery.queryKey);
-
-      queryClient.setQueryData<MusicModel[]>(musicQuery.queryKey, (current) =>
-        current?.map((item) => {
-          if (item.id !== music.id) {
-            return item;
-          }
-
-          const isLiked = !Boolean(item.isLiked);
-          const likeCount = isLiked
-            ? item.likeCount + 1
-            : Math.max(0, item.likeCount - 1);
-
-          return { ...item, isLiked, likeCount };
-        }),
-      );
-
-      return { previousSongs };
-    },
-    onError: (_error, _music, context) => {
-      if (context?.previousSongs) {
-        queryClient.setQueryData(musicQuery.queryKey, context.previousSongs);
-      }
-
-      toast.error("기상음악 신청에 실패했습니다.");
-    },
-  });
+  const {
+    urlInput,
+    setUrlInput,
+    selectedDate,
+    setSelectedDate,
+    songs,
+    youtubeVideos,
+    applyMutation,
+    likeMutation,
+    cancelMutation,
+  } = useWakeUpMusic();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isHovered , setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <section
@@ -131,6 +67,11 @@ export function WakeUpMusicSection({
                   likeMutation.variables?.id === music.id
                 }
                 onToggleLike={() => likeMutation.mutate(music)}
+                onDelete={() => cancelMutation.mutate(music.id)}
+                isDeletePending={
+                  cancelMutation.isPending &&
+                  cancelMutation.variables === music.id
+                }
               />
             ))}
           </div>
@@ -168,24 +109,28 @@ export function WakeUpMusicSection({
       </div>
 
       {icon && (
-          <button
-            className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center cursor-pointer"
-            onClick={() => setIsModalOpen(true)}
-          >
-            {isHovered && (
-              <div className="absolute bottom-full mb-4 right-0 pointer-events-none">
-                <div className="relative bg-surface text-sub-1 px-4 py-2 rounded-lg shadow-[0_0_24px_rgba(0,0,0,0.1)] whitespace-nowrap text-sm font-medium">
-                  오늘의 노래를 <span className="text-p-1">ai</span>한테 추천 받아봐요!
-                  <div className="absolute -bottom-1.5 right-[22px] w-3 h-3 bg-background-surface rotate-45"></div>
-                </div>
+        <button
+          className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center cursor-pointer"
+          onClick={() => setIsModalOpen(true)}
+        >
+          {isHovered && (
+            <div className="absolute bottom-full mb-4 right-0 pointer-events-none">
+              <div className="relative bg-surface text-sub-1 px-4 py-2 rounded-lg shadow-[0_0_24px_rgba(0,0,0,0.1)] whitespace-nowrap text-sm font-medium">
+                오늘의 노래를 <span className="text-p-1">ai</span>한테 추천
+                받아봐요!
+                <div className="absolute -bottom-1.5 right-[22px] w-3 h-3 bg-background-surface rotate-45"></div>
               </div>
-            )}
-            {icon}
-          </button>
+            </div>
+          )}
+          {icon}
+        </button>
       )}
+
       <MusicRecommendModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        songs={MOCK_SONGS}
+        onSubmit={() => setIsModalOpen(false)}
       />
     </section>
   );
