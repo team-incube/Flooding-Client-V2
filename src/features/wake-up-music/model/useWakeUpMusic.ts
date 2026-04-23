@@ -52,11 +52,11 @@ export function useWakeUpMusic() {
 
   const handleSubmitRecommendedMusic = async (selectedUrls: string[]) => {
     try {
-      for (const url of selectedUrls) {
-        await dormitoryMutations.applyMusic({ musicUrl: url });
-      }
+      await Promise.all(
+        selectedUrls.map((url) => dormitoryMutations.applyMusic({ musicUrl: url })),
+      );
 
-      await queryClient.invalidateQueries({ queryKey: ["dormitory", "music"] });
+      await queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
     } catch (error) {
       const status = axios.isAxiosError(error)
         ? error.response?.status
