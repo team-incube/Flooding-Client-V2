@@ -28,17 +28,17 @@ const mockHomebaseReservations: HomebaseReservation[] = [
 ];
 
 export const homebaseHandlers = [
-  http.get("/homebase", () => HttpResponse.json(mockHomebaseReservations)),
+  http.get("*/homebase", () => HttpResponse.json(mockHomebaseReservations)),
 
-  http.post("/homebase/:homebaseId", () =>
+  http.post("*/homebase/:homebaseId", () =>
     HttpResponse.json({ success: true }, { status: 201 }),
   ),
 
-  http.delete("/homebase/:homebaseId", () =>
+  http.delete("*/homebase/:homebaseId", () =>
     new HttpResponse(null, { status: 204 }),
   ),
 
-  http.patch("/homebase/:homebaseId", () =>
+  http.patch("*/homebase/:homebaseId", () =>
     new HttpResponse(null, { status: 204 }),
   ),
 ];
