@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const instance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -12,6 +13,10 @@ const authPathsWithoutRefresh = [
 
 if (typeof window !== "undefined") {
   instance.interceptors.request.use((config) => {
+    if (config.url?.startsWith("/api/")) {
+      config.baseURL = undefined;
+    }
+
     const token = sessionStorage.getItem("access_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
