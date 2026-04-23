@@ -98,6 +98,9 @@ export function useWakeUpMusic() {
       }
       toast.error("좋아요 처리에 실패했습니다.");
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
+    },
   });
 
   const cancelMutation = useMutation({
