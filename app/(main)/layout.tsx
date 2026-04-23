@@ -1,5 +1,6 @@
 import Sidebar from "@/widgets/adaptive-sidebar/ui";
 import { Header } from "@/widgets/header/ui/header";
+import { AiChatButton } from "@/features/ai-chat/ui/AiChatButton";
 
 export default function MainLayout({
   children,
@@ -13,6 +14,7 @@ export default function MainLayout({
         <Header />
         {children}
       </div>
+      <AiChatButton />
     </div>
   );
 }
