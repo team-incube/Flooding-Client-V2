@@ -1,8 +1,11 @@
 export interface Music {
   id: number;
-  title: string;
-  studentNumber: number;
-  studentName: string;
+  musicUrl: string;
   appliedAt: string;
-  thumbnailUrl: string;
+  likeCount: number;
+  isLiked?: boolean;
+  title?: string;
+  studentNumber?: number;
+  studentName?: string;
+  thumbnailUrl?: string;
 }
