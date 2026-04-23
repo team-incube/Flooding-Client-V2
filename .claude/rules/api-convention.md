@@ -2,9 +2,17 @@
 
 ## Shared Principles
 
-- Use the Axios instance in `src/shared/api/instance.ts` as the HTTP client.
+- Use the Axios instances in `src/shared/api/instance.ts` as the HTTP clients.
+- Use `instance` for client-side domain API calls and React Query calls.
+- Use `serverInstance` for API calls made inside Next.js route handlers.
+- `serverInstance` must not define a base URL; pass absolute URLs explicitly when a route handler calls an external or backend API.
 - Do not introduce arbitrary `fetch` calls or separate Axios instances.
 - Use `src/shared/api/queryClient.ts` as the source of shared React Query configuration.
+
+## Route Handler Rules
+
+- Use `HttpStatusCode` from `axios` for route handler response statuses.
+- Do not hard-code numeric HTTP status values such as `500` in `NextResponse.json` options.
 
 ## Placement Rules
 
