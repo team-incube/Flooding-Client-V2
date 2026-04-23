@@ -43,7 +43,7 @@ export function MusicRecommendModal({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[#F7F7F9]/50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-background/40 z-50">
       <div className="flex flex-col gap-6 bg-background-surface rounded-2xl p-6 w-[90%] max-w-[1152px] min-h-[447px]">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
