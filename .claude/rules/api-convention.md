@@ -8,6 +8,9 @@
 - `serverInstance` must not define a base URL; pass absolute URLs explicitly when a route handler calls an external or backend API.
 - Do not introduce arbitrary `fetch` calls or separate Axios instances.
 - Use `src/shared/api/queryClient.ts` as the source of shared React Query configuration.
+- Use `HttpStatusCode` from `axios` for HTTP status comparisons instead of hard-coded numeric values.
+- Narrow Axios errors with `axios.isAxiosError(error)` at the handling site and branch inline there.
+- Do not create broad `unknown` structure-inspection helpers for one-off Axios error handling.
 
 ## Route Handler Rules
 
