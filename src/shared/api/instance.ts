@@ -34,13 +34,17 @@ if (typeof window !== "undefined") {
     async (error) => {
       const originalRequest = error.config;
 
-      if (
-        error.response?.status === HttpStatusCode.Forbidden &&
-        !sessionStorage.getItem("access_token")
-      ) {
-        toast.error("로그인이 필요합니다.");
-        window.location.href = "/signin";
-        return Promise.reject(error);
+      if (error.response?.status === HttpStatusCode.Forbidden) {
+        const isGetRequest = originalRequest.method?.toUpperCase() === "GET";
+        const hasToken = !!sessionStorage.getItem("access_token");
+
+        if (isGetRequest || !hasToken) {
+          sessionStorage.removeItem("access_token");
+          sessionStorage.removeItem("user");
+          toast.error("로그인이 필요합니다.");
+          window.location.href = "/signin";
+          return Promise.reject(error);
+        }
       }
 
       if (
