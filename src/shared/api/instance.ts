@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios, { HttpStatusCode } from "axios";
+import { toast } from "sonner";
 
 export const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -32,6 +33,15 @@ if (typeof window !== "undefined") {
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
+
+      if (
+        error.response?.status === HttpStatusCode.Forbidden &&
+        !sessionStorage.getItem("access_token")
+      ) {
+        toast.error("로그인이 필요합니다.");
+        window.location.href = "/signin";
+        return Promise.reject(error);
+      }
 
       if (
         error.response?.status === 401 &&
