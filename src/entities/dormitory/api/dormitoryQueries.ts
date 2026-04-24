@@ -72,19 +72,19 @@ export const dormitoryMutations = {
   deleteMusic: (musicId: number) =>
     instance.delete(`/dormitory/music/${musicId}`),
 
-  applyMassage: () => instance.post('/dormitory/massage'),
+  applyMassage: () => instance.post('/dormitory/massages'),
 
-  cancelMassage: () => instance.delete('/dormitory/massage'),
+  cancelMassage: () => instance.delete('/dormitory/massages'),
 
-  applyStudy: () => instance.post('/dormitory/study'),
+  applyStudy: () => instance.post('/dormitory/studies'),
 
-  cancelStudy: () => instance.delete('/dormitory/study'),
+  cancelStudy: () => instance.delete('/dormitory/studies'),
 
   submitInquiry: (body: { content: string }) =>
     instance.post('/dormitory/inquiry', body),
 
   banStudy: (userId: number) =>
-    instance.patch(`/dormitory/study/${userId}`),
+    instance.post(`/dormitory/studies/ban/${userId}`),
 
   updatePenalties: (userId: number, body: UpdatePenaltyRequest) => 
     instance.put(`/dormitory/penalties/${userId}`, body),
