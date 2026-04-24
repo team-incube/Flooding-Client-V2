@@ -18,7 +18,8 @@ const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
 export function SelfStudySection() {
   const queryClient = useQueryClient();
-  const { data: students = [] } = useQuery(dormitoryQueries.study());
+  const studyQuery = dormitoryQueries.study();
+  const { data: students = [] } = useQuery(studyQuery);
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
@@ -26,7 +27,7 @@ export function SelfStudySection() {
   const applyMutation = useMutation({
     mutationFn: dormitoryMutations.applyStudy,
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["dormitory", "study"] }),
+      queryClient.invalidateQueries({ queryKey: studyQuery.queryKey }),
   });
 
   const handleResetFilters = () => dispatch({ type: "RESET" });

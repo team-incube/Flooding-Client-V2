@@ -1,6 +1,6 @@
 import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { instance } from "@/shared/api/instance";
+import { serverInstance } from "@/shared/api/instance";
 
 export async function POST(request: NextRequest) {
   const { code } = await request.json();
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       redirectUri: process.env.NEXT_PUBLIC_DG_REDIRECT_URL!,
     };
 
-    const response = await instance.post(signinUrl, signinBody);
+    const response = await serverInstance.post(signinUrl, signinBody);
 
     return NextResponse.json(response.data, {
       status: response.status,

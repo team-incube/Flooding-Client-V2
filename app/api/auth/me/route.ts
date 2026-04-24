@@ -1,6 +1,6 @@
 import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { instance } from "@/shared/api/instance";
+import { serverInstance } from "@/shared/api/instance";
 
 export async function GET(request: NextRequest) {
   const authorization = request.headers.get("Authorization");
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const { data: user } = await instance.get(
+    const { data: user } = await serverInstance.get(
       process.env.DATAGSM_USERINFO_URL!,
       {
         headers: { Authorization: authorization },

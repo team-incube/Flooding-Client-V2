@@ -11,12 +11,13 @@ import {
 
 export function MassageChairSection() {
   const queryClient = useQueryClient();
-  const { data: applicants = [] } = useQuery(dormitoryQueries.massage());
+  const massageQuery = dormitoryQueries.massage();
+  const { data: applicants = [] } = useQuery(massageQuery);
 
   const applyMutation = useMutation({
     mutationFn: dormitoryMutations.applyMassage,
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["dormitory", "massage"] }),
+      queryClient.invalidateQueries({ queryKey: massageQuery.queryKey }),
   });
 
   return (

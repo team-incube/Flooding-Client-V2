@@ -1,5 +1,5 @@
 import type { Reservation } from "@/entities/school/model/reservation";
-import type { HomebaseReservation } from "../model/homebase";
+import type { HomebaseReservation } from "@/entities/homebase/model/homebase";
 
 interface HomebaseLocation {
   floor: string;

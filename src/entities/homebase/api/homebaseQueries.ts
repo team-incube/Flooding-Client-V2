@@ -1,10 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
 import { instance } from "@/shared/api/instance";
-import { getHomebaseReservations } from "./getHomebase";
+import { getHomebaseReservations } from "@/entities/homebase/api/getHomebase";
 import type {
   HomebaseApplyRequest,
   HomebasePatchRequest,
-} from "../model/homebase";
+} from "@/entities/homebase/model/homebase";
 
 export const homebaseQueries = {
   list: () =>

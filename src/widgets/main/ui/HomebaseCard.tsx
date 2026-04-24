@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { homebaseMutations, homebaseQueries } from "@/entities/homebase/api/homebaseQueries";
+import {
+  homebaseMutations,
+  homebaseQueries,
+} from "@/entities/homebase/api/homebaseQueries";
 import {
   getHomebaseId,
   getHomebaseLocation,
@@ -39,7 +42,8 @@ export default function HomebaseCard({
   const [selectedStudents, setSelectedStudents] = useState<User[]>([]);
 
   const queryClient = useQueryClient();
-  const { data: reservations = [] } = useQuery(homebaseQueries.list());
+  const homebaseListQuery = homebaseQueries.list();
+  const { data: reservations = [] } = useQuery(homebaseListQuery);
 
   const applyMutation = useMutation({
     mutationFn: ({
@@ -50,13 +54,13 @@ export default function HomebaseCard({
       body: HomebaseApplyRequest;
     }) => homebaseMutations.apply(homebaseId, body),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["homebase", "list"] }),
+      queryClient.invalidateQueries({ queryKey: homebaseListQuery.queryKey }),
   });
 
   const cancelMutation = useMutation({
     mutationFn: (homebaseId: number) => homebaseMutations.cancel(homebaseId),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["homebase", "list"] }),
+      queryClient.invalidateQueries({ queryKey: homebaseListQuery.queryKey }),
   });
 
   const handleFloorChange = (floor: string) => {

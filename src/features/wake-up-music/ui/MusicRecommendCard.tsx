@@ -18,7 +18,7 @@ export default function MusicRecommendCard({
 }: MusicRecommendCardProps) {
   return (
     <div onClick={onChange} className="cursor-pointer">
-      <div className="relative w-90 h-[203px] bg-sub-4 rounded-xl flex-shrink-0">
+      <div className="relative w-90 h-[203px] bg-sub-4 rounded-xl shrink-0">
         {thumbnailUrl && (
           <Image
             src={thumbnailUrl}
@@ -28,12 +28,12 @@ export default function MusicRecommendCard({
           />
         )}
 
-          <div className="absolute top-2 right-2">
-            <Checkbox isActive={checked} />
-          </div>
+        <div className="absolute top-2 right-2">
+          <Checkbox isActive={checked} />
+        </div>
       </div>
 
       <div>{title}</div>
     </div>
-  )
+  );
 }

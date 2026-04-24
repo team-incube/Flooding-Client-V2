@@ -6,11 +6,26 @@ import type {
   AllPenaltiesResponse, 
   CleaningZones, 
   CleaningZoneDetail 
-} from '../model/dormitory';
+} from '@/entities/dormitory/model/dormitory';
 
-export async function getDormitoryMusic(): Promise<DormitoryMusic[]> {
-  const { data } = await instance.get<DormitoryMusic[]>('/dormitory/music');
-  return data;
+type DormitoryMusicResponseItem = Omit<DormitoryMusic, "isLiked"> & {
+  isLiked?: boolean;
+};
+type DormitoryMusicResponse =
+  | DormitoryMusicResponseItem[]
+  | { data?: DormitoryMusicResponseItem[] };
+
+export async function getDormitoryMusic(date?: string): Promise<DormitoryMusic[]> {
+  const { data } = await instance.get<DormitoryMusicResponse>('/dormitory/music', {
+    params: date ? { date } : undefined,
+  });
+
+  const musicList = Array.isArray(data) ? data : data.data ?? [];
+
+  return musicList.map((music) => ({
+    ...music,
+    isLiked: music.isLiked ?? false,
+  }));
 }
 
 export async function getMassageApplicants(): Promise<DormitoryStudent[]> {

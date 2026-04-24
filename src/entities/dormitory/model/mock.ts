@@ -1,9 +1,9 @@
-import { 
+import type {
   MyPenaltyResponse, 
   AllPenaltiesResponse, 
   CleaningZones, 
   CleaningZoneDetail 
-} from "./dormitory";
+} from "@/entities/dormitory/model/dormitory";
 
 export const MOCK_MY_PENALTY : MyPenaltyResponse = {
   penaltyScore: 3
