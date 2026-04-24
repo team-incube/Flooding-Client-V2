@@ -1,56 +1,26 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios, { HttpStatusCode } from "axios";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
 import Search from "@/shared/asset/svg/Search";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
-import {
-  dormitoryQueries,
-  dormitoryMutations,
-} from "@/entities/dormitory/api/dormitoryQueries";
+import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { useStudyFilter } from "../model/useStudyFilter";
+import { useApplyStudy } from "../model/useApplyStudy";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
 export function SelfStudySection() {
-  const queryClient = useQueryClient();
   const studyQuery = dormitoryQueries.study();
   const { data: students = [] } = useQuery(studyQuery);
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
-
-  const applyMutation = useMutation({
-    mutationFn: dormitoryMutations.applyStudy,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: studyQuery.queryKey }),
-    onError: (error) => {
-      const status = axios.isAxiosError(error)
-        ? error.response?.status
-        : undefined;
-
-      if (status === HttpStatusCode.BadRequest) {
-        toast.error("자습 신청 시간이 아닙니다.");
-        return;
-      }
-      if (status === HttpStatusCode.Forbidden) {
-        toast.error("자습 금지 상태입니다.");
-        return;
-      }
-      if (status === HttpStatusCode.Conflict) {
-        toast.error("이미 자습을 신청했습니다.");
-        return;
-      }
-
-      toast.error("자습 신청에 실패했습니다.");
-    },
-  });
+  const applyMutation = useApplyStudy();
 
   const handleResetFilters = () => dispatch({ type: "RESET" });
   const handleSearchQueryChange = (value: string) =>
