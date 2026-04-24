@@ -10,6 +10,7 @@ interface ApplyCardProps {
   buttonText: string;
   disabled?: boolean;
   femaleNotice?: boolean;
+  onApply?: () => void;
 }
 
 export default function ApplyCard({
@@ -21,6 +22,7 @@ export default function ApplyCard({
   buttonText,
   disabled = false,
   femaleNotice = false,
+  onApply,
 }: ApplyCardProps) {
   return (
     <div className="w-full bg-background-surface rounded-2xl p-6">
@@ -62,7 +64,11 @@ export default function ApplyCard({
             </p>
           )}
         </div>
-        <TextButton variant={disabled ? "disabled" : "filled"} size="small">
+        <TextButton
+          variant={disabled ? "disabled" : "filled"}
+          size="small"
+          onClick={onApply}
+        >
           {buttonText}
         </TextButton>
       </div>
