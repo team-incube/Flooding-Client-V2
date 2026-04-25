@@ -18,8 +18,9 @@ export const homebaseMutations = {
   apply: (homebaseId: number, body: HomebaseApplyRequest) =>
     instance.post(`/homebase/${homebaseId}`, body),
 
-  cancel: (homebaseId: number) => instance.delete(`/homebase/${homebaseId}`),
+  cancel: (reservationId: number) =>
+    instance.delete(`/homebase/${reservationId}`),
 
-  update: (homebaseId: number, body: HomebasePatchRequest) =>
-    instance.patch(`/homebase/${homebaseId}`, body),
+  update: (reservationId: number, body: HomebasePatchRequest) =>
+    instance.patch(`/homebase/${reservationId}`, body),
 };
