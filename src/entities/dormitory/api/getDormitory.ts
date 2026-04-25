@@ -20,7 +20,7 @@ export async function getDormitoryMusic(date?: string): Promise<DormitoryMusic[]
     params: date ? { date } : undefined,
   });
 
-  const musicList = Array.isArray(data) ? data : data.data ?? [];
+  const musicList = Array.isArray(data) ? data : (data.data ?? []);
 
   return musicList.map((music) => ({
     ...music,
@@ -28,14 +28,16 @@ export async function getDormitoryMusic(date?: string): Promise<DormitoryMusic[]
   }));
 }
 
+type DormitoryStudentResponse = DormitoryStudent[] | { data?: DormitoryStudent[] };
+
 export async function getMassageApplicants(): Promise<DormitoryStudent[]> {
-  const { data } = await instance.get<DormitoryStudent[]>('/dormitory/massage');
-  return data;
+  const { data } = await instance.get<DormitoryStudentResponse>('/dormitory/massages');
+  return Array.isArray(data) ? data : (data.data ?? []);
 }
 
 export async function getSelfStudyApplicants(): Promise<DormitoryStudent[]> {
-  const { data } = await instance.get<DormitoryStudent[]>('/dormitory/study');
-  return data;
+  const { data } = await instance.get<DormitoryStudentResponse>('/dormitory/studies');
+  return Array.isArray(data) ? data : (data.data ?? []);
 }
 
 export async function getMyPenalties(): Promise<MyPenaltyResponse> {

@@ -10,6 +10,7 @@ interface ApplyCardProps {
   buttonText: string;
   disabled?: boolean;
   femaleNotice?: boolean;
+  onApply?: () => void;
 }
 
 export default function ApplyCard({
@@ -21,7 +22,10 @@ export default function ApplyCard({
   buttonText,
   disabled = false,
   femaleNotice = false,
+  onApply,
 }: ApplyCardProps) {
+  const isApplyEnabled = !disabled;
+
   return (
     <div className="w-full bg-background-surface rounded-2xl p-6">
       <div className="flex items-start justify-between mb-3">
@@ -62,7 +66,12 @@ export default function ApplyCard({
             </p>
           )}
         </div>
-        <TextButton variant={disabled ? "disabled" : "filled"} size="small">
+        <TextButton
+          variant={isApplyEnabled ? "filled" : "disabled"}
+          size="small"
+          disabled={!isApplyEnabled}
+          onClick={isApplyEnabled ? onApply : undefined}
+        >
           {buttonText}
         </TextButton>
       </div>
