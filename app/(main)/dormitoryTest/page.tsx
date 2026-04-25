@@ -42,7 +42,7 @@ export default function Page() {
   const assignMembers = useMutation({
     mutationFn: () =>
       dormitoryMutations.assignCleaningZoneMembers(Number(patchZoneId), {
-        userIds: userIds.split(',').map((id) => Number(id.trim())),
+        userIds: userIds.split(',').map((id) => id.trim()).filter(Boolean).map(Number).filter((id) => !isNaN(id)),
       }),
     onSuccess: (data) => {
       alert('인원 배정 성공');
