@@ -34,7 +34,17 @@ if (typeof window !== "undefined") {
     async (error) => {
       const originalRequest = error.config;
 
+      const forbiddenIgnorePaths = [
+        "/dormitory/penalties", 
+      ];
+
       if (error.response?.status === HttpStatusCode.Forbidden) {
+        const isIgnored = forbiddenIgnorePaths.some((path) =>
+          originalRequest.url?.includes(path)
+        );
+
+        if (isIgnored) return Promise.reject(error); 
+
         const isGetRequest = originalRequest.method?.toUpperCase() === "GET";
         const hasToken = !!sessionStorage.getItem("access_token");
 
