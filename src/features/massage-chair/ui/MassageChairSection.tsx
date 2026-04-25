@@ -1,24 +1,16 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
-import {
-  dormitoryQueries,
-  dormitoryMutations,
-} from "@/entities/dormitory/api/dormitoryQueries";
+import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { useApplyMassage } from "../model/useApplyMassage";
 
 export function MassageChairSection() {
-  const queryClient = useQueryClient();
   const massageQuery = dormitoryQueries.massage();
   const { data: applicants = [] } = useQuery(massageQuery);
-
-  const applyMutation = useMutation({
-    mutationFn: dormitoryMutations.applyMassage,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: massageQuery.queryKey }),
-  });
+  const applyMutation = useApplyMassage();
 
   return (
     <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-6">
