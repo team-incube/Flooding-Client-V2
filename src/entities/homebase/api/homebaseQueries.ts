@@ -1,10 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { instance } from "@/shared/api/instance";
 import { getHomebaseReservations } from "@/entities/homebase/api/getHomebase";
-import type {
-  HomebaseApplyRequest,
-  HomebasePatchRequest,
-} from "@/entities/homebase/model/homebase";
+import type { HomebaseApplyRequest } from "@/entities/homebase/model/homebase";
 
 export const homebaseQueries = {
   list: () =>
@@ -20,7 +17,4 @@ export const homebaseMutations = {
 
   cancel: (reservationId: number) =>
     instance.delete(`/homebase/${reservationId}`),
-
-  update: (reservationId: number, body: HomebasePatchRequest) =>
-    instance.patch(`/homebase/${reservationId}`, body),
 };
