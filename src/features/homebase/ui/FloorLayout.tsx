@@ -16,7 +16,7 @@ export function FloorLayout({
           {windowLabel}
         </span>
       </div>
-      <div className="flex-1 overflow-hidden">{children}</div>
+      <div className="flex flex-col flex-1 overflow-hidden">{children}</div>
       <div className="flex shrink-0 items-center justify-center border-t border-sub-2 py-5">
         <span className="text-text-3 font-medium text-sub-2">{floor} 복도</span>
       </div>
