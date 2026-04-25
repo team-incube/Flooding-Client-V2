@@ -431,7 +431,16 @@ export default function HomebaseCard({
               </span>
             ) : (
               filteredReservations.map((item) => (
-                <ReservationTableItem key={item.id} reservation={item} />
+                <ReservationTableItem
+                  key={item.id}
+                  reservation={item}
+                  isOwn={item.id === myReservationSource?.id}
+                  onDelete={
+                    item.id === myReservationSource?.id
+                      ? () => cancelMutation.mutate(myReservationSource.id)
+                      : undefined
+                  }
+                />
               ))
             )}
           </div>
