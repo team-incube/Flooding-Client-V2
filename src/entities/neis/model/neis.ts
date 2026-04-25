@@ -1,3 +1,6 @@
+export const NEIS_OFFICE_CODE = "F10";
+export const NEIS_SCHOOL_CODE = "7380292";
+
 export interface MealItem {
   mealType: string;
   menus: string[];

@@ -5,6 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import Back from "@/shared/asset/svg/Back";
 import Calendar from "@/shared/asset/svg/Calender";
 import { neisQueries } from "@/entities/neis/api/neisQueries";
+import {
+  NEIS_OFFICE_CODE,
+  NEIS_SCHOOL_CODE,
+} from "@/entities/neis/model/neis";
 import { userQueries } from "@/entities/user/api/userQueries";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
@@ -34,8 +38,8 @@ export default function TimeTableCard() {
   const { data: user } = useQuery(userQueries.me());
   const { data: timetables, isPending } = useQuery({
     ...neisQueries.timetables({
-      officeCode: process.env.NEXT_PUBLIC_NEIS_OFFICE_CODE ?? "",
-      schoolCode: process.env.NEXT_PUBLIC_NEIS_SCHOOL_CODE ?? "",
+      officeCode: NEIS_OFFICE_CODE,
+      schoolCode: NEIS_SCHOOL_CODE,
       grade: user?.grade ?? 0,
       classNumber: user?.classNumber ?? 0,
       date: dateStr,
