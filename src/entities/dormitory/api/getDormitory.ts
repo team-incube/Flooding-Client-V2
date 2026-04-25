@@ -8,10 +8,6 @@ import type {
   CleaningZoneDetail 
 } from '@/entities/dormitory/model/dormitory';
 
-function extractList<T>(response: T[] | { data?: T[] }): T[] {
-  return Array.isArray(response) ? response : (response.data ?? []);
-}
-
 type DormitoryMusicResponseItem = Omit<DormitoryMusic, "isLiked"> & {
   isLiked?: boolean;
 };
@@ -24,7 +20,9 @@ export async function getDormitoryMusic(date?: string): Promise<DormitoryMusic[]
     params: date ? { date } : undefined,
   });
 
-  return extractList(data).map((music) => ({
+  const musicList = Array.isArray(data) ? data : (data.data ?? []);
+
+  return musicList.map((music) => ({
     ...music,
     isLiked: music.isLiked ?? false,
   }));
@@ -34,12 +32,12 @@ type DormitoryStudentResponse = DormitoryStudent[] | { data?: DormitoryStudent[]
 
 export async function getMassageApplicants(): Promise<DormitoryStudent[]> {
   const { data } = await instance.get<DormitoryStudentResponse>('/dormitory/massages');
-  return extractList(data);
+  return Array.isArray(data) ? data : (data.data ?? []);
 }
 
 export async function getSelfStudyApplicants(): Promise<DormitoryStudent[]> {
   const { data } = await instance.get<DormitoryStudentResponse>('/dormitory/studies');
-  return extractList(data);
+  return Array.isArray(data) ? data : (data.data ?? []);
 }
 
 export async function getMyPenalties(): Promise<MyPenaltyResponse> {
