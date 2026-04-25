@@ -1,9 +1,14 @@
+import { toast } from "sonner";
 import type { FloorProps } from "@/features/homebase/model/floor";
 import { FloorLayout } from "./FloorLayout";
 import { Table } from "./Table";
 
-export function SecondFloor({ selectedTable, setSelectedTable }: FloorProps) {
+export function SecondFloor({ selectedTable, setSelectedTable, reservedTables }: FloorProps) {
   const handleSelect = (table: string) => {
+    if (reservedTables[table]) {
+      toast.warning("이미 예약된 테이블입니다");
+      return;
+    }
     setSelectedTable(selectedTable === table ? null : table);
   };
 
@@ -15,6 +20,8 @@ export function SecondFloor({ selectedTable, setSelectedTable }: FloorProps) {
           capacity="6명"
           className="border-b border-sub-2"
           selected={selectedTable === "1"}
+          reserved={!!reservedTables["1"]}
+          members={reservedTables["1"] ?? []}
           onClick={() => handleSelect("1")}
         />
         <div className="flex items-center justify-center border-x border-b border-sub-2">
@@ -25,16 +32,20 @@ export function SecondFloor({ selectedTable, setSelectedTable }: FloorProps) {
           capacity="4명"
           className="border-b border-sub-2"
           selected={selectedTable === "2"}
+          reserved={!!reservedTables["2"]}
+          members={reservedTables["2"] ?? []}
           onClick={() => handleSelect("2")}
         />
       </div>
 
-      <div className="grid h-[85px] grid-cols-[1fr_86px_1fr] lg:h-[144px] 2xl:h-[209px]">
+      <div className="grid flex-1 grid-cols-[1fr_86px_1fr]">
         <Table
           name="테이블 3"
           capacity="4명"
           className="border-r border-sub-2"
           selected={selectedTable === "3"}
+          reserved={!!reservedTables["3"]}
+          members={reservedTables["3"] ?? []}
           onClick={() => handleSelect("3")}
         />
       </div>
