@@ -261,7 +261,7 @@ export default function HomebaseCard({
           (m) => m.studentNumber === String(currentUser.studentNumber),
         ),
       )
-    : reservations[0];
+    : null;
   const myReservation = myReservationSource
     ? toSchoolReservation(myReservationSource)
     : null;
