@@ -18,7 +18,3 @@ export interface HomebaseApplyRequest {
   reason: string;
   members: HomebaseMember[];
 }
-
-export interface HomebasePatchRequest {
-  members: HomebaseMember[];
-}
