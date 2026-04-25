@@ -42,8 +42,14 @@ export default function HomebaseCard({
   showReservations = false,
 }: HomebaseCardProps) {
   const [selectedFloor, setSelectedFloor] = useState("2F");
-  const [selectedStartPeriod, setSelectedStartPeriod] = useState("8교시");
-  const [selectedEndPeriod, setSelectedEndPeriod] = useState("8교시");
+  const [selectedStartPeriod, setSelectedStartPeriod] = useState(
+    () =>
+      PERIODS.find((p) => !isPeriodStarted(p)) ?? PERIODS[PERIODS.length - 1],
+  );
+  const [selectedEndPeriod, setSelectedEndPeriod] = useState(
+    () =>
+      PERIODS.find((p) => !isPeriodStarted(p)) ?? PERIODS[PERIODS.length - 1],
+  );
   const [name, setName] = useState("");
   const [reason, setReason] = useState("");
   const [triedToOverfill, setTriedToOverfill] = useState(false);
@@ -115,13 +121,17 @@ export default function HomebaseCard({
     searchKeyword: name,
     selectedStudents,
     students: MOCK_STUDENTS,
-  }).slice(0, 2);
+  })
+    .filter((s) => s.studentNumber !== currentUser?.studentNumber)
+    .slice(0, 2);
 
   const filteredEditStudents = filterAvailableStudents({
     searchKeyword: editName,
     selectedStudents: editStudents,
     students: MOCK_STUDENTS,
-  }).slice(0, 2);
+  })
+    .filter((s) => s.studentNumber !== currentUser?.studentNumber)
+    .slice(0, 2);
 
   const handleNameChange = (value: string) => {
     setName(value);
@@ -188,6 +198,11 @@ export default function HomebaseCard({
   const handleSubmit = () => {
     if (!canSubmit || !selectedTable) return;
 
+    if (!reason.trim()) {
+      toast.warning("신청사유를 입력해주세요");
+      return;
+    }
+
     if (hasConflict) {
       toast.warning("해당 시간대에 이미 예약이 존재합니다");
       return;
@@ -200,7 +215,12 @@ export default function HomebaseCard({
     if (!homebaseId) return;
 
     const meMembers = currentUser
-      ? [{ studentNumber: String(currentUser.studentNumber), name: currentUser.name }]
+      ? [
+          {
+            studentNumber: String(currentUser.studentNumber),
+            name: currentUser.name,
+          },
+        ]
       : [];
 
     applyMutation.mutate({
@@ -223,28 +243,36 @@ export default function HomebaseCard({
   const handleEditOpen = () => {
     if (!myReservationSource) return;
     setEditStudents(
-      myReservationSource.members.map((m) => ({
-        id: Number(m.studentNumber),
-        name: m.name,
-        studentNumber: Number(m.studentNumber),
-        sex: "MAN" as const,
-        email: "",
-        role: "GENERAL_STUDENT" as const,
-        dormitoryRoom: 0,
-      })),
+      myReservationSource.members
+        .filter((m) => m.studentNumber !== String(currentUser?.studentNumber))
+        .map((m) => ({
+          id: Number(m.studentNumber),
+          name: m.name,
+          studentNumber: Number(m.studentNumber),
+          sex: "MAN" as const,
+          email: "",
+          role: "GENERAL_STUDENT" as const,
+          dormitoryRoom: 0,
+        })),
     );
     setIsEditOpen(true);
   };
 
   const handleEditSubmit = () => {
     if (!myReservationSource) return;
+    const meMembers = currentUser
+      ? [{ studentNumber: String(currentUser.studentNumber), name: currentUser.name }]
+      : [];
     updateMutation.mutate({
       reservationId: myReservationSource.id,
       body: {
-        members: editStudents.map((s) => ({
-          studentNumber: String(s.studentNumber),
-          name: s.name,
-        })),
+        members: [
+          ...meMembers,
+          ...editStudents.map((s) => ({
+            studentNumber: String(s.studentNumber),
+            name: s.name,
+          })),
+        ],
       },
     });
   };
@@ -285,7 +313,9 @@ export default function HomebaseCard({
 
   const myReservationSource = currentUser
     ? reservations.find((r) =>
-        r.members.some((m) => m.studentNumber === String(currentUser.studentNumber)),
+        r.members.some(
+          (m) => m.studentNumber === String(currentUser.studentNumber),
+        ),
       )
     : reservations[0];
   const myReservation = myReservationSource
@@ -470,7 +500,10 @@ export default function HomebaseCard({
       {isEditOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={() => { setIsEditOpen(false); setEditName(""); }}
+          onClick={() => {
+            setIsEditOpen(false);
+            setEditName("");
+          }}
         >
           <div
             className="flex w-[360px] flex-col gap-4 rounded-2xl bg-background-surface p-6"
