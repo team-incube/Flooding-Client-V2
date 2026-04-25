@@ -120,7 +120,8 @@ export default function HomebaseCard({
   };
 
   const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
-  const isFull = maxPersonnel > 0 && selectedStudents.length >= maxPersonnel - 1;
+  const isFull =
+    maxPersonnel > 0 && selectedStudents.length >= maxPersonnel - 1;
 
   const filteredStudents = filterAvailableStudents({
     searchKeyword: name,
@@ -266,7 +267,12 @@ export default function HomebaseCard({
   const handleEditSubmit = () => {
     if (!myReservationSource) return;
     const meMembers = currentUser
-      ? [{ studentNumber: String(currentUser.studentNumber), name: currentUser.name }]
+      ? [
+          {
+            studentNumber: String(currentUser.studentNumber),
+            name: currentUser.name,
+          },
+        ]
       : [];
     updateMutation.mutate({
       reservationId: myReservationSource.id,
@@ -394,8 +400,8 @@ export default function HomebaseCard({
       <div className="mt-3 flex flex-col items-start gap-6 lg:flex-row 2xl:justify-between">
         <div className="w-full min-w-0 lg:flex-1">{renderFloor()}</div>
 
-        <div className="flex w-full flex-col gap-6 sm:flex-row lg:w-[330px] lg:shrink-0 lg:flex-col lg:gap-4">
-          <div className="flex w-full shrink-0 flex-col gap-4 sm:w-[300px] lg:w-full">
+        <div className="flex w-full flex-col gap-6 sm:flex-row lg:w-82.5 lg:shrink-0 lg:flex-col lg:gap-4">
+          <div className="flex w-full shrink-0 flex-col gap-4 sm:w-75 lg:w-full">
             <div className="flex flex-col gap-1">
               <TextField
                 placeholder="이름, 학번등을 입력해주세요"
@@ -417,7 +423,7 @@ export default function HomebaseCard({
                 value={reason}
                 maxLength={20}
                 onChange={(event) => handleReasonChange(event.target.value)}
-                className="h-[120px] w-full resize-none rounded-lg border border-sub-2 bg-background-surface p-4 text-main-text outline-none transition-all caret-p-1 placeholder:text-sub-2 focus:border-sub-1"
+                className="h-30 w-full resize-none rounded-lg border border-sub-2 bg-background-surface p-4 text-main-text outline-none transition-all caret-p-1 placeholder:text-sub-2 focus:border-sub-1"
               />
               <span className="text-right text-size-caption-1 text-sub-2">
                 {reason.length}/20
@@ -509,7 +515,7 @@ export default function HomebaseCard({
           }}
         >
           <div
-            className="flex w-[360px] flex-col gap-4 rounded-2xl bg-background-surface p-6"
+            className="flex w-90 flex-col gap-4 rounded-2xl bg-background-surface p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <span className="font-semibold text-main-text">명단 수정</span>
