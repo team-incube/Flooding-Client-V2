@@ -115,7 +115,7 @@ export default function HomebaseCard({
   };
 
   const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
-  const isFull = maxPersonnel > 0 && selectedStudents.length >= maxPersonnel;
+  const isFull = maxPersonnel > 0 && selectedStudents.length >= maxPersonnel - 1;
 
   const filteredStudents = filterAvailableStudents({
     searchKeyword: name,
@@ -439,12 +439,10 @@ export default function HomebaseCard({
             </div>
           </div>
 
-          <div className="max-h-28 overflow-y-auto">
-            <SelectedStudent
-              selectedStudents={selectedStudents}
-              setSelectedStudents={setSelectedStudents}
-            />
-          </div>
+          <SelectedStudent
+            selectedStudents={selectedStudents}
+            setSelectedStudents={setSelectedStudents}
+          />
 
           {showReservations && (
             <div className="flex flex-1 flex-col gap-3">
