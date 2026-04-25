@@ -79,7 +79,7 @@ export function ReservationTableItem({
               </p>
             ))}
           <p className="text-text-4 text-sub-2">교시: {periods.join(", ")}</p>
-          <p className="text-text-4 text-sub-2">사유: {reason}</p>
+          {reason && <p className="text-text-4 text-sub-2">사유: {reason}</p>}
         </div>
       )}
     </div>
