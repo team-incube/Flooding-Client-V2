@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   homebaseMutations,
@@ -41,7 +42,9 @@ interface HomebaseCardProps {
 export default function HomebaseCard({
   showReservations = false,
 }: HomebaseCardProps) {
-  const [selectedFloor, setSelectedFloor] = useState("2F");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedFloor = searchParams.get("floor") ?? "2F";
   const [selectedStartPeriod, setSelectedStartPeriod] = useState(
     () =>
       PERIODS.find((p) => !isPeriodStarted(p)) ?? PERIODS[PERIODS.length - 1],
@@ -110,8 +113,10 @@ export default function HomebaseCard({
   });
 
   const handleFloorChange = (floor: string) => {
-    setSelectedFloor(floor);
     setSelectedTable(null);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("floor", floor);
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
