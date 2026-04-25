@@ -22,7 +22,7 @@ export function useApplyMassage() {
         : undefined;
 
       if (status === HttpStatusCode.BadRequest) {
-        toast.error("마사지 신청 시간이 아닙니다.");
+        toast.error("안마의자 신청 시간이 아닙니다.");
         return;
       }
       if (status === HttpStatusCode.Conflict) {
