@@ -165,9 +165,19 @@ export default function HomebaseCard({
 
   const selectedStartNum = 8 + PERIODS.indexOf(selectedStartPeriod);
   const selectedEndNum = 8 + PERIODS.indexOf(selectedEndPeriod);
-  const hasConflict = reservations.some(
-    (r) => r.startPeriod <= selectedEndNum && r.endPeriod >= selectedStartNum,
-  );
+  const targetHomebaseId = selectedTable
+    ? getHomebaseId(selectedFloor, selectedTable)
+    : null;
+  const hasConflict = reservations.some((r) => {
+    const isTimeOverlap =
+      r.startPeriod <= selectedEndNum && r.endPeriod >= selectedStartNum;
+    if (!isTimeOverlap) return false;
+    const isSameTable = r.homebaseId === targetHomebaseId;
+    const isMyReservation = r.members.some(
+      (m) => m.studentNumber === String(currentUser?.studentNumber),
+    );
+    return isSameTable || isMyReservation;
+  });
 
   const canSubmit = selectedTable !== null;
 
