@@ -18,6 +18,10 @@ export interface CreateCleaningZoneRequest {
   description: string;
 }
 
+export interface AssignCleaningZoneMembersRequest {
+  userIds: number[];
+}
+
 export interface MyPenaltyResponse {
   penaltyScore: number;
 }

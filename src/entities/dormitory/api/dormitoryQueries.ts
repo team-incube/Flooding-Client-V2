@@ -12,7 +12,8 @@ import {
 import type { 
   MusicApplyRequest, 
   UpdatePenaltyRequest, 
-  CreateCleaningZoneRequest 
+  CreateCleaningZoneRequest, 
+  AssignCleaningZoneMembersRequest 
 } from '@/entities/dormitory/model/dormitory';
 
 export const dormitoryQueries = {
@@ -91,4 +92,7 @@ export const dormitoryMutations = {
 
   createCleaningZone: (body: CreateCleaningZoneRequest) => 
     instance.post('/dormitory/cleaning-zones', body),
+
+  assignCleaningZoneMembers: (zoneId: number, body: AssignCleaningZoneMembersRequest) =>
+    instance.patch(`/dormitory/cleaning-zones/${zoneId}/members`, body),
 };
