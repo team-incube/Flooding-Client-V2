@@ -3,7 +3,11 @@ import type { FloorProps } from "@/features/homebase/model/floor";
 import { FloorLayout } from "./FloorLayout";
 import { Table } from "./Table";
 
-export function FourthFloor({ selectedTable, setSelectedTable, reservedTables }: FloorProps) {
+export function FourthFloor({
+  selectedTable,
+  setSelectedTable,
+  reservedTables,
+}: FloorProps) {
   const handleSelect = (table: string) => {
     if (reservedTables[table]) {
       toast.warning("이미 예약된 테이블입니다");
@@ -14,7 +18,7 @@ export function FourthFloor({ selectedTable, setSelectedTable, reservedTables }:
 
   return (
     <FloorLayout floor="4F">
-      <div className="grid h-[85px] grid-cols-[1fr_86px_1fr] lg:h-[144px] 2xl:h-[209px]">
+      <div className="grid h-21.25 grid-cols-[1fr_86px_1fr] lg:h-36 2xl:h-52.25">
         <Table
           name="테이블 1"
           capacity="6명"
