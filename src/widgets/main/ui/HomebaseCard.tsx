@@ -174,6 +174,11 @@ export default function HomebaseCard({
   const handleSubmit = () => {
     if (!canSubmit || !selectedTable) return;
 
+    if (isPeriodStarted(selectedStartPeriod)) {
+      toast.warning("이미 지난 교시는 신청할 수 없습니다");
+      return;
+    }
+
     if (!reason.trim()) {
       toast.warning("신청사유를 입력해주세요");
       return;
