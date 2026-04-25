@@ -12,10 +12,7 @@ import {
   getHomebaseLocation,
   toSchoolReservation,
 } from "@/entities/homebase/lib/homebaseReservation";
-import type {
-  HomebaseApplyRequest,
-  HomebasePatchRequest,
-} from "@/entities/homebase/model/homebase";
+import type { HomebaseApplyRequest } from "@/entities/homebase/model/homebase";
 import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem";
 import { meQuery } from "@/entities/user/api/getMe";
 import { MOCK_STUDENTS } from "@/entities/user/model/mock";
@@ -58,9 +55,6 @@ export default function HomebaseCard({
   const [triedToOverfill, setTriedToOverfill] = useState(false);
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [selectedStudents, setSelectedStudents] = useState<User[]>([]);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editStudents, setEditStudents] = useState<User[]>([]);
-  const [editName, setEditName] = useState("");
 
   const queryClient = useQueryClient();
   const { data: currentUser } = useQuery(meQuery);
@@ -96,22 +90,6 @@ export default function HomebaseCard({
     onError: () => toast.error("취소에 실패했습니다. 다시 시도해주세요"),
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({
-      reservationId,
-      body,
-    }: {
-      reservationId: number;
-      body: HomebasePatchRequest;
-    }) => homebaseMutations.update(reservationId, body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: homebaseListQuery.queryKey });
-      setIsEditOpen(false);
-      toast.success("명단이 수정되었습니다");
-    },
-    onError: () => toast.error("수정에 실패했습니다. 다시 시도해주세요"),
-  });
-
   const handleFloorChange = (floor: string) => {
     setSelectedTable(null);
     const params = new URLSearchParams(searchParams.toString());
@@ -126,14 +104,6 @@ export default function HomebaseCard({
   const filteredStudents = filterAvailableStudents({
     searchKeyword: name,
     selectedStudents,
-    students: MOCK_STUDENTS,
-  })
-    .filter((s) => s.studentNumber !== currentUser?.studentNumber)
-    .slice(0, 2);
-
-  const filteredEditStudents = filterAvailableStudents({
-    searchKeyword: editName,
-    selectedStudents: editStudents,
     students: MOCK_STUDENTS,
   })
     .filter((s) => s.studentNumber !== currentUser?.studentNumber)
@@ -240,48 +210,6 @@ export default function HomebaseCard({
           ...selectedStudents.map((student) => ({
             studentNumber: String(student.studentNumber),
             name: student.name,
-          })),
-        ],
-      },
-    });
-  };
-
-  const handleEditOpen = () => {
-    if (!myReservationSource) return;
-    setEditStudents(
-      myReservationSource.members
-        .filter((m) => m.studentNumber !== String(currentUser?.studentNumber))
-        .map((m) => ({
-          id: Number(m.studentNumber),
-          name: m.name,
-          studentNumber: Number(m.studentNumber),
-          sex: "MAN" as const,
-          email: "",
-          role: "GENERAL_STUDENT" as const,
-          dormitoryRoom: 0,
-        })),
-    );
-    setIsEditOpen(true);
-  };
-
-  const handleEditSubmit = () => {
-    if (!myReservationSource) return;
-    const meMembers = currentUser
-      ? [
-          {
-            studentNumber: String(currentUser.studentNumber),
-            name: currentUser.name,
-          },
-        ]
-      : [];
-    updateMutation.mutate({
-      reservationId: myReservationSource.id,
-      body: {
-        members: [
-          ...meMembers,
-          ...editStudents.map((s) => ({
-            studentNumber: String(s.studentNumber),
-            name: s.name,
           })),
         ],
       },
@@ -467,7 +395,6 @@ export default function HomebaseCard({
                   reservation={myReservation}
                   isOwn
                   onDelete={() => cancelMutation.mutate(myReservationSource.id)}
-                  onEdit={handleEditOpen}
                 />
               ) : (
                 <div className="flex flex-1 items-center justify-center">
@@ -502,46 +429,6 @@ export default function HomebaseCard({
                 <ReservationTableItem key={item.id} reservation={item} />
               ))
             )}
-          </div>
-        </div>
-      )}
-
-      {isEditOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={() => {
-            setIsEditOpen(false);
-            setEditName("");
-          }}
-        >
-          <div
-            className="flex w-90 flex-col gap-4 rounded-2xl bg-background-surface p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <span className="font-semibold text-main-text">명단 수정</span>
-            <div className="flex flex-col gap-1">
-              <TextField
-                placeholder="이름, 학번을 입력해주세요"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                rightIcon={<Search />}
-              />
-              <StudentSearch
-                filteredStudents={filteredEditStudents}
-                isFull={false}
-                onSelect={(student) => {
-                  setEditStudents((prev) => [...prev, student]);
-                  setEditName("");
-                }}
-              />
-            </div>
-            <SelectedStudent
-              selectedStudents={editStudents}
-              setSelectedStudents={setEditStudents}
-            />
-            <TextButton variant="filled" size="wide" onClick={handleEditSubmit}>
-              저장
-            </TextButton>
           </div>
         </div>
       )}
