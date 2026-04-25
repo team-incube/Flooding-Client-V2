@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ApplyCard from "@/widgets/main/ui/ApplyCard";
 import MealCard from "@/widgets/main/ui/MealCard";
 import ChairIcon from "@/shared/asset/svg/Chair";
@@ -49,7 +50,9 @@ export default function MainPage() {
       </div>
       <div className="flex flex-col gap-4 lg:gap-5 2xl:gap-6">
         <WakeUpMusicSection icon={<Star />} />
-        <HomebaseCard />
+        <Suspense>
+          <HomebaseCard />
+        </Suspense>
       </div>
     </main>
   );
