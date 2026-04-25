@@ -10,8 +10,8 @@ export function FloorLayout({
   children,
 }: FloorLayoutProps) {
   return (
-    <div className="flex h-[276px] w-full flex-col overflow-hidden rounded-2xl border border-sub-2 bg-background-surface lg:h-[385px] 2xl:h-[544px]">
-      <div className="shrink-0 border-b border-sub-2 pt-4 pb-[15px] text-center">
+    <div className="flex h-69 w-full flex-col overflow-hidden rounded-2xl border border-sub-2 bg-background-surface lg:h-96.25 2xl:h-136">
+      <div className="shrink-0 border-b border-sub-2 pt-4 pb-3.75 text-center">
         <span className="text-text-3 font-medium text-sub-2">
           {windowLabel}
         </span>
