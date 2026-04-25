@@ -4,7 +4,6 @@ import MealCard from "@/widgets/main/ui/MealCard";
 import ProfileCard from "@/widgets/main/ui/ProfileCard";
 import TimeTableCard from "@/widgets/main/ui/TimeTableCard";
 import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
-import { MOCK_STUDENTS } from "@/entities/user/model/mock";
 import { WakeUpMusicSection } from "@/features/wake-up-music/ui/WakeUpMusicSection";
 import Star from "@/shared/asset/svg/Star";
 
@@ -22,7 +21,7 @@ export default function MainPage() {
         <div className="order-1 2xl:order-0 lg:col-span-2 2xl:contents">
           <div className="flex flex-row gap-3 lg:gap-6 2xl:contents">
             <div className="flex-1">
-              <ProfileCard user={MOCK_STUDENTS[0]} />
+              <ProfileCard />
             </div>
             <div className="flex-1">
               <TimeTableCard />
