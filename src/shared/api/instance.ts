@@ -40,7 +40,7 @@ if (typeof window !== "undefined") {
 
       if (error.response?.status === HttpStatusCode.Forbidden) {
         const isIgnored = forbiddenIgnorePaths.some((path) =>
-          originalRequest.url?.includes(path)
+          originalRequest.url === path
         );
 
         if (isIgnored) return Promise.reject(error); 
