@@ -33,7 +33,7 @@ export default function MealCard() {
   currentDate.setDate(currentDate.getDate() + offset);
   const dateStr = formatParamDate(currentDate);
 
-  const { data: meals } = useQuery(neisQueries.meals(dateStr));
+  const { data: meals, isPending } = useQuery(neisQueries.meals(dateStr));
 
   const selectedMeal = meals?.find((m) => m.mealType === selectedTab);
   const menuItems = selectedMeal?.menus ?? [];
@@ -75,7 +75,11 @@ export default function MealCard() {
       </div>
 
       <ul className="grid grid-cols-2 gap-x-6 gap-y-3 lg:flex lg:flex-col lg:gap-3 flex-1 overflow-y-auto">
-        {menuItems.length > 0 ? (
+        {isPending ? (
+          <li className="text-text-3 text-sub-1 font-medium col-span-2">
+            급식을 불러오는 중...
+          </li>
+        ) : menuItems.length > 0 ? (
           menuItems.map((item, index) => (
             <li
               key={`${item}-${index}`}

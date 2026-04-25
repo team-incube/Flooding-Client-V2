@@ -32,7 +32,7 @@ export default function TimeTableCard() {
   const dateStr = formatParamDate(currentDate);
 
   const { data: user } = useQuery(userQueries.me());
-  const { data: timetables } = useQuery({
+  const { data: timetables, isPending } = useQuery({
     ...neisQueries.timetables({
       officeCode: process.env.NEXT_PUBLIC_NEIS_OFFICE_CODE ?? "",
       schoolCode: process.env.NEXT_PUBLIC_NEIS_SCHOOL_CODE ?? "",
@@ -65,7 +65,13 @@ export default function TimeTableCard() {
       </div>
 
       <div className="flex flex-col gap-3 overflow-auto flex-1 h-auto 2xl:flex-none 2xl:h-[262px]">
-        {timetables && timetables.length > 0 ? (
+        {isPending ? (
+          <div className="flex items-center justify-center flex-1">
+            <span className="text-text-3 text-sub-1 font-medium">
+              시간표를 불러오는 중...
+            </span>
+          </div>
+        ) : timetables && timetables.length > 0 ? (
           timetables.map((it) => (
             <div
               key={it.period}
