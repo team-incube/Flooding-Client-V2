@@ -8,29 +8,29 @@ interface SelectedStudentProps {
   setSelectedStudents: Dispatch<SetStateAction<User[]>>;
 }
 
-export default function SelectedStudent({
+export function SelectedStudent({
   selectedStudents,
   setSelectedStudents,
 }: SelectedStudentProps) {
-  const handleRemoveStudent = (studentId: number) => {
+  const handleRemoveStudent = (studentNumber: number) => {
     setSelectedStudents((prev) =>
-      removeSelectedStudent(prev, studentId),
+      removeSelectedStudent(prev, studentNumber),
     );
   };
 
   return (
-    <div className="flex flex-wrap justify-around gap-2">
+    <div className="flex flex-wrap justify-start gap-2">
       {selectedStudents.map((student) => (
         <div
           key={student.id}
           className="flex items-center gap-2 border border-sub-2 rounded-full px-5.5 py-3"
         >
-          <span>
+          <span className="text-sub-1">
             {student.studentNumber} {student.name}
           </span>
 
           <button
-            onClick={() => handleRemoveStudent(student.id)}
+            onClick={() => handleRemoveStudent(student.studentNumber)}
             className="cursor-pointer"
           >
             <Cancel />
