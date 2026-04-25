@@ -4,7 +4,7 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 
 interface ClubSearchProps {
   query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  setQuery: (value: string) => void;
   onSearch: () => void;
 }
 
