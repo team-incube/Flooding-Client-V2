@@ -23,7 +23,7 @@ export function ReservationTableItem({
   const { tableName, floor, members, periods, reason } = reservation;
 
   return (
-    <div className="w-[330px] border border-sub-2 rounded-lg p-4 flex flex-col">
+    <div className="w-82.5 border border-sub-2 rounded-lg p-4 flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <span className="text-text-3 text-main-text">{tableName}</span>
