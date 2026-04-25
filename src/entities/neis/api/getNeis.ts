@@ -36,13 +36,13 @@ export async function getTimetables(
 }
 
 export async function getMeals(date: string): Promise<MealItem[]> {
-  const { data } = await instance.get<MealsResponse>(
-    `/v2/neis/meals?&date=${date}`,
-    {
-      headers: {
-        "X-API-KEY": apiKey,
-      },
+  const { data } = await instance.get<MealsResponse>(`/v2/neis/meals`, {
+    headers: {
+      "X-API-KEY": apiKey,
     },
-  );
+    params: {
+      date,
+    },
+  });
   return data.data.meals;
 }
