@@ -14,7 +14,7 @@ export function StudentSearch({
   if (filteredStudents.length === 0) return null;
 
   return (
-    <div className="border border-sub-4 rounded-lg overflow-hidden">
+    <div className="border border-sub-4 rounded-lg overflow-hidden bg-background-surface shadow-md">
       <div className="flex flex-col divide-y divide-sub-4 px-2">
         {filteredStudents.map((student) => (
           <button
