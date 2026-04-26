@@ -10,6 +10,7 @@ import type { Reservation } from "@/entities/school/model/reservation";
 import type { User } from "@/entities/user/model/user";
 
 type PeriodButtonVariant = "filled" | "outlined" | "disabled";
+const PERIOD_BLOCK_SIZE = 2;
 
 interface SelectPeriodRangeParams {
   period: string;
@@ -60,7 +61,9 @@ export function selectPeriodRange({
   const clickedIdx = periods.indexOf(period);
   const startIdx = periods.indexOf(selectedStartPeriod);
   const endIdx = periods.indexOf(selectedEndPeriod);
-  const isSameBlock = Math.floor(clickedIdx / 2) === Math.floor(startIdx / 2);
+  const isSameBlock =
+    Math.floor(clickedIdx / PERIOD_BLOCK_SIZE) ===
+    Math.floor(startIdx / PERIOD_BLOCK_SIZE);
 
   if (!isSameBlock) {
     return {
@@ -157,11 +160,26 @@ export function getReservedTableMembers({
     })
     .reduce<Record<string, string[]>>((acc, reservation) => {
       const { tableId } = getHomebaseLocation(reservation.homebaseId);
-      acc[tableId] = reservation.members.map(
+      const members = reservation.members.map(
         (member) => `${member.studentNumber} ${member.name}`,
+      );
+      acc[tableId] = Array.from(
+        new Set([...(acc[tableId] ?? []), ...members]),
       );
       return acc;
     }, {});
+}
+
+export function getReservationItems(
+  reservations: HomebaseReservation[],
+): {
+  reservationId: number;
+  reservation: Reservation;
+}[] {
+  return reservations.map((reservation) => ({
+    reservationId: reservation.id,
+    reservation: toSchoolReservation(reservation),
+  }));
 }
 
 export function getSortedReservations(

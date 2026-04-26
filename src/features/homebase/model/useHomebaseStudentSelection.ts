@@ -17,6 +17,8 @@ interface UseHomebaseStudentSelectionParams {
   currentStudentNumber?: number;
 }
 
+const STUDENT_SEARCH_RESULT_LIMIT = 5;
+
 export function useHomebaseStudentSelection({
   selectedFloor,
   selectedTable,
@@ -30,13 +32,14 @@ export function useHomebaseStudentSelection({
   const isFull =
     maxPersonnel > 0 && selectedStudents.length >= maxPersonnel - 1;
   const isStudentFull = selectedTable ? isFull : selectedStudents.length >= 5;
+  // TODO: Replace MOCK_STUDENTS with the student search API when it is available.
   const filteredStudents = filterAvailableStudents({
     searchKeyword: name,
     selectedStudents,
     students: MOCK_STUDENTS,
   })
     .filter((student) => student.studentNumber !== currentStudentNumber)
-    .slice(0, 3);
+    .slice(0, STUDENT_SEARCH_RESULT_LIMIT);
 
   const handleNameChange = (value: string) => {
     setName(value);

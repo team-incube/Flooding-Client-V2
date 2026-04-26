@@ -5,6 +5,7 @@ import { homebaseQueries } from "@/entities/homebase/api/homebaseQueries";
 import { meQuery } from "@/entities/user/api/getMe";
 import {
   getMyHomebaseReservations,
+  getReservationItems,
   getReservedTableMembers,
   getSortedReservations,
 } from "@/features/homebase/lib/homebaseReservationPolicy";
@@ -35,10 +36,7 @@ export function useHomebaseReservationData({
     reservations,
     currentUser?.studentNumber,
   );
-  const myReservationSource = myReservationSources[0] ?? null;
-  const myReservation = myReservationSource
-    ? getSortedReservations([myReservationSource])[0]
-    : null;
+  const myReservationItems = getReservationItems(myReservationSources);
   const myReservationIds = new Set(
     myReservationSources.map((reservation) => reservation.id),
   );
@@ -49,8 +47,7 @@ export function useHomebaseReservationData({
     isLoading,
     reservedTables,
     filteredReservations,
-    myReservation,
-    myReservationSource,
+    myReservationItems,
     myReservationIds,
   };
 }

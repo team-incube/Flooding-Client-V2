@@ -34,8 +34,7 @@ export default function HomebaseCard({
     filteredStudents,
     reservedTables,
     filteredReservations,
-    myReservation,
-    myReservationSource,
+    myReservationItems,
     myReservationIds,
     isLoading,
     canSubmit,
@@ -184,14 +183,15 @@ export default function HomebaseCard({
               </span>
               {isLoading ? (
                 <div className="h-16 w-full animate-pulse rounded-xl bg-background-surface" />
-              ) : myReservation && myReservationSource ? (
-                <ReservationTableItem
-                  reservation={myReservation}
-                  isOwn
-                  onDelete={() =>
-                    handleDeleteReservation(myReservationSource.id)
-                  }
-                />
+              ) : myReservationItems.length > 0 ? (
+                myReservationItems.map(({ reservationId, reservation }) => (
+                  <ReservationTableItem
+                    key={reservationId}
+                    reservation={reservation}
+                    isOwn
+                    onDelete={() => handleDeleteReservation(reservationId)}
+                  />
+                ))
               ) : (
                 <div className="flex flex-1 items-center justify-center">
                   <span className="text-text-4 text-sub-2">
