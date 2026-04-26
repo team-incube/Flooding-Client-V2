@@ -27,7 +27,7 @@ export function Table({
     <button
       type="button"
       onClick={onClick}
-      className={`flex cursor-pointer flex-col items-center justify-center gap-1 px-4 focus:outline-none ${bgClass} ${className}`}
+      className={`flex flex-col items-center justify-center gap-1 px-4 focus:outline-none ${reserved ? "cursor-not-allowed" : "cursor-pointer"} ${bgClass} ${className}`}
     >
       {reserved ? (
         <div className="flex flex-col items-center gap-1">

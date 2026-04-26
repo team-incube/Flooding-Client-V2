@@ -5,7 +5,7 @@ export type DormitoryStudent = User;
 export type DormitoryMusic = Music;
 
 export interface MusicApplyRequest {
-  url: string;
+  musicUrl: string;
 }
 
 export interface UpdatePenaltyRequest {

@@ -8,18 +8,18 @@ import {
   getAllPenalties,
   getCleaningZones,
   getCleaningZoneDetail,
-} from './getDormitory';
+} from '@/entities/dormitory/api/getDormitory';
 import type { 
   MusicApplyRequest, 
   UpdatePenaltyRequest, 
   CreateCleaningZoneRequest 
-} from '../model/dormitory';
+} from '@/entities/dormitory/model/dormitory';
 
 export const dormitoryQueries = {
-  music: () =>
+  music: (date?: string) =>
     queryOptions({
-      queryKey: ['dormitory', 'music'],
-      queryFn: getDormitoryMusic,
+      queryKey: ['dormitory', 'music', date],
+      queryFn: () => getDormitoryMusic(date),
     }),
 
   massage: () =>
@@ -64,24 +64,27 @@ export const dormitoryMutations = {
     instance.post('/dormitory/music', body),
 
   likeMusic: (musicId: number) =>
-    instance.post(`/dormitory/${musicId}/like`),
+    instance.post(`/dormitory/music/${musicId}/like`),
+
+  cancelLikeMusic: (musicId: number) =>
+    instance.delete(`/dormitory/music/${musicId}/like`),
 
   deleteMusic: (musicId: number) =>
-    instance.delete(`/dormitory/${musicId}`),
+    instance.delete(`/dormitory/music/${musicId}`),
 
-  applyMassage: () => instance.post('/dormitory/massage'),
+  applyMassage: () => instance.post('/dormitory/massages'),
 
-  cancelMassage: () => instance.delete('/dormitory/massage'),
+  cancelMassage: () => instance.delete('/dormitory/massages'),
 
-  applyStudy: () => instance.post('/dormitory/study'),
+  applyStudy: () => instance.post('/dormitory/studies'),
 
-  cancelStudy: () => instance.delete('/dormitory/study'),
+  cancelStudy: () => instance.delete('/dormitory/studies'),
 
   submitInquiry: (body: { content: string }) =>
     instance.post('/dormitory/inquiry', body),
 
   banStudy: (userId: number) =>
-    instance.patch(`/dormitory/study/${userId}`),
+    instance.post(`/dormitory/studies/ban/${userId}`),
 
   updatePenalties: (userId: number, body: UpdatePenaltyRequest) => 
     instance.put(`/dormitory/penalties/${userId}`, body),

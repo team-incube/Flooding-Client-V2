@@ -1,33 +1,26 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
 import Search from "@/shared/asset/svg/Search";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
-import {
-  dormitoryQueries,
-  dormitoryMutations,
-} from "@/entities/dormitory/api/dormitoryQueries";
+import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { useStudyFilter } from "../model/useStudyFilter";
+import { useApplyStudy } from "../model/useApplyStudy";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
 export function SelfStudySection() {
-  const queryClient = useQueryClient();
-  const { data: students = [] } = useQuery(dormitoryQueries.study());
+  const studyQuery = dormitoryQueries.study();
+  const { data: students = [] } = useQuery(studyQuery);
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
-
-  const applyMutation = useMutation({
-    mutationFn: dormitoryMutations.applyStudy,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["dormitory", "study"] }),
-  });
+  const applyMutation = useApplyStudy();
 
   const handleResetFilters = () => dispatch({ type: "RESET" });
   const handleSearchQueryChange = (value: string) =>

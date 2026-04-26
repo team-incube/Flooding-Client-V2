@@ -28,7 +28,9 @@
 - Because the project uses React Compiler, only use `useMemo` and `useCallback` when truly necessary.
 - Do not duplicate derived state into another `useState`.
 - Do not place long calculation logic inside JSX.
+- Do not put long inline handlers or async functions directly in JSX props; extract them to named `handleXxx` functions.
 - Use the `handleXxx` pattern for event handler names.
+- Do not bypass ESLint rules with disable comments unless there is no reasonable structural fix and the reason is documented.
 
 ## Function Rules
 

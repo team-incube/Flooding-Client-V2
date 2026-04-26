@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getClubs, getClubDetail } from './getClub';
+import { getClubs } from './getClubs';
+import { getClubDetail } from './getClub';
 
 export const clubQueries = {
   list: () =>

@@ -17,15 +17,20 @@ export function ClubSection() {
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
-  const { data: clubs = [] } = useQuery(clubQueries.list());
+  const { data } = useQuery(clubQueries.list());
+  const clubs = data?.clubs ?? [];
 
   const filteredClubs = filterClubs({
     clubs,
     isRegistrationPeriod,
     searchValue,
   });
-  const visibleClubCount = isRegistrationPeriod ? 0 : clubs.length;
+  const visibleClubCount = isRegistrationPeriod ? 0 : filteredClubs.length;
 
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    if (!value) setSearchValue("");
+  };
   const handleSearch = () => setSearchValue(query);
   const handleSelectClub = (clubId: number) => router.push(`/club/${clubId}`);
 
@@ -64,7 +69,7 @@ export function ClubSection() {
             <div className="order-1 self-stretch lg:order-2 lg:shrink-0 lg:self-start">
               <ClubSearch
                 query={query}
-                setQuery={setQuery}
+                setQuery={handleQueryChange}
                 onSearch={handleSearch}
               />
             </div>
