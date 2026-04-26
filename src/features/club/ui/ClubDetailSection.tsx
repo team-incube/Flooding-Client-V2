@@ -1,25 +1,23 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { notFound } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
-import { MOCK_CLUB_DETAILS } from "@/entities/club/model/mock";
-import { notFound } from "next/navigation";
+import { clubQueries } from "@/entities/club/api/clubQueries";
 
 interface ClubDetailSectionProps {
-  params: Promise<{
-    id: string;
-  }>;
+  id: number;
 }
 
-export async function ClubDetailSection({ params }: ClubDetailSectionProps) {
-  const { id } = await params;
-  const clubId = Number(id);
+export function ClubDetailSection({ id }: ClubDetailSectionProps) {
+  const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
 
-  if (!Number.isInteger(clubId)) {
-    notFound();
+  if (isLoading || !detail) {
+    return null;
   }
 
-  const detail = MOCK_CLUB_DETAILS[clubId];
-
-  if (!detail) {
+  if (isError) {
     notFound();
   }
 
