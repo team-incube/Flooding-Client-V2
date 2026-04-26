@@ -2,26 +2,29 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import ClubCard from "@/entities/club/ui/ClubCard";
-import { MOCK_CLUBS } from "@/entities/club/model/mock";
+import { clubQueries } from "@/entities/club/api/clubQueries";
 import { filterClubs } from "../lib/filterClubs";
 import ClubSearch from "./ClubSearch";
 import ClubRegistrationSection from "./ClubRegistrationSection";
 
 export function ClubSection() {
   const router = useRouter();
-  const isRegistrationPeriod = true; // API 연동 시 서버 응답 값으로 교체 예정
+  const isRegistrationPeriod = false; // API 연동 시 서버 응답 값으로 교체 예정
 
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
+  const { data: clubs = [] } = useQuery(clubQueries.list());
+
   const filteredClubs = filterClubs({
-    clubs: MOCK_CLUBS,
+    clubs,
     isRegistrationPeriod,
     searchValue,
   });
-  const visibleClubCount = isRegistrationPeriod ? 0 : MOCK_CLUBS.length;
+  const visibleClubCount = isRegistrationPeriod ? 0 : clubs.length;
 
   const handleSearch = () => setSearchValue(query);
   const handleSelectClub = (clubId: number) => router.push(`/club/${clubId}`);
