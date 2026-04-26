@@ -4,7 +4,7 @@ export interface Club {
   id: number;
   name: string;
   type: string;
-  leader: string;
+  leader?: string;
   description: string;
   imageUrl?: string;
   totalMember: number;
