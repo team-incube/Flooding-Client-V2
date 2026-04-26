@@ -25,7 +25,7 @@ export function ClubSection() {
     isRegistrationPeriod,
     searchValue,
   });
-  const visibleClubCount = isRegistrationPeriod ? 0 : clubs.length;
+  const visibleClubCount = isRegistrationPeriod ? 0 : filteredClubs.length;
 
   const handleQueryChange = (value: string) => {
     setQuery(value);
