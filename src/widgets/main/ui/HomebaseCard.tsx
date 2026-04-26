@@ -14,11 +14,13 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 
 interface HomebaseCardProps {
-  showReservationStatus?: boolean;
+  showMyReservationStatus?: boolean;
+  showAllReservationStatus?: boolean;
 }
 
 export default function HomebaseCard({
-  showReservationStatus = false,
+  showMyReservationStatus = false,
+  showAllReservationStatus = false,
 }: HomebaseCardProps) {
   const {
     selectedFloor,
@@ -175,7 +177,7 @@ export default function HomebaseCard({
             onRemoveStudent={handleRemoveStudent}
           />
 
-          {showReservationStatus && (
+          {showMyReservationStatus && (
             <div className="flex flex-1 flex-col gap-3">
               <span className="text-center text-text-2 font-semibold text-main-text">
                 내 예약현황
@@ -202,7 +204,7 @@ export default function HomebaseCard({
         </div>
       </div>
 
-      {showReservationStatus && (
+      {showAllReservationStatus && (
         <div className="mt-4 flex flex-col gap-4">
           <span className="text-text-2 font-semibold text-main-text">
             예약현황
