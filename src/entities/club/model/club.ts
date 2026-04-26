@@ -18,7 +18,7 @@ export interface ClubDetail {
   id: number;
   name: string;
   type: string;
-  leader: string;
+  leader?: string;
   description: string;
   imageUrl?: string;
   maxMember?: number;
