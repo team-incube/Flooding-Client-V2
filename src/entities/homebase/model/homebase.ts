@@ -8,18 +8,13 @@ export interface HomebaseReservation {
   startPeriod: number;
   endPeriod: number;
   homebaseId: number;
-  reason: string;
+  reason?: string;
   members: HomebaseMember[];
 }
 
 export interface HomebaseApplyRequest {
-  homebaseId: number;
   startPeriod: number;
   endPeriod: number;
   reason: string;
-  members: HomebaseMember[];
-}
-
-export interface HomebasePatchRequest {
   members: HomebaseMember[];
 }

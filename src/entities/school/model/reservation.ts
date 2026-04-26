@@ -4,5 +4,5 @@ export interface Reservation {
   floor: string;
   members: string[];
   periods: string[];
-  reason: string;
+  reason?: string;
 }
