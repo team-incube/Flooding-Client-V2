@@ -100,6 +100,7 @@ export default function HomebaseCard({
   const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
   const isFull =
     maxPersonnel > 0 && selectedStudents.length >= maxPersonnel - 1;
+  const isStudentFull = selectedTable ? isFull : selectedStudents.length >= 5;
 
   const filteredStudents = filterAvailableStudents({
     searchKeyword: name,
@@ -107,18 +108,31 @@ export default function HomebaseCard({
     students: MOCK_STUDENTS,
   })
     .filter((s) => s.studentNumber !== currentUser?.studentNumber)
-    .slice(0, 2);
+    .slice(0, 3);
+
+  const handleTableSelect = (table: string | null) => {
+    if (table === null) {
+      setSelectedTable(null);
+      return;
+    }
+    const max = getMaxPersonnel(selectedFloor, table);
+    if (max > 0 && selectedStudents.length + 1 > max) {
+      toast.warning(`선택한 테이블의 최대 인원은 ${max}명입니다`);
+      return;
+    }
+    setSelectedTable(table);
+  };
 
   const handleNameChange = (value: string) => {
     setName(value);
   };
 
   const handleStudentAdd = (student: User) => {
-    if (!selectedTable) {
-      toast.warning("테이블을 먼저 선택해주세요");
+    if (!selectedTable && selectedStudents.length >= 5) {
+      toast.warning("테이블을 선택해주세요");
       return;
     }
-    if (isFull) {
+    if (selectedTable && isFull) {
       setTriedToOverfill(true);
       return;
     }
@@ -257,24 +271,28 @@ export default function HomebaseCard({
       return acc;
     }, {});
 
+  const floorOrder: Record<string, number> = { "2F": 0, "3F": 1, "4F": 2 };
   const filteredReservations = reservations
-    .filter(
-      (reservation) =>
-        getHomebaseLocation(reservation.homebaseId).floor === selectedFloor,
-    )
-    .sort((a, b) => a.startPeriod - b.startPeriod)
+    .slice()
+    .sort((a, b) => {
+      const floorA = floorOrder[getHomebaseLocation(a.homebaseId).floor] ?? 0;
+      const floorB = floorOrder[getHomebaseLocation(b.homebaseId).floor] ?? 0;
+      return floorA - floorB || a.startPeriod - b.startPeriod;
+    })
     .map(toSchoolReservation);
 
-  const myReservationSource = currentUser
-    ? reservations.find((r) =>
+  const myReservationSources = currentUser
+    ? reservations.filter((r) =>
         r.members.some(
           (m) => m.studentNumber === String(currentUser.studentNumber),
         ),
       )
-    : null;
+    : [];
+  const myReservationSource = myReservationSources[0] ?? null;
   const myReservation = myReservationSource
     ? toSchoolReservation(myReservationSource)
     : null;
+  const myReservationIds = new Set(myReservationSources.map((r) => r.id));
 
   const renderFloor = () => {
     switch (selectedFloor) {
@@ -282,7 +300,7 @@ export default function HomebaseCard({
         return (
           <SecondFloor
             selectedTable={selectedTable}
-            setSelectedTable={setSelectedTable}
+            setSelectedTable={handleTableSelect}
             reservedTables={reservedTables}
           />
         );
@@ -290,7 +308,7 @@ export default function HomebaseCard({
         return (
           <ThirdFloor
             selectedTable={selectedTable}
-            setSelectedTable={setSelectedTable}
+            setSelectedTable={handleTableSelect}
             reservedTables={reservedTables}
           />
         );
@@ -298,7 +316,7 @@ export default function HomebaseCard({
         return (
           <FourthFloor
             selectedTable={selectedTable}
-            setSelectedTable={setSelectedTable}
+            setSelectedTable={handleTableSelect}
             reservedTables={reservedTables}
           />
         );
@@ -345,7 +363,7 @@ export default function HomebaseCard({
 
         <div className="flex w-full flex-col gap-6 sm:flex-row lg:w-82.5 lg:shrink-0 lg:flex-col lg:gap-4">
           <div className="flex w-full shrink-0 flex-col gap-4 sm:w-75 lg:w-full">
-            <div className="flex flex-col gap-1">
+            <div className="relative">
               <TextField
                 placeholder="이름, 학번등을 입력해주세요"
                 value={name}
@@ -353,11 +371,13 @@ export default function HomebaseCard({
                 onKeyDown={handleNameKeyDown}
                 rightIcon={<Search />}
               />
-              <StudentSearch
-                filteredStudents={filteredStudents}
-                isFull={isFull}
-                onSelect={handleStudentAdd}
-              />
+              <div className="absolute left-0 right-0 top-full z-10 mt-1">
+                <StudentSearch
+                  filteredStudents={filteredStudents}
+                  isFull={isStudentFull}
+                  onSelect={handleStudentAdd}
+                />
+              </div>
             </div>
 
             <div className="flex flex-col gap-1">
@@ -444,10 +464,10 @@ export default function HomebaseCard({
                 <ReservationTableItem
                   key={item.id}
                   reservation={item}
-                  isOwn={item.id === myReservationSource?.id}
+                  isOwn={myReservationIds.has(item.id)}
                   onDelete={
-                    item.id === myReservationSource?.id
-                      ? () => cancelMutation.mutate(myReservationSource.id)
+                    myReservationIds.has(item.id)
+                      ? () => cancelMutation.mutate(item.id)
                       : undefined
                   }
                 />
