@@ -1,26 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  homebaseMutations,
-  homebaseQueries,
-} from "@/entities/homebase/api/homebaseQueries";
-import {
-  getHomebaseId,
-  getHomebaseLocation,
-  toSchoolReservation,
-} from "@/entities/homebase/lib/homebaseReservation";
-import type { HomebaseApplyRequest } from "@/entities/homebase/model/homebase";
 import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem";
-import type { User } from "@/entities/user/model/user";
-import { getMaxPersonnel } from "@/features/homebase/lib/getMaxPersonnel";
-import { isPeriodStarted } from "@/features/homebase/lib/isPeriodStarted";
 import { FLOORS, PERIODS } from "@/features/homebase/model/constants";
+import { useHomebaseReservation } from "@/features/homebase/model/useHomebaseReservation";
 import { FourthFloor } from "@/features/homebase/ui/FourthFloor";
-import SelectedStudent from "@/features/homebase/ui/SelectedStudent";
+import { SelectedStudent } from "@/features/homebase/ui/SelectedStudent";
 import { SecondFloor } from "@/features/homebase/ui/SecondFloor";
-import StudentSearch from "@/features/homebase/ui/StudentSearch";
+import { StudentSearch } from "@/features/homebase/ui/StudentSearch";
 import { ThirdFloor } from "@/features/homebase/ui/ThirdFloor";
 import HomeBase from "@/shared/asset/svg/HomeBase";
 import Search from "@/shared/asset/svg/Search";
@@ -28,100 +14,48 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 
 interface HomebaseCardProps {
-  showReservations?: boolean;
+  showMyReservationStatus?: boolean;
+  showAllReservationStatus?: boolean;
 }
 
 export default function HomebaseCard({
-  showReservations = false,
+  showMyReservationStatus = false,
+  showAllReservationStatus = false,
 }: HomebaseCardProps) {
-  const [selectedFloor, setSelectedFloor] = useState("2F");
-  const [selectedPeriod, setSelectedPeriod] = useState("8교시");
-  const [name, setName] = useState("");
-  const [reason, setReason] = useState("");
-  const [selectedTable, setSelectedTable] = useState<string | null>(null);
-  const [selectedStudents, setSelectedStudents] = useState<User[]>([]);
+  const {
+    selectedFloor,
+    selectedTable,
+    name,
+    reason,
+    triedToOverfill,
+    maxPersonnel,
+    isFull,
+    isStudentFull,
+    filteredStudents,
+    reservedTables,
+    filteredReservations,
+    myReservationItems,
+    myReservationIds,
+    isLoading,
+    canSubmit,
+    selectedStudents,
+    handleFloorChange,
+    handleTableSelect,
+    handleNameChange,
+    handleStudentAdd,
+    handleNameKeyDown,
+    handleRemoveStudent,
+    handleReasonChange,
+    handlePeriodSelect,
+    getPeriodButtonVariant,
+    handleSubmit,
+    handleDeleteReservation,
+  } = useHomebaseReservation();
 
-  const queryClient = useQueryClient();
-  const homebaseListQuery = homebaseQueries.list();
-  const { data: reservations = [] } = useQuery(homebaseListQuery);
-
-  const applyMutation = useMutation({
-    mutationFn: ({
-      homebaseId,
-      body,
-    }: {
-      homebaseId: number;
-      body: HomebaseApplyRequest;
-    }) => homebaseMutations.apply(homebaseId, body),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: homebaseListQuery.queryKey }),
-  });
-
-  const cancelMutation = useMutation({
-    mutationFn: (homebaseId: number) => homebaseMutations.cancel(homebaseId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: homebaseListQuery.queryKey }),
-  });
-
-  const handleFloorChange = (floor: string) => {
-    setSelectedFloor(floor);
-    setSelectedTable(null);
-  };
-
-  const handleNameChange = (value: string) => {
-    setName(value);
-  };
-
-  const handleReasonChange = (value: string) => {
-    setReason(value);
-  };
-
-  const handlePeriodSelect = (period: string) => {
-    if (!isPeriodStarted(period)) {
-      setSelectedPeriod(period);
-    }
-  };
-
-  const maxPersonnel = getMaxPersonnel(selectedFloor, selectedTable);
-  const isFull = maxPersonnel > 0 && selectedStudents.length >= maxPersonnel;
-  const canSubmit =
-    selectedTable !== null && isFull && reason.trim().length > 0;
-
-  const handleSubmit = () => {
-    if (!canSubmit || !selectedTable) return;
-
-    const periodIndex = PERIODS.indexOf(selectedPeriod);
-    const startPeriod = 8 + periodIndex;
-    const homebaseId = getHomebaseId(selectedFloor, selectedTable);
-
-    if (!homebaseId) return;
-
-    applyMutation.mutate({
-      homebaseId,
-      body: {
-        homebaseId,
-        startPeriod,
-        endPeriod: startPeriod,
-        reason,
-        members: selectedStudents.map((student) => ({
-          studentNumber: String(student.studentNumber),
-          name: student.name,
-        })),
-      },
-    });
-  };
-
-  const filteredReservations = reservations
-    .filter(
-      (reservation) =>
-        getHomebaseLocation(reservation.homebaseId).floor === selectedFloor,
-    )
-    .map(toSchoolReservation);
-
-  const myReservationSource = reservations[0];
-  const myReservation = myReservationSource
-    ? toSchoolReservation(myReservationSource)
-    : null;
+  const othersReservations =
+    myReservationIds.size > 0
+      ? filteredReservations.filter((item) => !myReservationIds.has(item.id))
+      : filteredReservations;
 
   const renderFloor = () => {
     switch (selectedFloor) {
@@ -129,21 +63,24 @@ export default function HomebaseCard({
         return (
           <SecondFloor
             selectedTable={selectedTable}
-            setSelectedTable={setSelectedTable}
+            onTableSelect={handleTableSelect}
+            reservedTables={reservedTables}
           />
         );
       case "3F":
         return (
           <ThirdFloor
             selectedTable={selectedTable}
-            setSelectedTable={setSelectedTable}
+            onTableSelect={handleTableSelect}
+            reservedTables={reservedTables}
           />
         );
       case "4F":
         return (
           <FourthFloor
             selectedTable={selectedTable}
-            setSelectedTable={setSelectedTable}
+            onTableSelect={handleTableSelect}
+            reservedTables={reservedTables}
           />
         );
       default:
@@ -176,13 +113,7 @@ export default function HomebaseCard({
         {PERIODS.map((period) => (
           <TextButton
             key={period}
-            variant={
-              isPeriodStarted(period)
-                ? "disabled"
-                : selectedPeriod === period
-                  ? "filled"
-                  : "outlined"
-            }
+            variant={getPeriodButtonVariant(period)}
             onClick={() => handlePeriodSelect(period)}
           >
             {period}
@@ -191,23 +122,27 @@ export default function HomebaseCard({
       </div>
 
       <div className="mt-3 flex flex-col items-start gap-6 lg:flex-row 2xl:justify-between">
-        <div className="w-full min-w-0 lg:flex-1">{renderFloor()}</div>
+        <div className="flex w-full min-w-0 flex-col gap-4 lg:flex-1">
+          {renderFloor()}
+        </div>
 
-        <div className="flex w-full flex-col gap-6 sm:flex-row lg:w-[330px] lg:shrink-0 lg:flex-col lg:gap-4">
-          <div className="flex w-full shrink-0 flex-col gap-4 sm:w-[300px] lg:w-full">
-            <div className="flex flex-col gap-1">
+        <div className="flex w-full flex-col gap-6 sm:flex-row lg:w-82.5 lg:shrink-0 lg:flex-col lg:gap-4">
+          <div className="flex w-full shrink-0 flex-col gap-4 sm:w-75 lg:w-full">
+            <div className="relative">
               <TextField
                 placeholder="이름, 학번등을 입력해주세요"
                 value={name}
                 onChange={(event) => handleNameChange(event.target.value)}
+                onKeyDown={handleNameKeyDown}
                 rightIcon={<Search />}
               />
-              <StudentSearch
-                search={name}
-                selectedStudents={selectedStudents}
-                setSelectedStudents={setSelectedStudents}
-                isFull={isFull}
-              />
+              <div className="absolute left-0 right-0 top-full z-10 mt-1">
+                <StudentSearch
+                  filteredStudents={filteredStudents}
+                  isFull={isStudentFull}
+                  onSelect={handleStudentAdd}
+                />
+              </div>
             </div>
 
             <div className="flex flex-col gap-1">
@@ -216,7 +151,7 @@ export default function HomebaseCard({
                 value={reason}
                 maxLength={20}
                 onChange={(event) => handleReasonChange(event.target.value)}
-                className="h-[120px] w-full resize-none rounded-lg border border-sub-2 bg-background-surface p-4 text-main-text outline-none transition-all caret-p-1 placeholder:text-sub-2 focus:border-sub-1"
+                className="h-30 w-full resize-none rounded-lg border border-sub-2 bg-background-surface p-4 text-main-text outline-none transition-all caret-p-1 placeholder:text-sub-2 focus:border-sub-1"
               />
               <span className="text-right text-size-caption-1 text-sub-2">
                 {reason.length}/20
@@ -233,10 +168,10 @@ export default function HomebaseCard({
               </TextButton>
               <span
                 className={
-                  selectedTable && isFull ? "text-negative" : "text-sub-2"
+                  triedToOverfill && isFull ? "text-negative" : "text-sub-2"
                 }
               >
-                {selectedTable && isFull
+                {triedToOverfill && isFull
                   ? `※ 테이블 ${selectedTable}번의 최대인원은 ${maxPersonnel}명입니다`
                   : "※ 홈베이스 신청시 연속 신청이 가능해요"}
               </span>
@@ -245,48 +180,59 @@ export default function HomebaseCard({
 
           <SelectedStudent
             selectedStudents={selectedStudents}
-            setSelectedStudents={setSelectedStudents}
+            onRemoveStudent={handleRemoveStudent}
           />
-
-          {showReservations && (
-            <div className="flex flex-1 flex-col gap-3">
-              <span className="text-center text-text-2 font-semibold text-sub-1">
-                내 예약현황
-              </span>
-              {myReservation && myReservationSource ? (
-                <ReservationTableItem
-                  reservation={myReservation}
-                  isOwn
-                  onDelete={() =>
-                    cancelMutation.mutate(myReservationSource.homebaseId)
-                  }
-                  onEdit={() => {}}
-                />
-              ) : (
-                <div className="flex flex-1 items-center justify-center">
-                  <span className="text-text-4 text-sub-2">
-                    아직 예약을 안하셨어요!
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
-      {showReservations && (
+      {showMyReservationStatus && (
+        <div className="mt-4 flex flex-col gap-3">
+          <span className="text-text-2 font-semibold text-main-text">
+            내 예약현황
+          </span>
+          {isLoading ? (
+            <div className="h-16 w-full animate-pulse rounded-xl bg-background-surface" />
+          ) : myReservationItems.length > 0 ? (
+            <div className="flex flex-wrap gap-3">
+              {myReservationItems.map(({ reservationId, reservation }) => (
+                <ReservationTableItem
+                  key={reservationId}
+                  reservation={reservation}
+                  isOwn
+                  onDelete={() => handleDeleteReservation(reservationId)}
+                />
+              ))}
+            </div>
+          ) : (
+            <span className="text-text-4 text-sub-2">
+              아직 예약을 안하셨어요!
+            </span>
+          )}
+        </div>
+      )}
+
+      {showAllReservationStatus && (
         <div className="mt-4 flex flex-col gap-4">
           <span className="text-text-2 font-semibold text-main-text">
             예약현황
           </span>
           <div className="flex flex-wrap items-start gap-3">
-            {filteredReservations.length === 0 ? (
+            {isLoading ? (
+              <>
+                <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
+                <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
+                <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
+              </>
+            ) : othersReservations.length === 0 ? (
               <span className="text-text-3 text-sub-2">
                 현재 모든 테이블 예약이 가능합니다
               </span>
             ) : (
-              filteredReservations.map((item) => (
-                <ReservationTableItem key={item.id} reservation={item} />
+              othersReservations.map((item) => (
+                <ReservationTableItem
+                  key={item.id}
+                  reservation={item}
+                />
               ))
             )}
           </div>
