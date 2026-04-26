@@ -1,23 +1,15 @@
-import type { Dispatch, SetStateAction } from "react";
 import type { User } from "@/entities/user/model/user";
 import Cancel from "@/shared/asset/svg/Cancel";
-import { removeSelectedStudent } from "../lib/studentSelection";
 
 interface SelectedStudentProps {
   selectedStudents: User[];
-  setSelectedStudents: Dispatch<SetStateAction<User[]>>;
+  onRemoveStudent: (studentNumber: number) => void;
 }
 
 export function SelectedStudent({
   selectedStudents,
-  setSelectedStudents,
+  onRemoveStudent,
 }: SelectedStudentProps) {
-  const handleRemoveStudent = (studentNumber: number) => {
-    setSelectedStudents((prev) =>
-      removeSelectedStudent(prev, studentNumber),
-    );
-  };
-
   return (
     <div className="flex flex-wrap justify-start gap-2">
       {selectedStudents.map((student) => (
@@ -31,7 +23,7 @@ export function SelectedStudent({
 
           <button
             type="button"
-            onClick={() => handleRemoveStudent(student.studentNumber)}
+            onClick={() => onRemoveStudent(student.studentNumber)}
             className="cursor-pointer"
           >
             <Cancel />

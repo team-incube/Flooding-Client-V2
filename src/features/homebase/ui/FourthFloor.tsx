@@ -1,21 +1,12 @@
-import { toast } from "sonner";
 import type { FloorProps } from "@/features/homebase/model/floor";
 import { FloorLayout } from "./FloorLayout";
 import { Table } from "./Table";
 
 export function FourthFloor({
   selectedTable,
-  setSelectedTable,
+  onTableSelect,
   reservedTables,
 }: FloorProps) {
-  const handleSelect = (table: string) => {
-    if (reservedTables[table]) {
-      toast.warning("이미 예약된 테이블입니다");
-      return;
-    }
-    setSelectedTable(selectedTable === table ? null : table);
-  };
-
   return (
     <FloorLayout floor="4F">
       <div className="grid h-21.25 grid-cols-[1fr_86px_1fr] lg:h-36 2xl:h-52.25">
@@ -26,7 +17,7 @@ export function FourthFloor({
           selected={selectedTable === "1"}
           reserved={!!reservedTables["1"]}
           members={reservedTables["1"] ?? []}
-          onClick={() => handleSelect("1")}
+          onClick={() => onTableSelect("1")}
         />
         <div className="flex items-center justify-center border-x border-b border-sub-2">
           <span className="text-text-3 font-medium text-sub-2">칸막이</span>
@@ -38,7 +29,7 @@ export function FourthFloor({
           selected={selectedTable === "2"}
           reserved={!!reservedTables["2"]}
           members={reservedTables["2"] ?? []}
-          onClick={() => handleSelect("2")}
+          onClick={() => onTableSelect("2")}
         />
       </div>
 
@@ -50,7 +41,7 @@ export function FourthFloor({
           selected={selectedTable === "3"}
           reserved={!!reservedTables["3"]}
           members={reservedTables["3"] ?? []}
-          onClick={() => handleSelect("3")}
+          onClick={() => onTableSelect("3")}
         />
         <Table
           name="테이블 4"
@@ -59,7 +50,7 @@ export function FourthFloor({
           selected={selectedTable === "4"}
           reserved={!!reservedTables["4"]}
           members={reservedTables["4"] ?? []}
-          onClick={() => handleSelect("4")}
+          onClick={() => onTableSelect("4")}
         />
       </div>
     </FloorLayout>

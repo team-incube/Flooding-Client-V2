@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import MassageApplyCard from "@/widgets/main/ui/MassageApplyCard";
 import StudyApplyCard from "@/widgets/main/ui/StudyApplyCard";
 import MealCard from "@/widgets/main/ui/MealCard";
@@ -33,9 +32,7 @@ export default function MainPage() {
       </div>
       <div className="flex flex-col gap-4 lg:gap-5 2xl:gap-6">
         <WakeUpMusicSection icon={<Star />} />
-        <Suspense>
-          <HomebaseCard />
-        </Suspense>
+        <HomebaseCard />
       </div>
     </main>
   );

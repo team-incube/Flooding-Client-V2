@@ -1,5 +1,5 @@
 export interface FloorProps {
   selectedTable: string | null;
-  setSelectedTable: (table: string | null) => void;
+  onTableSelect: (table: string) => void;
   reservedTables: Record<string, string[]>;
 }
