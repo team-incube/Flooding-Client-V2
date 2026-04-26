@@ -52,6 +52,11 @@ export default function HomebaseCard({
     handleDeleteReservation,
   } = useHomebaseReservation();
 
+  const othersReservations =
+    myReservationIds.size > 0
+      ? filteredReservations.filter((item) => !myReservationIds.has(item.id))
+      : filteredReservations;
+
   const renderFloor = () => {
     switch (selectedFloor) {
       case "2F":
@@ -117,7 +122,9 @@ export default function HomebaseCard({
       </div>
 
       <div className="mt-3 flex flex-col items-start gap-6 lg:flex-row 2xl:justify-between">
-        <div className="w-full min-w-0 lg:flex-1">{renderFloor()}</div>
+        <div className="flex w-full min-w-0 flex-col gap-4 lg:flex-1">
+          {renderFloor()}
+        </div>
 
         <div className="flex w-full flex-col gap-6 sm:flex-row lg:w-82.5 lg:shrink-0 lg:flex-col lg:gap-4">
           <div className="flex w-full shrink-0 flex-col gap-4 sm:w-75 lg:w-full">
@@ -175,34 +182,34 @@ export default function HomebaseCard({
             selectedStudents={selectedStudents}
             onRemoveStudent={handleRemoveStudent}
           />
-
-          {showMyReservationStatus && (
-            <div className="flex flex-1 flex-col gap-3">
-              <span className="text-center text-text-2 font-semibold text-main-text">
-                내 예약현황
-              </span>
-              {isLoading ? (
-                <div className="h-16 w-full animate-pulse rounded-xl bg-background-surface" />
-              ) : myReservationItems.length > 0 ? (
-                myReservationItems.map(({ reservationId, reservation }) => (
-                  <ReservationTableItem
-                    key={reservationId}
-                    reservation={reservation}
-                    isOwn
-                    onDelete={() => handleDeleteReservation(reservationId)}
-                  />
-                ))
-              ) : (
-                <div className="flex flex-1 items-center justify-center">
-                  <span className="text-text-4 text-sub-2">
-                    아직 예약을 안하셨어요!
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
+
+      {showMyReservationStatus && (
+        <div className="mt-4 flex flex-col gap-3">
+          <span className="text-text-2 font-semibold text-main-text">
+            내 예약현황
+          </span>
+          {isLoading ? (
+            <div className="h-16 w-full animate-pulse rounded-xl bg-background-surface" />
+          ) : myReservationItems.length > 0 ? (
+            <div className="flex flex-wrap gap-3">
+              {myReservationItems.map(({ reservationId, reservation }) => (
+                <ReservationTableItem
+                  key={reservationId}
+                  reservation={reservation}
+                  isOwn
+                  onDelete={() => handleDeleteReservation(reservationId)}
+                />
+              ))}
+            </div>
+          ) : (
+            <span className="text-text-4 text-sub-2">
+              아직 예약을 안하셨어요!
+            </span>
+          )}
+        </div>
+      )}
 
       {showAllReservationStatus && (
         <div className="mt-4 flex flex-col gap-4">
@@ -216,21 +223,15 @@ export default function HomebaseCard({
                 <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
                 <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
               </>
-            ) : filteredReservations.length === 0 ? (
+            ) : othersReservations.length === 0 ? (
               <span className="text-text-3 text-sub-2">
                 현재 모든 테이블 예약이 가능합니다
               </span>
             ) : (
-              filteredReservations.map((item) => (
+              othersReservations.map((item) => (
                 <ReservationTableItem
                   key={item.id}
                   reservation={item}
-                  isOwn={myReservationIds.has(item.id)}
-                  onDelete={
-                    myReservationIds.has(item.id)
-                      ? () => handleDeleteReservation(item.id)
-                      : undefined
-                  }
                 />
               ))
             )}
