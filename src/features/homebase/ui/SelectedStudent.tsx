@@ -30,6 +30,7 @@ export function SelectedStudent({
           </span>
 
           <button
+            type="button"
             onClick={() => handleRemoveStudent(student.studentNumber)}
             className="cursor-pointer"
           >
