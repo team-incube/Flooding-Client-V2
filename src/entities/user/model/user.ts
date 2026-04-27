@@ -12,6 +12,12 @@ export interface User {
   sex: Sex;
   email: string;
   studentNumber: number;
+  grade: number;
+  classNumber: number;
+  number: number;
   role: UserRole;
   dormitoryRoom: number;
+  dormitoryFloor: number;
+  specialty: string;
+  penaltyScore: number;
 }

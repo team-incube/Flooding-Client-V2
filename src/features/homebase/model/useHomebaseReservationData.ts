@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { homebaseQueries } from "@/entities/homebase/api/homebaseQueries";
-import { meQuery } from "@/entities/user/api/getMe";
+import { userQueries } from "@/entities/user/api/userQueries";
 import {
   getMyHomebaseReservations,
   getReservationItems,
@@ -21,7 +21,7 @@ export function useHomebaseReservationData({
   selectedStartNum,
   selectedEndNum,
 }: UseHomebaseReservationDataParams) {
-  const { data: currentUser } = useQuery(meQuery);
+  const { data: currentUser } = useQuery(userQueries.me());
   const { data: reservations = [], isLoading } = useQuery(
     homebaseQueries.list(),
   );
