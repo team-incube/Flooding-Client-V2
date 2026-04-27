@@ -11,13 +11,17 @@ interface ClubDetailSectionProps {
 }
 
 export function ClubDetailSection({ id }: ClubDetailSectionProps) {
+  if (!Number.isInteger(id)) {
+    notFound();
+  }
+
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
 
-  if (isLoading || !detail) {
+  if (isLoading) {
     return null;
   }
 
-  if (isError) {
+  if (isError || !detail) {
     notFound();
   }
 
