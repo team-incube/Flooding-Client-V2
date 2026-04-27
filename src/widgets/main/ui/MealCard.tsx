@@ -10,6 +10,12 @@ const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 const MEAL_TYPES = ["조식", "중식", "석식"] as const;
 type MealType = (typeof MEAL_TYPES)[number];
 
+const MEAL_TYPE_MAP: Record<MealType, string> = {
+  조식: "BREAKFAST",
+  중식: "LUNCH",
+  석식: "DINNER",
+};
+
 function formatDisplayDate(date: Date): string {
   const yy = String(date.getFullYear()).slice(2);
   const mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -35,7 +41,9 @@ export default function MealCard() {
 
   const { data: meals, isPending } = useQuery(neisQueries.meals(dateStr));
 
-  const selectedMeal = meals?.find((m) => m.mealType === selectedTab);
+  const selectedMeal = meals?.find(
+    (m) => m.mealType === MEAL_TYPE_MAP[selectedTab],
+  );
   const menuItems = selectedMeal?.menus ?? [];
 
   return (
