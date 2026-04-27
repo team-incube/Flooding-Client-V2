@@ -118,7 +118,7 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
         <div className="px-4 py-3 border-t border-sub-4 flex gap-2 justify-center items-end">
           <textarea
             ref={textareaRef}
-            className="flex-1 resize-none rounded-[8px] border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none px-4 py-3 text-caption-1 caret-[#527CD7] transition-all"
+            className="flex-1 resize-none rounded-[8px] border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none px-4 py-3 text-caption-1 caret-p-1 transition-colors"
             rows={1}
             placeholder="메시지를 입력하세요"
             value={input}
