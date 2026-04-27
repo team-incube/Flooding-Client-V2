@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import SmallStar from "@/shared/asset/svg/SmallStar";
 import { AiChatModal } from "@/features/ai-chat/ui/AiChatModal";
+import Chatbot from "@/shared/asset/svg/Chatbot";
 
 export function AiChatButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +24,7 @@ export function AiChatButton() {
             </div>
           </div>
         )}
-        <SmallStar />
+        <Chatbot />
       </button>
       <AiChatModal open={isOpen} onClose={() => setIsOpen(false)} />
     </>

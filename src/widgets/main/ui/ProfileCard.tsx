@@ -9,7 +9,7 @@ export default function ProfileCard() {
   const { data: user } = useQuery(userQueries.me());
 
   return (
-    <div className="flex items-center gap-6 p-6 bg-background-surface rounded-2xl w-full h-35 2xl:w-120 2xl:h-30">
+    <div className="flex items-center gap-6 p-6 bg-background-surface rounded-2xl w-full h-35 2xl:h-30">
       <div className="w-18 flex items-center justify-center">
         <ProfileSvg />
       </div>
