@@ -1,8 +1,8 @@
 export default function Chatbot() {
   return (
     <svg
-      width="232"
-      height="232"
+      width="100%"
+      height="100%"
       viewBox="0 0 232 232"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
