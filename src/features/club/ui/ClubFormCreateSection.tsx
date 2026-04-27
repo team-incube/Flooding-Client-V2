@@ -19,6 +19,8 @@ const secondaryButtonStyles =
   "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 transition-all hover:border-sub-1";
 
 export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
+  const titleInputId = `club-form-title-${id}`;
+  const descriptionInputId = `club-form-description-${id}`;
   const {
     data: detail,
     isLoading: isDetailLoading,
@@ -94,10 +96,11 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
         <form onSubmit={handleSubmit} className="flex max-w-4xl flex-col gap-6">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
-              <label className="text-text-3 text-main-text">
+              <label htmlFor={titleInputId} className="text-text-3 text-main-text">
                 폼 제목 <span className="text-p-1">*</span>
               </label>
               <TextField
+                id={titleInputId}
                 value={title}
                 placeholder="ex. 인력사무소 동아리 신청"
                 onChange={(e) => handleTitleChange(e.target.value)}
@@ -105,12 +108,15 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-text-3 text-main-text">폼 설명</label>
+              <label htmlFor={descriptionInputId} className="text-text-3 text-main-text">
+                폼 설명
+              </label>
               <textarea
+                id={descriptionInputId}
                 value={description}
                 placeholder="신청자에게 보여줄 안내 문구를 입력해주세요"
                 onChange={(e) => handleDescriptionChange(e.target.value)}
-                className={`${fieldBoxStyles} min-h-[96px] resize-none`}
+                className={`${fieldBoxStyles} min-h-[96px] resize-y`}
               />
             </div>
           </div>

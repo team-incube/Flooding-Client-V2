@@ -24,6 +24,7 @@ export function ClubApplicationField({
   value,
   onChange,
 }: ClubApplicationFieldProps) {
+  const fieldInputId = `field-${field.fieldId}`;
   const textValue = typeof value === "string" ? value : "";
   const selectedValues = Array.isArray(value) ? value : [];
 
@@ -38,7 +39,7 @@ export function ClubApplicationField({
   return (
     <div className={fieldContainerStyles}>
       <div className="flex flex-col gap-1">
-        <label className={fieldLabelStyles}>
+        <label htmlFor={fieldInputId} className={fieldLabelStyles}>
           {field.label}
           {field.required && <span className="text-p-1"> *</span>}
         </label>
@@ -48,14 +49,19 @@ export function ClubApplicationField({
       </div>
 
       {field.fieldType === "TEXT" && (
-        <TextField value={textValue} onChange={(e) => onChange(e.target.value)} />
+        <TextField
+          id={fieldInputId}
+          value={textValue}
+          onChange={(e) => onChange(e.target.value)}
+        />
       )}
 
       {field.fieldType === "TEXTAREA" && (
         <textarea
+          id={fieldInputId}
           value={textValue}
           onChange={(e) => onChange(e.target.value)}
-          className={`${fieldBoxStyles} min-h-[120px] resize-none`}
+          className={`${fieldBoxStyles} min-h-[120px] resize-y`}
         />
       )}
 
@@ -112,6 +118,7 @@ export function ClubApplicationField({
 
       {field.fieldType === "DROPDOWN" && (
         <select
+          id={fieldInputId}
           value={textValue}
           onChange={(e) => onChange(e.target.value)}
           className={`${fieldBoxStyles} h-[52px]`}

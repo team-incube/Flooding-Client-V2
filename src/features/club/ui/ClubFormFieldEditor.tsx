@@ -49,6 +49,10 @@ export function ClubFormFieldEditor({
   onRemoveOption,
   onOptionChange,
 }: ClubFormFieldEditorProps) {
+  const fieldLabelInputId = `club-form-field-label-${field.id}`;
+  const fieldTypeInputId = `club-form-field-type-${field.id}`;
+  const fieldDescriptionInputId = `club-form-field-description-${field.id}`;
+
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-sub-3 bg-background p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -65,10 +69,11 @@ export function ClubFormFieldEditor({
 
       <div className="grid gap-4 lg:grid-cols-[1fr_180px]">
         <div className="flex flex-col gap-1">
-          <label className="text-text-3 text-main-text">
+          <label htmlFor={fieldLabelInputId} className="text-text-3 text-main-text">
             질문 제목 <span className="text-p-1">*</span>
           </label>
           <TextField
+            id={fieldLabelInputId}
             value={field.label}
             placeholder="질문을 입력해주세요"
             onChange={(e) => onFieldChange(field.id, "label", e.target.value)}
@@ -76,8 +81,11 @@ export function ClubFormFieldEditor({
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-text-3 text-main-text">질문 타입</label>
+          <label htmlFor={fieldTypeInputId} className="text-text-3 text-main-text">
+            질문 타입
+          </label>
           <select
+            id={fieldTypeInputId}
             value={field.fieldType}
             onChange={(e) =>
               onFieldTypeChange(
@@ -97,8 +105,11 @@ export function ClubFormFieldEditor({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-text-3 text-main-text">질문 설명</label>
+        <label htmlFor={fieldDescriptionInputId} className="text-text-3 text-main-text">
+          질문 설명
+        </label>
         <TextField
+          id={fieldDescriptionInputId}
           value={field.description}
           placeholder="선택 입력"
           onChange={(e) =>
@@ -136,11 +147,9 @@ export function ClubFormFieldEditor({
 
           <div className="flex flex-col gap-2">
             {field.options.map((option) => (
-              <div
-                key={option.id}
-                className="grid gap-2 lg:grid-cols-[1fr_1fr_auto]"
-              >
+              <div key={option.id} className="grid gap-2 lg:grid-cols-[1fr_1fr_auto]">
                 <TextField
+                  id={`club-form-field-option-label-${field.id}-${option.id}`}
                   value={option.label}
                   placeholder="표시 이름"
                   onChange={(e) =>
@@ -153,6 +162,7 @@ export function ClubFormFieldEditor({
                   }
                 />
                 <TextField
+                  id={`club-form-field-option-value-${field.id}-${option.id}`}
                   value={option.value}
                   placeholder="전송 값"
                   onChange={(e) =>
