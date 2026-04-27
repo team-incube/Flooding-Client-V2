@@ -9,6 +9,7 @@ interface ClubDetailProps {
   detail: ClubDetailType;
   isApplyPending?: boolean;
   onApplyClick?: () => void;
+  onViewApplicationsClick?: () => void;
   onCreateFormClick?: () => void;
 }
 
@@ -16,6 +17,7 @@ export default function ClubDetail({
   detail,
   isApplyPending = false,
   onApplyClick,
+  onViewApplicationsClick,
   onCreateFormClick,
 }: ClubDetailProps) {
   const { club, members, projects } = detail;
@@ -72,6 +74,16 @@ export default function ClubDetail({
         </div>
 
         <div className="flex flex-wrap justify-end gap-2">
+          {onViewApplicationsClick && (
+            <TextButton
+              size="medium"
+              variant="outlined"
+              className="h-[47px] w-auto min-w-[147px] px-4"
+              onClick={onViewApplicationsClick}
+            >
+              신청자 목록
+            </TextButton>
+          )}
           {onCreateFormClick && (
             <TextButton
               size="medium"

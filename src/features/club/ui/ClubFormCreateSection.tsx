@@ -26,7 +26,8 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
     isLoading: isDetailLoading,
     isError: isDetailError,
   } = useQuery(clubQueries.detail(id));
-  const canCreateForm = detail?.club.type === "MAJOR_CLUB";
+  const isMajorClub = detail?.club.type === "MAJOR_CLUB";
+  const canCreateForm = !!detail && isMajorClub && detail.isLeader;
   const {
     title,
     description,
@@ -78,7 +79,9 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
         <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
           <Club isActive={false} size={32} />
           <p className="text-text-1 text-main-text">
-            자율 동아리는 신청 폼을 만들 수 없어요.
+            {!isMajorClub
+              ? "자율 동아리는 신청 폼을 만들 수 없어요."
+              : "동아리 리더만 신청 폼을 만들 수 있어요."}
           </p>
         </div>
       </div>

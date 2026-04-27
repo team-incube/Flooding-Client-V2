@@ -41,6 +41,14 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     router.push(`/club/${detail.club.id}/forms/new`);
   };
 
+  const handleApplicationsClick = () => {
+    if (!detail) {
+      return;
+    }
+
+    router.push(`/club/${detail.club.id}/applications`);
+  };
+
   if (isLoading) {
     return (
       <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
@@ -61,6 +69,9 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     notFound();
   }
 
+  const canCreateForm =
+    detail.club.type === "MAJOR_CLUB" && detail.isLeader;
+
   return (
     <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
       <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
@@ -73,9 +84,12 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
             detail={detail}
             isApplyPending={autonomousApplyMutation.isPending}
             onApplyClick={handleApplyClick}
-            onCreateFormClick={
-              detail.club.type === "MAJOR_CLUB" ? handleCreateFormClick : undefined
+            onViewApplicationsClick={
+              detail.club.type === "MAJOR_CLUB"
+                ? handleApplicationsClick
+                : undefined
             }
+            onCreateFormClick={canCreateForm ? handleCreateFormClick : undefined}
           />
         </div>
       </div>
