@@ -3,7 +3,11 @@ import { instance } from '@/shared/api/instance';
 import { getClubs } from './getClubs';
 import { getClubDetail } from './getClub';
 import { getClubForm } from './getClubForm';
-import type { ClubApplicationRequest, CreateClubFormRequest } from '../model/club';
+import { getClubApplications } from './getClubApplications';
+import type {
+  ClubApplicationRequest,
+  CreateClubFormRequest,
+} from '../model/club';
 
 export const clubQueries = {
   list: () =>
@@ -22,6 +26,12 @@ export const clubQueries = {
     queryOptions({
       queryKey: ['club', 'form', clubId],
       queryFn: () => getClubForm(clubId),
+    }),
+
+  applicationList: (clubId: number) =>
+    queryOptions({
+      queryKey: ['club', 'applications', clubId],
+      queryFn: () => getClubApplications(clubId),
     }),
 } as const;
 

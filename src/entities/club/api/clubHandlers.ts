@@ -1,5 +1,10 @@
 import { http, HttpResponse } from 'msw';
-import { MOCK_CLUBS, MOCK_CLUB_DETAILS, MOCK_CLUB_FORMS } from '../model/mock';
+import {
+  MOCK_CLUB_APPLICATIONS,
+  MOCK_CLUBS,
+  MOCK_CLUB_DETAILS,
+  MOCK_CLUB_FORMS,
+} from '../model/mock';
 import type { CreateClubFormRequest } from '../model/club';
 
 const MAJOR_CLUBS = MOCK_CLUBS.filter((c) => c.type === 'MAJOR_CLUB');
@@ -25,6 +30,37 @@ export const clubHandlers = [
     }
 
     return HttpResponse.json({ data: form });
+  }),
+
+  http.get('*/clubs/:id/applications', ({ params }) => {
+    const id = Number(params.id);
+    const detail = MOCK_CLUB_DETAILS[id];
+
+    if (!detail || !MOCK_CLUB_FORMS[id]) {
+      return HttpResponse.json(
+        {
+          status: 'NOT_FOUND',
+          code: 404,
+          message: '존재하지 않는 동아리 또는 생성된 폼 없음',
+        },
+        { status: 404 },
+      );
+    }
+
+    if (detail.club.type !== 'MAJOR_CLUB') {
+      return HttpResponse.json(
+        {
+          status: 'BAD_REQUEST',
+          code: 400,
+          message: '정규 동아리가 아님',
+        },
+        { status: 400 },
+      );
+    }
+
+    return HttpResponse.json({
+      data: MOCK_CLUB_APPLICATIONS[id] ?? { applications: [] },
+    });
   }),
 
   http.post('*/clubs/:id/forms', async ({ params, request }) => {

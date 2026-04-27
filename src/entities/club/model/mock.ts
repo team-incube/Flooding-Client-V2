@@ -1,4 +1,5 @@
 import {
+  ClubApplicationListResponse,
   Club,
   ClubDetailResponse,
   ClubForm,
@@ -83,6 +84,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 30,
     },
     members: MEMBERS,
+    isLeader: true,
     projects: [
       {
         id: 1,
@@ -126,6 +128,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 20,
     },
     members: [],
+    isLeader: false,
     projects: [],
   },
   3: {
@@ -138,6 +141,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 25,
     },
     members: [],
+    isLeader: false,
     projects: [],
   },
   4: {
@@ -150,6 +154,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 20,
     },
     members: [],
+    isLeader: false,
     projects: [],
   },
   5: {
@@ -162,6 +167,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 15,
     },
     members: [],
+    isLeader: false,
     projects: [],
   },
 };
@@ -249,5 +255,77 @@ export const MOCK_CLUB_FORMS: Record<number, ClubForm> = {
         options: [],
       },
     ],
+  },
+};
+
+export const MOCK_CLUB_APPLICATIONS: Record<number, ClubApplicationListResponse> = {
+  1: {
+    applications: [
+      {
+        submissionId: 1,
+        applicant: {
+          id: 101,
+          name: "박도윤",
+          studentNumber: 1401,
+        },
+        submittedAt: "2026-04-27T09:20:00",
+        answers: [
+          {
+            fieldId: 1,
+            label: "지원 동기",
+            value: "프론트엔드와 백엔드를 모두 경험해보고 싶어서 지원했습니다.",
+          },
+          {
+            fieldId: 2,
+            label: "희망 분야",
+            value: "FRONTEND",
+          },
+          {
+            fieldId: 3,
+            label: "사용 가능한 기술",
+            value: "REACT, FIGMA",
+          },
+          {
+            fieldId: 4,
+            label: "학년",
+            value: "1",
+          },
+          {
+            fieldId: 5,
+            label: "연락 가능한 이메일",
+            value: "doyun@example.com",
+          },
+        ],
+      },
+      {
+        submissionId: 2,
+        applicant: {
+          id: 102,
+          name: "이서현",
+          studentNumber: 2312,
+        },
+        submittedAt: "2026-04-27T10:05:00",
+        answers: [
+          {
+            fieldId: 1,
+            label: "지원 동기",
+            value: "실제 서비스 개발 흐름을 배우고 팀 프로젝트를 경험하고 싶습니다.",
+          },
+          {
+            fieldId: 2,
+            label: "희망 분야",
+            value: "BACKEND",
+          },
+          {
+            fieldId: 5,
+            label: "연락 가능한 이메일",
+            value: "seohyeon@example.com",
+          },
+        ],
+      },
+    ],
+  },
+  2: {
+    applications: [],
   },
 };
