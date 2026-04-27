@@ -117,6 +117,66 @@ export const clubHandlers = [
     });
   }),
 
+  http.put('*/clubs/:id/forms', async ({ params, request }) => {
+    const id = Number(params.id);
+    const detail = MOCK_CLUB_DETAILS[id];
+    const form = MOCK_CLUB_FORMS[id];
+
+    if (!detail || !form) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '동아리 또는 폼 없음' },
+        { status: 404 },
+      );
+    }
+
+    if (!detail.isLeader) {
+      return HttpResponse.json(
+        { status: 'FORBIDDEN', code: 403, message: '권한 없음' },
+        { status: 403 },
+      );
+    }
+
+    if ((MOCK_CLUB_APPLICATIONS[id]?.applications.length ?? 0) > 0) {
+      return HttpResponse.json(
+        {
+          status: 'CONFLICT',
+          code: 409,
+          message: '신청자가 있어 수정 불가',
+        },
+        { status: 409 },
+      );
+    }
+
+    const body = (await request.json()) as CreateClubFormRequest;
+    let nextFieldId = 1;
+    let nextOptionId = 1;
+
+    MOCK_CLUB_FORMS[id] = {
+      formId: form.formId,
+      title: body.title,
+      description: body.description,
+      fields: body.fields.map((field) => ({
+        fieldId: nextFieldId++,
+        label: field.label,
+        description: field.description,
+        fieldType: field.fieldType,
+        order: field.order,
+        required: field.required,
+        options: (field.options ?? []).map((option) => ({
+          optionId: nextOptionId++,
+          label: option.label,
+          value: option.value,
+        })),
+      })),
+    };
+
+    return HttpResponse.json({
+      status: 'OK',
+      code: 200,
+      message: 'OK',
+    });
+  }),
+
   http.post('*/clubs/:id/applications', () =>
     HttpResponse.json({
       status: 'OK',

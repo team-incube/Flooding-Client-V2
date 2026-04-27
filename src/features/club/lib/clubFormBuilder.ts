@@ -1,4 +1,5 @@
 import type {
+  ClubForm,
   ClubFormFieldType,
   CreateClubFormRequest,
 } from "@/entities/club/model/club";
@@ -66,6 +67,40 @@ export function createDefaultClubFormFieldOption(
     id,
     label: "",
     value: "",
+  };
+}
+
+export function createClubFormDraftState(form: ClubForm) {
+  const fields = form.fields
+    .slice()
+    .sort((a, b) => a.order - b.order)
+    .map((field, index) => ({
+      id: index + 1,
+      label: field.label,
+      description: field.description ?? "",
+      fieldType: field.fieldType,
+      required: field.required,
+      options: field.options.map((option, optionIndex) => ({
+        id: optionIndex + 1,
+        label: option.label,
+        value: option.value,
+      })),
+    }));
+  const maxOptionId = fields.reduce(
+    (currentMax, field) =>
+      Math.max(
+        currentMax,
+        ...field.options.map((option) => option.id),
+      ),
+    0,
+  );
+
+  return {
+    title: form.title,
+    description: form.description ?? "",
+    fields,
+    nextFieldId: fields.length + 1,
+    nextOptionId: maxOptionId + 1,
   };
 }
 

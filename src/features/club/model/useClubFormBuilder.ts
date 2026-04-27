@@ -2,8 +2,9 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { ClubFormFieldType } from "@/entities/club/model/club";
+import type { ClubForm, ClubFormFieldType } from "@/entities/club/model/club";
 import {
+  createClubFormDraftState,
   createClubFormRequest,
   createDefaultClubFormField,
   createDefaultClubFormFieldOption,
@@ -14,31 +15,47 @@ import {
   type ClubFormFieldOptionDraftKey,
 } from "../lib/clubFormBuilder";
 import { useCreateClubForm } from "./useCreateClubForm";
+import { useUpdateClubForm } from "./useUpdateClubForm";
 
 interface UseClubFormBuilderParams {
   clubId: number;
   canCreateForm: boolean;
+  mode?: "create" | "edit";
+  initialForm?: ClubForm;
 }
 
 export function useClubFormBuilder({
   clubId,
   canCreateForm,
+  mode = "create",
+  initialForm,
 }: UseClubFormBuilderParams) {
   const router = useRouter();
   const createMutation = useCreateClubForm(clubId);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [fields, setFields] = useState<ClubFormFieldDraft[]>([
-    createDefaultClubFormField(1),
-  ]);
-  const [nextFieldId, setNextFieldId] = useState(2);
-  const [nextOptionId, setNextOptionId] = useState(1);
+  const updateMutation = useUpdateClubForm(clubId);
+  const initialDraftState = initialForm
+    ? createClubFormDraftState(initialForm)
+    : undefined;
+  const mutation = mode === "edit" ? updateMutation : createMutation;
+  const [title, setTitle] = useState(initialDraftState?.title ?? "");
+  const [description, setDescription] = useState(
+    initialDraftState?.description ?? "",
+  );
+  const [fields, setFields] = useState<ClubFormFieldDraft[]>(
+    initialDraftState?.fields ?? [createDefaultClubFormField(1)],
+  );
+  const [nextFieldId, setNextFieldId] = useState(
+    initialDraftState?.nextFieldId ?? 2,
+  );
+  const [nextOptionId, setNextOptionId] = useState(
+    initialDraftState?.nextOptionId ?? 1,
+  );
   const canSubmit =
     canCreateForm &&
     !!title.trim() &&
     fields.length > 0 &&
     fields.every(isClubFormFieldDraftValid) &&
-    !createMutation.isPending;
+    !mutation.isPending;
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
@@ -158,7 +175,7 @@ export function useClubFormBuilder({
       return;
     }
 
-    createMutation.mutate(
+    mutation.mutate(
       createClubFormRequest({
         title,
         description,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import axios, { HttpStatusCode } from "axios";
 import { notFound, useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
@@ -19,6 +20,17 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const router = useRouter();
   const autonomousApplyMutation = useApplyAutonomousClub(id);
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
+  const canCreateForm =
+    detail?.club.type === "MAJOR_CLUB" && detail.isLeader;
+  const formQuery = clubQueries.form(id);
+  const {
+    data: form,
+    error: formError,
+  } = useQuery({
+    ...formQuery,
+    enabled: canCreateForm,
+    retry: false,
+  });
 
   const handleApplyClick = () => {
     if (!detail || autonomousApplyMutation.isPending) {
@@ -39,6 +51,14 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     }
 
     router.push(`/club/${detail.club.id}/forms/new`);
+  };
+
+  const handleEditFormClick = () => {
+    if (!detail) {
+      return;
+    }
+
+    router.push(`/club/${detail.club.id}/forms/edit`);
   };
 
   const handleApplicationsClick = () => {
@@ -69,8 +89,11 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     notFound();
   }
 
-  const canCreateForm =
-    detail.club.type === "MAJOR_CLUB" && detail.isLeader;
+  const hasForm = !!form;
+  const hasNoForm =
+    axios.isAxiosError(formError) &&
+    formError.response?.status === HttpStatusCode.NotFound;
+  const canShowFormAction = canCreateForm && (hasForm || hasNoForm);
 
   return (
     <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
@@ -84,12 +107,19 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
             detail={detail}
             isApplyPending={autonomousApplyMutation.isPending}
             onApplyClick={handleApplyClick}
+            formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
             onViewApplicationsClick={
               detail.club.type === "MAJOR_CLUB"
                 ? handleApplicationsClick
                 : undefined
             }
-            onCreateFormClick={canCreateForm ? handleCreateFormClick : undefined}
+            onCreateFormClick={
+              canShowFormAction
+                ? hasForm
+                  ? handleEditFormClick
+                  : handleCreateFormClick
+                : undefined
+            }
           />
         </div>
       </div>

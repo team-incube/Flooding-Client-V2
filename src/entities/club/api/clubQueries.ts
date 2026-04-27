@@ -39,6 +39,9 @@ export const clubMutations = {
   createForm: (clubId: number, body: CreateClubFormRequest) =>
     instance.post(`/clubs/${clubId}/forms`, body),
 
+  updateForm: (clubId: number, body: CreateClubFormRequest) =>
+    instance.put(`/clubs/${clubId}/forms`, body),
+
   applyClub: (clubId: number, body: ClubApplicationRequest) =>
     instance.post(`/clubs/${clubId}/applications`, body),
 

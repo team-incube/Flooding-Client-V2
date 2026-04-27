@@ -11,6 +11,7 @@ interface ClubDetailProps {
   onApplyClick?: () => void;
   onViewApplicationsClick?: () => void;
   onCreateFormClick?: () => void;
+  formActionLabel?: string;
 }
 
 export default function ClubDetail({
@@ -19,6 +20,7 @@ export default function ClubDetail({
   onApplyClick,
   onViewApplicationsClick,
   onCreateFormClick,
+  formActionLabel = "폼 만들기",
 }: ClubDetailProps) {
   const { club, members, projects } = detail;
   const applyVariant = isApplyPending || !onApplyClick ? "disabled" : "filled";
@@ -91,7 +93,7 @@ export default function ClubDetail({
               className="h-[47px]"
               onClick={onCreateFormClick}
             >
-              폼 만들기
+              {formActionLabel}
             </TextButton>
           )}
           <TextButton

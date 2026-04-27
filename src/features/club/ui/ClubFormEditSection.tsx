@@ -1,0 +1,197 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import Club from "@/shared/asset/svg/Club";
+import TextField from "@/shared/ui/textField";
+import { TextButton } from "@/shared/ui/Button/TextButton";
+import { clubQueries } from "@/entities/club/api/clubQueries";
+import { useClubFormBuilder } from "../model/useClubFormBuilder";
+import { ClubFormFieldEditor } from "./ClubFormFieldEditor";
+
+interface ClubFormEditSectionProps {
+  id: number;
+}
+
+const fieldBoxStyles =
+  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none transition-all placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
+
+const secondaryButtonStyles =
+  "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 transition-all hover:border-sub-1";
+
+function ClubFormEditContent({ id }: ClubFormEditSectionProps) {
+  const { data: form } = useQuery(clubQueries.form(id));
+  const {
+    title,
+    description,
+    fields,
+    canSubmit,
+    handleTitleChange,
+    handleDescriptionChange,
+    handleAddField,
+    handleRemoveField,
+    handleFieldChange,
+    handleFieldTypeChange,
+    handleAddOption,
+    handleRemoveOption,
+    handleOptionChange,
+    handleSubmit,
+  } = useClubFormBuilder({
+    clubId: id,
+    canCreateForm: true,
+    mode: "edit",
+    initialForm: form!,
+  });
+
+  return (
+    <form onSubmit={handleSubmit} className="flex max-w-4xl flex-col gap-6">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor={`club-form-edit-title-${id}`}
+            className="text-text-3 text-main-text"
+          >
+            폼 제목 <span className="text-p-1">*</span>
+          </label>
+          <TextField
+            id={`club-form-edit-title-${id}`}
+            value={title}
+            placeholder="ex. 인력사무소 동아리 신청"
+            onChange={(e) => handleTitleChange(e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor={`club-form-edit-description-${id}`}
+            className="text-text-3 text-main-text"
+          >
+            폼 설명
+          </label>
+          <textarea
+            id={`club-form-edit-description-${id}`}
+            value={description}
+            placeholder="신청자에게 보여줄 안내 문구를 입력해주세요"
+            onChange={(e) => handleDescriptionChange(e.target.value)}
+            className={`${fieldBoxStyles} min-h-[96px] resize-y`}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {fields.map((field, index) => (
+          <ClubFormFieldEditor
+            key={field.id}
+            field={field}
+            index={index}
+            isOnlyField={fields.length === 1}
+            onRemoveField={handleRemoveField}
+            onFieldChange={handleFieldChange}
+            onFieldTypeChange={handleFieldTypeChange}
+            onAddOption={handleAddOption}
+            onRemoveOption={handleRemoveOption}
+            onOptionChange={handleOptionChange}
+          />
+        ))}
+      </div>
+
+      <div className="flex flex-wrap justify-between gap-3">
+        <button
+          type="button"
+          className={secondaryButtonStyles}
+          onClick={handleAddField}
+        >
+          질문 추가
+        </button>
+        <TextButton
+          size="wide"
+          variant={canSubmit ? "filled" : "disabled"}
+          className="max-w-full"
+        >
+          폼 수정하기
+        </TextButton>
+      </div>
+    </form>
+  );
+}
+
+export function ClubFormEditSection({ id }: ClubFormEditSectionProps) {
+  const {
+    data: detail,
+    isLoading: isDetailLoading,
+    isError: isDetailError,
+  } = useQuery(clubQueries.detail(id));
+  const {
+    data: form,
+    isLoading: isFormLoading,
+    isError: isFormError,
+  } = useQuery({
+    ...clubQueries.form(id),
+    retry: false,
+  });
+  const isMajorClub = detail?.club.type === "MAJOR_CLUB";
+  const canEditForm = !!detail && isMajorClub && detail.isLeader;
+
+  if (isDetailLoading || isFormLoading) {
+    return (
+      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+        <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
+          <div className="h-6 w-40 animate-pulse rounded bg-sub-4" />
+          <div className="h-[52px] max-w-4xl animate-pulse rounded-lg bg-sub-4" />
+          <div className="h-[160px] max-w-4xl animate-pulse rounded-xl bg-sub-4" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isDetailError || !detail) {
+    return (
+      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+        <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+          <Club isActive={false} size={32} />
+          <p className="text-text-1 text-main-text">
+            존재하지 않는 동아리입니다.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!canEditForm) {
+    return (
+      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+        <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+          <Club isActive={false} size={32} />
+          <p className="text-text-1 text-main-text">
+            {!isMajorClub
+              ? "자율 동아리는 신청 폼을 수정할 수 없어요."
+              : "동아리 리더만 신청 폼을 수정할 수 있어요."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isFormError || !form) {
+    return (
+      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+        <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+          <Club isActive={false} size={32} />
+          <p className="text-text-1 text-main-text">수정할 신청 폼이 없어요.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
+        <div className="flex items-center gap-2">
+          <Club isActive={false} size={20} />
+          <span className="text-text-1 text-main-text">동아리 폼 수정</span>
+        </div>
+
+        <ClubFormEditContent id={id} />
+      </div>
+    </div>
+  );
+}
