@@ -1,6 +1,5 @@
 import { instance } from "@/shared/api/instance";
 import type {
-  RecommendAiSongRequest,
   RecommendAiSongResponse,
   SendAiChatRequest,
   SendAiChatResponse,
@@ -14,8 +13,8 @@ interface CommonResponse<T> {
 }
 
 export const aiMutations = {
-  recommendSong: (body: RecommendAiSongRequest) =>
-    instance.post<CommonResponse<RecommendAiSongResponse>>("/ai/song", body),
+  recommendSong: () =>
+    instance.post<CommonResponse<RecommendAiSongResponse>>("/ai/song"),
 
   sendChat: (body: SendAiChatRequest) =>
     instance.post<CommonResponse<SendAiChatResponse>>("/ai/chat", body),
