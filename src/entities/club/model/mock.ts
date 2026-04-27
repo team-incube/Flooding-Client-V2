@@ -115,4 +115,52 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       },
     ],
   },
+  2: {
+    club: {
+      id: 2,
+      name: '픽셀',
+      type: 'MAJOR_CLUB',
+      description: 'UI/UX 디자인과 브랜딩을 연구하는 디자인 동아리',
+      imageUrl: undefined,
+      maxMember: 20,
+    },
+    member: [],
+    project: [],
+  },
+  3: {
+    club: {
+      id: 3,
+      name: '알고리즘반',
+      type: 'MAJOR_CLUB',
+      description: '알고리즘 문제 풀이와 코딩 테스트를 준비하는 동아리',
+      imageUrl: undefined,
+      maxMember: 25,
+    },
+    member: [],
+    project: [],
+  },
+  4: {
+    club: {
+      id: 4,
+      name: '보안연구반',
+      type: 'AUTONOMOUS_CLUB',
+      description: '정보보안과 CTF 대회 참가를 목표로 활동하는 동아리',
+      imageUrl: undefined,
+      maxMember: 20,
+    },
+    member: [],
+    project: [],
+  },
+  5: {
+    club: {
+      id: 5,
+      name: '게임개발팀',
+      type: 'AUTONOMOUS_CLUB',
+      description: 'Unity를 이용한 게임 개발을 목표로 하는 동아리',
+      imageUrl: undefined,
+      maxMember: 15,
+    },
+    member: [],
+    project: [],
+  },
 };
