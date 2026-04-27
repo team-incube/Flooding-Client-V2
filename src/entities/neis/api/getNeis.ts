@@ -21,8 +21,6 @@ interface TimetableResponse {
   };
 }
 
-const apiKey = process.env.NEXT_PUBLIC_NEIS_API_KEY;
-
 export async function getTimetables(
   params: TimetableParams,
 ): Promise<Period[]> {
