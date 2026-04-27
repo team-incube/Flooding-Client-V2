@@ -11,15 +11,48 @@ interface AiChatModalProps {
   onClose: () => void;
 }
 
+const MAX_TEXTAREA_ROWS = 4;
+const LINE_HEIGHT_FALLBACK_RATIO = 1.2;
+
+function getTextareaLineHeight(computedStyle: CSSStyleDeclaration) {
+  const lineHeight = Number.parseFloat(computedStyle.lineHeight);
+  if (Number.isFinite(lineHeight)) return lineHeight;
+
+  const fontSize = Number.parseFloat(computedStyle.fontSize);
+  return fontSize * LINE_HEIGHT_FALLBACK_RATIO;
+}
+
+function resizeTextareaToContent(textarea: HTMLTextAreaElement) {
+  textarea.style.height = "auto";
+
+  const computedStyle = window.getComputedStyle(textarea);
+  const paddingTop = Number.parseFloat(computedStyle.paddingTop) || 0;
+  const paddingBottom = Number.parseFloat(computedStyle.paddingBottom) || 0;
+  const maxHeight =
+    getTextareaLineHeight(computedStyle) * MAX_TEXTAREA_ROWS +
+    paddingTop +
+    paddingBottom;
+
+  textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
+  textarea.style.overflowY =
+    textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+}
+
 export function AiChatModal({ open, onClose }: AiChatModalProps) {
   const { messages, input, handleInputChange, handleSend, isPending } =
     useAiChat();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (!textareaRef.current) return;
+    resizeTextareaToContent(textareaRef.current);
+  }, [input, open]);
 
   if (!open) return null;
 
@@ -82,9 +115,10 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="px-4 py-3 border-t border-sub-4 flex gap-2 items-end">
+        <div className="px-4 py-3 border-t border-sub-4 flex gap-2 justify-center items-end">
           <textarea
-            className="flex-1 resize-none rounded-lg border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none px-3 py-2 text-caption-1 max-h-[100px] caret-[#527CD7]"
+            ref={textareaRef}
+            className="flex-1 resize-none rounded-[8px] border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none px-4 py-3 text-caption-1 caret-[#527CD7] transition-all"
             rows={1}
             placeholder="메시지를 입력하세요"
             value={input}
