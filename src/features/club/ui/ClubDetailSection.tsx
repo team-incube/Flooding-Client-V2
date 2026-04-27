@@ -18,7 +18,19 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
 
   if (isLoading) {
-    return null;
+    return (
+      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+        <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+          <div className="flex items-center gap-2">
+            <div className="h-5 w-5 animate-pulse rounded bg-sub-4" />
+            <div className="h-5 w-16 animate-pulse rounded bg-sub-4" />
+          </div>
+          <div className="h-40 w-full animate-pulse rounded-xl bg-sub-4" />
+          <div className="h-6 w-32 animate-pulse rounded bg-sub-4" />
+          <div className="h-24 w-full animate-pulse rounded-xl bg-sub-4" />
+        </div>
+      </div>
+    );
   }
 
   if (isError || !detail) {
