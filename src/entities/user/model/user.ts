@@ -1,7 +1,8 @@
 export type UserRole =
   | "GENERAL_STUDENT"
   | "STUDENT_COUNCIL"
-  | "DORMITORY_MANAGER";
+  | "DORMITORY_MANAGER"
+  | "ADMIN";
 
 export type Sex = "MAN" | "WOMAN";
 

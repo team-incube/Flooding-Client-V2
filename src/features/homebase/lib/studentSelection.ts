@@ -34,9 +34,9 @@ export function filterAvailableStudents({
 
 export function removeSelectedStudent(
   selectedStudents: User[],
-  studentId: number,
+  studentNumber: number,
 ): User[] {
   return selectedStudents.filter(
-    (selectedStudent) => selectedStudent.id !== studentId,
+    (selectedStudent) => selectedStudent.studentNumber !== studentNumber,
   );
 }

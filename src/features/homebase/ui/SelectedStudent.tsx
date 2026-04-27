@@ -1,36 +1,29 @@
-import type { Dispatch, SetStateAction } from "react";
 import type { User } from "@/entities/user/model/user";
 import Cancel from "@/shared/asset/svg/Cancel";
-import { removeSelectedStudent } from "../lib/studentSelection";
 
 interface SelectedStudentProps {
   selectedStudents: User[];
-  setSelectedStudents: Dispatch<SetStateAction<User[]>>;
+  onRemoveStudent: (studentNumber: number) => void;
 }
 
-export default function SelectedStudent({
+export function SelectedStudent({
   selectedStudents,
-  setSelectedStudents,
+  onRemoveStudent,
 }: SelectedStudentProps) {
-  const handleRemoveStudent = (studentId: number) => {
-    setSelectedStudents((prev) =>
-      removeSelectedStudent(prev, studentId),
-    );
-  };
-
   return (
-    <div className="flex flex-wrap justify-around gap-2">
+    <div className="flex flex-wrap justify-start gap-2">
       {selectedStudents.map((student) => (
         <div
           key={student.id}
           className="flex items-center gap-2 border border-sub-2 rounded-full px-5.5 py-3"
         >
-          <span>
+          <span className="text-sub-1">
             {student.studentNumber} {student.name}
           </span>
 
           <button
-            onClick={() => handleRemoveStudent(student.id)}
+            type="button"
+            onClick={() => onRemoveStudent(student.studentNumber)}
             className="cursor-pointer"
           >
             <Cancel />

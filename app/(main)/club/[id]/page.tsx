@@ -6,6 +6,7 @@ interface ClubDetailPageProps {
   }>;
 }
 
-export default function ClubDetailPage({ params }: ClubDetailPageProps) {
-  return <ClubDetailSection params={params} />;
+export default async function ClubDetailPage({ params }: ClubDetailPageProps) {
+  const { id } = await params;
+  return <ClubDetailSection id={Number(id)} />;
 }
