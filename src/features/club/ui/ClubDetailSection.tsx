@@ -1,10 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 
 interface ClubDetailSectionProps {
   id: number;
@@ -15,7 +16,30 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     notFound();
   }
 
+  const router = useRouter();
+  const autonomousApplyMutation = useApplyAutonomousClub(id);
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
+
+  const handleApplyClick = () => {
+    if (!detail || autonomousApplyMutation.isPending) {
+      return;
+    }
+
+    if (detail.club.type === "AUTONOMOUS_CLUB") {
+      autonomousApplyMutation.mutate();
+      return;
+    }
+
+    router.push(`/club/${detail.club.id}/apply`);
+  };
+
+  const handleCreateFormClick = () => {
+    if (!detail) {
+      return;
+    }
+
+    router.push(`/club/${detail.club.id}/forms/new`);
+  };
 
   if (isLoading) {
     return (
@@ -45,7 +69,14 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
           <span className="text-text-1 text-main-text">동아리</span>
         </div>
         <div className="w-full">
-          <ClubDetail detail={detail} />
+          <ClubDetail
+            detail={detail}
+            isApplyPending={autonomousApplyMutation.isPending}
+            onApplyClick={handleApplyClick}
+            onCreateFormClick={
+              detail.club.type === "MAJOR_CLUB" ? handleCreateFormClick : undefined
+            }
+          />
         </div>
       </div>
     </div>
