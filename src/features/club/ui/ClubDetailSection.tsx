@@ -6,6 +6,7 @@ import { notFound, useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 
 interface ClubDetailSectionProps {
@@ -20,8 +21,14 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const router = useRouter();
   const autonomousApplyMutation = useApplyAutonomousClub(id);
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
+  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const canCreateForm =
     detail?.club.type === "MAJOR_CLUB" && detail.isLeader;
+  const canViewApplications =
+    !!detail &&
+    (detail.isLeader ||
+      user?.role === "ADMIN" ||
+      user?.role === "STUDENT_COUNCIL");
   const formQuery = clubQueries.form(id);
   const {
     data: form,
@@ -69,7 +76,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     router.push(`/club/${detail.club.id}/applications`);
   };
 
-  if (isLoading) {
+  if (isLoading || isUserLoading) {
     return (
       <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
         <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
@@ -109,9 +116,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
             onApplyClick={handleApplyClick}
             formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
             onViewApplicationsClick={
-              detail.club.type === "MAJOR_CLUB"
-                ? handleApplicationsClick
-                : undefined
+              canViewApplications ? handleApplicationsClick : undefined
             }
             onCreateFormClick={
               canShowFormAction

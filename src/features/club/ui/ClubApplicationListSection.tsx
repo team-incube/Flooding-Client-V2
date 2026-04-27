@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 
 interface ClubApplicationListSectionProps {
   id: number;
@@ -48,14 +49,27 @@ export function ClubApplicationListSection({
     isLoading: isDetailLoading,
     isError: isDetailError,
   } = useQuery(clubQueries.detail(id));
+  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
+  const canViewApplications =
+    !!detail &&
+    (detail.isLeader ||
+      user?.role === "ADMIN" ||
+      user?.role === "STUDENT_COUNCIL");
   const {
     data: applicationList,
     isLoading: isApplicationLoading,
     isError: isApplicationError,
     error,
-  } = useQuery(clubQueries.applicationList(id));
+  } = useQuery({
+    ...clubQueries.applicationList(id),
+    enabled: canViewApplications,
+  });
 
-  if (isDetailLoading || isApplicationLoading) {
+  if (
+    isDetailLoading ||
+    isUserLoading ||
+    (canViewApplications && isApplicationLoading)
+  ) {
     return (
       <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
         <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
@@ -70,7 +84,13 @@ export function ClubApplicationListSection({
     );
   }
 
-  if (isDetailError || !detail || isApplicationError || !applicationList) {
+  if (
+    isDetailError ||
+    !detail ||
+    !canViewApplications ||
+    isApplicationError ||
+    !applicationList
+  ) {
     return (
       <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
         <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
@@ -78,7 +98,9 @@ export function ClubApplicationListSection({
           <p className="text-center text-text-1 text-main-text">
             {isDetailError || !detail
               ? "존재하지 않는 동아리입니다."
-              : getErrorMessage(error)}
+              : !canViewApplications
+                ? "신청자 목록을 조회할 권한이 없어요."
+                : getErrorMessage(error)}
           </p>
         </div>
       </div>
@@ -139,7 +161,7 @@ export function ClubApplicationListSection({
                       <span className="text-caption-1 text-sub-1">
                         {answer.label}
                       </span>
-                      <p className="break-words text-text-3 text-main-text">
+                      <p className="wrap-break-word text-text-3 text-main-text">
                         {answer.value?.trim() || "미입력"}
                       </p>
                     </div>
