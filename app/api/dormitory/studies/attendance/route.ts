@@ -88,9 +88,14 @@ export async function GET(request: NextRequest) {
       return createAttendanceStreamResponse(response.data);
     }
   } catch (error) {
+    const fallbackBody = { error: "SSE 요청 실패" };
+
     if (axios.isAxiosError(error) && error.response) {
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
+      const { data, status } = error.response;
+      const body = data instanceof Readable ? fallbackBody : data ?? fallbackBody;
+
+      return NextResponse.json(body, {
+        status,
       });
     }
 
