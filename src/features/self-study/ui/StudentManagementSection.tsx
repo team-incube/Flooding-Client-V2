@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "sonner";
-import type { User, Sex } from "@/entities/user/model/user";
-import { MOCK_STUDENTS } from "@/entities/user/model/mock";
-import Gender from "@/shared/asset/svg/Gender";
+import { useQuery } from "@tanstack/react-query";
+import type { SearchUser } from "@/entities/user/model/user";
+import { userQueries } from "@/entities/user/api/userQueries";
 import Profile from "@/shared/asset/svg/Profile";
 import Search from "@/shared/asset/svg/Search";
 import Student from "@/shared/asset/svg/Student";
@@ -16,7 +15,7 @@ import {
   filterManagedStudents,
   type StudyBanFilter,
 } from "@/features/self-study/lib/filterManagedStudents";
-import { useStudyBanMockState } from "@/features/self-study/model/useStudyBanMockState";
+import { useBanStudy } from "@/features/self-study/model/useBanStudy";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
@@ -28,7 +27,7 @@ const studyBanLabels = {
 
 interface ManagedStudentCardProps {
   index: number;
-  student: User;
+  student: SearchUser;
   isSelected: boolean;
   onToggleSelect: (studentId: number) => void;
 }
@@ -65,11 +64,6 @@ function ManagedStudentCard({
         </div>
         <div className="flex items-center">
           <span className="text-text-3 text-main-text">{student.name}</span>
-          <Gender
-            isActive={student.sex === "WOMAN"}
-            size={16}
-            color="var(--color-main-text)"
-          />
         </div>
         <span className="text-caption-1 text-sub-1">
           {student.studentNumber}
@@ -80,22 +74,22 @@ function ManagedStudentCard({
 }
 
 export function StudentManagementSection() {
-  const { bannedStudentIds, banStudents, resetBannedStudents, isStudyBanned } =
-    useStudyBanMockState();
+  const { data: studentPage, isLoading, isError } = useQuery(userQueries.list());
+  const banStudyMutation = useBanStudy();
+  const [bannedStudentIds, setBannedStudentIds] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGrades, setSelectedGrades] = useState<number[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<number[]>([]);
-  const [selectedGender, setSelectedGender] = useState<Sex | null>(null);
   const [selectedStudyBanFilter, setSelectedStudyBanFilter] =
     useState<StudyBanFilter>(null);
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
+  const students = studentPage?.content ?? [];
 
   const filteredStudents = filterManagedStudents({
-    students: MOCK_STUDENTS,
+    students,
     searchQuery,
     selectedGrades,
     selectedClasses,
-    selectedGender,
     selectedStudyBanFilter,
     bannedStudentIds,
   });
@@ -104,7 +98,6 @@ export function StudentManagementSection() {
     setSearchQuery("");
     setSelectedGrades([]);
     setSelectedClasses([]);
-    setSelectedGender(null);
     setSelectedStudyBanFilter(null);
   };
 
@@ -118,10 +111,6 @@ export function StudentManagementSection() {
         ? selectedValues.filter((selectedValue) => selectedValue !== value)
         : [...selectedValues, value],
     );
-  };
-
-  const handleToggleGender = (gender: Sex) => {
-    setSelectedGender((prev) => (prev === gender ? null : gender));
   };
 
   const handleToggleStudyBanFilter = (
@@ -138,6 +127,9 @@ export function StudentManagementSection() {
     );
   };
 
+  const isStudyBanned = (studentId: number) =>
+    bannedStudentIds.includes(studentId);
+
   const handleBanSelectedStudent = () => {
     const targetStudentIds = selectedStudentIds.filter(
       (studentId) => !isStudyBanned(studentId),
@@ -147,16 +139,12 @@ export function StudentManagementSection() {
       return;
     }
 
-    banStudents(targetStudentIds);
-    setSelectedStudentIds([]);
-    toast.success(
-      `${targetStudentIds.length}명을 자습 금지 상태로 표시했어요.`,
-    );
-  };
-
-  const handleResetBannedStudents = () => {
-    resetBannedStudents();
-    setSelectedStudentIds([]);
+    banStudyMutation.mutate(targetStudentIds, {
+      onSuccess: (studentIds) => {
+        setBannedStudentIds((prev) => [...new Set([...prev, ...studentIds])]);
+        setSelectedStudentIds([]);
+      },
+    });
   };
 
   const selectedBanTargetCount = selectedStudentIds.filter(
@@ -181,15 +169,27 @@ export function StudentManagementSection() {
       <div className="flex gap-6">
         <div className="min-w-0 flex-1">
           <div className="flex max-h-[773px] flex-wrap gap-4 overflow-y-auto pr-2">
-            {filteredStudents.map((student, index) => (
-              <ManagedStudentCard
-                key={student.id}
-                index={index + 1}
-                student={student}
-                isSelected={selectedStudentIds.includes(student.id)}
-                onToggleSelect={handleToggleStudentSelect}
-              />
-            ))}
+            {isLoading && (
+              <span className="text-text-3 text-sub-1">
+                학생 목록을 불러오는 중입니다.
+              </span>
+            )}
+            {isError && (
+              <span className="text-text-3 text-negative">
+                학생 목록을 불러오지 못했습니다.
+              </span>
+            )}
+            {!isLoading &&
+              !isError &&
+              filteredStudents.map((student, index) => (
+                <ManagedStudentCard
+                  key={student.id}
+                  index={index + 1}
+                  student={student}
+                  isSelected={selectedStudentIds.includes(student.id)}
+                  onToggleSelect={handleToggleStudentSelect}
+                />
+              ))}
           </div>
         </div>
 
@@ -263,28 +263,6 @@ export function StudentManagementSection() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="text-main-text text-text-3">성별</span>
-              <div className="flex gap-2">
-                <TextButton
-                  variant={selectedGender === "MAN" ? "filled" : "outlined"}
-                  size="small"
-                  className="h-[34px]! w-14!"
-                  onClick={() => handleToggleGender("MAN")}
-                >
-                  남자
-                </TextButton>
-                <TextButton
-                  variant={selectedGender === "WOMAN" ? "filled" : "outlined"}
-                  size="small"
-                  className="h-[34px]! w-14!"
-                  onClick={() => handleToggleGender("WOMAN")}
-                >
-                  여자
-                </TextButton>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
               <span className="text-main-text text-text-3">자습</span>
               <div className="flex gap-2">
                 {Object.entries(studyBanLabels).map(([filter, label]) => (
@@ -313,14 +291,18 @@ export function StudentManagementSection() {
               <span className="text-main-text text-text-1">자습 금지</span>
               <button
                 type="button"
-                onClick={handleResetBannedStudents}
+                onClick={() => setSelectedStudentIds([])}
                 className="cursor-pointer text-text-4 text-sub-1 transition-colors hover:text-p-1"
               >
-                초기화
+                선택 해제
               </button>
             </div>
             <TextButton
-              variant={selectedBanTargetCount > 0 ? "filled" : "disabled"}
+              variant={
+                selectedBanTargetCount > 0 && !banStudyMutation.isPending
+                  ? "filled"
+                  : "disabled"
+              }
               size="wide"
               onClick={handleBanSelectedStudent}
             >

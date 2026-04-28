@@ -3,15 +3,15 @@
 import { useQuery } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
 import Search from "@/shared/asset/svg/Search";
-import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
-import { userQueries } from "@/entities/user/api/userQueries";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
-import { useStudyBanMockState } from "../model/useStudyBanMockState";
+import { useCheckStudyAttendance } from "../model/useCheckStudyAttendance";
+import { useStudyAttendanceSubscription } from "../model/useStudyAttendanceSubscription";
+import { StudyApplicantCard } from "./StudyApplicantCard";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
@@ -19,13 +19,14 @@ const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 export function SelfStudySection() {
   const studyQuery = dormitoryQueries.study();
   const { data: students = [] } = useQuery(studyQuery);
-  const { data: currentUser } = useQuery(userQueries.me());
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
   const applyMutation = useApplyStudy();
-  const { isStudyBanned } = useStudyBanMockState();
-  const isCurrentUserStudyBanned = isStudyBanned(currentUser?.id);
+  const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription();
+  const checkAttendanceMutation = useCheckStudyAttendance({
+    onChecked: markChecked,
+  });
 
   const handleResetFilters = () => dispatch({ type: "RESET" });
   const handleSearchQueryChange = (value: string) =>
@@ -40,11 +41,11 @@ export function SelfStudySection() {
       payload: selectedGender === gender ? null : gender,
     });
   const handleApplyStudy = () => {
-    if (isCurrentUserStudyBanned) {
-      return;
-    }
-
     applyMutation.mutate();
+  };
+
+  const handleCheckAttendance = (studentId: number) => {
+    checkAttendanceMutation.mutate(studentId);
   };
 
   return (
@@ -66,10 +67,16 @@ export function SelfStudySection() {
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap gap-4 max-h-125 overflow-y-auto">
             {filteredStudents.map((student, index) => (
-              <ProfileCard
-                key={student.studentNumber}
+              <StudyApplicantCard
+                key={student.id}
                 index={index + 1}
                 student={student}
+                isChecked={checkedStudentIds.includes(student.id)}
+                isPending={
+                  checkAttendanceMutation.isPending &&
+                  checkAttendanceMutation.variables === student.id
+                }
+                onCheck={handleCheckAttendance}
               />
             ))}
           </div>
@@ -152,23 +159,13 @@ export function SelfStudySection() {
 
           <div className="flex-1" />
 
-          {isCurrentUserStudyBanned ? (
-            <button
-              type="button"
-              disabled
-              className="flex h-[47px] w-[330px] items-center justify-center rounded-lg bg-negative text-text-4 text-sub-4"
-            >
-              자습 금지를 당했어요!
-            </button>
-          ) : (
-            <TextButton
-              variant="filled"
-              size="wide"
-              onClick={handleApplyStudy}
-            >
-              신청하기
-            </TextButton>
-          )}
+          <TextButton
+            variant={applyMutation.isPending ? "disabled" : "filled"}
+            size="wide"
+            onClick={handleApplyStudy}
+          >
+            신청하기
+          </TextButton>
 
           <p className="text-sub-2 text-caption-2">
             자습 신청 시간은 20:00 ~ 21:00 입니다
