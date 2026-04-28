@@ -18,7 +18,7 @@ export function SidebarMenu({ title, isActive, href, icon }: SidebarMenuProps) {
           ${isActive ? "bg-p-2" : "bg-transparent hover:bg-p-2"}
         `}
       >
-        <div className="grid w-full grid-cols-[32px_minmax(0,1fr)] items-center gap-6">
+        <div className="flex items-center justify-center lg:grid lg:w-full lg:grid-cols-[32px_minmax(0,1fr)] lg:gap-6">
           <div className="relative flex h-8 w-8 shrink-0 items-center justify-center">
             {isActive ? (
               icon(true)
