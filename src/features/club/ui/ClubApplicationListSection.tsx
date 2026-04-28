@@ -12,8 +12,16 @@ interface ClubApplicationListSectionProps {
   id: number;
 }
 
+const submittedAtPattern =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})?$/;
+
 function formatSubmittedAt(value: string) {
-  const date = new Date(value);
+  if (!submittedAtPattern.test(value)) {
+    return value;
+  }
+
+  const hasTimeZone = /(?:Z|[+-]\d{2}:\d{2})$/.test(value);
+  const date = new Date(hasTimeZone ? value : `${value}+09:00`);
 
   if (Number.isNaN(date.getTime())) {
     return value;
@@ -24,6 +32,7 @@ function formatSubmittedAt(value: string) {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Asia/Seoul",
   }).format(date);
 }
 
