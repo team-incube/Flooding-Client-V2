@@ -86,6 +86,9 @@ export const dormitoryMutations = {
   banStudy: (userId: number) =>
     instance.post(`/dormitory/studies/ban/${userId}`),
 
+  checkStudyAttendance: (userId: number) =>
+    instance.post(`/dormitory/studies/attendance/${userId}`),
+
   updatePenalties: (userId: number, body: UpdatePenaltyRequest) => 
     instance.put(`/dormitory/penalties/${userId}`, body),
 
