@@ -29,6 +29,7 @@ export interface SearchUser {
   grade: number;
   classNumber: number;
   number: number;
+  isBanned: boolean;
 }
 
 export interface SearchUsersPage {

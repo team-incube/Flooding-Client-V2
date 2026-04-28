@@ -12,6 +12,10 @@ async function getAccessToken(request: NextRequest) {
     return queryToken;
   }
 
+  return getRefreshedAccessToken(request);
+}
+
+async function getRefreshedAccessToken(request: NextRequest) {
   const refreshToken = request.cookies.get("refresh_token")?.value;
 
   if (!refreshToken) {
@@ -22,6 +26,29 @@ async function getAccessToken(request: NextRequest) {
   const { data } = await serverInstance.post(reissueUrl, { refreshToken });
 
   return data.data?.accessToken ?? data.accessToken ?? null;
+}
+
+async function getAttendanceStream(accessToken: string, signal: AbortSignal) {
+  const attendanceUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}/dormitory/studies/attendance`;
+
+  return serverInstance.get(attendanceUrl, {
+    headers: {
+      Accept: "text/event-stream",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    responseType: "stream",
+    signal,
+  });
+}
+
+function createAttendanceStreamResponse(data: unknown) {
+  return new Response(Readable.toWeb(data as Readable) as ReadableStream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache, no-transform",
+      Connection: "keep-alive",
+    },
+  });
 }
 
 export async function GET(request: NextRequest) {
@@ -35,23 +62,31 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const attendanceUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}/dormitory/studies/attendance`;
-    const response = await serverInstance.get(attendanceUrl, {
-      headers: {
-        Accept: "text/event-stream",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      responseType: "stream",
-      signal: request.signal,
-    });
+    try {
+      const response = await getAttendanceStream(accessToken, request.signal);
 
-    return new Response(Readable.toWeb(response.data) as ReadableStream, {
-      headers: {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache, no-transform",
-        Connection: "keep-alive",
-      },
-    });
+      return createAttendanceStreamResponse(response.data);
+    } catch (error) {
+      if (
+        !axios.isAxiosError(error) ||
+        error.response?.status !== HttpStatusCode.Unauthorized
+      ) {
+        throw error;
+      }
+
+      const refreshedAccessToken = await getRefreshedAccessToken(request);
+
+      if (!refreshedAccessToken) {
+        throw error;
+      }
+
+      const response = await getAttendanceStream(
+        refreshedAccessToken,
+        request.signal,
+      );
+
+      return createAttendanceStreamResponse(response.data);
+    }
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       return NextResponse.json(error.response.data, {

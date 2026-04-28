@@ -22,7 +22,7 @@ export function filterManagedStudents({
   const normalizedSearchQuery = searchQuery.trim();
 
   return students.filter((student) => {
-    const isBanned = bannedStudentIds.includes(student.id);
+    const isBanned = student.isBanned || bannedStudentIds.includes(student.id);
     const matchesSearchQuery =
       !normalizedSearchQuery ||
       student.name.includes(normalizedSearchQuery) ||
