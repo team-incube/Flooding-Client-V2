@@ -212,6 +212,47 @@ export const clubHandlers = [
     }),
   ),
 
+  http.patch('*/clubs/:id/transfer/:targetUserId', ({ params }) => {
+    const id = Number(params.id);
+    const targetUserId = Number(params.targetUserId);
+    const detail = MOCK_CLUB_DETAILS[id];
+
+    if (!detail) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '동아리 없음' },
+        { status: 404 },
+      );
+    }
+
+    if (!detail.isLeader) {
+      return HttpResponse.json(
+        { status: 'FORBIDDEN', code: 403, message: '권한 없음' },
+        { status: 403 },
+      );
+    }
+
+    const targetMember = detail.members.find((m) => m.id === targetUserId);
+    if (!targetMember) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '멤버를 찾을 수 없음' },
+        { status: 404 },
+      );
+    }
+
+    const clubInList = MOCK_CLUBS.find((c) => c.id === id);
+    if (clubInList) {
+      clubInList.leader = targetMember.name;
+    }
+    detail.club.leader = targetMember.name;
+    detail.isLeader = false;
+
+    return HttpResponse.json({
+      status: 'OK',
+      code: 200,
+      message: '완료되었습니다.',
+    });
+  }),
+
   http.get('*/clubs/:id', ({ params }) => {
     const id = Number(params.id);
     const detail = MOCK_CLUB_DETAILS[id];
