@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import type { UserRole } from "@/entities/user/model/user";
+
+const sseAllowedRoles: UserRole[] = [
+  "STUDENT_COUNCIL",
+  "DORMITORY_MANAGER",
+  "ADMIN",
+];
 
 function collectCheckedUserIds(value: unknown): number[] {
   if (typeof value === "number") {
@@ -44,11 +51,15 @@ function parseCheckedUserIds(eventData: string): number[] | null {
   }
 }
 
-export function useStudyAttendanceSubscription() {
+export function useStudyAttendanceSubscription(role?: UserRole) {
   const queryClient = useQueryClient();
   const [checkedStudentIds, setCheckedStudentIds] = useState<number[]>([]);
 
   useEffect(() => {
+    if (!role || !sseAllowedRoles.includes(role)) {
+      return;
+    }
+
     const accessToken = sessionStorage.getItem("access_token");
     const searchParams = new URLSearchParams();
 
@@ -86,7 +97,7 @@ export function useStudyAttendanceSubscription() {
       eventSource.removeEventListener("message", updateCheckedIds);
       eventSource.close();
     };
-  }, [queryClient]);
+  }, [queryClient, role]);
 
   const markChecked = (studentId: number) => {
     setCheckedStudentIds((prev) => [...new Set([...prev, studentId])]);

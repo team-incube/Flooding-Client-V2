@@ -7,6 +7,7 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCheckStudyAttendance } from "../model/useCheckStudyAttendance";
@@ -19,11 +20,14 @@ const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 export function SelfStudySection() {
   const studyQuery = dormitoryQueries.study();
   const { data: students = [] } = useQuery(studyQuery);
+  const { data: user } = useQuery(userQueries.me());
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
   const applyMutation = useApplyStudy();
-  const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription();
+  const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
+    user?.role,
+  );
   const checkAttendanceMutation = useCheckStudyAttendance({
     onChecked: markChecked,
   });
