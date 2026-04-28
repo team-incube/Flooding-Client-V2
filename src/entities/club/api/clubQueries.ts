@@ -47,4 +47,7 @@ export const clubMutations = {
 
   applyAutonomousClub: (clubId: number) =>
     instance.post(`/clubs/${clubId}/autonomous/applications`),
+
+  approveApplication: (clubId: number, userId: number) =>
+    instance.patch(`/clubs/${clubId}/applications/${userId}`),
 } as const;

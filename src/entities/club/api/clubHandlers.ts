@@ -186,6 +186,24 @@ export const clubHandlers = [
     }),
   ),
 
+  http.patch('*/clubs/:id/applications/:userId', ({ params }) => {
+    const id = Number(params.id);
+    const userId = Number(params.userId);
+    const applicationList = MOCK_CLUB_APPLICATIONS[id];
+
+    if (applicationList) {
+      applicationList.applications = applicationList.applications.filter(
+        (application) => application.applicant.id !== userId,
+      );
+    }
+
+    return HttpResponse.json({
+      status: 'OK',
+      code: 200,
+      message: 'OK',
+    });
+  }),
+
   http.post('*/clubs/:id/autonomous/applications', () =>
     HttpResponse.json({
       status: 'OK',

@@ -5,6 +5,8 @@ import axios, { HttpStatusCode } from "axios";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import { TextButton } from "@/shared/ui/Button/TextButton";
+import { useApproveClubApplication } from "../model/useApproveClubApplication";
 
 interface ClubApplicationListSectionProps {
   id: number;
@@ -44,6 +46,7 @@ function getErrorMessage(error: unknown) {
 export function ClubApplicationListSection({
   id,
 }: ClubApplicationListSectionProps) {
+  const approveMutation = useApproveClubApplication(id);
   const {
     data: detail,
     isLoading: isDetailLoading,
@@ -147,9 +150,24 @@ export function ClubApplicationListSection({
                       </span>
                     </div>
                   </div>
-                  <span className="text-caption-1 text-sub-1">
-                    {formatSubmittedAt(application.submittedAt)}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-caption-1 text-sub-1">
+                      {formatSubmittedAt(application.submittedAt)}
+                    </span>
+                    <TextButton
+                      variant={
+                        approveMutation.isPending ? "disabled" : "filled"
+                      }
+                      size="small"
+                      onClick={() =>
+                        approveMutation.mutate({
+                          userId: application.applicant.id,
+                        })
+                      }
+                    >
+                      승인
+                    </TextButton>
+                  </div>
                 </div>
 
                 <div className="grid gap-3 lg:grid-cols-2">
