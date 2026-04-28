@@ -47,19 +47,21 @@ export default function ProjectCard({ project, leader }: ProjectCardProps) {
         </p>
         <p className="text-caption-1 text-sub-1">
           프로젝트 링크 -{" "}
-          {project.links.map((l, i: number) => (
-            <span key={l.link}>
-              <a
-                href={l.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sub-1 hover:underline"
-              >
-                {l.type}
-              </a>
-              {i < project.links.length - 1 && " "}
-            </span>
-          ))}
+          {project.links && project.links.length > 0
+            ? project.links.map((l, i: number) => (
+                <span key={l.link}>
+                  <a
+                    href={l.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sub-1 hover:underline"
+                  >
+                    {l.type}
+                  </a>
+                  {i < (project.links?.length ?? 0) - 1 && " "}
+                </span>
+              ))
+            : "등록된 링크가 없어요."}
         </p>
       </div>
     </div>

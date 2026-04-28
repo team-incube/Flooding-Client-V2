@@ -1,10 +1,13 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
+import axios, { HttpStatusCode } from "axios";
+import { notFound, useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
+import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 
 interface ClubDetailSectionProps {
   id: number;
@@ -15,9 +18,65 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     notFound();
   }
 
+  const router = useRouter();
+  const autonomousApplyMutation = useApplyAutonomousClub(id);
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
+  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
+  const canCreateForm =
+    detail?.club.type === "MAJOR_CLUB" && detail.isLeader;
+  const canViewApplications =
+    !!detail &&
+    (detail.isLeader ||
+      user?.role === "ADMIN" ||
+      user?.role === "STUDENT_COUNCIL");
+  const formQuery = clubQueries.form(id);
+  const {
+    data: form,
+    error: formError,
+  } = useQuery({
+    ...formQuery,
+    enabled: canCreateForm,
+    retry: false,
+  });
 
-  if (isLoading) {
+  const handleApplyClick = () => {
+    if (!detail || autonomousApplyMutation.isPending) {
+      return;
+    }
+
+    if (detail.club.type === "AUTONOMOUS_CLUB") {
+      autonomousApplyMutation.mutate();
+      return;
+    }
+
+    router.push(`/club/${detail.club.id}/apply`);
+  };
+
+  const handleCreateFormClick = () => {
+    if (!detail) {
+      return;
+    }
+
+    router.push(`/club/${detail.club.id}/forms/new`);
+  };
+
+  const handleEditFormClick = () => {
+    if (!detail) {
+      return;
+    }
+
+    router.push(`/club/${detail.club.id}/forms/edit`);
+  };
+
+  const handleApplicationsClick = () => {
+    if (!detail) {
+      return;
+    }
+
+    router.push(`/club/${detail.club.id}/applications`);
+  };
+
+  if (isLoading || isUserLoading) {
     return (
       <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
         <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
@@ -37,6 +96,12 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     notFound();
   }
 
+  const hasForm = !!form;
+  const hasNoForm =
+    axios.isAxiosError(formError) &&
+    formError.response?.status === HttpStatusCode.NotFound;
+  const canShowFormAction = canCreateForm && (hasForm || hasNoForm);
+
   return (
     <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
       <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
@@ -45,7 +110,22 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
           <span className="text-text-1 text-main-text">동아리</span>
         </div>
         <div className="w-full">
-          <ClubDetail detail={detail} />
+          <ClubDetail
+            detail={detail}
+            isApplyPending={autonomousApplyMutation.isPending}
+            onApplyClick={handleApplyClick}
+            formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
+            onViewApplicationsClick={
+              canViewApplications ? handleApplicationsClick : undefined
+            }
+            onCreateFormClick={
+              canShowFormAction
+                ? hasForm
+                  ? handleEditFormClick
+                  : handleCreateFormClick
+                : undefined
+            }
+          />
         </div>
       </div>
     </div>

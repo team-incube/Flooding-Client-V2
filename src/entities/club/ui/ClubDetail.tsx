@@ -1,15 +1,29 @@
 import Image from "next/image";
 import DefaultClubThumbnail from "@/shared/asset/svg/DefaultThumbnail";
+import { TextButton } from "@/shared/ui/Button/TextButton";
 import { ClubDetailResponse as ClubDetailType } from "../model/club";
 import ProjectCard from "./ProjectCard";
 import ClubMemberList from "./ClubMemberList";
 
 interface ClubDetailProps {
   detail: ClubDetailType;
+  isApplyPending?: boolean;
+  onApplyClick?: () => void;
+  onViewApplicationsClick?: () => void;
+  onCreateFormClick?: () => void;
+  formActionLabel?: string;
 }
 
-export default function ClubDetail({ detail }: ClubDetailProps) {
-  const { club, member, project } = detail;
+export default function ClubDetail({
+  detail,
+  isApplyPending = false,
+  onApplyClick,
+  onViewApplicationsClick,
+  onCreateFormClick,
+  formActionLabel = "폼 만들기",
+}: ClubDetailProps) {
+  const { club, members, projects } = detail;
+  const applyVariant = isApplyPending || !onApplyClick ? "disabled" : "filled";
 
   return (
     <div className="flex w-full flex-col gap-6 xl:flex-row">
@@ -42,20 +56,54 @@ export default function ClubDetail({ detail }: ClubDetailProps) {
           </p>
         </div>
 
-        <ClubMemberList members={member} leader={club.leader} />
+        <ClubMemberList members={members} leader={club.leader} />
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-4">
-        <span className="text-text-1 text-main-text">동아리 프로젝트</span>
-        {project.length > 0 ? (
-          <div className="flex flex-col gap-4">
-            {project.map((p) => (
-              <ProjectCard key={p.id} project={p} leader={club.leader} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-caption-1 text-sub-2">등록된 프로젝트가 없어요.</p>
-        )}
+      <div className="flex min-w-0 flex-1 flex-col gap-4 xl:self-stretch">
+        <div className="flex min-h-0 flex-1 flex-col gap-4">
+          <span className="text-text-1 text-main-text">동아리 프로젝트</span>
+          {projects.length > 0 ? (
+            <div className="flex flex-col gap-4">
+              {projects.map((p) => (
+                <ProjectCard key={p.id} project={p} leader={club.leader} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-caption-1 text-sub-2">
+              등록된 프로젝트가 없어요.
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-wrap justify-end gap-2">
+          {onViewApplicationsClick && (
+            <TextButton
+              size="medium"
+              variant="outlined"
+              className="h-[47px] w-auto min-w-[147px] px-4"
+              onClick={onViewApplicationsClick}
+            >
+              신청자 목록
+            </TextButton>
+          )}
+          {onCreateFormClick && (
+            <TextButton
+              size="medium"
+              variant="outlined"
+              className="h-[47px]"
+              onClick={onCreateFormClick}
+            >
+              {formActionLabel}
+            </TextButton>
+          )}
+          <TextButton
+            size="wide"
+            variant={applyVariant}
+            onClick={applyVariant === "filled" ? onApplyClick : undefined}
+          >
+            동아리 신청하기
+          </TextButton>
+        </div>
       </div>
     </div>
   );
