@@ -2,6 +2,7 @@ import TextField from "@/shared/ui/textField";
 import type { ClubFormFieldType } from "@/entities/club/model/club";
 import {
   clubFormFieldTypeOptions,
+  isClubFormFieldOptionValueValid,
   needsClubFormFieldOptions,
   type ClubFormFieldDraft,
   type ClubFormFieldDraftKey,
@@ -147,7 +148,10 @@ export function ClubFormFieldEditor({
 
           <div className="flex flex-col gap-2">
             {field.options.map((option) => (
-              <div key={option.id} className="grid gap-2 lg:grid-cols-[1fr_1fr_auto]">
+              <div
+                key={option.id}
+                className="grid gap-2 lg:grid-cols-[1fr_1fr_auto]"
+              >
                 <TextField
                   id={`club-form-field-option-label-${field.id}-${option.id}`}
                   value={option.label}
@@ -161,19 +165,26 @@ export function ClubFormFieldEditor({
                     )
                   }
                 />
-                <TextField
-                  id={`club-form-field-option-value-${field.id}-${option.id}`}
-                  value={option.value}
-                  placeholder="전송 값"
-                  onChange={(e) =>
-                    onOptionChange(
-                      field.id,
-                      option.id,
-                      "value",
-                      e.target.value,
-                    )
-                  }
-                />
+                <div className="flex flex-col gap-1">
+                  <TextField
+                    id={`club-form-field-option-value-${field.id}-${option.id}`}
+                    value={option.value}
+                    placeholder="전송 값"
+                    onChange={(e) =>
+                      onOptionChange(
+                        field.id,
+                        option.id,
+                        "value",
+                        e.target.value,
+                      )
+                    }
+                  />
+                  {option.value && !isClubFormFieldOptionValueValid(option.value) && (
+                    <p className="text-caption-2 text-negative">
+                      전송 값에는 쉼표(,)를 사용할 수 없어요.
+                    </p>
+                  )}
+                </div>
                 <button
                   type="button"
                   className={secondaryButtonStyles}

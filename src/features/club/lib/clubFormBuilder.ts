@@ -47,6 +47,12 @@ export function needsClubFormFieldOptions(fieldType: ClubFormFieldType) {
   );
 }
 
+export function isClubFormFieldOptionValueValid(value: string) {
+  const trimmedValue = value.trim();
+
+  return !!trimmedValue && !trimmedValue.includes(",");
+}
+
 export function createDefaultClubFormField(
   id: number,
 ): ClubFormFieldDraft {
@@ -115,7 +121,10 @@ export function isClubFormFieldDraftValid(field: ClubFormFieldDraft) {
 
   return (
     field.options.length > 0 &&
-    field.options.every((option) => option.label.trim() && option.value.trim())
+    field.options.every(
+      (option) =>
+        option.label.trim() && isClubFormFieldOptionValueValid(option.value),
+    )
   );
 }
 
