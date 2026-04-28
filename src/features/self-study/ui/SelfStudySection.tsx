@@ -8,8 +8,10 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
+import { useStudyBanMockState } from "../model/useStudyBanMockState";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
@@ -17,10 +19,13 @@ const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 export function SelfStudySection() {
   const studyQuery = dormitoryQueries.study();
   const { data: students = [] } = useQuery(studyQuery);
+  const { data: currentUser } = useQuery(userQueries.me());
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
   const applyMutation = useApplyStudy();
+  const { isStudyBanned } = useStudyBanMockState();
+  const isCurrentUserStudyBanned = isStudyBanned(currentUser?.id);
 
   const handleResetFilters = () => dispatch({ type: "RESET" });
   const handleSearchQueryChange = (value: string) =>
@@ -34,7 +39,13 @@ export function SelfStudySection() {
       type: "SET_GENDER",
       payload: selectedGender === gender ? null : gender,
     });
-  const handleApplyStudy = () => applyMutation.mutate();
+  const handleApplyStudy = () => {
+    if (isCurrentUserStudyBanned) {
+      return;
+    }
+
+    applyMutation.mutate();
+  };
 
   return (
     <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-4">
@@ -141,13 +152,23 @@ export function SelfStudySection() {
 
           <div className="flex-1" />
 
-          <TextButton
-            variant="filled"
-            size="wide"
-            onClick={handleApplyStudy}
-          >
-            신청하기
-          </TextButton>
+          {isCurrentUserStudyBanned ? (
+            <button
+              type="button"
+              disabled
+              className="flex h-[47px] w-[330px] items-center justify-center rounded-lg bg-negative text-text-4 text-sub-4"
+            >
+              자습 금지를 당했어요!
+            </button>
+          ) : (
+            <TextButton
+              variant="filled"
+              size="wide"
+              onClick={handleApplyStudy}
+            >
+              신청하기
+            </TextButton>
+          )}
 
           <p className="text-sub-2 text-caption-2">
             자습 신청 시간은 20:00 ~ 21:00 입니다
