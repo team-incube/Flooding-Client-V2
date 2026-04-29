@@ -99,28 +99,34 @@ export default function HomebaseCard({
         </span>
       </div>
 
-      <div className="mt-4 flex items-center gap-3">
-        <span className="text-text-3 font-medium text-sub-1">층</span>
-        {FLOORS.map(({ value, label }) => (
-          <TextButton
-            key={value}
-            variant={selectedFloor === value ? "filled" : "outlined"}
-            onClick={() => handleFloorChange(value)}
-          >
-            {label}
-          </TextButton>
-        ))}
+      <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <span className="text-text-3 font-medium text-sub-1">층</span>
+          {FLOORS.map(({ value, label }) => (
+            <TextButton
+              key={value}
+              variant={selectedFloor === value ? "filled" : "outlined"}
+              className="w-fit! min-w-[68px]! px-4 sm:min-w-[91px]!"
+              onClick={() => handleFloorChange(value)}
+            >
+              {label}
+            </TextButton>
+          ))}
+        </div>
 
-        <span className="text-text-3 font-medium text-sub-1">교시</span>
-        {PERIODS.map((period) => (
-          <TextButton
-            key={period}
-            variant={getPeriodButtonVariant(period)}
-            onClick={() => handlePeriodSelect(period)}
-          >
-            {period}
-          </TextButton>
-        ))}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <span className="text-text-3 font-medium text-sub-1">교시</span>
+          {PERIODS.map((period) => (
+            <TextButton
+              key={period}
+              variant={getPeriodButtonVariant(period)}
+              className="w-fit! min-w-[68px]! px-4 sm:min-w-[91px]!"
+              onClick={() => handlePeriodSelect(period)}
+            >
+              {period}
+            </TextButton>
+          ))}
+        </div>
       </div>
 
       <div className="mt-3 flex flex-col items-start gap-6 lg:flex-row 2xl:justify-between">
@@ -128,8 +134,8 @@ export default function HomebaseCard({
           {renderFloor()}
         </div>
 
-        <div className="flex w-full flex-col gap-6 sm:flex-row lg:w-82.5 lg:shrink-0 lg:flex-col lg:gap-4">
-          <div className="flex w-full shrink-0 flex-col gap-4 sm:w-75 lg:w-full">
+        <div className="flex w-full min-w-0 flex-col gap-6 lg:w-82.5 lg:shrink-0 lg:gap-4">
+          <div className="flex w-full min-w-0 flex-col gap-4 lg:w-full">
             <div className="relative">
               <TextField
                 placeholder="이름, 학번등을 입력해주세요"
@@ -164,6 +170,7 @@ export default function HomebaseCard({
               <TextButton
                 variant={canSubmit ? "filled" : "disabled"}
                 size="wide"
+                className="w-full!"
                 onClick={handleSubmit}
               >
                 신청하기
