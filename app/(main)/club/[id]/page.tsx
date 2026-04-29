@@ -1,4 +1,4 @@
-import { ClubDetailSection } from "@/features/club/ui/ClubDetailSection";
+import { ClubDetailSectionBoundary } from "@/features/club/ui/ClubDetailSection";
 
 interface ClubDetailPageProps {
   params: Promise<{
@@ -8,5 +8,5 @@ interface ClubDetailPageProps {
 
 export default async function ClubDetailPage({ params }: ClubDetailPageProps) {
   const { id } = await params;
-  return <ClubDetailSection id={Number(id)} />;
+  return <ClubDetailSectionBoundary id={Number(id)} />;
 }

@@ -1,8 +1,8 @@
 import MassageApplyCard from "@/widgets/main/ui/MassageApplyCard";
 import StudyApplyCard from "@/widgets/main/ui/StudyApplyCard";
-import MealCard from "@/widgets/main/ui/MealCard";
+import { MealCardBoundary } from "@/widgets/main/ui/MealCard";
 import ProfileCard from "@/widgets/main/ui/ProfileCard";
-import TimeTableCard from "@/widgets/main/ui/TimeTableCard";
+import { TimeTableCardBoundary } from "@/widgets/main/ui/TimeTableCard";
 import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
 import { WakeUpMusicSection } from "@/features/wake-up-music/ui/WakeUpMusicSection";
 import Star from "@/shared/asset/svg/Star";
@@ -16,15 +16,15 @@ export default function MainPage() {
           <MassageApplyCard />
         </div>
         <div className="order-3 2xl:order-0 2xl:row-span-2">
-          <MealCard />
+          <MealCardBoundary />
         </div>
         <div className="order-1 2xl:order-0 lg:col-span-2 2xl:contents">
-          <div className="flex flex-row gap-3 lg:gap-6 2xl:contents">
+          <div className="flex flex-row max-md:flex-col gap-3 lg:gap-6 2xl:contents">
             <div className="flex-1">
               <ProfileCard />
             </div>
             <div className="flex-1">
-              <TimeTableCard />
+              <TimeTableCardBoundary />
             </div>
           </div>
         </div>

@@ -11,6 +11,7 @@ import { ThirdFloor } from "@/features/homebase/ui/ThirdFloor";
 import HomeBase from "@/shared/asset/svg/HomeBase";
 import Search from "@/shared/asset/svg/Search";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import TextField from "@/shared/ui/textField";
 
 interface HomebaseCardProps {
@@ -37,6 +38,7 @@ export default function HomebaseCard({
     myReservationItems,
     myReservationIds,
     isLoading,
+    isError,
     canSubmit,
     selectedStudents,
     handleFloorChange,
@@ -191,7 +193,11 @@ export default function HomebaseCard({
             내 예약현황
           </span>
           {isLoading ? (
-            <div className="h-16 w-full animate-pulse rounded-xl bg-background-surface" />
+            <Skeleton className="h-16 w-full rounded-xl" />
+          ) : isError ? (
+            <span className="text-text-4 text-negative">
+              예약현황을 불러오지 못했습니다
+            </span>
           ) : myReservationItems.length > 0 ? (
             <div className="flex flex-wrap gap-3">
               {myReservationItems.map(({ reservationId, reservation }) => (
@@ -219,20 +225,21 @@ export default function HomebaseCard({
           <div className="flex flex-wrap items-start gap-3">
             {isLoading ? (
               <>
-                <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
-                <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
-                <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
+                <Skeleton className="h-16 w-48 rounded-xl" />
+                <Skeleton className="h-16 w-48 rounded-xl" />
+                <Skeleton className="h-16 w-48 rounded-xl" />
               </>
+            ) : isError ? (
+              <span className="text-text-3 text-negative">
+                예약현황을 불러오지 못했습니다
+              </span>
             ) : othersReservations.length === 0 ? (
               <span className="text-text-3 text-sub-2">
                 현재 모든 테이블 예약이 가능합니다
               </span>
             ) : (
               othersReservations.map((item) => (
-                <ReservationTableItem
-                  key={item.id}
-                  reservation={item}
-                />
+                <ReservationTableItem key={item.id} reservation={item} />
               ))
             )}
           </div>
