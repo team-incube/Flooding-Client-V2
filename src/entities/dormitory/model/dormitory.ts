@@ -4,6 +4,14 @@ import type { Music } from '@/entities/music/model/music';
 export type DormitoryStudent = User;
 export type DormitoryMusic = Music;
 
+export interface StudyApplicant {
+  userId: number;
+  name: string;
+  studentNumber: number;
+  isBanned: boolean;
+  isChecked: boolean;
+}
+
 export interface MusicApplyRequest {
   musicUrl: string;
 }
