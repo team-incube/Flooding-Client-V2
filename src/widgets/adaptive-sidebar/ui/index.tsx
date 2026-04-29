@@ -36,7 +36,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col w-[112px] lg:w-[240px] 2xl:w-[260px] h-screen bg-background pt-13 pb-14 px-4 justify-between">
+    <div className="flex flex-col w-[112px] lg:w-[240px] 2xl:w-[260px] h-screen bg-background-surface pt-13 pb-14 px-4 justify-between">
       <div className="flex flex-col items-center gap-[47px]">
         <div>
           <div className="hidden lg:block">
