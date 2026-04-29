@@ -1,4 +1,4 @@
-type ButtonVariant = "filled" | "outlined" | "disabled";
+type ButtonVariant = "filled" | "outlined" | "disabled" | "ghost";
 type ButtonSize = "small" | "wide" | "medium";
 
 interface TextButtonProps {
@@ -15,6 +15,7 @@ const variantStyles = {
   outlined:
     "bg-background-surface text-sub-1 border border-sub-2 cursor-pointer",
   disabled: "bg-p-3 text-sub-4",
+  ghost: "bg-p-3 text-sub-4 cursor-pointer"
 };
 
 const sizeStyles = {
