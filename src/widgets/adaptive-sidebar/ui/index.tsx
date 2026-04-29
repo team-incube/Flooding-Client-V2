@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarMenu } from "./sidebarMenu";
 import Grid from "@/shared/asset/svg/Grid";
@@ -10,6 +11,8 @@ import Student from "@/shared/asset/svg/Student";
 import Logo from "@/shared/asset/svg/Logo";
 import Signout from "@/shared/asset/svg/Signout";
 import { ROUTES } from "@/shared/config/routes";
+import { userQueries } from "@/entities/user/api/userQueries";
+import { isManagementRole } from "@/entities/user/lib/userRole";
 import type { ReactNode } from "react";
 
 const ICONS: Record<string, (active: boolean) => ReactNode> = {
@@ -29,6 +32,10 @@ const MENU_ITEMS = ROUTES.map(({ href, label }) => ({
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { data: user } = useQuery(userQueries.me());
+  const menuItems = MENU_ITEMS.filter(
+    ({ href }) => href !== "/students" || isManagementRole(user?.role),
+  );
   const isRouteActive = (href: string) =>
     href === "/" ? pathname === href : pathname.startsWith(href);
 
@@ -51,7 +58,7 @@ export default function Sidebar() {
           </div>
         </div>
         <nav className="flex flex-col gap-[6px] w-full">
-          {MENU_ITEMS.map((item) => (
+          {menuItems.map((item) => (
             <SidebarMenu
               key={item.href}
               title={item.title}
