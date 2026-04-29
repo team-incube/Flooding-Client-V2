@@ -26,6 +26,12 @@ export function StudentManagementSection() {
     useState<StudyBanFilter>(null);
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
   const students = studentPage?.content ?? [];
+  const optimisticBannedStudentIdSet = new Set(optimisticBannedStudentIds);
+  const bannedStudentIdSet = new Set(
+    students
+      .filter(({ isBanned }) => isBanned)
+      .map(({ id }) => id),
+  );
 
   const filteredStudents = filterManagedStudents({
     students,
@@ -78,11 +84,9 @@ export function StudentManagementSection() {
   };
 
   const isStudyBanned = (studentId: number) => {
-    const student = students.find(({ id }) => id === studentId);
-
     return (
-      student?.isBanned === true ||
-      optimisticBannedStudentIds.includes(studentId)
+      bannedStudentIdSet.has(studentId) ||
+      optimisticBannedStudentIdSet.has(studentId)
     );
   };
 
@@ -96,9 +100,9 @@ export function StudentManagementSection() {
     }
 
     banStudyMutation.mutate(targetStudentIds, {
-      onSuccess: (studentIds) => {
+      onSuccess: ({ successfulStudentIds }) => {
         setOptimisticBannedStudentIds((prev) => [
-          ...new Set([...prev, ...studentIds]),
+          ...new Set([...prev, ...successfulStudentIds]),
         ]);
         setSelectedStudentIds([]);
       },
