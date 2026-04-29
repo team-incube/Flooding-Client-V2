@@ -18,12 +18,12 @@ export function ManagedStudentCard({
   onToggleSelect,
 }: ManagedStudentCardProps) {
   const cardStyles = isSelected
-    ? "bg-p-2 ring-2 ring-p-1"
+    ? "bg-p-2 shadow-[inset_0_0_0_2px_var(--color-p-1)]"
     : "bg-sub-4 hover:bg-p-2";
 
   return (
     <div
-      className={`relative h-[165px] w-[170px] shrink-0 rounded-2xl p-4 transition-colors ${cardStyles}`}
+      className={`relative h-[165px] w-[170px] shrink-0 rounded-2xl p-4 transition-[background-color,box-shadow] ${cardStyles}`}
     >
       <span className="absolute top-4 left-4 text-caption-3 text-sub-1">
         {index}
