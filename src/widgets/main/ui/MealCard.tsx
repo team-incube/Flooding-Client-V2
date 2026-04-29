@@ -64,11 +64,19 @@ export default function MealCard() {
           </span>
         </div>
         <div className="flex items-center gap-2 text-text-3 text-sub-1 font-medium">
-          <button onClick={() => setOffset((o) => o - 1)}>
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={() => setOffset((o) => o - 1)}
+          >
             <Back direction="left" />
           </button>
           <span>{formatDisplayDate(currentDate)}</span>
-          <button onClick={() => setOffset((o) => o + 1)}>
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={() => setOffset((o) => o + 1)}
+          >
             <Back direction="right" />
           </button>
         </div>
@@ -77,9 +85,10 @@ export default function MealCard() {
       <div className="flex rounded-lg bg-sub-4 p-2 mb-4">
         {MEAL_TYPES.map((type) => (
           <button
+            type="button"
             key={type}
             onClick={() => setSelectedTab(type)}
-            className={`flex-1 py-3 rounded-lg text-text-4 font-medium ${
+            className={`flex-1 cursor-pointer py-3 rounded-lg text-text-4 font-medium ${
               selectedTab === type
                 ? "bg-p-1 text-background-surface"
                 : "text-sub-2"

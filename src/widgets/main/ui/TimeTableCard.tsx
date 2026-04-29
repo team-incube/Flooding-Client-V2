@@ -84,11 +84,19 @@ export default function TimeTableCard() {
         </div>
 
         <div className="flex items-center gap-2 text-text-3 text-sub-1 font-medium">
-          <button onClick={() => setOffset((o) => o - 1)}>
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={() => setOffset((o) => o - 1)}
+          >
             <Back direction="left" />
           </button>
           <span>{formatDisplayDate(currentDate)}</span>
-          <button onClick={() => setOffset((o) => o + 1)}>
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={() => setOffset((o) => o + 1)}
+          >
             <Back direction="right" />
           </button>
         </div>
