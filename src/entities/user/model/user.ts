@@ -20,4 +20,36 @@ export interface User {
   dormitoryFloor: number;
   specialty: string;
   penaltyScore: number;
+  isBanned: boolean;
+}
+
+export interface SearchUser {
+  id: number;
+  name: string;
+  sex: Sex;
+  studentNumber: number;
+  grade: number;
+  classNumber: number;
+  number: number;
+  isBanned: boolean;
+}
+
+export interface SearchUsersPage {
+  content: SearchUser[];
+  totalElements: number;
+  totalPages: number;
+  numberOfElements: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+}
+
+export interface SearchUsersParams {
+  name?: string;
+  studentNumber?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
 }

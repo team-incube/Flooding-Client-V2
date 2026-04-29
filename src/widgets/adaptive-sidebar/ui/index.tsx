@@ -6,6 +6,7 @@ import Grid from "@/shared/asset/svg/Grid";
 import Bed from "@/shared/asset/svg/Bed";
 import School from "@/shared/asset/svg/School";
 import Club from "@/shared/asset/svg/Club";
+import Student from "@/shared/asset/svg/Student";
 import Logo from "@/shared/asset/svg/Logo";
 import Signout from "@/shared/asset/svg/Signout";
 import { ROUTES } from "@/shared/config/routes";
@@ -16,6 +17,7 @@ const ICONS: Record<string, (active: boolean) => ReactNode> = {
   "/dormitory": (active) => <Bed size={32} isActive={active} />,
   "/school": (active) => <School size={32} isActive={active} />,
   "/club": (active) => <Club size={32} isActive={active} />,
+  "/students": (active) => <Student size={32} isActive={active} />,
 };
 
 const MENU_ITEMS = ROUTES.map(({ href, label }) => ({
@@ -27,6 +29,8 @@ const MENU_ITEMS = ROUTES.map(({ href, label }) => ({
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const isRouteActive = (href: string) =>
+    href === "/" ? pathname === href : pathname.startsWith(href);
 
   const handleLogout = async () => {
     await fetch("/api/auth/signout", { method: "POST" });
@@ -52,7 +56,7 @@ export default function Sidebar() {
               key={item.href}
               title={item.title}
               href={item.href}
-              isActive={pathname === item.href}
+              isActive={isRouteActive(item.href)}
               icon={item.icon}
             />
           ))}

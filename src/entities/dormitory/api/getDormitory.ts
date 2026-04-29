@@ -2,6 +2,7 @@ import { instance } from '@/shared/api/instance';
 import type { 
   DormitoryStudent, 
   DormitoryMusic, 
+  StudyApplicant,
   MyPenaltyResponse, 
   AllPenaltiesResponse, 
   CleaningZones, 
@@ -29,14 +30,15 @@ export async function getDormitoryMusic(date?: string): Promise<DormitoryMusic[]
 }
 
 type DormitoryStudentResponse = DormitoryStudent[] | { data?: DormitoryStudent[] };
+type StudyApplicantResponse = StudyApplicant[] | { data?: StudyApplicant[] };
 
 export async function getMassageApplicants(): Promise<DormitoryStudent[]> {
   const { data } = await instance.get<DormitoryStudentResponse>('/dormitory/massages');
   return Array.isArray(data) ? data : (data.data ?? []);
 }
 
-export async function getSelfStudyApplicants(): Promise<DormitoryStudent[]> {
-  const { data } = await instance.get<DormitoryStudentResponse>('/dormitory/studies');
+export async function getSelfStudyApplicants(): Promise<StudyApplicant[]> {
+  const { data } = await instance.get<StudyApplicantResponse>('/dormitory/studies');
   return Array.isArray(data) ? data : (data.data ?? []);
 }
 

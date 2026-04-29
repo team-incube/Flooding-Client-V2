@@ -1,5 +1,8 @@
 import ChevronRight from "@/shared/asset/svg/Back";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import type { TextButtonVariant } from "@/shared/ui/Button/TextButton";
+
+type ApplyCardButtonSize = "small" | "fit";
 
 interface ApplyCardProps {
   title: string;
@@ -8,6 +11,8 @@ interface ApplyCardProps {
   total: number;
   timeText: string;
   buttonText: string;
+  buttonVariant?: TextButtonVariant;
+  buttonSize?: ApplyCardButtonSize;
   disabled?: boolean;
   femaleNotice?: boolean;
   onApply?: () => void;
@@ -20,11 +25,15 @@ export default function ApplyCard({
   total,
   timeText,
   buttonText,
+  buttonVariant = "filled",
+  buttonSize = "small",
   disabled = false,
   femaleNotice = false,
   onApply,
 }: ApplyCardProps) {
   const isApplyEnabled = !disabled;
+  const visualButtonVariant =
+    disabled && buttonVariant === "filled" ? "disabled" : buttonVariant;
 
   return (
     <div className="w-full bg-background-surface rounded-2xl p-6">
@@ -55,8 +64,8 @@ export default function ApplyCard({
         </div>
       </div>
 
-      <div className="flex items-end justify-between">
-        <div>
+      <div className="flex items-end justify-between gap-3">
+        <div className="min-w-0">
           <p className="text-caption-3 font-medium text-sub-1 line-clamp-1">
             {timeText}
           </p>
@@ -67,8 +76,8 @@ export default function ApplyCard({
           )}
         </div>
         <TextButton
-          variant={isApplyEnabled ? "filled" : "disabled"}
-          size="small"
+          variant={visualButtonVariant}
+          size={buttonSize}
           disabled={!isApplyEnabled}
           onClick={isApplyEnabled ? onApply : undefined}
         >
