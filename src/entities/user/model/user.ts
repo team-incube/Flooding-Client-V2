@@ -20,6 +20,7 @@ export interface User {
   dormitoryFloor: number;
   specialty: string;
   penaltyScore: number;
+  isBanned: boolean;
 }
 
 export interface SearchUser {

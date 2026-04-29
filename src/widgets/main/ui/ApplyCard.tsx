@@ -1,5 +1,6 @@
 import ChevronRight from "@/shared/asset/svg/Back";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import type { TextButtonVariant } from "@/shared/ui/Button/TextButton";
 
 interface ApplyCardProps {
   title: string;
@@ -8,6 +9,7 @@ interface ApplyCardProps {
   total: number;
   timeText: string;
   buttonText: string;
+  buttonVariant?: TextButtonVariant;
   disabled?: boolean;
   femaleNotice?: boolean;
   onApply?: () => void;
@@ -20,11 +22,14 @@ export default function ApplyCard({
   total,
   timeText,
   buttonText,
+  buttonVariant = "filled",
   disabled = false,
   femaleNotice = false,
   onApply,
 }: ApplyCardProps) {
   const isApplyEnabled = !disabled;
+  const visualButtonVariant =
+    disabled && buttonVariant === "filled" ? "disabled" : buttonVariant;
 
   return (
     <div className="w-full bg-background-surface rounded-2xl p-6">
@@ -67,7 +72,7 @@ export default function ApplyCard({
           )}
         </div>
         <TextButton
-          variant={isApplyEnabled ? "filled" : "disabled"}
+          variant={visualButtonVariant}
           size="small"
           disabled={!isApplyEnabled}
           onClick={isApplyEnabled ? onApply : undefined}

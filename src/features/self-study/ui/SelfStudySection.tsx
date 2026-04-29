@@ -20,10 +20,13 @@ const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 export function SelfStudySection() {
   const studyQuery = dormitoryQueries.study();
   const { data: students = [] } = useQuery(studyQuery);
-  const { data: user } = useQuery(userQueries.me());
+  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } = state;
   const applyMutation = useApplyStudy();
+  const isStudyBanned = user?.isBanned === true;
+  const isApplyDisabled =
+    isUserLoading || isStudyBanned || applyMutation.isPending;
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
   );
@@ -44,6 +47,10 @@ export function SelfStudySection() {
       payload: selectedGender === gender ? null : gender,
     });
   const handleApplyStudy = () => {
+    if (isApplyDisabled) {
+      return;
+    }
+
     applyMutation.mutate();
   };
 
@@ -166,11 +173,22 @@ export function SelfStudySection() {
           <div className="flex-1" />
 
           <TextButton
-            variant={applyMutation.isPending ? "disabled" : "filled"}
+            variant={
+              isStudyBanned
+                ? "negative"
+                : isApplyDisabled
+                  ? "disabled"
+                  : "filled"
+            }
             size="wide"
+            disabled={isApplyDisabled}
             onClick={handleApplyStudy}
           >
-            신청하기
+            {isStudyBanned
+              ? "자습 금지를 당했어요!"
+              : isUserLoading
+                ? "확인 중"
+                : "신청하기"}
           </TextButton>
 
           <p className="text-sub-2 text-caption-2">
