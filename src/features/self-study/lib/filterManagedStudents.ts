@@ -20,9 +20,10 @@ export function filterManagedStudents({
   bannedStudentIds,
 }: FilterManagedStudentsParams): SearchUser[] {
   const normalizedSearchQuery = searchQuery.trim();
+  const bannedStudentIdSet = new Set(bannedStudentIds);
 
   return students.filter((student) => {
-    const isBanned = student.isBanned || bannedStudentIds.includes(student.id);
+    const isBanned = student.isBanned || bannedStudentIdSet.has(student.id);
     const matchesSearchQuery =
       !normalizedSearchQuery ||
       student.name.includes(normalizedSearchQuery) ||
