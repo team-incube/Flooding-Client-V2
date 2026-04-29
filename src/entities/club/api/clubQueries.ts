@@ -60,10 +60,11 @@ export const clubMutations = {
 export const usePatchClubApproval = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ clubId, body }: { clubId: number; body: { approved: boolean } }) => 
+    mutationFn: ({ clubId, body }: { clubId: number; body: { approved: boolean } }) =>
       patchClubApproval(clubId, body),
-    onSuccess: () => {
+    onSuccess: (_, { clubId }) => {
       queryClient.invalidateQueries({ queryKey: ["club"] });
+      queryClient.invalidateQueries({ queryKey: ["club", "detail", clubId] });
     },
   });
 };
