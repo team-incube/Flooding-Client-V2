@@ -1,25 +1,29 @@
 import Image from "next/image";
 import DefaultClubThumbnail from "@/shared/asset/svg/DefaultThumbnail";
 import { TextButton } from "@/shared/ui/Button/TextButton";
-import { ClubDetailResponse as ClubDetailType } from "../model/club";
+import type { ClubDetailResponse as ClubDetailType, ClubMember } from "../model/club";
 import ProjectCard from "./ProjectCard";
 import ClubMemberList from "./ClubMemberList";
 
 interface ClubDetailProps {
   detail: ClubDetailType;
+  isLeader?: boolean;
   isApplyPending?: boolean;
   onApplyClick?: () => void;
   onViewApplicationsClick?: () => void;
   onCreateFormClick?: () => void;
+  onTransferClick?: (member: ClubMember) => void;
   formActionLabel?: string;
 }
 
 export default function ClubDetail({
   detail,
+  isLeader = false,
   isApplyPending = false,
   onApplyClick,
   onViewApplicationsClick,
   onCreateFormClick,
+  onTransferClick,
   formActionLabel = "폼 만들기",
 }: ClubDetailProps) {
   const { club, members, projects } = detail;
@@ -56,7 +60,12 @@ export default function ClubDetail({
           </p>
         </div>
 
-        <ClubMemberList members={members} leader={club.leader} />
+        <ClubMemberList
+          members={members}
+          leader={club.leader}
+          isLeader={isLeader}
+          onMemberClick={onTransferClick}
+        />
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-4 xl:self-stretch">

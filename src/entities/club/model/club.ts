@@ -31,6 +31,7 @@ export interface ClubMember {
   name: string;
   studentNumber: number;
   sex: Sex;
+  specialty: string;
 }
 
 export interface ProjectParticipant {
@@ -38,6 +39,7 @@ export interface ProjectParticipant {
   name?: string;
   studentNumber?: number;
   sex: Sex;
+  specialty: string;
 }
 
 export interface ProjectLink {
@@ -58,7 +60,6 @@ export interface ClubDetailResponse {
   club: ClubDetail;
   members: ClubMember[];
   projects: Project[];
-  isLeader: boolean;
 }
 
 export type ClubFormFieldType =
