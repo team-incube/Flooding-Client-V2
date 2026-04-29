@@ -1,4 +1,4 @@
-import type { User } from '@/entities/user/model/user';
+import type { User, Sex } from '@/entities/user/model/user';
 import type { Music } from '@/entities/music/model/music';
 
 export type DormitoryStudent = User;
@@ -8,6 +8,7 @@ export interface StudyApplicant {
   userId: number;
   name: string;
   studentNumber: number;
+  sex: Sex;
   isBanned: boolean;
   isChecked: boolean;
 }

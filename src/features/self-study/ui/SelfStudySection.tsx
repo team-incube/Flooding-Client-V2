@@ -22,7 +22,7 @@ export function SelfStudySection() {
   const { data: students = [] } = useQuery(studyQuery);
   const { data: user } = useQuery(userQueries.me());
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
-  const { searchQuery, selectedGrades, selectedClasses } = state;
+  const { searchQuery, selectedGrades, selectedClasses, selectedGender } = state;
   const applyMutation = useApplyStudy();
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
@@ -38,6 +38,11 @@ export function SelfStudySection() {
     dispatch({ type: "TOGGLE_GRADE", payload: grade });
   const handleToggleClass = (classNumber: number) =>
     dispatch({ type: "TOGGLE_CLASS", payload: classNumber });
+  const handleToggleGender = (gender: "MAN" | "WOMAN") =>
+    dispatch({
+      type: "SET_GENDER",
+      payload: selectedGender === gender ? null : gender,
+    });
   const handleApplyStudy = () => {
     applyMutation.mutate();
   };
@@ -135,6 +140,26 @@ export function SelfStudySection() {
                   {classNumber}
                 </NumberButton>
               ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <span className="text-sub-1 text-caption-1">성별</span>
+            <div className="flex gap-2">
+              <TextButton
+                variant={selectedGender === "MAN" ? "filled" : "outlined"}
+                size="small"
+                onClick={() => handleToggleGender("MAN")}
+              >
+                남자
+              </TextButton>
+              <TextButton
+                variant={selectedGender === "WOMAN" ? "filled" : "outlined"}
+                size="small"
+                onClick={() => handleToggleGender("WOMAN")}
+              >
+                여자
+              </TextButton>
             </div>
           </div>
 

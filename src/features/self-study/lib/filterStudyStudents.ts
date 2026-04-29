@@ -15,6 +15,7 @@ export function filterStudyStudents({
     searchQuery,
     selectedGrades,
     selectedClasses,
+    selectedGender,
   } = filterState;
 
   return students.filter((student) => {
@@ -28,11 +29,13 @@ export function filterStudyStudents({
     const matchesClass =
       selectedClasses.length === 0 ||
       selectedClasses.includes(getClassNumber(student.studentNumber));
+    const matchesGender = !selectedGender || student.sex === selectedGender;
 
     return (
       matchesSearchQuery &&
       matchesGrade &&
-      matchesClass
+      matchesClass &&
+      matchesGender
     );
   });
 }
