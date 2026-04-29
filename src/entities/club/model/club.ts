@@ -60,7 +60,6 @@ export interface ClubDetailResponse {
   club: ClubDetail;
   members: ClubMember[];
   projects: Project[];
-  isLeader: boolean;
 }
 
 export type ClubFormFieldType =

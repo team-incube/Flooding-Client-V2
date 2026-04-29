@@ -129,13 +129,6 @@ export const clubHandlers = [
       );
     }
 
-    if (!detail.isLeader) {
-      return HttpResponse.json(
-        { status: 'FORBIDDEN', code: 403, message: '권한 없음' },
-        { status: 403 },
-      );
-    }
-
     if ((MOCK_CLUB_APPLICATIONS[id]?.applications.length ?? 0) > 0) {
       return HttpResponse.json(
         {
@@ -224,13 +217,6 @@ export const clubHandlers = [
       );
     }
 
-    if (!detail.isLeader) {
-      return HttpResponse.json(
-        { status: 'FORBIDDEN', code: 403, message: '권한 없음' },
-        { status: 403 },
-      );
-    }
-
     const targetMember = detail.members.find((m) => m.id === targetUserId);
     if (!targetMember) {
       return HttpResponse.json(
@@ -244,7 +230,6 @@ export const clubHandlers = [
       clubInList.leader = targetMember.name;
     }
     detail.club.leader = targetMember.name;
-    detail.isLeader = false;
 
     return HttpResponse.json({
       status: 'OK',

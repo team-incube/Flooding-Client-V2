@@ -84,7 +84,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 30,
     },
     members: MEMBERS,
-    isLeader: true,
     projects: [
       {
         id: 1,
@@ -128,7 +127,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 20,
     },
     members: [],
-    isLeader: false,
     projects: [],
   },
   3: {
@@ -141,7 +139,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 25,
     },
     members: [],
-    isLeader: false,
     projects: [],
   },
   4: {
@@ -154,7 +151,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 20,
     },
     members: [],
-    isLeader: false,
     projects: [],
   },
   5: {
@@ -167,7 +163,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 15,
     },
     members: [],
-    isLeader: false,
     projects: [],
   },
 };
