@@ -1,4 +1,5 @@
 import { instance } from "@/shared/api/instance";
+import type { ClubType, ClubStatus } from "../model/club";
 
 export const patchClubApproval = async (
   clubId: number,
@@ -11,8 +12,8 @@ export const patchClubApproval = async (
 export const postClub = async (body: {
   name: string;
   description: string;
-  type: string;
-  status: string;
+  type: ClubType;
+  status: ClubStatus;
   imageUrl?: string;
   maxMember?: number;
 }) => {
