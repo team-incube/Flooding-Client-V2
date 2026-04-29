@@ -8,19 +8,51 @@ import {
   dormitoryQueries,
 } from "@/entities/dormitory/api/dormitoryQueries";
 
+interface BanStudyResult {
+  successfulStudentIds: number[];
+  failedCount: number;
+}
+
 export function useBanStudy() {
   const queryClient = useQueryClient();
   const studyQuery = dormitoryQueries.study();
 
   return useMutation({
-    mutationFn: async (studentIds: number[]) => {
-      await Promise.all(studentIds.map(dormitoryMutations.banStudy));
-      return studentIds;
+    mutationFn: async (studentIds: number[]): Promise<BanStudyResult> => {
+      const results = await Promise.allSettled(
+        studentIds.map(dormitoryMutations.banStudy),
+      );
+      const successfulStudentIds = studentIds.filter(
+        (_, index) => results[index].status === "fulfilled",
+      );
+      const failedResult = results.find(
+        (result): result is PromiseRejectedResult =>
+          result.status === "rejected",
+      );
+
+      if (successfulStudentIds.length === 0 && failedResult) {
+        throw failedResult.reason;
+      }
+
+      return {
+        successfulStudentIds,
+        failedCount: studentIds.length - successfulStudentIds.length,
+      };
     },
-    onSuccess: (studentIds) => {
+    onSuccess: ({ successfulStudentIds, failedCount }) => {
       queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
       queryClient.invalidateQueries({ queryKey: ["user", "list"] });
-      toast.success(`${studentIds.length}명을 자습 금지 처리했어요.`);
+
+      if (failedCount > 0) {
+        toast.warning(
+          `${successfulStudentIds.length}명은 자습 금지 처리했고, ${failedCount}명은 실패했습니다.`,
+        );
+        return;
+      }
+
+      toast.success(
+        `${successfulStudentIds.length}명을 자습 금지 처리했어요.`,
+      );
     },
     onError: (error) => {
       const status = axios.isAxiosError(error)

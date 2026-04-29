@@ -88,9 +88,6 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
 
     eventSource.addEventListener("init", updateCheckedIds);
     eventSource.addEventListener("message", updateCheckedIds);
-    eventSource.onerror = () => {
-      eventSource.close();
-    };
 
     return () => {
       eventSource.removeEventListener("init", updateCheckedIds);
