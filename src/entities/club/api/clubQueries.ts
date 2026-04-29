@@ -1,4 +1,6 @@
-import { queryOptions } from '@tanstack/react-query';
+"use client";
+
+import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import { instance } from '@/shared/api/instance';
 import { getClubs } from './getClubs';
 import { getClubDetail } from './getClub';
@@ -8,18 +10,21 @@ import type {
   ClubApplicationRequest,
   CreateClubFormRequest,
 } from '../model/club';
+import { deleteClub, patchClubApproval, postClub, putClub } from "./club";
 
 export const clubQueries = {
   list: () =>
     queryOptions({
       queryKey: ['club', 'list'],
-      queryFn: getClubs,
+      queryFn: () => getClubs(),
+      staleTime: Infinity,
     }),
 
   detail: (id: number) =>
     queryOptions({
       queryKey: ['club', 'detail', id],
       queryFn: () => getClubDetail(id),
+      staleTime: Infinity,
     }),
 
   form: (clubId: number) =>
@@ -51,3 +56,56 @@ export const clubMutations = {
   approveApplication: (clubId: number, userId: number) =>
     instance.patch(`/clubs/${clubId}/applications/${userId}`),
 } as const;
+
+export const usePatchClubApproval = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ clubId, body }: { clubId: number; body: { approved: boolean } }) => 
+      patchClubApproval(clubId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club"] });
+    },
+  });
+};
+
+export const useDeleteClub = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (clubId: number) => deleteClub(clubId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club"] });
+    },
+  });
+};
+
+export const usePutClub = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      clubId,
+      body,
+    }: {
+      clubId: number;
+      body: {
+        name: string;
+        description: string;
+        imageUrl?: string;
+        maxMember?: number;
+      };
+    }) => putClub(clubId, body),
+    onSuccess: (_, { clubId }) => {
+      queryClient.invalidateQueries({ queryKey: ["club"] });
+      queryClient.invalidateQueries({ queryKey: ["club", "detail", clubId] });
+    },
+  });
+};
+
+export const usePostClub = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: postClub,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club"] });
+    },
+  });
+};
