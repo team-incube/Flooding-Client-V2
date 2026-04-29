@@ -51,7 +51,7 @@ export function useBanStudy() {
       }
 
       toast.success(
-        `${successfulStudentIds.length}명을 자습 금지 처리했어요.`,
+        `${successfulStudentIds.length}명을 자습 금지 처리했습니다.`,
       );
     },
     onError: (error) => {
