@@ -5,11 +5,13 @@ import { getSortedGrades } from "../lib/getSortedGrades";
 interface ClubMemberListProps {
   members: ClubMember[];
   leader?: string;
+  showDescription?: boolean;
 }
 
 export default function ClubMemberList({
   members,
   leader,
+  showDescription = true,
 }: ClubMemberListProps) {
   if (members.length === 0) return null;
 
@@ -43,9 +45,11 @@ export default function ClubMemberList({
             </div>
           );
         })}
-        <p className="2xl:text-text-4 lg:text-caption-1 text-sub-2 mt-1">
-          ※ 보라색 이름은 부장이에요
-        </p>
+        {showDescription && (
+          <p className="2xl:text-text-4 lg:text-caption-1 text-sub-2 mt-1">
+            ※ 보라색 이름은 부장이에요
+          </p>
+        )}
       </div>
     </div>
   );

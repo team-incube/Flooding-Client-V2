@@ -8,6 +8,7 @@ import ClubDetail from "@/entities/club/ui/ClubDetail";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
+import { isRegistrationPeriod } from "../config";
 
 interface ClubDetailSectionProps {
   id: number;
@@ -22,6 +23,9 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const autonomousApplyMutation = useApplyAutonomousClub(id);
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
+
+  const canDeleteClub =
+    (detail?.isLeader || user?.role === "ADMIN") && isRegistrationPeriod;
   const canCreateForm =
     detail?.club.type === "MAJOR_CLUB" && detail.isLeader;
   const canViewApplications =
@@ -112,6 +116,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
         <div className="w-full">
           <ClubDetail
             detail={detail}
+            canDelete={canDeleteClub}
             isApplyPending={autonomousApplyMutation.isPending}
             onApplyClick={handleApplyClick}
             formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
