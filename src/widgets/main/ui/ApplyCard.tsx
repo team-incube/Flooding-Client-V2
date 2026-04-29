@@ -2,6 +2,8 @@ import ChevronRight from "@/shared/asset/svg/Back";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import type { TextButtonVariant } from "@/shared/ui/Button/TextButton";
 
+type ApplyCardButtonSize = "small" | "fit";
+
 interface ApplyCardProps {
   title: string;
   icon: React.ReactNode;
@@ -10,6 +12,7 @@ interface ApplyCardProps {
   timeText: string;
   buttonText: string;
   buttonVariant?: TextButtonVariant;
+  buttonSize?: ApplyCardButtonSize;
   disabled?: boolean;
   femaleNotice?: boolean;
   onApply?: () => void;
@@ -23,6 +26,7 @@ export default function ApplyCard({
   timeText,
   buttonText,
   buttonVariant = "filled",
+  buttonSize = "small",
   disabled = false,
   femaleNotice = false,
   onApply,
@@ -60,8 +64,8 @@ export default function ApplyCard({
         </div>
       </div>
 
-      <div className="flex items-end justify-between">
-        <div>
+      <div className="flex items-end justify-between gap-3">
+        <div className="min-w-0">
           <p className="text-caption-3 font-medium text-sub-1 line-clamp-1">
             {timeText}
           </p>
@@ -73,7 +77,7 @@ export default function ApplyCard({
         </div>
         <TextButton
           variant={visualButtonVariant}
-          size="small"
+          size={buttonSize}
           disabled={!isApplyEnabled}
           onClick={isApplyEnabled ? onApply : undefined}
         >

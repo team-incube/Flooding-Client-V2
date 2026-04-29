@@ -1,9 +1,5 @@
-export type TextButtonVariant =
-  | "filled"
-  | "outlined"
-  | "negative"
-  | "disabled";
-type ButtonSize = "small" | "wide" | "medium";
+export type TextButtonVariant = "filled" | "outlined" | "negative" | "disabled";
+type ButtonSize = "small" | "wide" | "medium" | "fit";
 
 interface TextButtonProps {
   variant?: TextButtonVariant;
@@ -26,10 +22,11 @@ const sizeStyles = {
   small: "w-[91px] h-[43px]",
   wide: "w-[330px] h-[47px]",
   medium: "w-[147px] h-[43px]",
+  fit: "min-w-[91px] h-[43px] px-4",
 };
 
 const baseStyles =
-  "flex items-center justify-center rounded-lg text-text-4 outline-none disabled:cursor-default";
+  "flex shrink-0 items-center justify-center rounded-lg text-text-4 whitespace-nowrap outline-none disabled:cursor-default";
 
 export function TextButton({
   variant = "filled",

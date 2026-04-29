@@ -37,6 +37,7 @@ export default function StudyApplyCard() {
         isStudyBanned ? "자습 금지를 당했어요!" : isUserLoading ? "확인 중" : "신청"
       }
       buttonVariant={isStudyBanned ? "negative" : "filled"}
+      buttonSize={isStudyBanned ? "fit" : "small"}
       disabled={isApplyDisabled}
       onApply={handleApplyStudy}
     />
