@@ -28,11 +28,11 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const [transferTarget, setTransferTarget] = useState<ClubMember | null>(null);
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
-  const canCreateForm =
-    detail?.club.type === "MAJOR_CLUB" && detail.isLeader;
+  const isLeader = !!user && user.name === detail?.club.leader;
+  const canCreateForm = detail?.club.type === "MAJOR_CLUB" && isLeader;
   const canViewApplications =
     !!detail &&
-    (detail.isLeader ||
+    (isLeader ||
       user?.role === "ADMIN" ||
       user?.role === "STUDENT_COUNCIL");
   const formQuery = clubQueries.form(id);
@@ -134,6 +134,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
           <div className="w-full">
             <ClubDetail
               detail={detail}
+              isLeader={isLeader}
               isApplyPending={autonomousApplyMutation.isPending}
               onApplyClick={handleApplyClick}
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
@@ -147,7 +148,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
                     : handleCreateFormClick
                   : undefined
               }
-              onTransferClick={detail.isLeader ? handleTransferClick : undefined}
+              onTransferClick={isLeader ? handleTransferClick : undefined}
             />
           </div>
         </div>

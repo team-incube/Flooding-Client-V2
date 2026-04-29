@@ -7,6 +7,7 @@ import ClubMemberList from "./ClubMemberList";
 
 interface ClubDetailProps {
   detail: ClubDetailType;
+  isLeader?: boolean;
   isApplyPending?: boolean;
   onApplyClick?: () => void;
   onViewApplicationsClick?: () => void;
@@ -17,6 +18,7 @@ interface ClubDetailProps {
 
 export default function ClubDetail({
   detail,
+  isLeader = false,
   isApplyPending = false,
   onApplyClick,
   onViewApplicationsClick,
@@ -24,7 +26,7 @@ export default function ClubDetail({
   onTransferClick,
   formActionLabel = "폼 만들기",
 }: ClubDetailProps) {
-  const { club, members, projects, isLeader } = detail;
+  const { club, members, projects } = detail;
   const applyVariant = isApplyPending || !onApplyClick ? "disabled" : "filled";
 
   return (
