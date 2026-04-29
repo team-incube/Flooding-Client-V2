@@ -5,6 +5,7 @@ import Club from "@/shared/asset/svg/Club";
 import TextField from "@/shared/ui/textField";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 import { useClubFormBuilder } from "../model/useClubFormBuilder";
 import { ClubFormFieldEditor } from "./ClubFormFieldEditor";
 
@@ -26,8 +27,10 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
     isLoading: isDetailLoading,
     isError: isDetailError,
   } = useQuery(clubQueries.detail(id));
+  const { data: user } = useQuery(userQueries.me());
   const isMajorClub = detail?.club.type === "MAJOR_CLUB";
-  const canCreateForm = !!detail && isMajorClub && detail.isLeader;
+  const isLeader = !!user && user.name === detail?.club.leader;
+  const canCreateForm = !!detail && isMajorClub && isLeader;
   const {
     title,
     description,

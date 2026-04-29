@@ -62,9 +62,10 @@ export function ClubApplicationListSection({
     isError: isDetailError,
   } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
+  const isLeader = !!user && user.name === detail?.club.leader;
   const canViewApplications =
     !!detail &&
-    (detail.isLeader ||
+    (isLeader ||
       user?.role === "ADMIN" ||
       user?.role === "STUDENT_COUNCIL");
   const {

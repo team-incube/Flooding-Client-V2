@@ -1,4 +1,4 @@
-import { ClubMember } from "../model/club";
+import type { ClubMember } from "../model/club";
 import { groupMembersByGrade } from "../lib/groupMembersByGrade";
 import { getSortedGrades } from "../lib/getSortedGrades";
 
@@ -6,12 +6,16 @@ interface ClubMemberListProps {
   members: ClubMember[];
   leader?: string;
   showDescription?: boolean;
+  isLeader?: boolean;
+  onMemberClick?: (member: ClubMember) => void;
 }
 
 export default function ClubMemberList({
   members,
   leader,
   showDescription = true,
+  isLeader = false,
+  onMemberClick,
 }: ClubMemberListProps) {
   if (members.length === 0) return null;
 
@@ -30,11 +34,19 @@ export default function ClubMemberList({
             <div key={grade} className="text-text-1">
               <span className="text-sub-1">{grade}학년 - </span>
               {gradeMembers.map((m, i) => {
-                const isLeader = m.name === leader;
+                const isCurrentLeader = m.name === leader;
+                const isClickable =
+                  isLeader && !isCurrentLeader && !!onMemberClick;
                 return (
                   <span key={m.id}>
-                    <span className={isLeader ? "text-p-1" : "text-sub-1"}>
+                    <span
+                      className={`${isCurrentLeader ? "text-p-1" : "text-sub-1"} ${isClickable ? "cursor-pointer hover:text-p-1" : ""}`}
+                      onClick={isClickable ? () => onMemberClick(m) : undefined}
+                    >
                       {m.name}
+                      {m.specialty && (
+                        <span className="text-sub-1"> ({m.specialty})</span>
+                      )}
                     </span>
                     {i < gradeMembers.length - 1 && (
                       <span className="text-sub-1">, </span>
@@ -48,6 +60,7 @@ export default function ClubMemberList({
         {showDescription && (
           <p className="2xl:text-text-4 lg:text-caption-1 text-sub-2 mt-1">
             ※ 보라색 이름은 부장이에요
+            {isLeader && " · 이름을 클릭해 소유권을 위임할 수 있어요"}
           </p>
         )}
       </div>

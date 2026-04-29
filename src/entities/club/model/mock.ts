@@ -52,24 +52,24 @@ export const MOCK_CLUBS: Club[] = [
 ];
 
 const MEMBERS: ClubMember[] = [
-  { id: 1,  name: '김민솔', studentNumber: 3411, sex: 'WOMAN' },
-  { id: 2,  name: '김봄',   studentNumber: 3311, sex: 'MAN'   },
-  { id: 3,  name: '황지훈', studentNumber: 3211, sex: 'MAN'   },
-  { id: 4,  name: '이주언', studentNumber: 3111, sex: 'WOMAN' },
-  { id: 5,  name: '한의준', studentNumber: 2201, sex: 'MAN'   },
-  { id: 6,  name: '김동현', studentNumber: 2101, sex: 'MAN'   },
-  { id: 7,  name: '양은준', studentNumber: 2202, sex: 'MAN'   },
-  { id: 8,  name: '정수진', studentNumber: 2203, sex: 'WOMAN' },
-  { id: 9,  name: '정윤서', studentNumber: 2104, sex: 'WOMAN' },
-  { id: 10, name: '류수연', studentNumber: 2205, sex: 'WOMAN' },
+  { id: 1,  name: '김민솔', studentNumber: 3411, sex: 'WOMAN', specialty: 'FE' },
+  { id: 2,  name: '김봄',   studentNumber: 3311, sex: 'MAN',   specialty: 'BE' },
+  { id: 3,  name: '황지훈', studentNumber: 3211, sex: 'MAN',   specialty: 'BE' },
+  { id: 4,  name: '이주언', studentNumber: 3111, sex: 'WOMAN', specialty: 'FE' },
+  { id: 5,  name: '한의준', studentNumber: 2201, sex: 'MAN',   specialty: 'FE' },
+  { id: 6,  name: '김동현', studentNumber: 2101, sex: 'MAN',   specialty: 'BE' },
+  { id: 7,  name: '양은준', studentNumber: 2202, sex: 'MAN',   specialty: 'Flutter' },
+  { id: 8,  name: '정수진', studentNumber: 2203, sex: 'WOMAN', specialty: 'Designer' },
+  { id: 9,  name: '정윤서', studentNumber: 2104, sex: 'WOMAN', specialty: 'FE' },
+  { id: 10, name: '류수연', studentNumber: 2205, sex: 'WOMAN', specialty: 'Flutter' },
 ];
 
 const PROJECT1_PARTICIPANTS: ProjectParticipant[] = [
-  { id: 1,  name: '김민솔', studentNumber: 3411, sex: 'WOMAN' },
-  { id: 2,  name: '김봄',   studentNumber: 3311, sex: 'MAN'   },
-  { id: 3,  name: '황지훈', studentNumber: 3211, sex: 'MAN'   },
-  { id: 4,  name: '이주언', studentNumber: 3111, sex: 'WOMAN' },
-  { id: 5,  name: '한의준', studentNumber: 2201, sex: 'MAN'   },
+  { id: 1,  name: '김민솔', studentNumber: 3411, sex: 'WOMAN', specialty: 'FE' },
+  { id: 2,  name: '김봄',   studentNumber: 3311, sex: 'MAN',   specialty: 'BE' },
+  { id: 3,  name: '황지훈', studentNumber: 3211, sex: 'MAN',   specialty: 'BE' },
+  { id: 4,  name: '이주언', studentNumber: 3111, sex: 'WOMAN', specialty: 'FE' },
+  { id: 5,  name: '한의준', studentNumber: 2201, sex: 'MAN',   specialty: 'FE' },
 ];
 
 export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
@@ -84,7 +84,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 30,
     },
     members: MEMBERS,
-    isLeader: true,
     projects: [
       {
         id: 1,
@@ -128,7 +127,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 20,
     },
     members: [],
-    isLeader: false,
     projects: [],
   },
   3: {
@@ -141,7 +139,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 25,
     },
     members: [],
-    isLeader: false,
     projects: [],
   },
   4: {
@@ -154,7 +151,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 20,
     },
     members: [],
-    isLeader: false,
     projects: [],
   },
   5: {
@@ -167,7 +163,6 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       maxMember: 15,
     },
     members: [],
-    isLeader: false,
     projects: [],
   },
 };

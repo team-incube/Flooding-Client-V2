@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import { notFound, useRouter } from "next/navigation";
@@ -7,8 +8,11 @@ import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import type { ClubMember } from "@/entities/club/model/club";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 import { isRegistrationPeriod } from "../config";
+import { useTransferClubLeader } from "../model/useTransferClubLeader";
+import { ClubTransferModal } from "./ClubTransferModal";
 
 interface ClubDetailSectionProps {
   id: number;
@@ -21,16 +25,17 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
 
   const router = useRouter();
   const autonomousApplyMutation = useApplyAutonomousClub(id);
+  const transferMutation = useTransferClubLeader(id);
+  const [transferTarget, setTransferTarget] = useState<ClubMember | null>(null);
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
 
-  const canDeleteClub =
-    (detail?.isLeader || user?.role === "ADMIN") && isRegistrationPeriod;
-  const canCreateForm =
-    detail?.club.type === "MAJOR_CLUB" && detail.isLeader;
+  const isLeader = detail?.isLeader ?? false;
+  const canDeleteClub = (isLeader || user?.role === "ADMIN") && isRegistrationPeriod;
+  const canCreateForm = detail?.club.type === "MAJOR_CLUB" && isLeader;
   const canViewApplications =
     !!detail &&
-    (detail.isLeader ||
+    (isLeader ||
       user?.role === "ADMIN" ||
       user?.role === "STUDENT_COUNCIL");
   const formQuery = clubQueries.form(id);
@@ -80,6 +85,21 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     router.push(`/club/${detail.club.id}/applications`);
   };
 
+  const handleTransferClick = (member: ClubMember) => {
+    setTransferTarget(member);
+  };
+
+  const handleTransferConfirm = () => {
+    if (!transferTarget) return;
+    transferMutation.mutate(transferTarget.id, {
+      onSuccess: () => setTransferTarget(null),
+    });
+  };
+
+  const handleTransferClose = () => {
+    setTransferTarget(null);
+  };
+
   if (isLoading || isUserLoading) {
     return (
       <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
@@ -107,32 +127,42 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const canShowFormAction = canCreateForm && (hasForm || hasNoForm);
 
   return (
-    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-      <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
-        <div className="flex items-center gap-2">
-          <Club isActive={false} size={20} />
-          <span className="text-text-1 text-main-text">동아리</span>
-        </div>
-        <div className="w-full">
-          <ClubDetail
-            detail={detail}
-            canDelete={canDeleteClub}
-            isApplyPending={autonomousApplyMutation.isPending}
-            onApplyClick={handleApplyClick}
-            formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
-            onViewApplicationsClick={
-              canViewApplications ? handleApplicationsClick : undefined
-            }
-            onCreateFormClick={
-              canShowFormAction
-                ? hasForm
-                  ? handleEditFormClick
-                  : handleCreateFormClick
-                : undefined
-            }
-          />
+    <>
+      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+        <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+          <div className="flex items-center gap-2">
+            <Club isActive={false} size={20} />
+            <span className="text-text-1 text-main-text">동아리</span>
+          </div>
+          <div className="w-full">
+            <ClubDetail
+              detail={detail}
+              canDelete={canDeleteClub}
+              isApplyPending={autonomousApplyMutation.isPending}
+              onApplyClick={handleApplyClick}
+              formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
+              onViewApplicationsClick={
+                canViewApplications ? handleApplicationsClick : undefined
+              }
+              onCreateFormClick={
+                canShowFormAction
+                  ? hasForm
+                    ? handleEditFormClick
+                    : handleCreateFormClick
+                  : undefined
+              }
+              onTransferClick={isLeader ? handleTransferClick : undefined}
+            />
+          </div>
         </div>
       </div>
-    </div>
+      <ClubTransferModal
+        open={transferTarget !== null}
+        targetMember={transferTarget}
+        isPending={transferMutation.isPending}
+        onClose={handleTransferClose}
+        onConfirm={handleTransferConfirm}
+      />
+    </>
   );
 }

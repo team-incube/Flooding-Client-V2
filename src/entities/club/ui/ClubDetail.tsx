@@ -15,6 +15,7 @@ import ClubMemberList from "./ClubMemberList";
 import ProjectCard from "./ProjectCard";
 import { User } from "@/entities/user/model/user";
 import { userQueries } from "@/entities/user/api/userQueries";
+import type { ClubMember } from "../model/club";
 import { ClubDetailResponse, Project } from "../model/club";
 import {
   usePutClub,
@@ -33,6 +34,7 @@ interface ClubDetailProps {
   onApplyClick?: () => void;
   onViewApplicationsClick?: () => void;
   onCreateFormClick?: () => void;
+  onTransferClick?: (member: ClubMember) => void;
   formActionLabel?: string;
   canDelete?: boolean;
 }
@@ -43,6 +45,7 @@ export default function ClubDetail({
   onApplyClick,
   onViewApplicationsClick,
   onCreateFormClick,
+  onTransferClick,
   formActionLabel = "폼 만들기",
   canDelete = false,
 }: ClubDetailProps) {
@@ -133,7 +136,12 @@ export default function ClubDetail({
             )}
           </div>
           {!isEdit ? (
-            <ClubMemberList members={members} leader={club.leader} />
+            <ClubMemberList
+              members={members}
+              leader={club.leader}
+              isLeader={isLeader}
+              onMemberClick={onTransferClick}
+            />
           ) : (
             <div className="flex flex-col gap-4">
               <ClubMemberList

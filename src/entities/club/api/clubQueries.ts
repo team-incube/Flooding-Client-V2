@@ -55,6 +55,9 @@ export const clubMutations = {
 
   approveApplication: (clubId: number, userId: number) =>
     instance.patch(`/clubs/${clubId}/applications/${userId}`),
+
+  transferLeader: (clubId: number, targetUserId: number) =>
+    instance.patch(`/clubs/${clubId}/transfer/${targetUserId}`),
 } as const;
 
 export const usePatchClubApproval = () => {
