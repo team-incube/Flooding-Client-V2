@@ -11,13 +11,13 @@ export function SelectedStudent({
   onRemoveStudent,
 }: SelectedStudentProps) {
   return (
-    <div className="flex flex-wrap justify-start gap-2">
+    <div className="flex max-h-40 min-w-0 flex-wrap justify-start gap-2 overflow-y-auto pr-1">
       {selectedStudents.map((student) => (
         <div
           key={student.id}
-          className="flex items-center gap-2 border border-sub-2 rounded-full px-5.5 py-3"
+          className="flex min-w-0 max-w-full items-center gap-2 rounded-full border border-sub-2 px-5.5 py-3"
         >
-          <span className="text-sub-1">
+          <span className="min-w-0 truncate text-sub-1">
             {student.studentNumber} {student.name}
           </span>
 
