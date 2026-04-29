@@ -9,20 +9,22 @@ import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
 import { youtubeQueries } from "@/entities/music/api/youtubeQueries";
 
 const MAX_RETRY = 3;
+type RecommendEmptyReason = "NO_HISTORY" | "NO_RECOMMENDATIONS";
 
 export function useAiMusicRecommend(enabled: boolean) {
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [youtubeLinks, setYoutubeLinks] = useState<string[]>([]);
+  const [emptyReason, setEmptyReason] = useState<RecommendEmptyReason | null>(
+    null,
+  );
 
-  const {
-    mutate: recommendMusic,
-    isPending,
-  } = useMutation({
+  const { mutate: recommendMusic, isPending } = useMutation({
     mutationFn: () => aiMutations.recommendSong(),
     onMutate: () => {
       setYoutubeLinks([]);
       setSelectedUrl(null);
+      setEmptyReason(null);
     },
     onSuccess: ({ data }) => {
       const youtubeLinks = data.data?.youtube_links;
@@ -30,17 +32,25 @@ export function useAiMusicRecommend(enabled: boolean) {
       if (!Array.isArray(youtubeLinks) || youtubeLinks.length === 0) {
         setYoutubeLinks([]);
         setSelectedUrl(null);
-        toast.error("추천된 노래가 없습니다.");
+        setEmptyReason("NO_RECOMMENDATIONS");
         return;
       }
 
       setYoutubeLinks(youtubeLinks);
       setSelectedUrl(null);
+      setEmptyReason(null);
     },
     onError: (error) => {
       const status = axios.isAxiosError(error)
         ? error.response?.status
         : undefined;
+
+      if (status === HttpStatusCode.NotFound) {
+        setYoutubeLinks([]);
+        setSelectedUrl(null);
+        setEmptyReason("NO_HISTORY");
+        return;
+      }
 
       if (status === HttpStatusCode.Unauthorized) {
         toast.error("로그인이 만료되었습니다. 다시 로그인해주세요.");
@@ -98,6 +108,7 @@ export function useAiMusicRecommend(enabled: boolean) {
 
   return {
     displayCards,
+    emptyReason,
     selectedUrl,
     retryCount,
     maxRetry: MAX_RETRY,
