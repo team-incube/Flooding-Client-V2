@@ -9,7 +9,6 @@ interface FilterManagedStudentsParams {
   selectedClasses: number[];
   selectedGender: Sex | null;
   selectedStudyBanFilter: StudyBanFilter;
-  bannedStudentIds: number[];
 }
 
 export function filterManagedStudents({
@@ -19,13 +18,10 @@ export function filterManagedStudents({
   selectedClasses,
   selectedGender,
   selectedStudyBanFilter,
-  bannedStudentIds,
 }: FilterManagedStudentsParams): SearchUser[] {
   const normalizedSearchQuery = searchQuery.trim();
-  const bannedStudentIdSet = new Set(bannedStudentIds);
 
   return students.filter((student) => {
-    const isBanned = student.isBanned || bannedStudentIdSet.has(student.id);
     const matchesSearchQuery =
       !normalizedSearchQuery ||
       student.name.includes(normalizedSearchQuery) ||
@@ -38,7 +34,7 @@ export function filterManagedStudents({
     const matchesGender = !selectedGender || student.sex === selectedGender;
     const matchesStudyBan =
       !selectedStudyBanFilter ||
-      (selectedStudyBanFilter === "BANNED" ? isBanned : !isBanned);
+      (selectedStudyBanFilter === "BANNED" ? student.isBanned : !student.isBanned);
 
     return (
       matchesSearchQuery &&

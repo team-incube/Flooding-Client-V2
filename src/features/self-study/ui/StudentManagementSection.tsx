@@ -17,9 +17,6 @@ import { StudyBanActionPanel } from "./StudyBanActionPanel";
 export function StudentManagementSection() {
   const { data: studentPage, isLoading, isError } = useQuery(userQueries.list());
   const banStudyMutation = useBanStudy();
-  const [optimisticBannedStudentIds, setOptimisticBannedStudentIds] = useState<
-    number[]
-  >([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGrades, setSelectedGrades] = useState<number[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<number[]>([]);
@@ -28,7 +25,6 @@ export function StudentManagementSection() {
     useState<StudyBanFilter>(null);
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
   const students = studentPage?.content ?? [];
-  const optimisticBannedStudentIdSet = new Set(optimisticBannedStudentIds);
   const bannedStudentIdSet = new Set(
     students
       .filter(({ isBanned }) => isBanned)
@@ -42,7 +38,6 @@ export function StudentManagementSection() {
     selectedClasses,
     selectedGender,
     selectedStudyBanFilter,
-    bannedStudentIds: optimisticBannedStudentIds,
   });
 
   const handleResetFilters = () => {
@@ -91,12 +86,7 @@ export function StudentManagementSection() {
     );
   };
 
-  const isStudyBanned = (studentId: number) => {
-    return (
-      bannedStudentIdSet.has(studentId) ||
-      optimisticBannedStudentIdSet.has(studentId)
-    );
-  };
+  const isStudyBanned = (studentId: number) => bannedStudentIdSet.has(studentId);
 
   const handleBanSelectedStudent = () => {
     const targetStudentIds = selectedStudentIds.filter(
@@ -107,14 +97,8 @@ export function StudentManagementSection() {
       return;
     }
 
-    banStudyMutation.mutate(targetStudentIds, {
-      onSuccess: ({ successfulStudentIds }) => {
-        setOptimisticBannedStudentIds((prev) => [
-          ...new Set([...prev, ...successfulStudentIds]),
-        ]);
-        setSelectedStudentIds([]);
-      },
-    });
+    setSelectedStudentIds([]);
+    banStudyMutation.mutate(targetStudentIds);
   };
 
   const selectedBanTargetCount = selectedStudentIds.filter(

@@ -7,6 +7,7 @@ import {
   dormitoryMutations,
   dormitoryQueries,
 } from "@/entities/dormitory/api/dormitoryQueries";
+import type { SearchUsersPage } from "@/entities/user/model/user";
 
 interface BanStudyResult {
   successfulStudentIds: number[];
@@ -39,10 +40,28 @@ export function useBanStudy() {
         failedCount: studentIds.length - successfulStudentIds.length,
       };
     },
+    onMutate: async (studentIds) => {
+      await queryClient.cancelQueries({ queryKey: ["user", "list"] });
+      const previousData = queryClient.getQueriesData<SearchUsersPage>({
+        queryKey: ["user", "list"],
+      });
+      queryClient.setQueriesData<SearchUsersPage>(
+        { queryKey: ["user", "list"] },
+        (current) => {
+          if (!current) return current;
+          return {
+            ...current,
+            content: current.content.map((student) =>
+              studentIds.includes(student.id)
+                ? { ...student, isBanned: true }
+                : student,
+            ),
+          };
+        },
+      );
+      return { previousData };
+    },
     onSuccess: ({ successfulStudentIds, failedCount }) => {
-      queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
-      queryClient.invalidateQueries({ queryKey: ["user", "list"] });
-
       if (failedCount > 0) {
         toast.warning(
           `${successfulStudentIds.length}명은 자습 금지 처리했고, ${failedCount}명은 실패했습니다.`,
@@ -54,7 +73,11 @@ export function useBanStudy() {
         `${successfulStudentIds.length}명을 자습 금지 처리했습니다.`,
       );
     },
-    onError: (error) => {
+    onError: (error, _studentIds, context) => {
+      context?.previousData.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+
       const status = axios.isAxiosError(error)
         ? error.response?.status
         : undefined;
@@ -70,6 +93,10 @@ export function useBanStudy() {
       }
 
       toast.error("자습 금지 처리에 실패했습니다.");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
+      queryClient.invalidateQueries({ queryKey: ["user", "list"] });
     },
   });
 }
