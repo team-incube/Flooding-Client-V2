@@ -205,6 +205,54 @@ export const clubHandlers = [
     }),
   ),
 
+  http.post('*/clubs/:clubId/member/:userId', ({ params }) => {
+    const clubId = Number(params.clubId);
+    const userId = Number(params.userId);
+    const detail = MOCK_CLUB_DETAILS[clubId];
+
+    if (!detail) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '동아리 없음' },
+        { status: 404 },
+      );
+    }
+
+    const alreadyMember = detail.members.some((m) => m.id === userId);
+    if (alreadyMember) {
+      return HttpResponse.json(
+        { status: 'CONFLICT', code: 409, message: '이미 멤버입니다.' },
+        { status: 409 },
+      );
+    }
+
+    return HttpResponse.json({
+      status: 'OK',
+      code: 200,
+      message: 'OK',
+    });
+  }),
+
+  http.delete('*/clubs/:clubId/member/exile/:userId', ({ params }) => {
+    const clubId = Number(params.clubId);
+    const userId = Number(params.userId);
+    const detail = MOCK_CLUB_DETAILS[clubId];
+
+    if (!detail) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '동아리 없음' },
+        { status: 404 },
+      );
+    }
+
+    detail.members = detail.members.filter((m) => m.id !== userId);
+
+    return HttpResponse.json({
+      status: 'OK',
+      code: 200,
+      message: 'OK',
+    });
+  }),
+
   http.patch('*/clubs/:id/transfer/:targetUserId', ({ params }) => {
     const id = Number(params.id);
     const targetUserId = Number(params.targetUserId);
