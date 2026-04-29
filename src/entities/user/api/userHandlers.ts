@@ -17,6 +17,7 @@ const MOCK_ME: User = {
   dormitoryFloor: 3,
   specialty: 'FE',
   penaltyScore: 0,
+  isBanned: false,
 };
 
 export const userHandlers = [
