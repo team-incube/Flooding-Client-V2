@@ -19,7 +19,7 @@ export function ManagedStudentCard({
   onToggleSelect,
 }: ManagedStudentCardProps) {
   const cardStyles = isSelected
-    ? "bg-p-2 shadow-[inset_0_0_0_2px_var(--color-p-1)]"
+    ? "bg-p-2 ring-2 ring-inset ring-p-1"
     : "bg-sub-4 hover:bg-p-2";
 
   return (
