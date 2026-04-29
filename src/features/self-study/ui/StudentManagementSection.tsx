@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { userQueries } from "@/entities/user/api/userQueries";
+import type { Sex } from "@/entities/user/model/user";
 import Student from "@/shared/asset/svg/Student";
 import {
   filterManagedStudents,
@@ -22,6 +23,7 @@ export function StudentManagementSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGrades, setSelectedGrades] = useState<number[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<number[]>([]);
+  const [selectedGender, setSelectedGender] = useState<Sex | null>(null);
   const [selectedStudyBanFilter, setSelectedStudyBanFilter] =
     useState<StudyBanFilter>(null);
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
@@ -38,6 +40,7 @@ export function StudentManagementSection() {
     searchQuery,
     selectedGrades,
     selectedClasses,
+    selectedGender,
     selectedStudyBanFilter,
     bannedStudentIds: optimisticBannedStudentIds,
   });
@@ -46,6 +49,7 @@ export function StudentManagementSection() {
     setSearchQuery("");
     setSelectedGrades([]);
     setSelectedClasses([]);
+    setSelectedGender(null);
     setSelectedStudyBanFilter(null);
   };
 
@@ -67,6 +71,10 @@ export function StudentManagementSection() {
 
   const handleToggleClass = (classNumber: number) => {
     toggleNumberFilter(classNumber, selectedClasses, setSelectedClasses);
+  };
+
+  const handleToggleGender = (gender: Sex) => {
+    setSelectedGender((prev) => (prev === gender ? null : gender));
   };
 
   const handleToggleStudyBanFilter = (
@@ -160,11 +168,13 @@ export function StudentManagementSection() {
             searchQuery={searchQuery}
             selectedGrades={selectedGrades}
             selectedClasses={selectedClasses}
+            selectedGender={selectedGender}
             selectedStudyBanFilter={selectedStudyBanFilter}
             onResetFilters={handleResetFilters}
             onSearchQueryChange={setSearchQuery}
             onToggleGrade={handleToggleGrade}
             onToggleClass={handleToggleClass}
+            onToggleGender={handleToggleGender}
             onToggleStudyBanFilter={handleToggleStudyBanFilter}
           />
 

@@ -1,6 +1,7 @@
 "use client";
 
 import type { StudyBanFilter } from "@/features/self-study/lib/filterManagedStudents";
+import type { Sex } from "@/entities/user/model/user";
 import Search from "@/shared/asset/svg/Search";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -18,11 +19,13 @@ interface StudentManagementFilterPanelProps {
   searchQuery: string;
   selectedGrades: number[];
   selectedClasses: number[];
+  selectedGender: Sex | null;
   selectedStudyBanFilter: StudyBanFilter;
   onResetFilters: () => void;
   onSearchQueryChange: (value: string) => void;
   onToggleGrade: (grade: number) => void;
   onToggleClass: (classNumber: number) => void;
+  onToggleGender: (gender: Sex) => void;
   onToggleStudyBanFilter: (filter: Exclude<StudyBanFilter, null>) => void;
 }
 
@@ -30,11 +33,13 @@ export function StudentManagementFilterPanel({
   searchQuery,
   selectedGrades,
   selectedClasses,
+  selectedGender,
   selectedStudyBanFilter,
   onResetFilters,
   onSearchQueryChange,
   onToggleGrade,
   onToggleClass,
+  onToggleGender,
   onToggleStudyBanFilter,
 }: StudentManagementFilterPanelProps) {
   return (
@@ -87,6 +92,28 @@ export function StudentManagementFilterPanel({
               {classNumber}
             </NumberButton>
           ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-main-text text-text-3">성별</span>
+        <div className="flex gap-2">
+          <TextButton
+            variant={selectedGender === "MAN" ? "filled" : "outlined"}
+            size="small"
+            className="h-[34px]! w-14!"
+            onClick={() => onToggleGender("MAN")}
+          >
+            남자
+          </TextButton>
+          <TextButton
+            variant={selectedGender === "WOMAN" ? "filled" : "outlined"}
+            size="small"
+            className="h-[34px]! w-14!"
+            onClick={() => onToggleGender("WOMAN")}
+          >
+            여자
+          </TextButton>
         </div>
       </div>
 

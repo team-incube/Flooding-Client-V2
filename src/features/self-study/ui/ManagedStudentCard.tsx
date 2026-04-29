@@ -2,6 +2,7 @@
 
 import type { SearchUser } from "@/entities/user/model/user";
 import Checkbox from "@/shared/asset/svg/Checkbox";
+import Gender from "@/shared/asset/svg/Gender";
 import Profile from "@/shared/asset/svg/Profile";
 
 interface ManagedStudentCardProps {
@@ -43,6 +44,11 @@ export function ManagedStudentCard({
         </div>
         <div className="flex items-center">
           <span className="text-text-3 text-main-text">{student.name}</span>
+          <Gender
+            isActive={student.sex === "WOMAN"}
+            size={16}
+            color="var(--color-main-text)"
+          />
         </div>
         <span className="text-caption-1 text-sub-1">
           {student.studentNumber}

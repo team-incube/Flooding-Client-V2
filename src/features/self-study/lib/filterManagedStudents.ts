@@ -1,4 +1,4 @@
-import type { SearchUser } from "@/entities/user/model/user";
+import type { SearchUser, Sex } from "@/entities/user/model/user";
 
 export type StudyBanFilter = "ALLOWED" | "BANNED" | null;
 
@@ -7,6 +7,7 @@ interface FilterManagedStudentsParams {
   searchQuery: string;
   selectedGrades: number[];
   selectedClasses: number[];
+  selectedGender: Sex | null;
   selectedStudyBanFilter: StudyBanFilter;
   bannedStudentIds: number[];
 }
@@ -16,6 +17,7 @@ export function filterManagedStudents({
   searchQuery,
   selectedGrades,
   selectedClasses,
+  selectedGender,
   selectedStudyBanFilter,
   bannedStudentIds,
 }: FilterManagedStudentsParams): SearchUser[] {
@@ -33,6 +35,7 @@ export function filterManagedStudents({
     const matchesClass =
       selectedClasses.length === 0 ||
       selectedClasses.includes(student.classNumber);
+    const matchesGender = !selectedGender || student.sex === selectedGender;
     const matchesStudyBan =
       !selectedStudyBanFilter ||
       (selectedStudyBanFilter === "BANNED" ? isBanned : !isBanned);
@@ -41,6 +44,7 @@ export function filterManagedStudents({
       matchesSearchQuery &&
       matchesGrade &&
       matchesClass &&
+      matchesGender &&
       matchesStudyBan
     );
   });

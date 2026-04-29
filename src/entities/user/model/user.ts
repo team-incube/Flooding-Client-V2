@@ -25,6 +25,7 @@ export interface User {
 export interface SearchUser {
   id: number;
   name: string;
+  sex: Sex;
   studentNumber: number;
   grade: number;
   classNumber: number;
