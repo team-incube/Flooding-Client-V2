@@ -69,7 +69,7 @@ function CallbackInner() {
 
   return (
     <div className="flex h-screen items-center justify-center bg-background">
-      <div className="rounded-2xl bg-background-surface p-6 text-text-3 text-main-text">
+      <div className="rounded-2xl bg-background-surface p-12 text-title-3 text-main-text">
         로그인 처리 중...
       </div>
     </div>
