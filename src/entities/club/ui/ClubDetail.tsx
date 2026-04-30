@@ -1,7 +1,11 @@
 import Image from "next/image";
 import DefaultClubThumbnail from "@/shared/asset/svg/DefaultThumbnail";
+import FileOff from "@/shared/asset/svg/FileOff";
 import { TextButton } from "@/shared/ui/Button/TextButton";
-import type { ClubDetailResponse as ClubDetailType, ClubMember } from "../model/club";
+import type {
+  ClubDetailResponse as ClubDetailType,
+  ClubMember,
+} from "../model/club";
 import ProjectCard from "./ProjectCard";
 import ClubMemberList from "./ClubMemberList";
 
@@ -78,9 +82,12 @@ export default function ClubDetail({
               ))}
             </div>
           ) : (
-            <p className="text-caption-1 text-sub-2">
-              등록된 프로젝트가 없어요.
-            </p>
+            <div className="flex min-h-60 flex-1 flex-col items-center justify-center gap-2">
+              <FileOff />
+              <p className="text-text-3 text-sub-2">
+                등록된 프로젝트가 없어요!
+              </p>
+            </div>
           )}
         </div>
 
