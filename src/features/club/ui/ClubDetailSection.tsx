@@ -9,6 +9,9 @@ import ClubDetail from "@/entities/club/ui/ClubDetail";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import type { ClubMember } from "@/entities/club/model/club";
+import { toast } from "sonner";
+import { TextButton } from "@/shared/ui/Button/TextButton";
+import { usePatchClubApproval } from "@/entities/club/api/clubQueries";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 import { isRegistrationPeriod } from "../config";
 import { useTransferClubLeader } from "../model/useTransferClubLeader";
@@ -26,11 +29,13 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const router = useRouter();
   const autonomousApplyMutation = useApplyAutonomousClub(id);
   const transferMutation = useTransferClubLeader(id);
+  const { mutate: patchApproval, isPending: isApprovalPending } = usePatchClubApproval();
   const [transferTarget, setTransferTarget] = useState<ClubMember | null>(null);
   const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
 
   const isLeader = detail?.isLeader ?? false;
+  const isManager = user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL";
   const canDeleteClub = (isLeader || user?.role === "ADMIN") && isRegistrationPeriod;
   const canCreateForm = detail?.club.type === "MAJOR_CLUB" && isLeader;
   const canViewApplications =
@@ -134,7 +139,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
             <Club isActive={false} size={20} />
             <span className="text-text-1 text-main-text">동아리</span>
           </div>
-          <div className="w-full">
+          <div className="w-full flex flex-col gap-4">
             <ClubDetail
               detail={detail}
               canDelete={canDeleteClub}
@@ -153,6 +158,45 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
               }
               onTransferClick={isLeader ? handleTransferClick : undefined}
             />
+            {isManager && (
+              <div className="flex justify-end gap-2">
+                <TextButton
+                  size="medium"
+                  variant="negative"
+                  onClick={() =>
+                    patchApproval(
+                      { clubId: id, body: { approved: false } },
+                      {
+                        onSuccess: () => {
+                          toast.success("동아리 개설을 거부했습니다.");
+                          router.push("/club");
+                        },
+                        onError: () => toast.error("처리에 실패했습니다."),
+                      },
+                    )
+                  }
+                  disabled={isApprovalPending}
+                >
+                  개설 거부
+                </TextButton>
+                <TextButton
+                  size="medium"
+                  variant="filled"
+                  onClick={() =>
+                    patchApproval(
+                      { clubId: id, body: { approved: true } },
+                      {
+                        onSuccess: () => toast.success("동아리 개설을 승인했습니다."),
+                        onError: () => toast.error("처리에 실패했습니다."),
+                      },
+                    )
+                  }
+                  disabled={isApprovalPending}
+                >
+                  개설 승인
+                </TextButton>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -6,9 +6,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import ClubCard from "@/entities/club/ui/ClubCard";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 import { filterClubs } from "../lib/filterClubs";
 import ClubSearch from "./ClubSearch";
 import ClubRegistrationSection from "./ClubRegistrationSection";
+import { ClubOpeningRequestSection } from "./ClubOpeningRequestSection";
 import Back from "@/shared/asset/svg/Back";
 import Smile from "@/shared/asset/svg/Smile";
 import { isRegistrationPeriod } from "../config";
@@ -31,6 +33,8 @@ export function ClubSection() {
   const [searchValue, setSearchValue] = useState("");
 
   const { data } = useQuery(clubQueries.list());
+  const { data: user } = useQuery(userQueries.me());
+  const isManager = user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL";
   const clubs = data?.clubs ?? [];
 
   const filteredClubs = filterClubs({
@@ -68,6 +72,8 @@ export function ClubSection() {
             </div>
           </div>
         </div>
+
+        {isManager && <ClubOpeningRequestSection />}
 
         {isRegistrationPeriod && viewMode === "form" ? (
           <ClubRegistrationSection onGoBackToList={handleGoBackToList} />

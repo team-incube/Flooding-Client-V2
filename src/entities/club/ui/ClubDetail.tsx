@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ClubThumbnail } from "@/entities/club/ui/ClubThumbnail";
 import { ClubActionButtons } from "@/entities/club/ui/ClubActionButtons";
 import Edit from "@/shared/asset/svg/Edit";
@@ -14,22 +14,13 @@ import { SelectedStudent } from "@/entities/user/ui/SelectedStudent";
 import ClubMemberList from "./ClubMemberList";
 import ProjectCard from "./ProjectCard";
 import { User } from "@/entities/user/model/user";
-import { userQueries } from "@/entities/user/api/userQueries";
 import type { ClubMember } from "../model/club";
 import { ClubDetailResponse, Project } from "../model/club";
-import {
-  usePutClub,
-  useDeleteClub,
-  usePatchClubApproval,
-} from "../api/clubQueries";
+import { usePutClub, useDeleteClub } from "../api/clubQueries";
 import FileOff from "@/shared/asset/svg/FileOff";
 
-interface ExtendedClubDetail extends ClubDetailResponse {
-  club: ClubDetailResponse["club"] & { status?: string };
-}
-
 interface ClubDetailProps {
-  detail: ExtendedClubDetail;
+  detail: ClubDetailResponse;
   isApplyPending?: boolean;
   onApplyClick?: () => void;
   onViewApplicationsClick?: () => void;
@@ -59,15 +50,8 @@ export default function ClubDetail({
   const [selectedStudents, setSelectedStudents] = useState<User[]>([]);
   const [searchName, setSearchName] = useState("");
 
-  const { data: currentUser } = useQuery(userQueries.me());
   const { mutateAsync: updateClub } = usePutClub();
   const { mutateAsync: deleteClub } = useDeleteClub();
-  const { mutate: patchApproval, isPending: isApprovalPending } =
-    usePatchClubApproval();
-
-  const isManager =
-    currentUser?.role === "ADMIN" || currentUser?.role === "STUDENT_COUNCIL";
-  const isPendingApproval = isManager && club.status === "PENDING";
 
   const handleSave = () => {
     const promise = updateClub({
@@ -189,7 +173,7 @@ export default function ClubDetail({
         </div>
 
         <div className="flex flex-col items-end">
-          {!isEdit && isLeader && !isPendingApproval && (
+          {!isEdit && isLeader && (
             <button
               onClick={() => setIsEdit(true)}
               className="p-2 rounded-lg bg-sub-4 cursor-pointer"
@@ -201,39 +185,16 @@ export default function ClubDetail({
           <div className="flex flex-wrap justify-end gap-2">
             <ClubActionButtons
               isEdit={isEdit}
-              isPendingApproval={isPendingApproval}
               canDelete={canDelete}
-              isApprovalPending={isApprovalPending}
               onSave={handleSave}
               onCancel={() => {
                 setIsEdit(false);
                 setPreviewUrl(club.imageUrl ?? "");
               }}
               onDelete={handleDelete}
-              onApprove={(approved) =>
-                patchApproval(
-                  { clubId: club.id, body: { approved } },
-                  {
-                    onSuccess: () => {
-                      if (approved) {
-                        toast.success("동아리 개설을 승인했습니다.");
-                      } else {
-                        toast.success("동아리 개설을 거부했습니다.");
-                        router.push("/club");
-                      }
-                      queryClient.invalidateQueries({
-                        queryKey: ["club", club.id],
-                      });
-                    },
-                    onError: () => {
-                      toast.error("처리에 실패했습니다.");
-                    },
-                  },
-                )
-              }
             />
 
-            {!isEdit && !isPendingApproval && !isLeader && (
+            {!isEdit && !isLeader && (
               <>
                 {onViewApplicationsClick && (
                   <TextButton

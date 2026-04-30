@@ -3,48 +3,39 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 
 interface ClubActionButtonsProps {
   isEdit: boolean;
-  isPendingApproval: boolean;
   canDelete: boolean;
-  isApprovalPending: boolean;
   onSave: () => void;
   onCancel: () => void;
   onDelete: () => void;
-  onApprove: (approved: boolean) => void;
 }
 
 export function ClubActionButtons({
   isEdit,
-  isPendingApproval,
   canDelete,
-  isApprovalPending,
   onSave,
   onCancel,
   onDelete,
-  onApprove,
 }: ClubActionButtonsProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   if (isEdit) {
     return (
       <>
-        <div className="flex gap-1 w-[362px]">
-          <TextButton size="wide" variant="ghost" onClick={onCancel}>
+        <div className="flex flex-wrap gap-1 w-full">
+          <TextButton size="fit" variant="ghost" className="flex-1 min-w-[118px]" onClick={onCancel}>
             돌아가기
           </TextButton>
           {canDelete && (
             <TextButton
-              size="wide"
+              size="fit"
               variant="negative"
+              className="flex-1 min-w-[118px]"
               onClick={() => setIsDeleteModalOpen(true)}
             >
               동아리 삭제
             </TextButton>
           )}
-          <TextButton
-            size="wide"
-            variant="filled"
-            onClick={onSave}
-          >
+          <TextButton size="fit" variant="filled" className="flex-1 min-w-[118px]" onClick={onSave}>
             저장
           </TextButton>
         </div>
@@ -77,29 +68,6 @@ export function ClubActionButtons({
           </div>
         )}
       </>
-    );
-  }
-
-  if (isPendingApproval) {
-    return (
-      <div className="flex gap-1 w-[240px]">
-        <TextButton
-          size="wide"
-          variant="negative"
-          onClick={() => onApprove(false)}
-          disabled={isApprovalPending}
-        >
-          생성 거부
-        </TextButton>
-        <TextButton
-          size="wide"
-          variant="filled"
-          onClick={() => onApprove(true)}
-          disabled={isApprovalPending}
-        >
-          생성 승인
-        </TextButton>
-      </div>
     );
   }
 

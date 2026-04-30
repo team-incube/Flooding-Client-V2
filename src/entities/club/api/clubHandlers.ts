@@ -238,6 +238,10 @@ export const clubHandlers = [
     });
   }),
 
+  http.get('*/clubs/opening/requests', () => {
+    return HttpResponse.json({ data: { clubs: [] } });
+  }),
+
   http.get('*/clubs/:id', ({ params }) => {
     const id = Number(params.id);
     const detail = MOCK_CLUB_DETAILS[id];

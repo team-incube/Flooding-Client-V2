@@ -6,6 +6,7 @@ import { getClubs } from './getClubs';
 import { getClubDetail } from './getClub';
 import { getClubForm } from './getClubForm';
 import { getClubApplications } from './getClubApplications';
+import { getClubOpeningRequests } from './getClubOpeningRequests';
 import type {
   ClubApplicationRequest,
   CreateClubFormRequest,
@@ -40,6 +41,12 @@ export const clubQueries = {
     queryOptions({
       queryKey: ['club', 'applications', clubId],
       queryFn: () => getClubApplications(clubId),
+    }),
+
+  openingRequests: () =>
+    queryOptions({
+      queryKey: ['club', 'opening-requests'],
+      queryFn: getClubOpeningRequests,
     }),
 } as const;
 
