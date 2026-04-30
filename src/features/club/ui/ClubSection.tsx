@@ -2,23 +2,105 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import ClubCard from "@/entities/club/ui/ClubCard";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { TextButton } from "@/shared/ui/Button/TextButton";
+import {
+  ClientQueryBoundary,
+  type QueryErrorFallbackProps,
+} from "@/shared/ui/QueryErrorBoundary";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { filterClubs } from "../lib/filterClubs";
 import ClubSearch from "./ClubSearch";
 import ClubRegistrationSection from "./ClubRegistrationSection";
 
-export function ClubSection() {
+function ClubCardSkeleton() {
+  return (
+    <div className="flex min-h-[250px] flex-col gap-4 rounded-2xl bg-sub-4 px-4 py-6">
+      <Skeleton className="h-33.5 w-full shrink-0 rounded-2xl" />
+      <div className="flex flex-col items-start gap-1">
+        <Skeleton className="h-5 w-24" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-4/5" />
+        <Skeleton className="h-4 w-28" />
+      </div>
+    </div>
+  );
+}
+
+function ClubSearchSkeleton() {
+  return (
+    <div className="flex w-full min-w-82.5 flex-col items-start gap-4">
+      <div className="w-full">
+        <Skeleton className="h-[47px] w-full rounded-lg" />
+      </div>
+      <div className="w-full">
+        <Skeleton className="h-[47px] w-full rounded-lg" />
+      </div>
+    </div>
+  );
+}
+
+function ClubSectionLoading() {
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Club isActive={false} size={20} />
+            <span className="text-text-1 text-main-text">동아리</span>
+            <div>
+              <span className="text-caption-1 text-sub-1">동아리 수</span>
+              <Skeleton className="ml-1 inline-block h-3 w-6 align-middle" />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
+          <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:overflow-y-scroll lg:pr-2">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(263px,1fr))] gap-4">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <ClubCardSkeleton key={index} />
+              ))}
+            </div>
+          </div>
+
+          <div className="order-1 self-stretch lg:order-2 lg:shrink-0 lg:self-start">
+            <ClubSearchSkeleton />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ClubSectionError({ resetErrorBoundary }: QueryErrorFallbackProps) {
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+        <Club isActive={false} size={32} />
+        <p className="text-text-1 text-main-text">
+          동아리 목록을 불러오지 못했어요.
+        </p>
+        <TextButton variant="outlined" size="fit" onClick={resetErrorBoundary}>
+          다시 시도
+        </TextButton>
+      </div>
+    </div>
+  );
+}
+
+const ClubSection = () => {
   const router = useRouter();
   const isRegistrationPeriod = false; // API 연동 시 서버 응답 값으로 교체 예정
 
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
-  const { data } = useQuery(clubQueries.list());
-  const clubs = data?.clubs ?? [];
+  const { data } = useSuspenseQuery(clubQueries.list());
+  const clubs = data.clubs;
 
   const filteredClubs = filterClubs({
     clubs,
@@ -78,4 +160,20 @@ export function ClubSection() {
       </div>
     </div>
   );
+};
+
+ClubSection.Loading = ClubSectionLoading;
+ClubSection.Error = ClubSectionError;
+
+function ClubSectionBoundary() {
+  return (
+    <ClientQueryBoundary
+      loadingFallback={<ClubSection.Loading />}
+      errorFallback={ClubSection.Error}
+    >
+      <ClubSection />
+    </ClientQueryBoundary>
+  );
 }
+
+export { ClubSection, ClubSectionBoundary };
