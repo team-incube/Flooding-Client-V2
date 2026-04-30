@@ -8,9 +8,8 @@ import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { MOCK_STUDENTS } from "@/entities/user/model/mock";
 import type { ClubMember } from "@/entities/club/model/club";
-import type { User } from "@/entities/user/model/user";
+import type { SearchUser } from "@/entities/user/model/user";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 import { useTransferClubLeader } from "../model/useTransferClubLeader";
 import { useInviteClubMember } from "../model/useInviteClubMember";
@@ -22,23 +21,6 @@ interface ClubDetailSectionProps {
 }
 
 const SEARCH_RESULT_LIMIT = 5;
-
-// TODO: MOCK_STUDENTS를 실제 유저 검색 API(TanStack Query)로 교체해야 합니다.
-function filterSearchResults(query: string, members: ClubMember[], currentUserId?: number): User[] {
-  const trimmed = query.trim();
-  if (!trimmed) return [];
-
-  const memberIds = new Set(members.map((m) => m.id));
-
-  return MOCK_STUDENTS.filter((student) => {
-    if (student.id === currentUserId) return false;
-    if (memberIds.has(student.id)) return false;
-    return (
-      student.name.includes(trimmed) ||
-      String(student.studentNumber).includes(trimmed)
-    );
-  }).slice(0, SEARCH_RESULT_LIMIT);
-}
 
 export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   if (!Number.isInteger(id)) {
@@ -56,11 +38,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
 
   const { data: detail, isLoading, isError, error } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
-  const isLeader = !!user && (
-    detail?.club.leaderId !== undefined
-      ? user.id === detail.club.leaderId
-      : user.name === detail?.club.leader
-  );
+  const isLeader = !!user && user.name === detail?.club.leader;
   const canCreateForm = detail?.club.type === "MAJOR_CLUB" && isLeader;
   const canViewApplications =
     !!detail &&
@@ -77,11 +55,15 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     retry: false,
   });
 
-  const memberSearchResults = filterSearchResults(
-    memberSearch,
-    detail?.members ?? [],
-    user?.id,
-  );
+  const trimmedSearch = memberSearch.trim();
+  const { data: searchUsersPage } = useQuery({
+    ...userQueries.list({ name: trimmedSearch || undefined }),
+    enabled: isLeader && trimmedSearch.length > 0,
+  });
+  const memberIds = new Set((detail?.members ?? []).map((m) => m.id));
+  const memberSearchResults = (searchUsersPage?.content ?? [])
+    .filter((u) => u.id !== user?.id && !memberIds.has(u.id))
+    .slice(0, SEARCH_RESULT_LIMIT);
 
   const handleApplyClick = () => {
     if (!detail || autonomousApplyMutation.isPending) {
@@ -135,7 +117,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     setTransferTarget(null);
   };
 
-  const handleMemberInvite = (invitedUser: User) => {
+  const handleMemberInvite = (invitedUser: SearchUser) => {
     inviteMutation.mutate(invitedUser.id, {
       onSuccess: () => setMemberSearch(""),
     });
