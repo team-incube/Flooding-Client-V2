@@ -10,7 +10,10 @@ import type {
   ClubApplicationRequest,
   CreateClubFormRequest,
 } from '../model/club';
-import { deleteClub, patchClubApproval, postClub, putClub } from "./club";
+import { patchClubApproval } from "./patchClubApproval";
+import { postClub } from "./postClub";
+import { deleteClub } from "./deleteClub";
+import { putClub } from "./putClub";
 
 export const clubQueries = {
   list: () =>
