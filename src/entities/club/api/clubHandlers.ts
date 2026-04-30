@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, bypass } from 'msw';
 import {
   MOCK_CLUB_APPLICATIONS,
   MOCK_CLUBS,
@@ -237,6 +237,8 @@ export const clubHandlers = [
       message: '완료되었습니다.',
     });
   }),
+
+  http.get('*/clubs/export', async ({ request }) => fetch(bypass(request))),
 
   http.get('*/clubs/:id', ({ params }) => {
     const id = Number(params.id);

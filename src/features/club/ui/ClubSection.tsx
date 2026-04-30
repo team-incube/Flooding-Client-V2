@@ -9,6 +9,7 @@ import { clubQueries } from "@/entities/club/api/clubQueries";
 import { filterClubs } from "../lib/filterClubs";
 import ClubSearch from "./ClubSearch";
 import ClubRegistrationSection from "./ClubRegistrationSection";
+import ClubExportButton from "./ClubExportButton";
 
 export function ClubSection() {
   const router = useRouter();
@@ -66,12 +67,13 @@ export function ClubSection() {
                 ))}
               </div>
             </div>
-            <div className="order-1 self-stretch lg:order-2 lg:shrink-0 lg:self-start">
+            <div className="order-1 flex flex-col gap-4 self-stretch lg:order-2 lg:shrink-0 lg:self-start">
               <ClubSearch
                 query={query}
                 setQuery={handleQueryChange}
                 onSearch={handleSearch}
               />
+              <ClubExportButton />
             </div>
           </div>
         )}
