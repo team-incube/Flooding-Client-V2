@@ -5,6 +5,7 @@ import {
   MOCK_CLUB_DETAILS,
   MOCK_CLUB_FORMS,
 } from '../model/mock';
+import { MOCK_STUDENTS } from '@/entities/user/model/mock';
 import type { CreateClubFormRequest } from '../model/club';
 
 const MAJOR_CLUBS = MOCK_CLUBS.filter((c) => c.type === 'MAJOR_CLUB');
@@ -224,6 +225,22 @@ export const clubHandlers = [
         { status: 409 },
       );
     }
+
+    const student = MOCK_STUDENTS.find((s) => s.id === userId);
+    if (!student) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '유저를 찾을 수 없습니다.' },
+        { status: 404 },
+      );
+    }
+
+    detail.members.push({
+      id: student.id,
+      name: student.name,
+      studentNumber: student.studentNumber,
+      sex: student.sex,
+      specialty: student.specialty,
+    });
 
     return HttpResponse.json({
       status: 'OK',
