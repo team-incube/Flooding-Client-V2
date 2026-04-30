@@ -74,6 +74,7 @@ const PROJECT1_PARTICIPANTS: ProjectParticipant[] = [
 
 export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
   1: {
+    isLeader: false,
     club: {
       id: 1,
       name: '인력사무소',
@@ -118,6 +119,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
     ],
   },
   2: {
+    isLeader: false,
     club: {
       id: 2,
       name: '픽셀',
@@ -130,6 +132,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
     projects: [],
   },
   3: {
+    isLeader: false,
     club: {
       id: 3,
       name: '알고리즘반',
@@ -142,6 +145,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
     projects: [],
   },
   4: {
+    isLeader: false,
     club: {
       id: 4,
       name: '보안연구반',
@@ -154,6 +158,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
     projects: [],
   },
   5: {
+    isLeader: false,
     club: {
       id: 5,
       name: '게임개발팀',
