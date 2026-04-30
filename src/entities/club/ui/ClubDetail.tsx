@@ -12,7 +12,7 @@ import type {
   ClubDetailResponse as ClubDetailType,
   ClubMember,
 } from "../model/club";
-import type { User } from "@/entities/user/model/user";
+import type { SearchUser } from "@/entities/user/model/user";
 import ProjectCard from "./ProjectCard";
 import ClubMemberList from "./ClubMemberList";
 
@@ -26,9 +26,9 @@ interface ClubDetailProps {
   onTransferClick?: (member: ClubMember) => void;
   onEditClick?: () => void;
   memberSearchQuery?: string;
-  memberSearchResults?: User[];
+  memberSearchResults?: SearchUser[];
   onMemberSearchChange?: (query: string) => void;
-  onMemberInvite?: (user: User) => void;
+  onMemberInvite?: (user: SearchUser) => void;
   onMemberExile?: (memberId: number) => void;
   formActionLabel?: string;
 }
@@ -53,9 +53,7 @@ export default function ClubDetail({
 
   const { club, members, projects } = detail;
   const applyVariant = isApplyPending || !onApplyClick ? "disabled" : "filled";
-  const nonLeaderMembers = members.filter((m) =>
-    club.leaderId !== undefined ? m.id !== club.leaderId : m.name !== club.leader
-  );
+  const nonLeaderMembers = members.filter((m) => m.name !== club.leader);
 
   const handleEditClick = () => {
     setIsEditMode((prev) => !prev);
@@ -96,7 +94,6 @@ export default function ClubDetail({
         <ClubMemberList
           members={members}
           leader={club.leader}
-          leaderId={club.leaderId}
           isLeader={isLeader}
           onMemberClick={onTransferClick}
         />
