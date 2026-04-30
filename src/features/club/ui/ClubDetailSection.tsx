@@ -23,6 +23,7 @@ interface ClubDetailSectionProps {
 
 const SEARCH_RESULT_LIMIT = 5;
 
+// TODO: MOCK_STUDENTS를 실제 유저 검색 API(TanStack Query)로 교체해야 합니다.
 function filterSearchResults(query: string, members: ClubMember[], currentUserId?: number): User[] {
   const trimmed = query.trim();
   if (!trimmed) return [];
