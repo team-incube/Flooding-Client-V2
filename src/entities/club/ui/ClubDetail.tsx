@@ -53,7 +53,9 @@ export default function ClubDetail({
 
   const { club, members, projects } = detail;
   const applyVariant = isApplyPending || !onApplyClick ? "disabled" : "filled";
-  const nonLeaderMembers = members.filter((m) => m.name !== club.leader);
+  const nonLeaderMembers = members.filter((m) =>
+    club.leaderId !== undefined ? m.id !== club.leaderId : m.name !== club.leader
+  );
 
   const handleEditClick = () => {
     setIsEditMode((prev) => !prev);
@@ -94,6 +96,7 @@ export default function ClubDetail({
         <ClubMemberList
           members={members}
           leader={club.leader}
+          leaderId={club.leaderId}
           isLeader={isLeader}
           onMemberClick={onTransferClick}
         />
@@ -189,7 +192,7 @@ export default function ClubDetail({
             <TextButton
               size="medium"
               variant="outlined"
-              className="h-[47px] w-auto min-w-[147px] px-4"
+              className="h-11.75 w-auto min-w-36.75 px-4"
               onClick={onViewApplicationsClick}
             >
               신청자 목록
@@ -199,7 +202,7 @@ export default function ClubDetail({
             <TextButton
               size="medium"
               variant="outlined"
-              className="h-[47px]"
+              className="h-11.75"
               onClick={onCreateFormClick}
             >
               {formActionLabel}
