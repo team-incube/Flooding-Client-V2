@@ -1,6 +1,6 @@
-import { User } from "./user";
+import type { User } from "./user";
 
-export const MOCK_STUDENTS: User[] = [
+const MOCK_STUDENT_SEEDS: Omit<User, "isBanned">[] = [
   {
     id: 1,
     name: "박건우",
@@ -362,3 +362,8 @@ export const MOCK_STUDENTS: User[] = [
     penaltyScore: 0,
   },
 ];
+
+export const MOCK_STUDENTS: User[] = MOCK_STUDENT_SEEDS.map((student) => ({
+  ...student,
+  isBanned: false,
+}));

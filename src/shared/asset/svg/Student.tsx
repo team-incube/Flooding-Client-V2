@@ -1,16 +1,21 @@
 import { SvgProps } from "@/shared/model/svg";
 
-export default function Student({ isActive = false }: SvgProps) {
+export default function Student({
+  isActive = false,
+  size = 24,
+  className,
+}: SvgProps) {
   const pathProps = isActive
     ? { fill: "var(--color-p-1)" }
     : { stroke: "var(--color-sub-2)", strokeWidth: "1.5" };
 
   return (
     <svg
-      width="24"
-      height="24"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

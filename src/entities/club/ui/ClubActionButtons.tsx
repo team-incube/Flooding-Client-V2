@@ -34,7 +34,7 @@ export function ClubActionButtons({
           {canDelete && (
             <TextButton
               size="wide"
-              className="!bg-negative"
+              variant="negative"
               onClick={() => setIsDeleteModalOpen(true)}
             >
               동아리 삭제
@@ -64,7 +64,7 @@ export function ClubActionButtons({
                 </TextButton>
                 <TextButton
                   size="wide"
-                  className="!bg-negative"
+                  variant="negative"
                   onClick={() => {
                     onDelete();
                     setIsDeleteModalOpen(false);
@@ -85,7 +85,7 @@ export function ClubActionButtons({
       <div className="flex gap-1 w-[240px]">
         <TextButton
           size="wide"
-          className="!bg-negative"
+          variant="negative"
           onClick={() => onApprove(false)}
           disabled={isApprovalPending}
         >
