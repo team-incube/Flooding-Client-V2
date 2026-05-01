@@ -159,42 +159,46 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
               onTransferClick={isLeader ? handleTransferClick : undefined}
             />
             {isManager && (
-              <div className="flex justify-end gap-2">
-                <TextButton
-                  size="medium"
-                  variant="negative"
-                  onClick={() =>
-                    patchApproval(
-                      { clubId: id, body: { approved: false } },
-                      {
-                        onSuccess: () => {
-                          toast.success("동아리 개설을 거부했습니다.");
-                          router.push("/club");
+              <div className="flex justify-end">
+                <div className="flex w-[240px] gap-2">
+                  <TextButton
+                    size="fit"
+                    className="flex-1"
+                    variant="negative"
+                    onClick={() =>
+                      patchApproval(
+                        { clubId: id, body: { approved: false } },
+                        {
+                          onSuccess: () => {
+                            toast.success("동아리 개설을 거부했습니다.");
+                            router.push("/club");
+                          },
+                          onError: () => toast.error("처리에 실패했습니다."),
                         },
-                        onError: () => toast.error("처리에 실패했습니다."),
-                      },
-                    )
-                  }
-                  disabled={isApprovalPending}
-                >
-                  개설 거부
-                </TextButton>
-                <TextButton
-                  size="medium"
-                  variant="filled"
-                  onClick={() =>
-                    patchApproval(
-                      { clubId: id, body: { approved: true } },
-                      {
-                        onSuccess: () => toast.success("동아리 개설을 승인했습니다."),
-                        onError: () => toast.error("처리에 실패했습니다."),
-                      },
-                    )
-                  }
-                  disabled={isApprovalPending}
-                >
-                  개설 승인
-                </TextButton>
+                      )
+                    }
+                    disabled={isApprovalPending}
+                  >
+                    개설 거부
+                  </TextButton>
+                  <TextButton
+                    size="fit"
+                    className="flex-1"
+                    variant="filled"
+                    onClick={() =>
+                      patchApproval(
+                        { clubId: id, body: { approved: true } },
+                        {
+                          onSuccess: () => toast.success("동아리 개설을 승인했습니다."),
+                          onError: () => toast.error("처리에 실패했습니다."),
+                        },
+                      )
+                    }
+                    disabled={isApprovalPending}
+                  >
+                    개설 승인
+                  </TextButton>
+                </div>
               </div>
             )}
           </div>
