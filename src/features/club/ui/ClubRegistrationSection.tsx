@@ -9,13 +9,13 @@ import ImageUpload from "@/shared/ui/ImageUpload";
 import Great from "@/shared/asset/svg/Great";
 import Back from "@/shared/asset/svg/Back";
 import Search from "@/shared/asset/svg/Search";
+import { useQuery } from "@tanstack/react-query";
 import { usePostClub } from "@/entities/club/api/clubQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 import type { RegistrationData } from "@/entities/club/model/club";
-import type { User } from "@/entities/user/model/user";
-import { MOCK_STUDENTS } from "@/entities/user/model/mock";
+import type { SearchUser } from "@/entities/user/model/user";
 import { StudentSearch } from "@/entities/user/ui/StudentSearch";
 import { SelectedStudent } from "@/entities/user/ui/SelectedStudent";
-import { filterAvailableStudents } from "@/features/homebase/lib/studentSelection";
 import { toast } from "sonner";
 
 interface Props {
@@ -35,16 +35,20 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
     clubImage: null,
   });
   const [memberName, setMemberName] = useState("");
-  const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<SearchUser[]>([]);
 
   const { mutateAsync: postClubAsync } = usePostClub();
   const { regType, clubName, leaderInfo, clubDetail } = formData;
 
-  const filteredMembers = filterAvailableStudents({
-    searchKeyword: memberName,
-    selectedStudents: selectedMembers,
-    students: MOCK_STUDENTS,
+  const { data: usersData } = useQuery({
+    ...userQueries.list({ name: memberName || undefined }),
+    enabled: memberName.trim().length > 0,
   });
+
+  const selectedIds = new Set(selectedMembers.map((m) => m.id));
+  const filteredMembers = (usersData?.content ?? []).filter(
+    (user) => !selectedIds.has(user.id),
+  );
 
   const handleChange = <K extends keyof RegistrationData>(
     key: K,
