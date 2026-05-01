@@ -132,14 +132,16 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
             <div className="flex gap-1 w-full">
               <TextButton
                 variant={regType === "NEW" ? "filled" : "outlined"}
-                size="wide"
+                size="fit"
+                className="flex-1"
                 onClick={() => handleChange("regType", "NEW")}
               >
                 신설
               </TextButton>
               <TextButton
                 variant={regType === "MAINTAIN" ? "filled" : "outlined"}
-                size="wide"
+                size="fit"
+                className="flex-1"
                 onClick={() => handleChange("regType", "MAINTAIN")}
               >
                 유지
@@ -218,7 +220,8 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
           />
 
           <TextButton
-            size="wide"
+            size="fit"
+            className="w-full"
             variant={canSubmit ? "filled" : "disabled"}
             onClick={canSubmit ? handleSubmit : undefined}
           >

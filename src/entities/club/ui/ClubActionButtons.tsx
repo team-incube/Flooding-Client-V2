@@ -42,20 +42,22 @@ export function ClubActionButtons({
 
         {isDeleteModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/50">
-            <div className="flex flex-col gap-3 w-full max-w-md rounded-2xl bg-background-surface p-6 text-text-1">
+            <div className="flex flex-col gap-3 w-[90%] max-w-[448px] rounded-2xl bg-background-surface p-6 text-text-1">
               <span className="text-negative font-bold">동아리 삭제</span>
               <span className="text-main-text">동아리를 삭제하시겠습니까?</span>
               <div className="flex gap-2">
                 <TextButton
-                  size="wide"
+                  size="fit"
                   variant="ghost"
+                  className="flex-1"
                   onClick={() => setIsDeleteModalOpen(false)}
                 >
                   뒤로가기
                 </TextButton>
                 <TextButton
-                  size="wide"
+                  size="fit"
                   variant="negative"
+                  className="flex-1"
                   onClick={() => {
                     onDelete();
                     setIsDeleteModalOpen(false);
