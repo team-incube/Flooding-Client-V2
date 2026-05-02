@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
@@ -19,22 +19,14 @@ export function ClubSection() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const [viewMode, setViewMode] = useState<"form" | "list">(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("club_submitted") === "true"
-        ? "list"
-        : "form";
-    }
-    return "form";
-  });
-
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [viewMode, setViewMode] = useState<"form" | "list">("form");
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
   const { data } = useQuery(clubQueries.list());
   const { data: user } = useQuery(userQueries.me());
   const isManager = user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL";
+  const hasClubApplication = user?.hasClubApplication ?? false;
   const clubs = data?.clubs ?? [];
 
   const filteredClubs = filterClubs({
@@ -43,19 +35,10 @@ export function ClubSection() {
     searchValue,
   });
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoaded(true);
-    }, 0);
-    return () => clearTimeout(timeout);
-  }, []);
-
   const handleGoBackToList = () => {
     setViewMode("list");
     queryClient.invalidateQueries(clubQueries.list());
   };
-
-  if (!isLoaded) return null;
 
   return (
     <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
@@ -75,7 +58,7 @@ export function ClubSection() {
 
         {isManager && <ClubOpeningRequestSection />}
 
-        {isRegistrationPeriod && viewMode === "form" ? (
+        {isRegistrationPeriod && !hasClubApplication && viewMode !== "list" ? (
           <ClubRegistrationSection onGoBackToList={handleGoBackToList} />
         ) : (
           <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
@@ -101,24 +84,17 @@ export function ClubSection() {
                 </div>
               )}
 
-              {isRegistrationPeriod && (
+              {isRegistrationPeriod && hasClubApplication && (
                 <div className="flex flex-col gap-4 items-center justify-center">
                   <Smile />
                   <p className="text-sub-2 text-text-1">
                     동아리 신청은 1인 1회 신청입니다
                   </p>
                   <button
-                    onClick={() => {
-                      const clubId = localStorage.getItem("club_submitted_id");
-                      if (clubId) {
-                        router.push(`/club/${clubId}`);
-                      } else {
-                        setViewMode("form");
-                      }
-                    }}
+                    onClick={() => setViewMode("form")}
                     className="flex items-center gap-1 text-sub-2 text-text-1 cursor-pointer"
                   >
-                    내 동아리 수정하기 <Back  direction="right"/>
+                    내 동아리 수정하기 <Back direction="right"/>
                   </button>
                 </div>
               )}

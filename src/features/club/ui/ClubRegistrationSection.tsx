@@ -78,11 +78,8 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
 
     toast.promise(promise, {
       loading: "동아리 개설 신청 중...",
-      success: (res) => {
+      success: () => {
         setSubmitted(true);
-        localStorage.setItem("club_submitted", "true");
-        const clubId = (res as { data?: { id?: number } })?.data?.id;
-        if (clubId) localStorage.setItem("club_submitted_id", String(clubId));
         return "동아리 개설 신청에 성공했습니다.";
       },
       error: (err: unknown) => {
