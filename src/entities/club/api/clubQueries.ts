@@ -21,14 +21,12 @@ export const clubQueries = {
     queryOptions({
       queryKey: ['club', 'list'],
       queryFn: () => getClubs(),
-      staleTime: Infinity,
     }),
 
   detail: (id: number) =>
     queryOptions({
       queryKey: ['club', 'detail', id],
       queryFn: () => getClubDetail(id),
-      staleTime: Infinity,
     }),
 
   form: (clubId: number) =>
