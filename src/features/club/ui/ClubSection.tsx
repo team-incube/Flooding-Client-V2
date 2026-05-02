@@ -13,7 +13,7 @@ import ClubRegistrationSection from "./ClubRegistrationSection";
 import { ClubOpeningRequestSection } from "./ClubOpeningRequestSection";
 import Back from "@/shared/asset/svg/Back";
 import Smile from "@/shared/asset/svg/Smile";
-import { isRegistrationPeriod } from "../config";
+import { isRegistrationPeriod } from "@/entities/club/config";
 
 export function ClubSection() {
   const router = useRouter();

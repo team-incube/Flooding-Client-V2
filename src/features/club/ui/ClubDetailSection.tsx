@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { usePatchClubApproval } from "@/entities/club/api/clubQueries";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
-import { isRegistrationPeriod } from "../config";
+import { isRegistrationPeriod } from "@/entities/club/config";
 import { useTransferClubLeader } from "../model/useTransferClubLeader";
 import { ClubTransferModal } from "./ClubTransferModal";
 
