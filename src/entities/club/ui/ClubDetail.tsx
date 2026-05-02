@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClubThumbnail } from "@/entities/club/ui/ClubThumbnail";
 import { ClubActionButtons } from "@/entities/club/ui/ClubActionButtons";
 import Edit from "@/shared/asset/svg/Edit";
@@ -16,7 +16,7 @@ import ProjectCard from "./ProjectCard";
 import { User } from "@/entities/user/model/user";
 import type { ClubMember } from "../model/club";
 import { ClubDetailResponse, Project } from "../model/club";
-import { usePutClub, useDeleteClub } from "../api/clubQueries";
+import { usePutClub, useDeleteClub, clubMutations } from "../api/clubQueries";
 import FileOff from "@/shared/asset/svg/FileOff";
 
 interface ClubDetailProps {
@@ -52,6 +52,9 @@ export default function ClubDetail({
 
   const { mutateAsync: updateClub } = usePutClub();
   const { mutateAsync: deleteClub } = useDeleteClub();
+  const { mutateAsync: inviteMember } = useMutation({
+    mutationFn: (userId: number) => clubMutations.inviteMember(club.id, userId),
+  });
 
   const handleSave = () => {
     const promise = updateClub({
@@ -62,11 +65,14 @@ export default function ClubDetail({
         imageUrl: previewUrl,
         maxMember: club.maxMember,
       },
-    });
+    }).then(() =>
+      Promise.all(selectedStudents.map((s) => inviteMember(s.id))),
+    );
     toast.promise(promise, {
       loading: "저장 중...",
       success: () => {
         setIsEdit(false);
+        setSelectedStudents([]);
         queryClient.invalidateQueries({ queryKey: ["club", "detail", club.id] });
         return "저장되었습니다.";
       },

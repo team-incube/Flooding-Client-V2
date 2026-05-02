@@ -66,6 +66,12 @@ export const clubMutations = {
 
   transferLeader: (clubId: number, targetUserId: number) =>
     instance.patch(`/clubs/${clubId}/transfer/${targetUserId}`),
+
+  inviteMember: (clubId: number, userId: number) =>
+    instance.post(`/clubs/${clubId}/member/${userId}`),
+
+  exileMember: (clubId: number, userId: number) =>
+    instance.delete(`/clubs/${clubId}/member/exile/${userId}`),
 } as const;
 
 export const usePatchClubApproval = () => {
