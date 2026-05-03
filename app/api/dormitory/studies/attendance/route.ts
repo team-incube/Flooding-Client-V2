@@ -92,7 +92,8 @@ export async function GET(request: NextRequest) {
 
     if (axios.isAxiosError(error) && error.response) {
       const { data, status } = error.response;
-      const body = data instanceof Readable ? fallbackBody : data ?? fallbackBody;
+      const body =
+        data instanceof Readable ? fallbackBody : (data ?? fallbackBody);
 
       return NextResponse.json(body, {
         status,

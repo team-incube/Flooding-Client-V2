@@ -1,36 +1,36 @@
-import { queryOptions } from '@tanstack/react-query';
-import { instance } from '@/shared/api/instance';
-import { getClubs } from './getClubs';
-import { getClubDetail } from './getClub';
-import { getClubForm } from './getClubForm';
-import { getClubApplications } from './getClubApplications';
+import { queryOptions } from "@tanstack/react-query";
+import { instance } from "@/shared/api/instance";
+import { getClubs } from "./getClubs";
+import { getClubDetail } from "./getClub";
+import { getClubForm } from "./getClubForm";
+import { getClubApplications } from "./getClubApplications";
 import type {
   ClubApplicationRequest,
   CreateClubFormRequest,
-} from '../model/club';
+} from "../model/club";
 
 export const clubQueries = {
   list: () =>
     queryOptions({
-      queryKey: ['club', 'list'],
+      queryKey: ["club", "list"],
       queryFn: getClubs,
     }),
 
   detail: (id: number) =>
     queryOptions({
-      queryKey: ['club', 'detail', id],
+      queryKey: ["club", "detail", id],
       queryFn: () => getClubDetail(id),
     }),
 
   form: (clubId: number) =>
     queryOptions({
-      queryKey: ['club', 'form', clubId],
+      queryKey: ["club", "form", clubId],
       queryFn: () => getClubForm(clubId),
     }),
 
   applicationList: (clubId: number) =>
     queryOptions({
-      queryKey: ['club', 'applications', clubId],
+      queryKey: ["club", "applications", clubId],
       queryFn: () => getClubApplications(clubId),
     }),
 } as const;

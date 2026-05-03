@@ -15,7 +15,11 @@ import { StudentManagementFilterPanel } from "./StudentManagementFilterPanel";
 import { StudyBanActionPanel } from "./StudyBanActionPanel";
 
 export function StudentManagementSection() {
-  const { data: studentPage, isLoading, isError } = useQuery(userQueries.list());
+  const {
+    data: studentPage,
+    isLoading,
+    isError,
+  } = useQuery(userQueries.list());
   const banStudyMutation = useBanStudy();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGrades, setSelectedGrades] = useState<number[]>([]);
@@ -26,9 +30,7 @@ export function StudentManagementSection() {
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
   const students = studentPage?.content ?? [];
   const bannedStudentIdSet = new Set(
-    students
-      .filter(({ isBanned }) => isBanned)
-      .map(({ id }) => id),
+    students.filter(({ isBanned }) => isBanned).map(({ id }) => id),
   );
 
   const filteredStudents = filterManagedStudents({
@@ -86,7 +88,8 @@ export function StudentManagementSection() {
     );
   };
 
-  const isStudyBanned = (studentId: number) => bannedStudentIdSet.has(studentId);
+  const isStudyBanned = (studentId: number) =>
+    bannedStudentIdSet.has(studentId);
 
   const handleBanSelectedStudent = () => {
     const targetStudentIds = selectedStudentIds.filter(

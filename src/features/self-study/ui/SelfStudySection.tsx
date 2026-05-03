@@ -22,7 +22,8 @@ export function SelfStudySection() {
   const { data: students = [] } = useQuery(studyQuery);
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
-  const { searchQuery, selectedGrades, selectedClasses, selectedGender } = state;
+  const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
+    state;
   const applyMutation = useApplyStudy();
   const isStudyBanned = user?.isBanned === true;
   const isApplyDisabled =

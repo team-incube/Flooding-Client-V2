@@ -27,8 +27,7 @@ export function MusicListItem({
   isDeletePending = false,
 }: MusicListItemProps) {
   const thumbnailUrl =
-    youtubeMetadata?.thumbnailUrl ??
-    getYoutubeThumbnailUrl(music.musicUrl);
+    youtubeMetadata?.thumbnailUrl ?? getYoutubeThumbnailUrl(music.musicUrl);
   const title = youtubeMetadata?.title ?? music.musicUrl;
 
   return (

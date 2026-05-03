@@ -229,10 +229,7 @@ export default function HomebaseCard({
               </span>
             ) : (
               othersReservations.map((item) => (
-                <ReservationTableItem
-                  key={item.id}
-                  reservation={item}
-                />
+                <ReservationTableItem key={item.id} reservation={item} />
               ))
             )}
           </div>

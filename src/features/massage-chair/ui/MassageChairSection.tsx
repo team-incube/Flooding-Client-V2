@@ -21,9 +21,7 @@ export function MassageChairSection() {
         </div>
         <div className="flex items-center gap-1">
           <span className="text-sub-1 text-caption-1">신청인</span>
-          <span className="text-p-1 text-caption-1">
-            {applicants.length}명
-          </span>
+          <span className="text-p-1 text-caption-1">{applicants.length}명</span>
         </div>
       </div>
 

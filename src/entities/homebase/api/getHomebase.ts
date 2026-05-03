@@ -5,7 +5,9 @@ type HomebaseResponse =
   | HomebaseReservation[]
   | { data?: HomebaseReservation[] };
 
-export async function getHomebaseReservations(): Promise<HomebaseReservation[]> {
+export async function getHomebaseReservations(): Promise<
+  HomebaseReservation[]
+> {
   const { data } = await instance.get<HomebaseResponse>("/homebase");
   return Array.isArray(data) ? data : (data.data ?? []);
 }

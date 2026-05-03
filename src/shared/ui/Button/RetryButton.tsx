@@ -1,4 +1,4 @@
-import Retry  from "@/shared/asset/svg/Retry";
+import Retry from "@/shared/asset/svg/Retry";
 
 interface RetryButtonProps {
   onClick: () => void;
@@ -7,7 +7,6 @@ interface RetryButtonProps {
 }
 
 export default function RetryButton({ onClick, count, max }: RetryButtonProps) {
-
   return (
     <button
       onClick={onClick}
@@ -19,5 +18,5 @@ export default function RetryButton({ onClick, count, max }: RetryButtonProps) {
         ({count}/{max})
       </span>
     </button>
-  )
+  );
 }

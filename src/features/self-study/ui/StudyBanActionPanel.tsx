@@ -28,7 +28,9 @@ export function StudyBanActionPanel({
         </button>
       </div>
       <TextButton
-        variant={selectedBanTargetCount > 0 && !isPending ? "filled" : "disabled"}
+        variant={
+          selectedBanTargetCount > 0 && !isPending ? "filled" : "disabled"
+        }
         size="wide"
         onClick={onBanSelectedStudent}
       >

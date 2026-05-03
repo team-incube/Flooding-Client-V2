@@ -65,9 +65,7 @@ export function ClubApplicationListSection({
   const isLeader = !!user && user.name === detail?.club.leader;
   const canViewApplications =
     !!detail &&
-    (isLeader ||
-      user?.role === "ADMIN" ||
-      user?.role === "STUDENT_COUNCIL");
+    (isLeader || user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL");
   const {
     data: applicationList,
     isLoading: isApplicationLoading,

@@ -34,7 +34,9 @@ export function filterManagedStudents({
     const matchesGender = !selectedGender || student.sex === selectedGender;
     const matchesStudyBan =
       !selectedStudyBanFilter ||
-      (selectedStudyBanFilter === "BANNED" ? student.isBanned : !student.isBanned);
+      (selectedStudyBanFilter === "BANNED"
+        ? student.isBanned
+        : !student.isBanned);
 
     return (
       matchesSearchQuery &&

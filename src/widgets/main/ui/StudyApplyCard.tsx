@@ -34,7 +34,11 @@ export default function StudyApplyCard() {
       total={STUDY_MAX}
       timeText="자습 신청 시간은 20:00 ~ 21:00에 신청이 가능해요"
       buttonText={
-        isStudyBanned ? "자습 금지를 당했어요!" : isUserLoading ? "확인 중" : "신청"
+        isStudyBanned
+          ? "자습 금지를 당했어요!"
+          : isUserLoading
+            ? "확인 중"
+            : "신청"
       }
       buttonVariant={isStudyBanned ? "negative" : "filled"}
       buttonSize={isStudyBanned ? "fit" : "small"}

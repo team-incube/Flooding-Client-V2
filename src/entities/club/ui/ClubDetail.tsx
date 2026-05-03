@@ -1,7 +1,10 @@
 import Image from "next/image";
 import DefaultClubThumbnail from "@/shared/asset/svg/DefaultThumbnail";
 import { TextButton } from "@/shared/ui/Button/TextButton";
-import type { ClubDetailResponse as ClubDetailType, ClubMember } from "../model/club";
+import type {
+  ClubDetailResponse as ClubDetailType,
+  ClubMember,
+} from "../model/club";
 import ProjectCard from "./ProjectCard";
 import ClubMemberList from "./ClubMemberList";
 

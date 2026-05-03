@@ -129,9 +129,7 @@ export function StudentManagementFilterPanel({
               size="small"
               className="h-[34px]! w-14!"
               onClick={() =>
-                onToggleStudyBanFilter(
-                  filter as Exclude<StudyBanFilter, null>,
-                )
+                onToggleStudyBanFilter(filter as Exclude<StudyBanFilter, null>)
               }
             >
               {label}

@@ -81,9 +81,7 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
         return;
       }
 
-      setCheckedStudentIds((prev) => [
-        ...new Set([...prev, ...userIds]),
-      ]);
+      setCheckedStudentIds((prev) => [...new Set([...prev, ...userIds])]);
     };
 
     eventSource.addEventListener("init", updateCheckedIds);

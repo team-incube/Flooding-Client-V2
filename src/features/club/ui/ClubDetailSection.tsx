@@ -32,14 +32,9 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const canCreateForm = detail?.club.type === "MAJOR_CLUB" && isLeader;
   const canViewApplications =
     !!detail &&
-    (isLeader ||
-      user?.role === "ADMIN" ||
-      user?.role === "STUDENT_COUNCIL");
+    (isLeader || user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL");
   const formQuery = clubQueries.form(id);
-  const {
-    data: form,
-    error: formError,
-  } = useQuery({
+  const { data: form, error: formError } = useQuery({
     ...formQuery,
     enabled: canCreateForm,
     retry: false,

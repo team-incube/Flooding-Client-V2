@@ -15,10 +15,7 @@ export function useAiMusicRecommend(enabled: boolean) {
   const [retryCount, setRetryCount] = useState(0);
   const [youtubeLinks, setYoutubeLinks] = useState<string[]>([]);
 
-  const {
-    mutate: recommendMusic,
-    isPending,
-  } = useMutation({
+  const { mutate: recommendMusic, isPending } = useMutation({
     mutationFn: () => aiMutations.recommendSong(),
     onMutate: () => {
       setYoutubeLinks([]);

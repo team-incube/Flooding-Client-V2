@@ -1,9 +1,6 @@
 import { TABLE_MAX_PERSONNEL } from "../model/constants";
 
-export function getMaxPersonnel(
-  floor: string,
-  table: string | null,
-): number {
+export function getMaxPersonnel(floor: string, table: string | null): number {
   if (!table) return 0;
   const floorKey = floor as keyof typeof TABLE_MAX_PERSONNEL;
   if (!TABLE_MAX_PERSONNEL[floorKey]) return 0;

@@ -63,7 +63,6 @@ export default function ImageUpload({
 
   return (
     <div className={`relative flex flex-col gap-2 ${className}`}>
-
       <div
         {...getRootProps({
           onClick: preview ? (e) => e.stopPropagation() : undefined,
@@ -73,7 +72,7 @@ export default function ImageUpload({
         `}
       >
         <input {...getInputProps()} />
-        
+
         {preview ? (
           <div className="relative w-full h-[191.43px] rounded-[6.85px] overflow-hidden">
             <Image

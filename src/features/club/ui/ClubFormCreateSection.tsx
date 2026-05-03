@@ -105,7 +105,10 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
         >
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
-              <label htmlFor={titleInputId} className="text-text-3 text-main-text">
+              <label
+                htmlFor={titleInputId}
+                className="text-text-3 text-main-text"
+              >
                 폼 제목 <span className="text-p-1">*</span>
               </label>
               <TextField
@@ -117,7 +120,10 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label htmlFor={descriptionInputId} className="text-text-3 text-main-text">
+              <label
+                htmlFor={descriptionInputId}
+                className="text-text-3 text-main-text"
+              >
                 폼 설명
               </label>
               <textarea

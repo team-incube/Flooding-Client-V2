@@ -5,10 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Back from "@/shared/asset/svg/Back";
 import Calendar from "@/shared/asset/svg/Calender";
 import { neisQueries } from "@/entities/neis/api/neisQueries";
-import {
-  NEIS_OFFICE_CODE,
-  NEIS_SCHOOL_CODE,
-} from "@/entities/neis/model/neis";
+import { NEIS_OFFICE_CODE, NEIS_SCHOOL_CODE } from "@/entities/neis/model/neis";
 import { userQueries } from "@/entities/user/api/userQueries";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
