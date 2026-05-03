@@ -38,7 +38,7 @@ export default function ClubMemberList({
                 return (
                   <span key={m.id}>
                     <span
-                      className={`${isCurrentLeader ? "text-p-1" : "text-sub-1"} ${isClickable ? "cursor-pointer hover:text-p-1" : ""}`}
+                      className={`${isCurrentLeader ? "text-p-1" : "text-sub-1"} ${isClickable ? "hover:text-p-1 cursor-pointer" : ""}`}
                       onClick={isClickable ? () => onMemberClick(m) : undefined}
                     >
                       {m.name}

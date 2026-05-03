@@ -34,8 +34,8 @@ export default function ClubDetail({
 
   return (
     <div className="flex w-full flex-col gap-6 xl:flex-row">
-      <div className="flex w-full 2xl:w-121 lg:w-100 flex-col 2xl:gap-6 lg:gap-4">
-        <div className="relative w-full rounded-2xl overflow-hidden bg-sub-4">
+      <div className="flex w-full flex-col lg:w-100 lg:gap-4 2xl:w-121 2xl:gap-6">
+        <div className="bg-sub-4 relative w-full overflow-hidden rounded-2xl">
           {club.imageUrl ? (
             <Image
               src={club.imageUrl}
@@ -44,8 +44,8 @@ export default function ClubDetail({
               className="object-cover"
             />
           ) : (
-            <div className="flex items-center justify-center 2xl:w-full 2xl:h-full lg:w-100 lg:h-52">
-              <DefaultClubThumbnail className="w-full h-full" />
+            <div className="flex items-center justify-center lg:h-52 lg:w-100 2xl:h-full 2xl:w-full">
+              <DefaultClubThumbnail className="h-full w-full" />
             </div>
           )}
         </div>

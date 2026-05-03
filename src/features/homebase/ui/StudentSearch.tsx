@@ -14,15 +14,15 @@ export function StudentSearch({
   if (filteredStudents.length === 0) return null;
 
   return (
-    <div className="border border-sub-4 rounded-lg overflow-hidden bg-background-surface shadow-md">
-      <div className="flex flex-col divide-y divide-sub-4 px-2">
+    <div className="border-sub-4 bg-background-surface overflow-hidden rounded-lg border shadow-md">
+      <div className="divide-sub-4 flex flex-col divide-y px-2">
         {filteredStudents.map((student) => (
           <button
             key={student.id}
             type="button"
             disabled={isFull}
             onClick={() => onSelect(student)}
-            className={`w-full text-left py-4 px-2 ${
+            className={`w-full px-2 py-4 text-left ${
               isFull ? "cursor-not-allowed opacity-40" : "cursor-pointer"
             }`}
           >

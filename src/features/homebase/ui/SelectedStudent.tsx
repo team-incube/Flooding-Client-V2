@@ -15,7 +15,7 @@ export function SelectedStudent({
       {selectedStudents.map((student) => (
         <div
           key={student.id}
-          className="flex items-center gap-2 border border-sub-2 rounded-full px-5.5 py-3"
+          className="border-sub-2 flex items-center gap-2 rounded-full border px-5.5 py-3"
         >
           <span className="text-sub-1">
             {student.studentNumber} {student.name}

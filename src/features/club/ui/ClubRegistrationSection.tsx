@@ -112,16 +112,16 @@ export default function ClubRegistrationSection({
   const isActionable = !submitted ? canSubmit : isChanged;
 
   return (
-    <div className="flex gap-10 h-full min-h-0 flex-1 flex-col lg:flex-row">
+    <div className="flex h-full min-h-0 flex-1 flex-col gap-10 lg:flex-row">
       {!submitted ? (
-        <div className="flex flex-1 flex-col h-[762px] items-center justify-center min-h-0">
+        <div className="flex h-[762px] min-h-0 flex-1 flex-col items-center justify-center">
           <FileOff />
           <span className="text-sub-2 text-text-1 mt-4">
             지금은 동아리 개설 기간입니다
           </span>
         </div>
       ) : (
-        <div className="flex flex-1 flex-col h-[762px] items-center justify-center min-h-0">
+        <div className="flex h-[762px] min-h-0 flex-1 flex-col items-center justify-center">
           <Great />
           <span className="text-sub-2 text-text-1 mt-4">
             동아리 개설이 성공적으로 완료 되었습니다
@@ -142,7 +142,7 @@ export default function ClubRegistrationSection({
 
           <div className="flex flex-col gap-1">
             <span className="text-text-3">유지, 신설 여부</span>
-            <div className="flex gap-1 w-full">
+            <div className="flex w-full gap-1">
               <TextButton
                 variant={regType === "NEW" ? "filled" : "outlined"}
                 size="wide"
@@ -183,9 +183,9 @@ export default function ClubRegistrationSection({
               onChange={(e) => handleChange("clubDetail", e.target.value)}
               maxLength={200}
               value={clubDetail}
-              className="w-full h-[52px] rounded-lg border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none py-3 px-4 resize-none caret-p-1 transition-all"
+              className="border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 caret-p-1 h-[52px] w-full resize-none rounded-lg border px-4 py-3 transition-all outline-none"
             />
-            <span className="text-xs text-right text-sub-2">
+            <span className="text-sub-2 text-right text-xs">
               {clubDetail.length}/200
             </span>
           </div>

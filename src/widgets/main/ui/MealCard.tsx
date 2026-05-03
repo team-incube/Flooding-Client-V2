@@ -55,15 +55,15 @@ export default function MealCard() {
   const menuItems = selectedMeal?.menus ?? [];
 
   return (
-    <div className="w-full h-[300px] lg:h-[498px] bg-background-surface rounded-2xl p-6 flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-6 lg:h-[498px]">
+      <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Bowl />
-          <span className="text-text-1 font-semibold text-main-text">
+          <span className="text-text-1 text-main-text font-semibold">
             급식표
           </span>
         </div>
-        <div className="flex items-center gap-2 text-text-3 text-sub-1 font-medium">
+        <div className="text-text-3 text-sub-1 flex items-center gap-2 font-medium">
           <button onClick={() => setOffset((o) => o - 1)}>
             <Back direction="left" />
           </button>
@@ -74,12 +74,12 @@ export default function MealCard() {
         </div>
       </div>
 
-      <div className="flex rounded-lg bg-sub-4 p-2 mb-4">
+      <div className="bg-sub-4 mb-4 flex rounded-lg p-2">
         {MEAL_TYPES.map((type) => (
           <button
             key={type}
             onClick={() => setSelectedTab(type)}
-            className={`flex-1 py-3 rounded-lg text-text-4 font-medium ${
+            className={`text-text-4 flex-1 rounded-lg py-3 font-medium ${
               selectedTab === type
                 ? "bg-p-1 text-background-surface"
                 : "text-sub-2"
@@ -90,7 +90,7 @@ export default function MealCard() {
         ))}
       </div>
 
-      <div className="flex flex-col flex-1 overflow-y-auto">
+      <div className="flex flex-1 flex-col overflow-y-auto">
         {isPending ? (
           <div className="flex flex-1 items-center justify-center">
             <span className="text-text-3 text-sub-1 font-medium">

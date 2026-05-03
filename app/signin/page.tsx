@@ -12,8 +12,8 @@ export default function Signin() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center overflow-hidden bg-background">
-      <div className="flex flex-col items-center gap-6 w-fit h-fit bg-background-surface px-8 py-13 rounded-2xl">
+    <div className="bg-background flex h-screen items-center justify-center overflow-hidden">
+      <div className="bg-background-surface flex h-fit w-fit flex-col items-center gap-6 rounded-2xl px-8 py-13">
         <Logo />
         <TextButton variant="filled" size="wide" onClick={handleLogin}>
           Data GSM으로 로그인

@@ -9,8 +9,8 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project, leader }: ProjectCardProps) {
   return (
-    <div className="flex h-auto flex-col gap-4 rounded-2xl bg-sub-4 p-4 sm:flex-row sm:gap-6">
-      <div className="relative h-40 w-full rounded-xl overflow-hidden bg-sub-3 sm:h-29.75 sm:w-29.75 sm:shrink-0">
+    <div className="bg-sub-4 flex h-auto flex-col gap-4 rounded-2xl p-4 sm:flex-row sm:gap-6">
+      <div className="bg-sub-3 relative h-40 w-full overflow-hidden rounded-xl sm:h-29.75 sm:w-29.75 sm:shrink-0">
         {project.imageUrl ? (
           <Image
             src={project.imageUrl}
@@ -19,12 +19,12 @@ export default function ProjectCard({ project, leader }: ProjectCardProps) {
             className="object-cover"
           />
         ) : (
-          <div className="flex items-center justify-center w-full h-full">
+          <div className="flex h-full w-full items-center justify-center">
             <DefaultClubThumbnail className="h-full w-full" />
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-1 flex-1 min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="text-title-3 text-main-text">{project.name}</span>
         <p className="text-text-2 text-sub-1 line-clamp-2">
           {project.description}

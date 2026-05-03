@@ -31,9 +31,9 @@ export function MusicListItem({
   const title = youtubeMetadata?.title ?? music.musicUrl;
 
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-sub-3 py-3 pr-6 last:border-b-0">
+    <div className="border-sub-3 flex items-center justify-between gap-4 border-b py-3 pr-6 last:border-b-0">
       <div className="flex min-w-0 flex-1 items-center gap-4">
-        <div className="relative h-17 w-30 shrink-0 overflow-hidden rounded-lg bg-sub-4 2xl:h-22 2xl:w-39">
+        <div className="bg-sub-4 relative h-17 w-30 shrink-0 overflow-hidden rounded-lg 2xl:h-22 2xl:w-39">
           {thumbnailUrl && (
             <Image
               src={thumbnailUrl}
@@ -43,18 +43,18 @@ export function MusicListItem({
             />
           )}
           {youtubeMetadata?.durationText && (
-            <span className="absolute right-1.5 bottom-1.5 rounded bg-black/70 px-1.5 py-0.5 text-caption-3 text-white">
+            <span className="text-caption-3 absolute right-1.5 bottom-1.5 rounded bg-black/70 px-1.5 py-0.5 text-white">
               {youtubeMetadata.durationText}
             </span>
           )}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:gap-6">
-          <p className="line-clamp-2 break-all text-text-1 font-semibold text-main-text 2xl:min-w-0 2xl:flex-1">
+          <p className="text-text-1 text-main-text line-clamp-2 font-semibold break-all 2xl:min-w-0 2xl:flex-1">
             {title}
           </p>
           <div className="flex shrink-0 items-center justify-between 2xl:justify-start 2xl:gap-6">
-            <span className="shrink-0 text-caption-2 text-sub-2">
+            <span className="text-caption-2 text-sub-2 shrink-0">
               {formatAppliedDate(music.appliedAt)}
             </span>
           </div>
@@ -65,7 +65,7 @@ export function MusicListItem({
         {onDelete && (
           <button
             type="button"
-            className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-sub-4 transition-opacity disabled:cursor-default disabled:opacity-60"
+            className="bg-sub-4 flex size-10 cursor-pointer items-center justify-center rounded-lg transition-opacity disabled:cursor-default disabled:opacity-60"
             disabled={isDeletePending}
             onClick={onDelete}
           >
@@ -76,13 +76,13 @@ export function MusicListItem({
         <div className="relative flex shrink-0 flex-col items-center">
           <button
             type="button"
-            className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-sub-4 transition-opacity disabled:cursor-default disabled:opacity-60"
+            className="bg-sub-4 flex size-10 cursor-pointer items-center justify-center rounded-lg transition-opacity disabled:cursor-default disabled:opacity-60"
             disabled={isLikePending}
             onClick={onToggleLike}
           >
             <Heart isActive={music.isLiked} />
           </button>
-          <span className="absolute top-full mt-1 text-caption-1 text-sub-1">
+          <span className="text-caption-1 text-sub-1 absolute top-full mt-1">
             {music.likeCount}
           </span>
         </div>

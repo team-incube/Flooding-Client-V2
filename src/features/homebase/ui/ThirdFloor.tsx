@@ -13,19 +13,19 @@ export function ThirdFloor({
         <Table
           name="테이블 1"
           capacity="6명"
-          className="border-b border-sub-2"
+          className="border-sub-2 border-b"
           selected={selectedTable === "1"}
           reserved={!!reservedTables["1"]}
           members={reservedTables["1"] ?? []}
           onClick={() => onTableSelect("1")}
         />
-        <div className="flex items-center justify-center border-x border-b border-sub-2">
-          <span className="text-text-3 font-medium text-sub-2">칸막이</span>
+        <div className="border-sub-2 flex items-center justify-center border-x border-b">
+          <span className="text-text-3 text-sub-2 font-medium">칸막이</span>
         </div>
         <Table
           name="테이블 2"
           capacity="6명"
-          className="border-b border-sub-2"
+          className="border-sub-2 border-b"
           selected={selectedTable === "2"}
           reserved={!!reservedTables["2"]}
           members={reservedTables["2"] ?? []}
@@ -37,7 +37,7 @@ export function ThirdFloor({
         <Table
           name="테이블 3"
           capacity="4명"
-          className="border-r border-sub-2"
+          className="border-sub-2 border-r"
           selected={selectedTable === "3"}
           reserved={!!reservedTables["3"]}
           members={reservedTables["3"] ?? []}
@@ -46,7 +46,7 @@ export function ThirdFloor({
         <Table
           name="테이블 5"
           capacity="4명"
-          className="border-r border-sub-2"
+          className="border-sub-2 border-r"
           selected={selectedTable === "5"}
           reserved={!!reservedTables["5"]}
           members={reservedTables["5"] ?? []}

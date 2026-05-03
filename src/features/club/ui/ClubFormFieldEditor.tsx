@@ -52,7 +52,7 @@ export function ClubFormFieldEditor({
   const fieldDescriptionInputId = `club-form-field-description-${field.id}`;
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-sub-3 bg-background p-4">
+    <div className="border-sub-3 bg-background flex flex-col gap-4 rounded-xl border p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="text-text-1 text-main-text">질문 {index + 1}</span>
         <button
@@ -122,14 +122,14 @@ export function ClubFormFieldEditor({
         />
       </div>
 
-      <label className="flex w-fit cursor-pointer items-center gap-2 text-text-4 text-sub-1">
+      <label className="text-text-4 text-sub-1 flex w-fit cursor-pointer items-center gap-2">
         <input
           type="checkbox"
           checked={field.required}
           onChange={(e) =>
             onFieldChange(field.id, "required", e.target.checked)
           }
-          className="size-4 accent-p-1"
+          className="accent-p-1 size-4"
         />
         필수 질문
       </label>

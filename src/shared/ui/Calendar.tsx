@@ -92,7 +92,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
         {DAY_LABELS.map((d) => (
           <div
             key={d}
-            className="flex items-center justify-center w-10 h-10 p-2 text-sub-1 text-caption-2"
+            className="text-sub-1 text-caption-2 flex h-10 w-10 items-center justify-center p-2"
           >
             {d}
           </div>
@@ -112,14 +112,13 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
                 if (!isCurrentMonth) setViewDate(date);
                 onDateSelect?.(date);
               }}
-              className={`flex items-center justify-center w-10 h-10 p-2 rounded-lg text-caption-1 outline-none cursor-pointer transition-colors
-                ${
-                  isSelected
-                    ? "bg-p-1 text-sub-4"
-                    : isCurrentMonth
-                      ? "bg-background-surface text-sub-1"
-                      : "bg-background-surface text-sub-2"
-                }`}
+              className={`text-caption-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg p-2 transition-colors outline-none ${
+                isSelected
+                  ? "bg-p-1 text-sub-4"
+                  : isCurrentMonth
+                    ? "bg-background-surface text-sub-1"
+                    : "bg-background-surface text-sub-2"
+              }`}
             >
               {date.getDate()}
             </button>

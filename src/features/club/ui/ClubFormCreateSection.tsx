@@ -53,11 +53,11 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
 
   if (isDetailLoading) {
     return (
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
-          <div className="h-6 w-40 animate-pulse rounded bg-sub-4" />
-          <div className="h-[52px] w-full max-w-4xl animate-pulse rounded-lg bg-sub-4" />
-          <div className="h-[160px] w-full max-w-4xl animate-pulse rounded-xl bg-sub-4" />
+      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+        <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
+          <div className="bg-sub-4 h-6 w-40 animate-pulse rounded" />
+          <div className="bg-sub-4 h-[52px] w-full max-w-4xl animate-pulse rounded-lg" />
+          <div className="bg-sub-4 h-[160px] w-full max-w-4xl animate-pulse rounded-xl" />
         </div>
       </div>
     );
@@ -65,8 +65,8 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
 
   if (isDetailError || !detail) {
     return (
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+        <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
           <Club isActive={false} size={32} />
           <p className="text-text-1 text-main-text">
             존재하지 않는 동아리입니다.
@@ -78,8 +78,8 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
 
   if (!canCreateForm) {
     return (
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+        <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
           <Club isActive={false} size={32} />
           <p className="text-text-1 text-main-text">
             {!isMajorClub
@@ -92,8 +92,8 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-      <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
         <div className="flex items-center gap-2">
           <Club isActive={false} size={20} />
           <span className="text-text-1 text-main-text">동아리 폼 만들기</span>

@@ -60,7 +60,7 @@ export function SelfStudySection() {
   };
 
   return (
-    <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-4">
+    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6">
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-1">
           <ApplyStudy />
@@ -75,8 +75,8 @@ export function SelfStudySection() {
       </div>
 
       <div className="flex gap-6">
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap gap-4 max-h-125 overflow-y-auto">
+        <div className="min-w-0 flex-1">
+          <div className="flex max-h-125 flex-wrap gap-4 overflow-y-auto">
             {filteredStudents.map((student, index) => (
               <StudyApplicantCard
                 key={student.userId}
@@ -96,13 +96,13 @@ export function SelfStudySection() {
           </div>
         </div>
 
-        <div className="w-[330px] shrink-0 flex flex-col gap-4">
+        <div className="flex w-[330px] shrink-0 flex-col gap-4">
           <div className="flex items-center justify-between">
             <span className="text-main-text text-text-2">필터</span>
             <button
               type="button"
               onClick={handleResetFilters}
-              className="text-sub-1 text-caption-2 cursor-pointer hover:text-p-1 transition-colors"
+              className="text-sub-1 text-caption-2 hover:text-p-1 cursor-pointer transition-colors"
             >
               초기화
             </button>

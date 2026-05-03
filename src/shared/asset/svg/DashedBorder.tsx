@@ -1,6 +1,6 @@
 export function DashedBorder() {
   return (
-    <svg className="absolute inset-0 w-full h-full pointer-events-none">
+    <svg className="pointer-events-none absolute inset-0 h-full w-full">
       <rect
         x="1"
         y="1"

@@ -50,7 +50,7 @@ export function StudentManagementFilterPanel({
           <button
             type="button"
             onClick={onResetFilters}
-            className="cursor-pointer text-text-4 text-sub-1 transition-colors hover:text-p-1"
+            className="text-text-4 text-sub-1 hover:text-p-1 cursor-pointer transition-colors"
           >
             초기화
           </button>

@@ -82,13 +82,13 @@ export function ClubApplicationListSection({
     (canViewApplications && isApplicationLoading)
   ) {
     return (
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
-          <div className="h-6 w-32 animate-pulse rounded bg-sub-4" />
-          <div className="h-5 w-48 animate-pulse rounded bg-sub-4" />
+      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+        <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
+          <div className="bg-sub-4 h-6 w-32 animate-pulse rounded" />
+          <div className="bg-sub-4 h-5 w-48 animate-pulse rounded" />
           <div className="flex flex-col gap-4">
-            <div className="h-[180px] w-full animate-pulse rounded-xl bg-sub-4" />
-            <div className="h-[180px] w-full animate-pulse rounded-xl bg-sub-4" />
+            <div className="bg-sub-4 h-[180px] w-full animate-pulse rounded-xl" />
+            <div className="bg-sub-4 h-[180px] w-full animate-pulse rounded-xl" />
           </div>
         </div>
       </div>
@@ -103,10 +103,10 @@ export function ClubApplicationListSection({
     !applicationList
   ) {
     return (
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+        <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
           <Club isActive={false} size={32} />
-          <p className="text-center text-text-1 text-main-text">
+          <p className="text-text-1 text-main-text text-center">
             {isDetailError || !detail
               ? "존재하지 않는 동아리입니다."
               : !canViewApplications
@@ -119,8 +119,8 @@ export function ClubApplicationListSection({
   }
 
   return (
-    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-      <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
         <div className="flex items-center gap-2">
           <Club isActive={false} size={20} />
           <span className="text-text-1 text-main-text">동아리 신청자 목록</span>
@@ -134,7 +134,7 @@ export function ClubApplicationListSection({
         </div>
 
         {applicationList.applications.length === 0 ? (
-          <div className="flex h-[320px] items-center justify-center rounded-2xl border border-dashed border-sub-3 bg-background">
+          <div className="border-sub-3 bg-background flex h-[320px] items-center justify-center rounded-2xl border border-dashed">
             <p className="text-text-2 text-sub-1">아직 신청자가 없어요.</p>
           </div>
         ) : (
@@ -142,7 +142,7 @@ export function ClubApplicationListSection({
             {applicationList.applications.map((application, index) => (
               <article
                 key={application.submissionId}
-                className="flex flex-col gap-5 rounded-2xl border border-sub-3 bg-background p-5"
+                className="border-sub-3 bg-background flex flex-col gap-5 rounded-2xl border p-5"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex flex-col gap-1">
@@ -182,12 +182,12 @@ export function ClubApplicationListSection({
                   {application.answers.map((answer) => (
                     <div
                       key={`${application.submissionId}-${answer.fieldId}`}
-                      className="flex flex-col gap-1 rounded-xl bg-background-surface p-4"
+                      className="bg-background-surface flex flex-col gap-1 rounded-xl p-4"
                     >
                       <span className="text-caption-1 text-sub-1">
                         {answer.label}
                       </span>
-                      <p className="wrap-break-word text-text-3 text-main-text">
+                      <p className="text-text-3 text-main-text wrap-break-word">
                         {answer.value?.trim() || "미입력"}
                       </p>
                     </div>

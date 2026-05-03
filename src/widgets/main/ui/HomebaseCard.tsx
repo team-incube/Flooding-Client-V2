@@ -89,16 +89,16 @@ export default function HomebaseCard({
   };
 
   return (
-    <div className="flex w-full flex-col rounded-2xl bg-background-surface p-6">
+    <div className="bg-background-surface flex w-full flex-col rounded-2xl p-6">
       <div className="flex items-center gap-1">
         <HomeBase />
-        <span className="text-text-1 font-semibold text-main-text">
+        <span className="text-text-1 text-main-text font-semibold">
           홈베이스
         </span>
       </div>
 
       <div className="mt-4 flex items-center gap-3">
-        <span className="text-text-3 font-medium text-sub-1">층</span>
+        <span className="text-text-3 text-sub-1 font-medium">층</span>
         {FLOORS.map(({ value, label }) => (
           <TextButton
             key={value}
@@ -109,7 +109,7 @@ export default function HomebaseCard({
           </TextButton>
         ))}
 
-        <span className="text-text-3 font-medium text-sub-1">교시</span>
+        <span className="text-text-3 text-sub-1 font-medium">교시</span>
         {PERIODS.map((period) => (
           <TextButton
             key={period}
@@ -136,7 +136,7 @@ export default function HomebaseCard({
                 onKeyDown={handleNameKeyDown}
                 rightIcon={<Search />}
               />
-              <div className="absolute left-0 right-0 top-full z-10 mt-1">
+              <div className="absolute top-full right-0 left-0 z-10 mt-1">
                 <StudentSearch
                   filteredStudents={filteredStudents}
                   isFull={isStudentFull}
@@ -151,9 +151,9 @@ export default function HomebaseCard({
                 value={reason}
                 maxLength={20}
                 onChange={(event) => handleReasonChange(event.target.value)}
-                className="h-30 w-full resize-none rounded-lg border border-sub-2 bg-background-surface p-4 text-main-text outline-none transition-all caret-p-1 placeholder:text-sub-2 focus:border-sub-1"
+                className="border-sub-2 bg-background-surface text-main-text caret-p-1 placeholder:text-sub-2 focus:border-sub-1 h-30 w-full resize-none rounded-lg border p-4 transition-all outline-none"
               />
-              <span className="text-right text-size-caption-1 text-sub-2">
+              <span className="text-size-caption-1 text-sub-2 text-right">
                 {reason.length}/20
               </span>
             </div>
@@ -187,11 +187,11 @@ export default function HomebaseCard({
 
       {showMyReservationStatus && (
         <div className="mt-4 flex flex-col gap-3">
-          <span className="text-text-2 font-semibold text-main-text">
+          <span className="text-text-2 text-main-text font-semibold">
             내 예약현황
           </span>
           {isLoading ? (
-            <div className="h-16 w-full animate-pulse rounded-xl bg-background-surface" />
+            <div className="bg-background-surface h-16 w-full animate-pulse rounded-xl" />
           ) : myReservationItems.length > 0 ? (
             <div className="flex flex-wrap gap-3">
               {myReservationItems.map(({ reservationId, reservation }) => (
@@ -213,15 +213,15 @@ export default function HomebaseCard({
 
       {showAllReservationStatus && (
         <div className="mt-4 flex flex-col gap-4">
-          <span className="text-text-2 font-semibold text-main-text">
+          <span className="text-text-2 text-main-text font-semibold">
             예약현황
           </span>
           <div className="flex flex-wrap items-start gap-3">
             {isLoading ? (
               <>
-                <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
-                <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
-                <div className="h-16 w-48 animate-pulse rounded-xl bg-background-surface" />
+                <div className="bg-background-surface h-16 w-48 animate-pulse rounded-xl" />
+                <div className="bg-background-surface h-16 w-48 animate-pulse rounded-xl" />
+                <div className="bg-background-surface h-16 w-48 animate-pulse rounded-xl" />
               </>
             ) : othersReservations.length === 0 ? (
               <span className="text-text-3 text-sub-2">

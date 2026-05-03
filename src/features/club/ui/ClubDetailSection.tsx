@@ -94,15 +94,15 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
 
   if (isLoading || isUserLoading) {
     return (
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+        <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
           <div className="flex items-center gap-2">
-            <div className="h-5 w-5 animate-pulse rounded bg-sub-4" />
-            <div className="h-5 w-16 animate-pulse rounded bg-sub-4" />
+            <div className="bg-sub-4 h-5 w-5 animate-pulse rounded" />
+            <div className="bg-sub-4 h-5 w-16 animate-pulse rounded" />
           </div>
-          <div className="h-40 w-full animate-pulse rounded-xl bg-sub-4" />
-          <div className="h-6 w-32 animate-pulse rounded bg-sub-4" />
-          <div className="h-24 w-full animate-pulse rounded-xl bg-sub-4" />
+          <div className="bg-sub-4 h-40 w-full animate-pulse rounded-xl" />
+          <div className="bg-sub-4 h-6 w-32 animate-pulse rounded" />
+          <div className="bg-sub-4 h-24 w-full animate-pulse rounded-xl" />
         </div>
       </div>
     );
@@ -120,8 +120,8 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
 
   return (
     <>
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+        <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
           <div className="flex items-center gap-2">
             <Club isActive={false} size={20} />
             <span className="text-text-1 text-main-text">동아리</span>

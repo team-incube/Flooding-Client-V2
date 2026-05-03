@@ -109,7 +109,7 @@ export function StudentManagementSection() {
   ).length;
 
   return (
-    <section className="flex flex-col gap-4 rounded-2xl bg-background-surface p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
+    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-1">
           <Student isActive />

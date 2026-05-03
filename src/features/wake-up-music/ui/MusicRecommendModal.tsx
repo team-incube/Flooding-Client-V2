@@ -43,8 +43,8 @@ export function MusicRecommendModal({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-background/40 z-50">
-      <div className="flex flex-col gap-6 bg-background-surface rounded-2xl p-6 w-[90%] max-w-[1152px] min-h-[447px]">
+    <div className="bg-background/40 fixed inset-0 z-50 flex items-center justify-center">
+      <div className="bg-background-surface flex min-h-[447px] w-[90%] max-w-[1152px] flex-col gap-6 rounded-2xl p-6">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1">
@@ -63,12 +63,12 @@ export function MusicRecommendModal({
           </span>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto min-h-[203px]">
+        <div className="flex min-h-[203px] gap-3 overflow-x-auto">
           {isPending
             ? Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="w-90 h-[203px] bg-sub-4 rounded-xl shrink-0 animate-pulse"
+                  className="bg-sub-4 h-[203px] w-90 shrink-0 animate-pulse rounded-xl"
                 />
               ))
             : displayCards.map((card) => (

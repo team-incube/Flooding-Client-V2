@@ -11,7 +11,7 @@ export default function RetryButton({ onClick, count, max }: RetryButtonProps) {
     <button
       onClick={onClick}
       disabled={count === max}
-      className="flex flex-col items-center cursor-pointer"
+      className="flex cursor-pointer flex-col items-center"
     >
       <Retry />
       <span className="text-sub-2">
