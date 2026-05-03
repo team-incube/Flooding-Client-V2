@@ -18,9 +18,21 @@ export async function POST(request: NextRequest) {
 
     const response = await serverInstance.post(reissueUrl, reissueBody);
 
-    return NextResponse.json(response.data, {
-      status: response.status,
-    });
+    const newRefreshToken = response.data.data?.refreshToken;
+
+    const res = NextResponse.json(response.data, { status: response.status });
+
+    if (newRefreshToken) {
+      res.cookies.set("refresh_token", newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/api/auth",
+        maxAge: 60 * 60 * 24 * 14,
+      });
+    }
+
+    return res;
   } catch (error) {
     const fallbackBody = { error: "Internal Server Error" };
 
