@@ -51,14 +51,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - name: Check changed files with Prettier
-        run: |
-          files=$(git diff --name-only --diff-filter=ACMR origin/${{ github.base_ref }}...HEAD)
-          if [ -z "$files" ]; then
-            echo "No changed files to check."
-            exit 0
-          fi
-          npx prettier --check --ignore-unknown $files
+      - run: npm run format:check
 
   # ─────────────────────────────────────────────
   # 4. Next.js 빌드 (lint + type-check + format-check 통과 후)
