@@ -79,6 +79,7 @@ export const MOCK_CLUB_DETAILS: Record<number, ClubDetailResponse> = {
       name: '인력사무소',
       type: 'MAJOR_CLUB',
       leader: '김민솔',
+      leaderId: 1,
       description: '조보기능/프론트 노동기능을 갖춘 선후배 팀원이 함께하는 개발 동아리',
       imageUrl: undefined,
       maxMember: 30,

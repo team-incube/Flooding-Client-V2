@@ -38,7 +38,11 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
 
   const { data: detail, isLoading, isError, error } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
-  const isLeader = !!user && user.name === detail?.club.leader;
+  const isLeader = !!user && (
+    detail?.club.leaderId !== undefined
+      ? user.id === detail.club.leaderId
+      : user.name === detail?.club.leader
+  );
   const canCreateForm = detail?.club.type === "MAJOR_CLUB" && isLeader;
   const canViewApplications =
     !!detail &&
