@@ -5,6 +5,7 @@ import {
   MOCK_CLUB_DETAILS,
   MOCK_CLUB_FORMS,
 } from '../model/mock';
+import { MOCK_STUDENTS } from '@/entities/user/model/mock';
 import type { CreateClubFormRequest } from '../model/club';
 
 const MAJOR_CLUBS = MOCK_CLUBS.filter((c) => c.type === 'MAJOR_CLUB');
@@ -204,6 +205,70 @@ export const clubHandlers = [
       message: 'OK',
     }),
   ),
+
+  http.post('*/clubs/:clubId/member/:userId', ({ params }) => {
+    const clubId = Number(params.clubId);
+    const userId = Number(params.userId);
+    const detail = MOCK_CLUB_DETAILS[clubId];
+
+    if (!detail) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '동아리 없음' },
+        { status: 404 },
+      );
+    }
+
+    const alreadyMember = detail.members.some((m) => m.id === userId);
+    if (alreadyMember) {
+      return HttpResponse.json(
+        { status: 'CONFLICT', code: 409, message: '이미 멤버입니다.' },
+        { status: 409 },
+      );
+    }
+
+    const student = MOCK_STUDENTS.find((s) => s.id === userId);
+    if (!student) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '유저를 찾을 수 없습니다.' },
+        { status: 404 },
+      );
+    }
+
+    detail.members.push({
+      id: student.id,
+      name: student.name,
+      studentNumber: student.studentNumber,
+      sex: student.sex,
+      specialty: student.specialty,
+    });
+
+    return HttpResponse.json({
+      status: 'OK',
+      code: 200,
+      message: 'OK',
+    });
+  }),
+
+  http.delete('*/clubs/:clubId/member/exile/:userId', ({ params }) => {
+    const clubId = Number(params.clubId);
+    const userId = Number(params.userId);
+    const detail = MOCK_CLUB_DETAILS[clubId];
+
+    if (!detail) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '동아리 없음' },
+        { status: 404 },
+      );
+    }
+
+    detail.members = detail.members.filter((m) => m.id !== userId);
+
+    return HttpResponse.json({
+      status: 'OK',
+      code: 200,
+      message: 'OK',
+    });
+  }),
 
   http.patch('*/clubs/:id/transfer/:targetUserId', ({ params }) => {
     const id = Number(params.id);
