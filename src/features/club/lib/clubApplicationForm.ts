@@ -4,7 +4,10 @@ import type {
 } from "@/entities/club/model/club";
 
 export type ClubApplicationFieldValue = string | string[];
-export type ClubApplicationFormValues = Record<number, ClubApplicationFieldValue>;
+export type ClubApplicationFormValues = Record<
+  number,
+  ClubApplicationFieldValue
+>;
 
 export function getSortedClubFormFields(
   fields: ClubFormField[],

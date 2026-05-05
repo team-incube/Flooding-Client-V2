@@ -3,13 +3,17 @@
 import { useQuery } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
 import Search from "@/shared/asset/svg/Search";
-import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
+import { isManagementRole } from "@/entities/user/lib/userRole";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
+import { useCheckStudyAttendance } from "../model/useCheckStudyAttendance";
+import { useStudyAttendanceSubscription } from "../model/useStudyAttendanceSubscription";
+import { StudyApplicantCard } from "./StudyApplicantCard";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
@@ -17,10 +21,21 @@ const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 export function SelfStudySection() {
   const studyQuery = dormitoryQueries.study();
   const { data: students = [] } = useQuery(studyQuery);
+  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
   const applyMutation = useApplyStudy();
+  const isStudyBanned = user?.isBanned === true;
+  const isApplyDisabled =
+    isUserLoading || isStudyBanned || applyMutation.isPending;
+  const canManageStudy = isManagementRole(user?.role);
+  const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
+    user?.role,
+  );
+  const checkAttendanceMutation = useCheckStudyAttendance({
+    onChecked: markChecked,
+  });
 
   const handleResetFilters = () => dispatch({ type: "RESET" });
   const handleSearchQueryChange = (value: string) =>
@@ -34,10 +49,24 @@ export function SelfStudySection() {
       type: "SET_GENDER",
       payload: selectedGender === gender ? null : gender,
     });
-  const handleApplyStudy = () => applyMutation.mutate();
+  const handleApplyStudy = () => {
+    if (isApplyDisabled) {
+      return;
+    }
+
+    applyMutation.mutate();
+  };
+
+  const handleCheckAttendance = (studentId: number) => {
+    if (!canManageStudy) {
+      return;
+    }
+
+    checkAttendanceMutation.mutate(studentId);
+  };
 
   return (
-    <section className="bg-background-surface rounded-2xl p-6 flex flex-col gap-4">
+    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6">
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-1">
           <ApplyStudy />
@@ -52,25 +81,35 @@ export function SelfStudySection() {
       </div>
 
       <div className="flex gap-6">
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap gap-4 max-h-125 overflow-y-auto">
+        <div className="min-w-0 flex-1">
+          <div className="flex max-h-125 flex-wrap gap-4 overflow-y-auto">
             {filteredStudents.map((student, index) => (
-              <ProfileCard
-                key={student.studentNumber}
+              <StudyApplicantCard
+                key={student.userId}
                 index={index + 1}
                 student={student}
+                isChecked={
+                  student.isChecked === true ||
+                  checkedStudentIds.includes(student.userId)
+                }
+                isPending={
+                  checkAttendanceMutation.isPending &&
+                  checkAttendanceMutation.variables === student.userId
+                }
+                canCheck={canManageStudy}
+                onCheck={handleCheckAttendance}
               />
             ))}
           </div>
         </div>
 
-        <div className="w-[330px] shrink-0 flex flex-col gap-4">
+        <div className="flex w-[330px] shrink-0 flex-col gap-4">
           <div className="flex items-center justify-between">
             <span className="text-main-text text-text-2">필터</span>
             <button
               type="button"
               onClick={handleResetFilters}
-              className="text-sub-1 text-caption-2 cursor-pointer hover:text-p-1 transition-colors"
+              className="text-sub-1 text-caption-2 hover:text-p-1 cursor-pointer transition-colors"
             >
               초기화
             </button>
@@ -142,11 +181,22 @@ export function SelfStudySection() {
           <div className="flex-1" />
 
           <TextButton
-            variant="filled"
+            variant={
+              isStudyBanned
+                ? "negative"
+                : isApplyDisabled
+                  ? "disabled"
+                  : "filled"
+            }
             size="wide"
+            disabled={isApplyDisabled}
             onClick={handleApplyStudy}
           >
-            신청하기
+            {isStudyBanned
+              ? "자습 금지를 당했어요!"
+              : isUserLoading
+                ? "확인 중"
+                : "신청하기"}
           </TextButton>
 
           <p className="text-sub-2 text-caption-2">

@@ -1,5 +1,5 @@
-import { ClubSection } from "@/features/club/ui/ClubSection";
+import { ClubSectionBoundary } from "@/features/club/ui/ClubSection";
 
 export default function ClubPage() {
-  return <ClubSection />;
+  return <ClubSectionBoundary />;
 }

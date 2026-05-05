@@ -1,13 +1,18 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { instance } from "@/shared/api/instance";
+import { TextButton } from "@/shared/ui/Button/TextButton";
+
+type CallbackStatus = "loading" | "error";
 
 function CallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const didRun = useRef(false);
+  const [status, setStatus] = useState<CallbackStatus>("loading");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (didRun.current) return;
@@ -16,7 +21,8 @@ function CallbackInner() {
     const code = searchParams.get("code");
 
     if (!code) {
-      router.replace("/signin");
+      setStatus("error");
+      setErrorMessage("로그인 인증 코드가 없어요. 다시 로그인해주세요.");
       return;
     }
 
@@ -27,21 +33,58 @@ function CallbackInner() {
         });
         const accessToken = data.data?.accessToken ?? data.accessToken;
 
+        if (!accessToken) {
+          throw new Error("access token missing");
+        }
+
         sessionStorage.setItem("access_token", accessToken);
 
         router.replace("/");
       } catch {
-        router.replace("/signin");
+        setStatus("error");
+        setErrorMessage("로그인 처리에 실패했어요. 다시 로그인해주세요.");
       }
     })();
   }, [router, searchParams]);
 
-  return <div>로그인 처리 중...</div>;
+  if (status === "error") {
+    return (
+      <div className="bg-background flex h-screen items-center justify-center">
+        <div className="bg-background-surface flex w-[360px] flex-col gap-4 rounded-2xl p-6">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-title-3 text-main-text">로그인 실패</h1>
+            <p className="text-text-3 text-sub-1">{errorMessage}</p>
+          </div>
+          <TextButton
+            variant="filled"
+            size="wide"
+            onClick={() => router.replace("/signin")}
+          >
+            다시 로그인
+          </TextButton>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-background flex h-screen items-center justify-center">
+      <div className="bg-background-surface text-title-3 text-main-text rounded-2xl p-12">
+        로그인 처리 중...
+      </div>
+    </div>
+  );
 }
 
 export default function Callback() {
   return (
-    <Suspense fallback={<div>로딩 중...</div>}>
+    <Suspense
+      fallback={
+        <div className="bg-background text-text-3 text-main-text flex h-screen items-center justify-center">
+          로딩 중...
+        </div>
+      }
+    >
       <CallbackInner />
     </Suspense>
   );

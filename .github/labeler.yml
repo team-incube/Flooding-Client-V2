@@ -1,6 +1,13 @@
 "📩 Type: Feature/Function":
   - head-branch:
-      ["^feat/.+", "^feature/.+", "^change/.+", "^refactor/.+", "^chore/.+", "^ci/.+"]
+      [
+        "^feat/.+",
+        "^feature/.+",
+        "^change/.+",
+        "^refactor/.+",
+        "^chore/.+",
+        "^ci/.+",
+      ]
 
 "🐞 Type: Bug/Function":
   - head-branch: ["^fix/.+", "^hotfix/.+", "^bugfix/.+"]

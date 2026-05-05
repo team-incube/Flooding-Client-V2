@@ -13,13 +13,10 @@ export function SidebarMenu({ title, isActive, href, icon }: SidebarMenuProps) {
   return (
     <Link href={href}>
       <div
-        className={`
-          group flex items-center justify-center lg:justify-start h-14 w-full rounded-2xl py-3 lg:px-4 transition-all cursor-pointer
-          ${isActive ? "bg-p-2" : "bg-transparent hover:bg-p-2"}
-        `}
+        className={`group flex h-14 w-full cursor-pointer items-center justify-center rounded-2xl py-3 transition-all lg:justify-start lg:px-4 ${isActive ? "bg-p-2" : "hover:bg-p-2 bg-transparent"} `}
       >
-        <div className="flex items-center gap-6">
-          <div className="relative flex shrink-0 items-center justify-center">
+        <div className="flex items-center justify-center lg:grid lg:w-full lg:grid-cols-[32px_minmax(0,1fr)] lg:gap-6">
+          <div className="relative flex h-8 w-8 shrink-0 items-center justify-center">
             {isActive ? (
               icon(true)
             ) : (
@@ -30,10 +27,7 @@ export function SidebarMenu({ title, isActive, href, icon }: SidebarMenuProps) {
             )}
           </div>
           <span
-            className={`
-              hidden lg:block text-text-1 transition-all
-              ${isActive ? "text-p-1" : "text-sub-2 group-hover:text-p-1"}
-            `}
+            className={`text-text-1 hidden transition-all lg:block ${isActive ? "text-p-1" : "text-sub-2 group-hover:text-p-1"} `}
           >
             {title}
           </span>

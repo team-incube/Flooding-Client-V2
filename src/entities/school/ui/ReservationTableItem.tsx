@@ -20,8 +20,8 @@ export function ReservationTableItem({
   const { tableName, floor, members, periods, reason } = reservation;
 
   return (
-    <div className="w-82.5 border border-sub-2 rounded-lg p-4 flex flex-col">
-      <div className="flex items-center justify-between mb-2">
+    <div className="border-sub-2 flex w-82.5 flex-col rounded-lg border p-4">
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-text-3 text-main-text">{tableName}</span>
           <span className="text-caption-1 text-sub-1">{floor}</span>
@@ -30,7 +30,7 @@ export function ReservationTableItem({
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
-            className="cursor-pointer text-negative"
+            className="text-negative cursor-pointer"
           >
             <Delete />
           </button>
@@ -42,19 +42,19 @@ export function ReservationTableItem({
           <button
             type="button"
             onClick={() => setMenuOpen(false)}
-            className="flex items-center justify-center gap-2 py-3 cursor-pointer"
+            className="flex cursor-pointer items-center justify-center gap-2 py-3"
           >
             <span className="text-text-3 text-main-text">돌아가기</span>
             <Back direction="right" />
           </button>
-          <div className="h-px bg-sub-3" />
+          <div className="bg-sub-3 h-px" />
           <button
             type="button"
             onClick={() => {
               onDelete?.();
               setMenuOpen(false);
             }}
-            className="flex items-center justify-center gap-2 py-3 cursor-pointer"
+            className="flex cursor-pointer items-center justify-center gap-2 py-3"
           >
             <span className="text-text-3 text-negative">삭제하기</span>
             <div className="text-negative">

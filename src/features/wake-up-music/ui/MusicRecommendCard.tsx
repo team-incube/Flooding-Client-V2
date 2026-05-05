@@ -18,13 +18,13 @@ export default function MusicRecommendCard({
 }: MusicRecommendCardProps) {
   return (
     <div onClick={onChange} className="cursor-pointer">
-      <div className="relative w-90 h-[203px] bg-sub-4 rounded-xl shrink-0">
+      <div className="bg-sub-4 relative h-[203px] w-90 shrink-0 rounded-xl">
         {thumbnailUrl && (
           <Image
             src={thumbnailUrl}
             alt={title}
             fill
-            className="object-cover rounded-xl"
+            className="rounded-xl object-cover"
           />
         )}
 

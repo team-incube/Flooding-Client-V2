@@ -21,8 +21,8 @@ export function ClubTransferModal({
   if (!open || !targetMember) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-background/40 z-50">
-      <div className="flex flex-col gap-6 bg-background-surface rounded-2xl p-6 w-[90%] max-w-sm">
+    <div className="bg-background/40 fixed inset-0 z-50 flex items-center justify-center">
+      <div className="bg-background-surface flex w-[90%] max-w-sm flex-col gap-6 rounded-2xl p-6">
         <span className="text-main-text text-text-1">소유권 위임</span>
         <p className="text-text-2 text-sub-1">
           <span className="text-p-1">{targetMember.name}</span>

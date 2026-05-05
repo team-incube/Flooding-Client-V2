@@ -1,22 +1,18 @@
 import { getClassNumber, getGrade } from "@/entities/user/lib/getUserInfo";
-import type { DormitoryStudent } from "@/entities/dormitory/model/dormitory";
+import type { StudyApplicant } from "@/entities/dormitory/model/dormitory";
 import type { FilterState } from "../model/studyFilterReducer";
 
 interface FilterStudyStudentsParams {
   filterState: FilterState;
-  students: DormitoryStudent[];
+  students: StudyApplicant[];
 }
 
 export function filterStudyStudents({
   filterState,
   students,
-}: FilterStudyStudentsParams): DormitoryStudent[] {
-  const {
-    searchQuery,
-    selectedGrades,
-    selectedClasses,
-    selectedGender,
-  } = filterState;
+}: FilterStudyStudentsParams): StudyApplicant[] {
+  const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
+    filterState;
 
   return students.filter((student) => {
     const matchesSearchQuery =
@@ -29,14 +25,8 @@ export function filterStudyStudents({
     const matchesClass =
       selectedClasses.length === 0 ||
       selectedClasses.includes(getClassNumber(student.studentNumber));
-    const matchesGender =
-      !selectedGender || student.sex === selectedGender;
+    const matchesGender = !selectedGender || student.sex === selectedGender;
 
-    return (
-      matchesSearchQuery &&
-      matchesGrade &&
-      matchesClass &&
-      matchesGender
-    );
+    return matchesSearchQuery && matchesGrade && matchesClass && matchesGender;
   });
 }

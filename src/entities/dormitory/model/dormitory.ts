@@ -1,8 +1,23 @@
-import type { User } from '@/entities/user/model/user';
-import type { Music } from '@/entities/music/model/music';
+import type { Sex } from "@/entities/user/model/user";
+import type { Music } from "@/entities/music/model/music";
 
-export type DormitoryStudent = User;
 export type DormitoryMusic = Music;
+
+export interface DormitoryStudent {
+  order: number;
+  name: string;
+  studentNumber: number;
+  sex: Sex;
+}
+
+export interface StudyApplicant {
+  userId: number;
+  name: string;
+  studentNumber: number;
+  sex: Sex;
+  isBanned: boolean;
+  isChecked: boolean;
+}
 
 export interface MusicApplyRequest {
   musicUrl: string;

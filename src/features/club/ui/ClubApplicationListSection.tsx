@@ -1,11 +1,16 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import {
+  ClientQueryBoundary,
+  type QueryErrorFallbackProps,
+} from "@/shared/ui/QueryErrorBoundary";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { useApproveClubApplication } from "../model/useApproveClubApplication";
 
 interface ClubApplicationListSectionProps {
@@ -52,68 +57,80 @@ function getErrorMessage(error: unknown) {
   return "신청자 목록을 불러오지 못했어요.";
 }
 
-export function ClubApplicationListSection({
+const ClubApplicationListSection = ({
   id,
-}: ClubApplicationListSectionProps) {
+}: ClubApplicationListSectionProps) => {
+  return <ClubApplicationListContent id={id} />;
+};
+
+function ClubApplicationListSectionLoading() {
+  return (
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-5 w-48" />
+        <div className="flex flex-col gap-4">
+          <Skeleton className="h-[180px] w-full rounded-xl" />
+          <Skeleton className="h-[180px] w-full rounded-xl" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ClubApplicationListSectionError({
+  error,
+  resetErrorBoundary,
+}: QueryErrorFallbackProps) {
+  return (
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+      <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
+        <Club isActive={false} size={32} />
+        <p className="text-text-1 text-main-text text-center">
+          {getErrorMessage(error)}
+        </p>
+        <TextButton variant="outlined" size="fit" onClick={resetErrorBoundary}>
+          다시 시도
+        </TextButton>
+      </div>
+    </div>
+  );
+}
+
+function ClubApplicationListSectionEmpty() {
+  return (
+    <div className="border-sub-3 bg-background flex h-[320px] items-center justify-center rounded-2xl border border-dashed">
+      <p className="text-text-2 text-sub-1">아직 신청자가 없어요.</p>
+    </div>
+  );
+}
+
+function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
   const approveMutation = useApproveClubApplication(id);
-  const {
-    data: detail,
-    isLoading: isDetailLoading,
-    isError: isDetailError,
-  } = useQuery(clubQueries.detail(id));
-  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
+  const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
+  const { data: user } = useSuspenseQuery(userQueries.me());
   const isLeader = !!user && user.name === detail?.club.leader;
   const canViewApplications =
     !!detail &&
-    (isLeader ||
-      user?.role === "ADMIN" ||
-      user?.role === "STUDENT_COUNCIL");
-  const {
-    data: applicationList,
-    isLoading: isApplicationLoading,
-    isError: isApplicationError,
-    error,
-  } = useQuery({
-    ...clubQueries.applicationList(id),
-    enabled: canViewApplications,
+    (isLeader || user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL");
+  const applicationListQuery = clubQueries.applicationList(id);
+  const { data: applicationList } = useSuspenseQuery({
+    ...applicationListQuery,
+    queryKey: canViewApplications
+      ? applicationListQuery.queryKey
+      : ["club", "applications", "permission-denied", id],
+    queryFn: canViewApplications
+      ? applicationListQuery.queryFn
+      : () => Promise.resolve({ applications: [] }),
   });
 
-  if (
-    isDetailLoading ||
-    isUserLoading ||
-    (canViewApplications && isApplicationLoading)
-  ) {
+  if (!canViewApplications) {
     return (
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
-          <div className="h-6 w-32 animate-pulse rounded bg-sub-4" />
-          <div className="h-5 w-48 animate-pulse rounded bg-sub-4" />
-          <div className="flex flex-col gap-4">
-            <div className="h-[180px] w-full animate-pulse rounded-xl bg-sub-4" />
-            <div className="h-[180px] w-full animate-pulse rounded-xl bg-sub-4" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (
-    isDetailError ||
-    !detail ||
-    !canViewApplications ||
-    isApplicationError ||
-    !applicationList
-  ) {
-    return (
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+        <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
           <Club isActive={false} size={32} />
-          <p className="text-center text-text-1 text-main-text">
-            {isDetailError || !detail
-              ? "존재하지 않는 동아리입니다."
-              : !canViewApplications
-                ? "신청자 목록을 조회할 권한이 없어요."
-                : getErrorMessage(error)}
+          <p className="text-text-1 text-main-text text-center">
+            신청자 목록을 조회할 권한이 없어요.
           </p>
         </div>
       </div>
@@ -121,8 +138,8 @@ export function ClubApplicationListSection({
   }
 
   return (
-    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-      <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
         <div className="flex items-center gap-2">
           <Club isActive={false} size={20} />
           <span className="text-text-1 text-main-text">동아리 신청자 목록</span>
@@ -136,15 +153,13 @@ export function ClubApplicationListSection({
         </div>
 
         {applicationList.applications.length === 0 ? (
-          <div className="flex h-[320px] items-center justify-center rounded-2xl border border-dashed border-sub-3 bg-background">
-            <p className="text-text-2 text-sub-1">아직 신청자가 없어요.</p>
-          </div>
+          <ClubApplicationListSection.Empty />
         ) : (
           <div className="flex flex-col gap-4">
             {applicationList.applications.map((application, index) => (
               <article
                 key={application.submissionId}
-                className="flex flex-col gap-5 rounded-2xl border border-sub-3 bg-background p-5"
+                className="border-sub-3 bg-background flex flex-col gap-5 rounded-2xl border p-5"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex flex-col gap-1">
@@ -184,12 +199,12 @@ export function ClubApplicationListSection({
                   {application.answers.map((answer) => (
                     <div
                       key={`${application.submissionId}-${answer.fieldId}`}
-                      className="flex flex-col gap-1 rounded-xl bg-background-surface p-4"
+                      className="bg-background-surface flex flex-col gap-1 rounded-xl p-4"
                     >
                       <span className="text-caption-1 text-sub-1">
                         {answer.label}
                       </span>
-                      <p className="wrap-break-word text-text-3 text-main-text">
+                      <p className="text-text-3 text-main-text wrap-break-word">
                         {answer.value?.trim() || "미입력"}
                       </p>
                     </div>
@@ -203,3 +218,22 @@ export function ClubApplicationListSection({
     </div>
   );
 }
+
+ClubApplicationListSection.Loading = ClubApplicationListSectionLoading;
+ClubApplicationListSection.Error = ClubApplicationListSectionError;
+ClubApplicationListSection.Empty = ClubApplicationListSectionEmpty;
+
+function ClubApplicationListSectionBoundary({
+  id,
+}: ClubApplicationListSectionProps) {
+  return (
+    <ClientQueryBoundary
+      loadingFallback={<ClubApplicationListSection.Loading />}
+      errorFallback={ClubApplicationListSection.Error}
+    >
+      <ClubApplicationListSection id={id} />
+    </ClientQueryBoundary>
+  );
+}
+
+export { ClubApplicationListSection, ClubApplicationListSectionBoundary };

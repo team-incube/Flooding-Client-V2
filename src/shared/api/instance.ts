@@ -15,6 +15,8 @@ const authPathsWithoutRefresh = [
   "/api/auth/signout",
 ];
 
+let refreshPromise: Promise<string> | null = null;
+
 instance.interceptors.request.use((config) => {
   if (config.url?.startsWith("/api/")) {
     config.baseURL = undefined;
@@ -46,9 +48,23 @@ instance.interceptors.response.use(
       originalRequest._retried = true;
 
       try {
-        const { data } = await axios.post("/api/auth/refresh");
-        const accessToken = data.data?.accessToken ?? data.accessToken;
-        sessionStorage.setItem("access_token", accessToken);
+        if (!refreshPromise) {
+          refreshPromise = axios
+            .post("/api/auth/refresh")
+            .then(({ data }) => {
+              const token = data.data?.accessToken;
+              if (!token) {
+                throw new Error("Access token is missing");
+              }
+              sessionStorage.setItem("access_token", token);
+              return token;
+            })
+            .finally(() => {
+              refreshPromise = null;
+            });
+        }
+
+        const accessToken = await refreshPromise;
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return instance(originalRequest);
       } catch {

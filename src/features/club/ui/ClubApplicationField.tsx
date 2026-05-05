@@ -74,7 +74,7 @@ export function ClubApplicationField({
             return (
               <label
                 key={option.optionId}
-                className={`flex h-[43px] cursor-pointer items-center justify-center rounded-lg border px-4 text-text-4 transition-all ${optionStyles[state]}`}
+                className={`text-text-4 flex h-[43px] cursor-pointer items-center justify-center rounded-lg border px-4 transition-all ${optionStyles[state]}`}
               >
                 <input
                   type="radio"
@@ -100,7 +100,7 @@ export function ClubApplicationField({
             return (
               <label
                 key={option.optionId}
-                className={`flex h-[43px] cursor-pointer items-center justify-center rounded-lg border px-4 text-text-4 transition-all ${optionStyles[state]}`}
+                className={`text-text-4 flex h-[43px] cursor-pointer items-center justify-center rounded-lg border px-4 transition-all ${optionStyles[state]}`}
               >
                 <input
                   type="checkbox"
