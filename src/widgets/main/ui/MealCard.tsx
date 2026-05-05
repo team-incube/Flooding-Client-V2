@@ -47,7 +47,7 @@ function formatParamDate(date: Date): string {
 
 function MealCardLoading() {
   return (
-    <div className="flex h-[300px] w-full flex-col rounded-2xl bg-background-surface p-6 lg:h-[498px]">
+    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-6 lg:h-[498px]">
       <div className="mb-4 flex items-center justify-between">
         <Skeleton className="h-6 w-20" />
         <Skeleton className="h-5 w-28" />
@@ -64,13 +64,13 @@ function MealCardLoading() {
 
 function MealCardError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="flex h-[300px] w-full flex-col rounded-2xl bg-background-surface p-6 lg:h-[498px]">
+    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-6 lg:h-[498px]">
       <div className="mb-4 flex items-center gap-1">
         <Bowl />
-        <span className="text-text-1 font-semibold text-main-text">급식표</span>
+        <span className="text-text-1 text-main-text font-semibold">급식표</span>
       </div>
       <div className="flex flex-1 flex-col items-center justify-center gap-3">
-        <span className="text-text-3 font-medium text-negative">
+        <span className="text-text-3 text-negative font-medium">
           급식을 불러오지 못했습니다.
         </span>
         <TextButton variant="outlined" size="fit" onClick={resetErrorBoundary}>
@@ -84,7 +84,7 @@ function MealCardError({ resetErrorBoundary }: QueryErrorFallbackProps) {
 function MealCardEmpty() {
   return (
     <div className="flex flex-1 items-center justify-center">
-      <span className="text-text-3 font-medium text-sub-1">
+      <span className="text-text-3 text-sub-1 font-medium">
         급식 정보가 없습니다.
       </span>
     </div>
@@ -107,15 +107,15 @@ const MealCard = () => {
   const menuItems = selectedMeal?.menus ?? [];
 
   return (
-    <div className="w-full h-[300px] lg:h-[498px] bg-background-surface rounded-2xl p-6 flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-6 lg:h-[498px]">
+      <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Bowl />
-          <span className="text-text-1 font-semibold text-main-text">
+          <span className="text-text-1 text-main-text font-semibold">
             급식표
           </span>
         </div>
-        <div className="flex items-center gap-2 text-text-3 text-sub-1 font-medium">
+        <div className="text-text-3 text-sub-1 flex items-center gap-2 font-medium">
           <button
             type="button"
             className="cursor-pointer"
@@ -134,13 +134,13 @@ const MealCard = () => {
         </div>
       </div>
 
-      <div className="flex rounded-lg bg-sub-4 p-2 mb-4">
+      <div className="bg-sub-4 mb-4 flex rounded-lg p-2">
         {MEAL_TYPES.map((type) => (
           <button
             type="button"
             key={type}
             onClick={() => setSelectedTab(type)}
-            className={`flex-1 cursor-pointer py-3 rounded-lg text-text-4 font-medium ${
+            className={`text-text-4 flex-1 cursor-pointer rounded-lg py-3 font-medium ${
               selectedTab === type
                 ? "bg-p-1 text-background-surface"
                 : "text-sub-2"
@@ -151,7 +151,7 @@ const MealCard = () => {
         ))}
       </div>
 
-      <div className="flex flex-col flex-1 overflow-y-auto">
+      <div className="flex flex-1 flex-col overflow-y-auto">
         {menuItems.length > 0 ? (
           <ul className="grid grid-cols-2 gap-x-6 gap-y-3 lg:flex lg:flex-col lg:gap-3">
             {menuItems.map((item, index) => (

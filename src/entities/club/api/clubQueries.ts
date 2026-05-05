@@ -1,17 +1,21 @@
 "use client";
 
-import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { instance } from '@/shared/api/instance';
-import { getClubs } from './getClubs';
-import { getClubDetail } from './getClub';
-import { getClubForm } from './getClubForm';
-import { getClubApplications } from './getClubApplications';
-import { getClubOpeningRequests } from './getClubOpeningRequests';
-import { getClubOpeningStatus } from './getClubOpeningStatus';
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { instance } from "@/shared/api/instance";
+import { getClubs } from "./getClubs";
+import { getClubDetail } from "./getClub";
+import { getClubForm } from "./getClubForm";
+import { getClubApplications } from "./getClubApplications";
+import { getClubOpeningRequests } from "./getClubOpeningRequests";
+import { getClubOpeningStatus } from "./getClubOpeningStatus";
 import type {
   ClubApplicationRequest,
   CreateClubFormRequest,
-} from '../model/club';
+} from "../model/club";
 import { patchClubApproval } from "./patchClubApproval";
 import { postClub } from "./postClub";
 import { deleteClub } from "./deleteClub";
@@ -20,37 +24,37 @@ import { putClub } from "./putClub";
 export const clubQueries = {
   list: () =>
     queryOptions({
-      queryKey: ['club', 'list'],
+      queryKey: ["club", "list"],
       queryFn: () => getClubs(),
     }),
 
   detail: (id: number) =>
     queryOptions({
-      queryKey: ['club', 'detail', id],
+      queryKey: ["club", "detail", id],
       queryFn: () => getClubDetail(id),
     }),
 
   form: (clubId: number) =>
     queryOptions({
-      queryKey: ['club', 'form', clubId],
+      queryKey: ["club", "form", clubId],
       queryFn: () => getClubForm(clubId),
     }),
 
   applicationList: (clubId: number) =>
     queryOptions({
-      queryKey: ['club', 'applications', clubId],
+      queryKey: ["club", "applications", clubId],
       queryFn: () => getClubApplications(clubId),
     }),
 
   openingRequests: () =>
     queryOptions({
-      queryKey: ['club', 'opening-requests'],
+      queryKey: ["club", "opening-requests"],
       queryFn: getClubOpeningRequests,
     }),
 
   openingStatus: () =>
     queryOptions({
-      queryKey: ['club', 'opening-status'],
+      queryKey: ["club", "opening-status"],
       queryFn: getClubOpeningStatus,
     }),
 } as const;
@@ -84,8 +88,13 @@ export const clubMutations = {
 export const usePatchClubApproval = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ clubId, body }: { clubId: number; body: { approved: boolean } }) =>
-      patchClubApproval(clubId, body),
+    mutationFn: ({
+      clubId,
+      body,
+    }: {
+      clubId: number;
+      body: { approved: boolean };
+    }) => patchClubApproval(clubId, body),
     onSuccess: (_, { clubId }) => {
       queryClient.invalidateQueries({ queryKey: ["club"] });
       queryClient.invalidateQueries({ queryKey: ["club", "detail", clubId] });

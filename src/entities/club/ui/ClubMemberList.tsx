@@ -37,7 +37,9 @@ export default function ClubMemberList({
               <span className="text-sub-1">{grade}학년 - </span>
               {gradeMembers.map((m, i) => {
                 const isCurrentLeader =
-                  leaderId !== undefined ? m.id === leaderId : m.name === leader;
+                  leaderId !== undefined
+                    ? m.id === leaderId
+                    : m.name === leader;
                 const isClickable =
                   isLeader && !isCurrentLeader && !!onMemberClick;
                 return (

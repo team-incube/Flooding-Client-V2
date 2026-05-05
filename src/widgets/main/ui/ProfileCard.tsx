@@ -11,23 +11,23 @@ export default function ProfileCard() {
   const roleLabel = getRoleLabel(user?.role);
 
   return (
-    <div className="flex items-center gap-6 p-6 bg-background-surface rounded-2xl w-full h-35 2xl:h-30">
-      <div className="w-18 flex items-center justify-center">
+    <div className="bg-background-surface flex h-35 w-full items-center gap-6 rounded-2xl p-6 2xl:h-30">
+      <div className="flex w-18 items-center justify-center">
         <ProfileSvg />
       </div>
       <div className="flex flex-col">
-        <span className="font-medium text-title-4">
+        <span className="text-title-4 font-medium">
           <span className="hidden 2xl:inline">
             안녕하세요! {user ? `${user.name.slice(1)}님` : ""}
           </span>
           <span className="2xl:hidden">{user?.name ?? ""}</span>
         </span>
         <div className="flex items-center gap-1">
-          <span className="text-text-3 font-medium text-sub-1">
+          <span className="text-text-3 text-sub-1 font-medium">
             {user?.studentNumber ?? ""}
           </span>
           {roleLabel && (
-            <span className="text-text-3 font-medium text-negative">
+            <span className="text-text-3 text-negative font-medium">
               {roleLabel}
             </span>
           )}

@@ -22,7 +22,7 @@ import { ClubOpeningRequestSection } from "./ClubOpeningRequestSection";
 
 function ClubCardSkeleton() {
   return (
-    <div className="flex min-h-[250px] flex-col gap-4 rounded-2xl bg-sub-4 px-4 py-6">
+    <div className="bg-sub-4 flex min-h-[250px] flex-col gap-4 rounded-2xl px-4 py-6">
       <Skeleton className="h-33.5 w-full shrink-0 rounded-2xl" />
       <div className="flex flex-col items-start gap-1">
         <Skeleton className="h-5 w-24" />
@@ -82,8 +82,8 @@ function ClubSectionLoading() {
 
 function ClubSectionError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-      <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+      <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
         <Club isActive={false} size={32} />
         <p className="text-text-1 text-main-text">
           동아리 목록을 불러오지 못했어요.
@@ -131,11 +131,14 @@ const ClubSection = () => {
 
   const handleSearch = () => setSearchValue(query);
   const shouldShowRegistrationForm =
-    isRegistrationPeriod && !hasClubApplication && !isManager && viewMode !== "list";
+    isRegistrationPeriod &&
+    !hasClubApplication &&
+    !isManager &&
+    viewMode !== "list";
 
   return (
-    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-      <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Club isActive={false} size={20} />
@@ -169,7 +172,7 @@ const ClubSection = () => {
             </div>
             <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
               {!isRegistrationPeriod && (
-                <div className="w-full mb-auto">
+                <div className="mb-auto w-full">
                   <ClubSearch
                     query={query}
                     setQuery={handleQueryChange}
@@ -179,7 +182,7 @@ const ClubSection = () => {
               )}
 
               {isRegistrationPeriod && hasClubApplication && (
-                <div className="flex flex-col gap-4 items-center justify-center">
+                <div className="flex flex-col items-center justify-center gap-4">
                   <Smile />
                   <p className="text-sub-2 text-text-1">
                     동아리 신청은 1인 1회 신청입니다
@@ -187,7 +190,7 @@ const ClubSection = () => {
                   <button
                     type="button"
                     onClick={() => setViewMode("form")}
-                    className="flex items-center gap-1 text-sub-2 text-text-1 cursor-pointer"
+                    className="text-sub-2 text-text-1 flex cursor-pointer items-center gap-1"
                   >
                     내 동아리 수정하기 <Back direction="right" />
                   </button>

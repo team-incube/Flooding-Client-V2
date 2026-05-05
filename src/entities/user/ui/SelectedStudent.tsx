@@ -20,9 +20,9 @@ export function SelectedStudent({
       {selectedStudents.map((student) => (
         <div
           key={student.id}
-          className="flex min-w-fit max-w-full items-center gap-2 rounded-full border border-sub-2 px-5.5 py-3"
+          className="border-sub-2 flex max-w-full min-w-fit items-center gap-2 rounded-full border px-5.5 py-3"
         >
-          <span className="min-w-0 truncate text-sub-1">
+          <span className="text-sub-1 min-w-0 truncate">
             {student.studentNumber} {student.name}
           </span>
 

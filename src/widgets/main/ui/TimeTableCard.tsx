@@ -53,7 +53,7 @@ function formatParamDate(date: Date): string {
 
 function TimeTableCardLoading() {
   return (
-    <div className="flex h-[140px] w-full flex-col rounded-2xl bg-background-surface p-6 2xl:block 2xl:h-[354px]">
+    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-6 2xl:block 2xl:h-[354px]">
       <div className="mb-4 flex items-center justify-between">
         <Skeleton className="h-6 w-20" />
         <Skeleton className="h-5 w-28" />
@@ -73,13 +73,13 @@ function TimeTableCardLoading() {
 
 function TimeTableCardError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="flex h-[140px] w-full flex-col rounded-2xl bg-background-surface p-6 2xl:h-[354px]">
+    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-6 2xl:h-[354px]">
       <div className="mb-4 flex items-center gap-1">
         <Calendar />
-        <span className="text-text-1 font-semibold text-main-text">시간표</span>
+        <span className="text-text-1 text-main-text font-semibold">시간표</span>
       </div>
       <div className="flex flex-1 flex-col items-center justify-center gap-3">
-        <span className="text-text-3 font-medium text-negative">
+        <span className="text-text-3 text-negative font-medium">
           시간표를 불러오지 못했습니다.
         </span>
         <TextButton variant="outlined" size="fit" onClick={resetErrorBoundary}>
@@ -93,7 +93,7 @@ function TimeTableCardError({ resetErrorBoundary }: QueryErrorFallbackProps) {
 function TimeTableCardEmpty() {
   return (
     <div className="flex flex-1 items-center justify-center">
-      <span className="text-text-3 font-medium text-sub-1">
+      <span className="text-text-3 text-sub-1 font-medium">
         시간표 정보가 없습니다.
       </span>
     </div>
@@ -134,16 +134,16 @@ const TimeTableCard = () => {
   }, [currentPeriod, timetables]);
 
   return (
-    <div className="w-full h-[140px] flex flex-col bg-background-surface rounded-2xl p-6 2xl:h-[354px] 2xl:block">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-6 2xl:block 2xl:h-[354px]">
+      <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Calendar />
-          <span className="text-text-1 font-semibold text-main-text">
+          <span className="text-text-1 text-main-text font-semibold">
             시간표
           </span>
         </div>
 
-        <div className="flex items-center gap-2 text-text-3 text-sub-1 font-medium">
+        <div className="text-text-3 text-sub-1 flex items-center gap-2 font-medium">
           <button
             type="button"
             className="cursor-pointer"
@@ -162,7 +162,7 @@ const TimeTableCard = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 overflow-auto flex-1 h-auto 2xl:flex-none 2xl:h-[262px]">
+      <div className="flex h-auto flex-1 flex-col gap-3 overflow-auto 2xl:h-[262px] 2xl:flex-none">
         {!canFetchTimetable ? (
           <TimeTableCard.Empty />
         ) : timetables.length > 0 ? (
@@ -173,12 +173,12 @@ const TimeTableCard = () => {
               <div
                 key={it.period}
                 ref={active ? activeRef : undefined}
-                className={`flex items-center justify-between px-6 py-4 rounded-lg bg-sub-4 ${
-                  active ? "border border-p-1" : ""
+                className={`bg-sub-4 flex items-center justify-between rounded-lg px-6 py-4 ${
+                  active ? "border-p-1 border" : ""
                 }`}
               >
                 <div className="flex items-center gap-1">
-                  <span className="font-medium text-sub-1 text-text-3">
+                  <span className="text-sub-1 text-text-3 font-medium">
                     {it.period} 교시
                   </span>
                   {times && (
@@ -187,7 +187,7 @@ const TimeTableCard = () => {
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-1 text-sub-1 text-text-4 font-medium">
+                <div className="text-sub-1 text-text-4 flex items-center gap-1 font-medium">
                   <span>{it.subject}</span>
                   <span className="text-caption-1 text-sub-2 font-medium">
                     {it.teacher}

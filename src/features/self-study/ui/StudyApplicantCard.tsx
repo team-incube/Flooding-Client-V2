@@ -25,8 +25,8 @@ export function StudyApplicantCard({
   const isDisabled = isChecked || isPending;
 
   return (
-    <div className="relative h-[165px] w-[170px] shrink-0 rounded-2xl bg-sub-4 p-4">
-      <span className="absolute top-4 left-4 text-caption-3 text-sub-1">
+    <div className="bg-sub-4 relative h-[165px] w-[170px] shrink-0 rounded-2xl p-4">
+      <span className="text-caption-3 text-sub-1 absolute top-4 left-4">
         {index}
       </span>
       {canCheck && (
@@ -36,7 +36,7 @@ export function StudyApplicantCard({
           aria-pressed={isChecked}
           disabled={isDisabled}
           onClick={() => onCheck(student.userId)}
-          className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg transition-colors enabled:cursor-pointer enabled:hover:bg-background-surface disabled:cursor-default"
+          className="enabled:hover:bg-background-surface absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg transition-colors enabled:cursor-pointer disabled:cursor-default"
         >
           <Checkbox isActive={isChecked} />
         </button>

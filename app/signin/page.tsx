@@ -40,7 +40,7 @@ export default function Signin() {
             {isLoggingIn ? "로그인 중" : "Data GSM으로 로그인"}
           </TextButton>
           {errorMessage && (
-            <p className="w-[330px] text-center text-caption-2 text-negative">
+            <p className="text-caption-2 text-negative w-[330px] text-center">
               {errorMessage}
             </p>
           )}

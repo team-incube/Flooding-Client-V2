@@ -19,7 +19,7 @@ import { StudyBanActionPanel } from "./StudyBanActionPanel";
 
 function StudentManagementSectionLoading() {
   return (
-    <section className="flex flex-col gap-4 rounded-2xl bg-background-surface p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
+    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
       <div className="flex items-end gap-3">
         <Skeleton className="h-7 w-28" />
         <Skeleton className="h-5 w-20" />
@@ -45,7 +45,7 @@ function StudentManagementSectionError({
   resetErrorBoundary,
 }: QueryErrorFallbackProps) {
   return (
-    <section className="flex h-[520px] flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
+    <section className="bg-background-surface flex h-[520px] flex-col items-center justify-center gap-3 rounded-2xl p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
       <Student isActive />
       <p className="text-text-1 text-main-text">
         학생 목록을 불러오지 못했습니다.
@@ -59,7 +59,7 @@ function StudentManagementSectionError({
 
 function StudentManagementSectionEmpty() {
   return (
-    <div className="flex h-[320px] w-full items-center justify-center rounded-2xl border border-dashed border-sub-3 bg-background">
+    <div className="border-sub-3 bg-background flex h-[320px] w-full items-center justify-center rounded-2xl border border-dashed">
       <p className="text-text-2 text-sub-1">표시할 학생이 없습니다.</p>
     </div>
   );
@@ -156,7 +156,7 @@ const StudentManagementSection = () => {
   ).length;
 
   return (
-    <section className="flex flex-col gap-4 rounded-2xl bg-background-surface p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
+    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-1">
           <Student isActive />
