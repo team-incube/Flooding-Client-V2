@@ -225,7 +225,7 @@ export default function ClubDetail({
             <button
               type="button"
               onClick={() => { setIsEdit(true); onEditClick?.(); }}
-              className="flex items-center justify-center w-11.75 h-11.75 rounded-xl bg-sub-4 hover:bg-sub-3 transition-colors"
+              className="flex items-center justify-center p-2.5 rounded-xl bg-sub-4"
               aria-label="동아리 수정"
             >
               <Edit />
@@ -245,9 +245,9 @@ export default function ClubDetail({
             <>
               {onViewApplicationsClick && (
                 <TextButton
-                  size="medium"
+                  size="fit"
                   variant="outlined"
-                  className="h-11.75 w-auto min-w-36.75 px-4"
+                  className="min-w-[147px]"
                   onClick={onViewApplicationsClick}
                 >
                   신청자 목록
@@ -255,9 +255,8 @@ export default function ClubDetail({
               )}
               {onCreateFormClick && (
                 <TextButton
-                  size="medium"
+                  size="fit"
                   variant="outlined"
-                  className="h-11.75"
                   onClick={onCreateFormClick}
                 >
                   {formActionLabel}
@@ -265,8 +264,9 @@ export default function ClubDetail({
               )}
               {!isLeader && (
                 <TextButton
-                  size="wide"
+                  size="fit"
                   variant={applyVariant}
+                  className="flex-1"
                   onClick={applyVariant === "filled" ? onApplyClick : undefined}
                 >
                   동아리 신청하기

@@ -21,7 +21,7 @@ export function ClubActionButtons({
   if (isEdit) {
     return (
       <>
-        <div className="flex flex-wrap gap-1 w-full">
+        <div className={`flex gap-2 ${canDelete ? "w-[350px]" : "w-[240px]"}`}>
           <TextButton size="fit" variant="ghost" className="flex-1 min-w-[118px]" onClick={onCancel}>
             돌아가기
           </TextButton>
