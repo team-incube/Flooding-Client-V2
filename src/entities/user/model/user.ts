@@ -21,6 +21,7 @@ export interface User {
   specialty: string;
   penaltyScore: number;
   isBanned: boolean;
+  hasClubApplication: boolean;
 }
 
 export interface SearchUser {

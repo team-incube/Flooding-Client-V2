@@ -10,6 +10,7 @@ interface StudyApplicantCardProps {
   student: StudyApplicant;
   isChecked: boolean;
   isPending: boolean;
+  canCheck?: boolean;
   onCheck: (studentId: number) => void;
 }
 
@@ -18,6 +19,7 @@ export function StudyApplicantCard({
   student,
   isChecked,
   isPending,
+  canCheck = false,
   onCheck,
 }: StudyApplicantCardProps) {
   const isDisabled = isChecked || isPending;
@@ -27,16 +29,18 @@ export function StudyApplicantCard({
       <span className="absolute top-4 left-4 text-caption-3 text-sub-1">
         {index}
       </span>
-      <button
-        type="button"
-        aria-label={`${student.name} 출석 체크`}
-        aria-pressed={isChecked}
-        disabled={isDisabled}
-        onClick={() => onCheck(student.userId)}
-        className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg transition-colors enabled:cursor-pointer enabled:hover:bg-background-surface disabled:cursor-default"
-      >
-        <Checkbox isActive={isChecked} />
-      </button>
+      {canCheck && (
+        <button
+          type="button"
+          aria-label={`${student.name} 출석 체크`}
+          aria-pressed={isChecked}
+          disabled={isDisabled}
+          onClick={() => onCheck(student.userId)}
+          className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg transition-colors enabled:cursor-pointer enabled:hover:bg-background-surface disabled:cursor-default"
+        >
+          <Checkbox isActive={isChecked} />
+        </button>
+      )}
       <div className="flex h-full flex-col items-center justify-center gap-2">
         <div className="flex h-[64px] w-[64px] items-center justify-center">
           <Profile />

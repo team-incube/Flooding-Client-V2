@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ClubFormEditSection } from "@/features/club/ui/ClubFormEditSection";
+import { ClubFormEditSectionBoundary } from "@/features/club/ui/ClubFormEditSection";
 
 interface ClubFormEditPageProps {
   params: Promise<{
@@ -17,5 +17,5 @@ export default async function ClubFormEditPage({
     notFound();
   }
 
-  return <ClubFormEditSection id={clubId} />;
+  return <ClubFormEditSectionBoundary id={clubId} />;
 }

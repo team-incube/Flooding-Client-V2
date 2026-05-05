@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ChevronRight from "@/shared/asset/svg/Back";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import type { TextButtonVariant } from "@/shared/ui/Button/TextButton";
@@ -13,6 +14,7 @@ interface ApplyCardProps {
   buttonText: string;
   buttonVariant?: TextButtonVariant;
   buttonSize?: ApplyCardButtonSize;
+  detailHref?: string;
   disabled?: boolean;
   femaleNotice?: boolean;
   onApply?: () => void;
@@ -27,6 +29,7 @@ export default function ApplyCard({
   buttonText,
   buttonVariant = "filled",
   buttonSize = "small",
+  detailHref,
   disabled = false,
   femaleNotice = false,
   onApply,
@@ -45,10 +48,15 @@ export default function ApplyCard({
           </span>
         </div>
 
-        <button className="flex items-center text-text-3 text-sub-2">
-          전체보기
-          <ChevronRight direction="right" />
-        </button>
+        {detailHref && (
+          <Link
+            href={detailHref}
+            className="flex items-center text-text-3 text-sub-2 transition-colors hover:text-p-1"
+          >
+            전체보기
+            <ChevronRight direction="right" />
+          </Link>
+        )}
       </div>
 
       <div className="pb-3">

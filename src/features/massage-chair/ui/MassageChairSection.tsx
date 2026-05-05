@@ -30,10 +30,10 @@ export function MassageChairSection() {
       <div className="flex gap-6">
         <div className="flex-1 min-w-0">
           <div className="flex gap-4 flex-wrap">
-            {applicants.map((student, index) => (
+            {applicants.map((student) => (
               <ProfileCard
-                key={student.id}
-                index={index + 1}
+                key={student.studentNumber}
+                index={student.order}
                 student={student}
               />
             ))}

@@ -22,9 +22,11 @@ export function useHomebaseReservationData({
   selectedEndNum,
 }: UseHomebaseReservationDataParams) {
   const { data: currentUser } = useQuery(userQueries.me());
-  const { data: reservations = [], isLoading } = useQuery(
-    homebaseQueries.list(),
-  );
+  const {
+    data: reservations = [],
+    isLoading,
+    isError,
+  } = useQuery(homebaseQueries.list());
   const reservedTables = getReservedTableMembers({
     reservations,
     selectedFloor,
@@ -45,6 +47,7 @@ export function useHomebaseReservationData({
     currentUser,
     reservations,
     isLoading,
+    isError,
     reservedTables,
     filteredReservations,
     myReservationItems,

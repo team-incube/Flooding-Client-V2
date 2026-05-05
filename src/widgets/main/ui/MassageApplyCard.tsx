@@ -21,6 +21,7 @@ export default function MassageApplyCard() {
       total={MASSAGE_MAX}
       timeText="안마 의자 신청 시간은 20:20 ~ 21:00에 신청이 가능해요"
       buttonText="신청"
+      detailHref="/dormitory"
       femaleNotice
       onApply={() => applyMutation.mutate()}
     />
