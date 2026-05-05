@@ -211,11 +211,11 @@ export default function ClubDetail({
               <ProjectCard key={p.id} project={p} leader={club.leader} />
             ))
           ) : (
-            <div className="flex flex-col gap-2 h-full items-center justify-center">
+            <div className="flex min-h-60 flex-1 flex-col items-center justify-center gap-2">
               <FileOff />
-              <span className="text-text-3 text-sub-2">
+              <p className="text-text-3 text-sub-2">
                 등록된 프로젝트가 없어요!
-              </span>
+              </p>
             </div>
           )}
         </div>

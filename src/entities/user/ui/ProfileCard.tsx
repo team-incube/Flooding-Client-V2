@@ -2,9 +2,11 @@ import type { User } from "@/entities/user/model/user";
 import Gender from "@/shared/asset/svg/Gender";
 import Profile from "@/shared/asset/svg/Profile";
 
+type ProfileCardStudent = Pick<User, "name" | "studentNumber" | "sex">;
+
 interface ProfileCardProps {
   index: number;
-  student: User;
+  student: ProfileCardStudent;
 }
 
 export function ProfileCard({ index, student }: ProfileCardProps) {

@@ -8,6 +8,7 @@ import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import { isManagementRole } from "@/entities/user/lib/userRole";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCheckStudyAttendance } from "../model/useCheckStudyAttendance";
@@ -27,6 +28,7 @@ export function SelfStudySection() {
   const isStudyBanned = user?.isBanned === true;
   const isApplyDisabled =
     isUserLoading || isStudyBanned || applyMutation.isPending;
+  const canManageStudy = isManagementRole(user?.role);
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
   );
@@ -55,6 +57,10 @@ export function SelfStudySection() {
   };
 
   const handleCheckAttendance = (studentId: number) => {
+    if (!canManageStudy) {
+      return;
+    }
+
     checkAttendanceMutation.mutate(studentId);
   };
 
@@ -89,6 +95,7 @@ export function SelfStudySection() {
                   checkAttendanceMutation.isPending &&
                   checkAttendanceMutation.variables === student.userId
                 }
+                canCheck={canManageStudy}
                 onCheck={handleCheckAttendance}
               />
             ))}

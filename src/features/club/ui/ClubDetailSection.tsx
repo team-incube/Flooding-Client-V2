@@ -1,17 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import { notFound, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
-import { clubQueries, usePatchClubApproval } from "@/entities/club/api/clubQueries";
+import {
+  clubQueries,
+  usePatchClubApproval,
+} from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import type { ClubMember } from "@/entities/club/model/club";
 import type { SearchUser } from "@/entities/user/model/user";
-import { toast } from "sonner";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import {
+  ClientQueryBoundary,
+  type QueryErrorFallbackProps,
+} from "@/shared/ui/QueryErrorBoundary";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 import { useTransferClubLeader } from "../model/useTransferClubLeader";
 import { useInviteClubMember } from "../model/useInviteClubMember";
@@ -25,7 +33,62 @@ interface ClubDetailSectionProps {
 
 const SEARCH_RESULT_LIMIT = 5;
 
-export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionProps) {
+function ClubDetailSectionLoading() {
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-5 w-5" />
+          <Skeleton className="h-5 w-16" />
+        </div>
+        <Skeleton className="h-40 w-full rounded-xl" />
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-24 w-full rounded-xl" />
+      </div>
+    </div>
+  );
+}
+
+function ClubDetailSectionError({
+  error,
+  resetErrorBoundary,
+}: QueryErrorFallbackProps) {
+  const isForbidden =
+    axios.isAxiosError(error) &&
+    error.response?.status === HttpStatusCode.Forbidden;
+
+  if (isForbidden) {
+    return (
+      <div className="flex min-h-0 flex-1 w-full items-center justify-center xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+        <div className="flex flex-col items-center gap-2 text-center">
+          <span className="text-title-3 text-main-text">접근 권한이 없어요</span>
+          <span className="text-text-2 text-sub-1">
+            이 동아리 정보를 볼 수 있는 권한이 없습니다.
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+        <Club isActive={false} size={32} />
+        <p className="text-text-1 text-main-text">
+          동아리 정보를 불러오지 못했어요.
+        </p>
+        <TextButton variant="outlined" size="fit" onClick={resetErrorBoundary}>
+          다시 시도
+        </TextButton>
+      </div>
+    </div>
+  );
+}
+
+const ClubDetailSection = ({
+  id,
+  isPending = false,
+}: ClubDetailSectionProps) => {
   if (!Number.isInteger(id)) {
     notFound();
   }
@@ -33,30 +96,27 @@ export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionPr
   const router = useRouter();
   const autonomousApplyMutation = useApplyAutonomousClub(id);
   const transferMutation = useTransferClubLeader(id);
-  const { mutate: patchApproval, isPending: isApprovalPending } = usePatchClubApproval();
+  const { mutate: patchApproval, isPending: isApprovalPending } =
+    usePatchClubApproval();
   const inviteMutation = useInviteClubMember(id);
   const exileMutation = useExileClubMember(id);
   const [transferTarget, setTransferTarget] = useState<ClubMember | null>(null);
   const [memberSearch, setMemberSearch] = useState("");
 
-  const { data: detail, isLoading, isError, error } = useQuery(clubQueries.detail(id));
-  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
-  const { data: isRegistrationPeriod = false } = useQuery(clubQueries.openingStatus());
+  const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
+  const { data: user } = useSuspenseQuery(userQueries.me());
+  const { data: isRegistrationPeriod = false } = useSuspenseQuery(
+    clubQueries.openingStatus(),
+  );
 
-  const isLeader = detail?.isLeader ?? false;
-  const isManager = user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL";
-  const canDeleteClub = (isLeader || user?.role === "ADMIN") && isRegistrationPeriod;
-  const canCreateForm = detail?.club.type === "MAJOR_CLUB" && isLeader;
-  const canViewApplications =
-    !!detail &&
-    (isLeader ||
-      user?.role === "ADMIN" ||
-      user?.role === "STUDENT_COUNCIL");
+  const isLeader = detail.isLeader;
+  const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
+  const canDeleteClub =
+    (isLeader || user.role === "ADMIN") && isRegistrationPeriod;
+  const canCreateForm = detail.club.type === "MAJOR_CLUB" && isLeader;
+  const canViewApplications = isLeader || isManager;
   const formQuery = clubQueries.form(id);
-  const {
-    data: form,
-    error: formError,
-  } = useQuery({
+  const { data: form, error: formError } = useQuery({
     ...formQuery,
     enabled: canCreateForm,
     retry: false,
@@ -67,13 +127,13 @@ export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionPr
     ...userQueries.list({ name: trimmedSearch || undefined }),
     enabled: isLeader && trimmedSearch.length > 0,
   });
-  const memberIds = new Set((detail?.members ?? []).map((m) => m.id));
+  const memberIds = new Set(detail.members.map((member) => member.id));
   const memberSearchResults = (searchUsersPage?.content ?? [])
-    .filter((u) => u.id !== user?.id && !memberIds.has(u.id))
+    .filter((searchUser) => searchUser.id !== user.id && !memberIds.has(searchUser.id))
     .slice(0, SEARCH_RESULT_LIMIT);
 
   const handleApplyClick = () => {
-    if (!detail || autonomousApplyMutation.isPending) {
+    if (autonomousApplyMutation.isPending) {
       return;
     }
 
@@ -86,26 +146,14 @@ export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionPr
   };
 
   const handleCreateFormClick = () => {
-    if (!detail) {
-      return;
-    }
-
     router.push(`/club/${detail.club.id}/forms/new`);
   };
 
   const handleEditFormClick = () => {
-    if (!detail) {
-      return;
-    }
-
     router.push(`/club/${detail.club.id}/forms/edit`);
   };
 
   const handleApplicationsClick = () => {
-    if (!detail) {
-      return;
-    }
-
     router.push(`/club/${detail.club.id}/applications`);
   };
 
@@ -134,41 +182,6 @@ export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionPr
     exileMutation.mutate(memberId);
   };
 
-  if (isLoading || isUserLoading) {
-    return (
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
-          <div className="flex items-center gap-2">
-            <div className="h-5 w-5 animate-pulse rounded bg-sub-4" />
-            <div className="h-5 w-16 animate-pulse rounded bg-sub-4" />
-          </div>
-          <div className="h-40 w-full animate-pulse rounded-xl bg-sub-4" />
-          <div className="h-6 w-32 animate-pulse rounded bg-sub-4" />
-          <div className="h-24 w-full animate-pulse rounded-xl bg-sub-4" />
-        </div>
-      </div>
-    );
-  }
-
-  if (isError || !detail) {
-    const isForbidden =
-      axios.isAxiosError(error) &&
-      error.response?.status === HttpStatusCode.Forbidden;
-
-    if (isForbidden) {
-      return (
-        <div className="flex min-h-0 flex-1 w-full items-center justify-center xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-          <div className="flex flex-col items-center gap-2 text-center">
-            <span className="text-title-3 text-main-text">접근 권한이 없어요</span>
-            <span className="text-text-2 text-sub-1">이 동아리 정보를 볼 수 있는 권한이 없습니다.</span>
-          </div>
-        </div>
-      );
-    }
-
-    notFound();
-  }
-
   const hasForm = !!form;
   const hasNoForm =
     axios.isAxiosError(formError) &&
@@ -191,7 +204,9 @@ export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionPr
               onApplyClick={isPending || isManager ? undefined : handleApplyClick}
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
               onViewApplicationsClick={
-                !isPending && canViewApplications ? handleApplicationsClick : undefined
+                !isPending && canViewApplications
+                  ? handleApplicationsClick
+                  : undefined
               }
               onCreateFormClick={
                 canShowFormAction
@@ -239,7 +254,8 @@ export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionPr
                       patchApproval(
                         { clubId: id, body: { approved: true } },
                         {
-                          onSuccess: () => toast.success("동아리 개설을 승인했습니다."),
+                          onSuccess: () =>
+                            toast.success("동아리 개설을 승인했습니다."),
                           onError: () => toast.error("처리에 실패했습니다."),
                         },
                       )
@@ -263,4 +279,23 @@ export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionPr
       />
     </>
   );
+};
+
+ClubDetailSection.Loading = ClubDetailSectionLoading;
+ClubDetailSection.Error = ClubDetailSectionError;
+
+function ClubDetailSectionBoundary({
+  id,
+  isPending,
+}: ClubDetailSectionProps) {
+  return (
+    <ClientQueryBoundary
+      loadingFallback={<ClubDetailSection.Loading />}
+      errorFallback={ClubDetailSection.Error}
+    >
+      <ClubDetailSection id={id} isPending={isPending} />
+    </ClientQueryBoundary>
+  );
 }
+
+export { ClubDetailSection, ClubDetailSectionBoundary };

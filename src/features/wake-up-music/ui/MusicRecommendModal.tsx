@@ -6,11 +6,44 @@ import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
 import { useAiMusicRecommend } from "@/features/wake-up-music/model/useAiMusicRecommend";
+import { Skeleton } from "@/shared/ui/Skeleton";
 
 interface MusicRecommendModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (selectedUrl: string) => Promise<void> | void;
+}
+
+function MusicRecommendCardSkeleton() {
+  return (
+    <div className="w-90 shrink-0">
+      <Skeleton className="h-[203px] w-full rounded-xl" />
+      <Skeleton className="mt-2 h-5 w-4/5" />
+    </div>
+  );
+}
+
+interface MusicRecommendEmptyProps {
+  reason: "NO_HISTORY" | "NO_RECOMMENDATIONS" | null;
+}
+
+function MusicRecommendEmpty({ reason }: MusicRecommendEmptyProps) {
+  const message =
+    reason === "NO_HISTORY"
+      ? "이전에 신청한 노래가 없습니다."
+      : "추천된 노래가 없습니다.";
+  const description =
+    reason === "NO_HISTORY"
+      ? "노래를 신청한 뒤 AI 추천을 사용할 수 있어요."
+      : "다시 시도 버튼으로 새 추천을 요청해주세요.";
+
+  return (
+    <div className="flex min-h-[230px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-sub-3 bg-background">
+      <SmallStar />
+      <p className="text-text-2 text-main-text">{message}</p>
+      <p className="text-text-3 text-sub-1">{description}</p>
+    </div>
+  );
 }
 
 export function MusicRecommendModal({
@@ -20,6 +53,7 @@ export function MusicRecommendModal({
 }: MusicRecommendModalProps) {
   const {
     displayCards,
+    emptyReason,
     selectedUrl,
     retryCount,
     maxRetry,
@@ -63,23 +97,24 @@ export function MusicRecommendModal({
           </span>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto min-h-[203px]">
-          {isPending
-            ? Array.from({ length: 3 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="w-90 h-[203px] bg-sub-4 rounded-xl shrink-0 animate-pulse"
-                />
-              ))
-            : displayCards.map((card) => (
-                <MusicRecommendCard
-                  key={card.url}
-                  title={card.title}
-                  thumbnailUrl={card.thumbnailUrl}
-                  checked={selectedUrl === card.url}
-                  onChange={() => handleSelect(card.url)}
-                />
-              ))}
+        <div className="flex min-h-[230px] gap-3 overflow-x-auto">
+          {isPending ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <MusicRecommendCardSkeleton key={i} />
+            ))
+          ) : displayCards.length === 0 ? (
+            <MusicRecommendEmpty reason={emptyReason} />
+          ) : (
+            displayCards.map((card) => (
+              <MusicRecommendCard
+                key={card.url}
+                title={card.title}
+                thumbnailUrl={card.thumbnailUrl}
+                checked={selectedUrl === card.url}
+                onChange={() => handleSelect(card.url)}
+              />
+            ))
+          )}
         </div>
 
         <div className="flex justify-end gap-4">

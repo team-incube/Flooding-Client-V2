@@ -29,7 +29,9 @@ export async function getDormitoryMusic(date?: string): Promise<DormitoryMusic[]
   }));
 }
 
-type DormitoryStudentResponse = DormitoryStudent[] | { data?: DormitoryStudent[] };
+type DormitoryStudentResponse =
+  | DormitoryStudent[]
+  | { data?: DormitoryStudent[] };
 type StudyApplicantResponse = StudyApplicant[] | { data?: StudyApplicant[] };
 
 export async function getMassageApplicants(): Promise<DormitoryStudent[]> {

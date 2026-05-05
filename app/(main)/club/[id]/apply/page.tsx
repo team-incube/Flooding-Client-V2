@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ClubApplicationSection } from "@/features/club/ui/ClubApplicationSection";
+import { ClubApplicationSectionBoundary } from "@/features/club/ui/ClubApplicationSection";
 
 interface ClubApplyPageProps {
   params: Promise<{
@@ -15,5 +15,5 @@ export default async function ClubApplyPage({ params }: ClubApplyPageProps) {
     notFound();
   }
 
-  return <ClubApplicationSection id={clubId} />;
+  return <ClubApplicationSectionBoundary id={clubId} />;
 }
