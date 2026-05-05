@@ -53,6 +53,9 @@ instance.interceptors.response.use(
             .post("/api/auth/refresh")
             .then(({ data }) => {
               const token = data.data?.accessToken;
+              if (!token) {
+                throw new Error("Access token is missing");
+              }
               sessionStorage.setItem("access_token", token);
               return token;
             })
