@@ -307,6 +307,10 @@ export const clubHandlers = [
     return HttpResponse.json({ data: { clubs: [] } });
   }),
 
+  http.get('*/clubs/opening-status', () => {
+    return HttpResponse.json({ data: { isOpened: true, startDate: null, endDate: null } });
+  }),
+
   http.get('*/clubs/:id', ({ params }) => {
     const id = Number(params.id);
     const detail = MOCK_CLUB_DETAILS[id];

@@ -13,7 +13,6 @@ import ClubRegistrationSection from "./ClubRegistrationSection";
 import { ClubOpeningRequestSection } from "./ClubOpeningRequestSection";
 import Back from "@/shared/asset/svg/Back";
 import Smile from "@/shared/asset/svg/Smile";
-import { isRegistrationPeriod } from "@/entities/club/config";
 
 export function ClubSection() {
   const router = useRouter();
@@ -25,6 +24,7 @@ export function ClubSection() {
 
   const { data } = useQuery(clubQueries.list());
   const { data: user } = useQuery(userQueries.me());
+  const { data: isRegistrationPeriod = false } = useQuery(clubQueries.openingStatus());
   const isManager = user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL";
   const hasClubApplication = user?.hasClubApplication ?? false;
   const clubs = data?.clubs ?? [];

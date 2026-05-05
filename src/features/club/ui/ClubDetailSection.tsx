@@ -13,7 +13,6 @@ import type { SearchUser } from "@/entities/user/model/user";
 import { toast } from "sonner";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
-import { isRegistrationPeriod } from "@/entities/club/config";
 import { useTransferClubLeader } from "../model/useTransferClubLeader";
 import { useInviteClubMember } from "../model/useInviteClubMember";
 import { useExileClubMember } from "../model/useExileClubMember";
@@ -41,6 +40,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
 
   const { data: detail, isLoading, isError, error } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
+  const { data: isRegistrationPeriod = false } = useQuery(clubQueries.openingStatus());
 
   const isLeader = detail?.isLeader ?? false;
   const isManager = user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL";
