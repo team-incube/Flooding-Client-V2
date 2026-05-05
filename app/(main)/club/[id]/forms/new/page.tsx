@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ClubFormCreateSection } from "@/features/club/ui/ClubFormCreateSection";
+import { ClubFormCreateSectionBoundary } from "@/features/club/ui/ClubFormCreateSection";
 
 interface ClubFormCreatePageProps {
   params: Promise<{
@@ -17,5 +17,5 @@ export default async function ClubFormCreatePage({
     notFound();
   }
 
-  return <ClubFormCreateSection id={clubId} />;
+  return <ClubFormCreateSectionBoundary id={clubId} />;
 }

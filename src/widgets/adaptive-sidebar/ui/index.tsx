@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarMenu } from "./sidebarMenu";
 import Grid from "@/shared/asset/svg/Grid";
@@ -10,6 +11,8 @@ import Student from "@/shared/asset/svg/Student";
 import Logo from "@/shared/asset/svg/Logo";
 import Signout from "@/shared/asset/svg/Signout";
 import { ROUTES } from "@/shared/config/routes";
+import { userQueries } from "@/entities/user/api/userQueries";
+import { isManagementRole } from "@/entities/user/lib/userRole";
 import type { ReactNode } from "react";
 
 const ICONS: Record<string, (active: boolean) => ReactNode> = {
@@ -29,6 +32,10 @@ const MENU_ITEMS = ROUTES.map(({ href, label }) => ({
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { data: user } = useQuery(userQueries.me());
+  const menuItems = MENU_ITEMS.filter(
+    ({ href }) => href !== "/students" || isManagementRole(user?.role),
+  );
   const isRouteActive = (href: string) =>
     href === "/" ? pathname === href : pathname.startsWith(href);
 
@@ -40,7 +47,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="bg-background-surface flex h-screen w-[112px] flex-col justify-between px-4 pt-13 pb-14 lg:w-[240px] 2xl:w-[260px]">
+    <div className="flex flex-col w-[112px] lg:w-[240px] 2xl:w-[260px] h-screen bg-background-surface py-13 px-4 justify-between">
       <div className="flex flex-col items-center gap-[47px]">
         <div>
           <div className="hidden lg:block">
@@ -50,8 +57,8 @@ export default function Sidebar() {
             <Logo iconOnly />
           </div>
         </div>
-        <nav className="flex w-full flex-col gap-[6px]">
-          {MENU_ITEMS.map((item) => (
+        <nav className="flex flex-col gap-[6px] w-full">
+          {menuItems.map((item) => (
             <SidebarMenu
               key={item.href}
               title={item.title}
@@ -65,14 +72,14 @@ export default function Sidebar() {
 
       <button
         type="button"
-        className="flex h-14 w-full cursor-pointer items-center justify-center py-3 transition-all lg:justify-start lg:px-4"
+        className="flex items-center justify-center lg:justify-start h-14 w-full py-3 lg:px-4 cursor-pointer transition-all"
         onClick={handleLogout}
       >
         <div className="flex items-center gap-6">
           <div className="flex shrink-0 items-center justify-center">
             <Signout size={32} />
           </div>
-          <span className="text-text-1 text-sub-2 hidden lg:block">
+          <span className="hidden lg:block text-text-1 text-sub-2">
             로그아웃
           </span>
         </div>

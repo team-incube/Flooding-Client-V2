@@ -42,6 +42,7 @@ export default function StudyApplyCard() {
       }
       buttonVariant={isStudyBanned ? "negative" : "filled"}
       buttonSize={isStudyBanned ? "fit" : "small"}
+      detailHref="/dormitory"
       disabled={isApplyDisabled}
       onApply={handleApplyStudy}
     />

@@ -1,11 +1,17 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import TextField from "@/shared/ui/textField";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import type { ClubForm } from "@/entities/club/model/club";
+import {
+  ClientQueryBoundary,
+  type QueryErrorFallbackProps,
+} from "@/shared/ui/QueryErrorBoundary";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { useClubFormBuilder } from "../model/useClubFormBuilder";
 import { ClubFormFieldEditor } from "./ClubFormFieldEditor";
 
@@ -19,8 +25,11 @@ const fieldBoxStyles =
 const secondaryButtonStyles =
   "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 transition-all hover:border-sub-1";
 
-function ClubFormEditContent({ id }: ClubFormEditSectionProps) {
-  const { data: form } = useQuery(clubQueries.form(id));
+interface ClubFormEditContentProps extends ClubFormEditSectionProps {
+  form: ClubForm;
+}
+
+function ClubFormEditContent({ id, form }: ClubFormEditContentProps) {
   const {
     title,
     description,
@@ -40,7 +49,7 @@ function ClubFormEditContent({ id }: ClubFormEditSectionProps) {
     clubId: id,
     canCreateForm: true,
     mode: "edit",
-    initialForm: form!,
+    initialForm: form,
   });
 
   return (
@@ -118,54 +127,62 @@ function ClubFormEditContent({ id }: ClubFormEditSectionProps) {
   );
 }
 
-export function ClubFormEditSection({ id }: ClubFormEditSectionProps) {
-  const {
-    data: detail,
-    isLoading: isDetailLoading,
-    isError: isDetailError,
-  } = useQuery(clubQueries.detail(id));
-  const {
-    data: form,
-    isLoading: isFormLoading,
-    isError: isFormError,
-  } = useQuery({
+function ClubFormEditSectionLoading() {
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
+        <Skeleton className="h-6 w-40" />
+        <Skeleton className="h-[52px] w-full max-w-4xl rounded-lg" />
+        <Skeleton className="h-[160px] w-full max-w-4xl rounded-xl" />
+      </div>
+    </div>
+  );
+}
+
+function ClubFormEditSectionError({
+  resetErrorBoundary,
+}: QueryErrorFallbackProps) {
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+        <Club isActive={false} size={32} />
+        <p className="text-text-1 text-main-text">
+          동아리 신청 폼을 불러오지 못했어요.
+        </p>
+        <TextButton variant="outlined" size="fit" onClick={resetErrorBoundary}>
+          다시 시도
+        </TextButton>
+      </div>
+    </div>
+  );
+}
+
+function ClubFormEditSectionEmpty() {
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+        <Club isActive={false} size={32} />
+        <p className="text-text-1 text-main-text">수정할 신청 폼이 없어요.</p>
+      </div>
+    </div>
+  );
+}
+
+const ClubFormEditSection = ({ id }: ClubFormEditSectionProps) => {
+  const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
+  const { data: form } = useSuspenseQuery({
     ...clubQueries.form(id),
     retry: false,
   });
-  const { data: user } = useQuery(userQueries.me());
+  const { data: user } = useSuspenseQuery(userQueries.me());
   const isMajorClub = detail?.club.type === "MAJOR_CLUB";
   const isLeader = !!user && user.name === detail?.club.leader;
   const canEditForm = !!detail && isMajorClub && isLeader;
 
-  if (isDetailLoading || isFormLoading) {
-    return (
-      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-        <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
-          <div className="bg-sub-4 h-6 w-40 animate-pulse rounded" />
-          <div className="bg-sub-4 h-[52px] w-full max-w-4xl animate-pulse rounded-lg" />
-          <div className="bg-sub-4 h-[160px] w-full max-w-4xl animate-pulse rounded-xl" />
-        </div>
-      </div>
-    );
-  }
-
-  if (isDetailError || !detail) {
-    return (
-      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-        <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
-          <Club isActive={false} size={32} />
-          <p className="text-text-1 text-main-text">
-            존재하지 않는 동아리입니다.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   if (!canEditForm) {
     return (
-      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-        <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
+      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+        <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
           <Club isActive={false} size={32} />
           <p className="text-text-1 text-main-text">
             {!isMajorClub
@@ -177,27 +194,37 @@ export function ClubFormEditSection({ id }: ClubFormEditSectionProps) {
     );
   }
 
-  if (isFormError || !form) {
-    return (
-      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-        <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
-          <Club isActive={false} size={32} />
-          <p className="text-text-1 text-main-text">수정할 신청 폼이 없어요.</p>
-        </div>
-      </div>
-    );
+  if (!form) {
+    return <ClubFormEditSection.Empty />;
   }
 
   return (
-    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
         <div className="flex items-center gap-2">
           <Club isActive={false} size={20} />
           <span className="text-text-1 text-main-text">동아리 폼 수정</span>
         </div>
 
-        <ClubFormEditContent id={id} />
+        <ClubFormEditContent id={id} form={form} />
       </div>
     </div>
   );
+};
+
+ClubFormEditSection.Loading = ClubFormEditSectionLoading;
+ClubFormEditSection.Error = ClubFormEditSectionError;
+ClubFormEditSection.Empty = ClubFormEditSectionEmpty;
+
+function ClubFormEditSectionBoundary({ id }: ClubFormEditSectionProps) {
+  return (
+    <ClientQueryBoundary
+      loadingFallback={<ClubFormEditSection.Loading />}
+      errorFallback={ClubFormEditSection.Error}
+    >
+      <ClubFormEditSection id={id} />
+    </ClientQueryBoundary>
+  );
 }
+
+export { ClubFormEditSection, ClubFormEditSectionBoundary };

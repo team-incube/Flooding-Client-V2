@@ -1,11 +1,16 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import TextField from "@/shared/ui/textField";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import {
+  ClientQueryBoundary,
+  type QueryErrorFallbackProps,
+} from "@/shared/ui/QueryErrorBoundary";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { useClubFormBuilder } from "../model/useClubFormBuilder";
 import { ClubFormFieldEditor } from "./ClubFormFieldEditor";
 
@@ -19,15 +24,41 @@ const fieldBoxStyles =
 const secondaryButtonStyles =
   "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 transition-all hover:border-sub-1";
 
-export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
+function ClubFormCreateSectionLoading() {
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
+        <Skeleton className="h-6 w-40" />
+        <Skeleton className="h-[52px] w-full max-w-4xl rounded-lg" />
+        <Skeleton className="h-[160px] w-full max-w-4xl rounded-xl" />
+      </div>
+    </div>
+  );
+}
+
+function ClubFormCreateSectionError({
+  resetErrorBoundary,
+}: QueryErrorFallbackProps) {
+  return (
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+        <Club isActive={false} size={32} />
+        <p className="text-text-1 text-main-text">
+          동아리 정보를 불러오지 못했어요.
+        </p>
+        <TextButton variant="outlined" size="fit" onClick={resetErrorBoundary}>
+          다시 시도
+        </TextButton>
+      </div>
+    </div>
+  );
+}
+
+const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
   const titleInputId = `club-form-title-${id}`;
   const descriptionInputId = `club-form-description-${id}`;
-  const {
-    data: detail,
-    isLoading: isDetailLoading,
-    isError: isDetailError,
-  } = useQuery(clubQueries.detail(id));
-  const { data: user } = useQuery(userQueries.me());
+  const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
+  const { data: user } = useSuspenseQuery(userQueries.me());
   const isMajorClub = detail?.club.type === "MAJOR_CLUB";
   const isLeader = !!user && user.name === detail?.club.leader;
   const canCreateForm = !!detail && isMajorClub && isLeader;
@@ -51,35 +82,10 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
     canCreateForm,
   });
 
-  if (isDetailLoading) {
-    return (
-      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-        <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
-          <div className="bg-sub-4 h-6 w-40 animate-pulse rounded" />
-          <div className="bg-sub-4 h-[52px] w-full max-w-4xl animate-pulse rounded-lg" />
-          <div className="bg-sub-4 h-[160px] w-full max-w-4xl animate-pulse rounded-xl" />
-        </div>
-      </div>
-    );
-  }
-
-  if (isDetailError || !detail) {
-    return (
-      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-        <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
-          <Club isActive={false} size={32} />
-          <p className="text-text-1 text-main-text">
-            존재하지 않는 동아리입니다.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   if (!canCreateForm) {
     return (
-      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-        <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
+      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+        <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
           <Club isActive={false} size={32} />
           <p className="text-text-1 text-main-text">
             {!isMajorClub
@@ -92,8 +98,8 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
   }
 
   return (
-    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
+    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl bg-background-surface p-6">
         <div className="flex items-center gap-2">
           <Club isActive={false} size={20} />
           <span className="text-text-1 text-main-text">동아리 폼 만들기</span>
@@ -173,4 +179,20 @@ export function ClubFormCreateSection({ id }: ClubFormCreateSectionProps) {
       </div>
     </div>
   );
+};
+
+ClubFormCreateSection.Loading = ClubFormCreateSectionLoading;
+ClubFormCreateSection.Error = ClubFormCreateSectionError;
+
+function ClubFormCreateSectionBoundary({ id }: ClubFormCreateSectionProps) {
+  return (
+    <ClientQueryBoundary
+      loadingFallback={<ClubFormCreateSection.Loading />}
+      errorFallback={ClubFormCreateSection.Error}
+    >
+      <ClubFormCreateSection id={id} />
+    </ClientQueryBoundary>
+  );
 }
+
+export { ClubFormCreateSection, ClubFormCreateSectionBoundary };
