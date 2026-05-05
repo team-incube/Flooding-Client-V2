@@ -35,8 +35,8 @@ const SEARCH_RESULT_LIMIT = 5;
 
 function ClubDetailSectionLoading() {
   return (
-    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-      <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center gap-2">
           <Skeleton className="h-5 w-5" />
           <Skeleton className="h-5 w-16" />
@@ -59,9 +59,11 @@ function ClubDetailSectionError({
 
   if (isForbidden) {
     return (
-      <div className="flex min-h-0 flex-1 w-full items-center justify-center xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+      <div className="flex min-h-0 w-full flex-1 items-center justify-center sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
         <div className="flex flex-col items-center gap-2 text-center">
-          <span className="text-title-3 text-main-text">접근 권한이 없어요</span>
+          <span className="text-title-3 text-main-text">
+            접근 권한이 없어요
+          </span>
           <span className="text-text-2 text-sub-1">
             이 동아리 정보를 볼 수 있는 권한이 없습니다.
           </span>
@@ -71,8 +73,8 @@ function ClubDetailSectionError({
   }
 
   return (
-    <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-      <div className="flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background-surface p-6">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+      <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
         <Club isActive={false} size={32} />
         <p className="text-text-1 text-main-text">
           동아리 정보를 불러오지 못했어요.
@@ -129,7 +131,10 @@ const ClubDetailSection = ({
   });
   const memberIds = new Set(detail.members.map((member) => member.id));
   const memberSearchResults = (searchUsersPage?.content ?? [])
-    .filter((searchUser) => searchUser.id !== user.id && !memberIds.has(searchUser.id))
+    .filter(
+      (searchUser) =>
+        searchUser.id !== user.id && !memberIds.has(searchUser.id),
+    )
     .slice(0, SEARCH_RESULT_LIMIT);
 
   const handleApplyClick = () => {
@@ -190,18 +195,20 @@ const ClubDetailSection = ({
 
   return (
     <>
-      <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
-        <div className="flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl bg-background-surface p-6">
+      <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+        <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
           <div className="flex items-center gap-2">
             <Club isActive={false} size={20} />
             <span className="text-text-1 text-main-text">동아리</span>
           </div>
-          <div className="w-full flex flex-col gap-4">
+          <div className="flex w-full flex-col gap-4">
             <ClubDetail
               detail={detail}
               canDelete={canDeleteClub}
               isApplyPending={autonomousApplyMutation.isPending}
-              onApplyClick={isPending || isManager ? undefined : handleApplyClick}
+              onApplyClick={
+                isPending || isManager ? undefined : handleApplyClick
+              }
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
               onViewApplicationsClick={
                 !isPending && canViewApplications
@@ -284,10 +291,7 @@ const ClubDetailSection = ({
 ClubDetailSection.Loading = ClubDetailSectionLoading;
 ClubDetailSection.Error = ClubDetailSectionError;
 
-function ClubDetailSectionBoundary({
-  id,
-  isPending,
-}: ClubDetailSectionProps) {
+function ClubDetailSectionBoundary({ id, isPending }: ClubDetailSectionProps) {
   return (
     <ClientQueryBoundary
       loadingFallback={<ClubDetailSection.Loading />}

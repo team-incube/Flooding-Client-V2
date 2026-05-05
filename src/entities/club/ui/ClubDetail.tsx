@@ -61,7 +61,9 @@ export default function ClubDetail({
 
   const applyVariant = isApplyPending || !onApplyClick ? "disabled" : "filled";
   const nonLeaderMembers = members.filter((m) =>
-    club.leaderId !== undefined ? m.id !== club.leaderId : m.name !== club.leader,
+    club.leaderId !== undefined
+      ? m.id !== club.leaderId
+      : m.name !== club.leader,
   );
 
   const { mutateAsync: updateClub } = usePutClub();
@@ -81,7 +83,9 @@ export default function ClubDetail({
       loading: "저장 중...",
       success: () => {
         setIsEdit(false);
-        queryClient.invalidateQueries({ queryKey: ["club", "detail", club.id] });
+        queryClient.invalidateQueries({
+          queryKey: ["club", "detail", club.id],
+        });
         return "저장되었습니다.";
       },
       error: "저장에 실패했습니다.",
@@ -97,7 +101,7 @@ export default function ClubDetail({
 
   return (
     <div className="flex w-full flex-col gap-6 xl:flex-row">
-      <div className="flex w-full 2xl:w-121 lg:w-100 flex-col gap-6">
+      <div className="flex w-full flex-col gap-6 lg:w-100 2xl:w-121">
         <ClubThumbnail
           imageUrl={previewUrl}
           isEdit={isEdit}
@@ -119,16 +123,16 @@ export default function ClubDetail({
             {isEdit ? (
               <div className="flex flex-col gap-1">
                 <textarea
-                  className="w-full text-text-1 text-sub-1 p-4 rounded-lg border border-sub-2 bg-background-surface outline-none focus:border-sub-1 transition-all resize-none"
+                  className="text-text-1 text-sub-1 border-sub-2 bg-background-surface focus:border-sub-1 w-full resize-none rounded-lg border p-4 transition-all outline-none"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
-                <span className="text-xs text-right text-sub-2">
+                <span className="text-sub-2 text-right text-xs">
                   {description.length}/500
                 </span>
               </div>
             ) : (
-              <p className="2xl:text-text-1 lg:text-text-2 text-sub-1 whitespace-pre-wrap leading-relaxed">
+              <p className="2xl:text-text-1 lg:text-text-2 text-sub-1 leading-relaxed whitespace-pre-wrap">
                 {description}
               </p>
             )}
@@ -156,22 +160,23 @@ export default function ClubDetail({
                     onChange={(e) => onMemberSearchChange?.(e.target.value)}
                     rightIcon={<Search />}
                   />
-                  {memberSearchResults.length > 0 && memberSearchQuery.trim() && (
-                    <div className="absolute z-10 w-full mt-1 border border-sub-4 rounded-lg overflow-hidden bg-background-surface shadow-md">
-                      <div className="flex flex-col divide-y divide-sub-4 px-2">
-                        {memberSearchResults.map((user) => (
-                          <button
-                            key={user.id}
-                            type="button"
-                            onClick={() => onMemberInvite?.(user)}
-                            className="w-full text-left py-3 px-2 text-text-2 text-main-text hover:bg-sub-4 transition-colors"
-                          >
-                            {user.studentNumber} {user.name}
-                          </button>
-                        ))}
+                  {memberSearchResults.length > 0 &&
+                    memberSearchQuery.trim() && (
+                      <div className="border-sub-4 bg-background-surface absolute z-10 mt-1 w-full overflow-hidden rounded-lg border shadow-md">
+                        <div className="divide-sub-4 flex flex-col divide-y px-2">
+                          {memberSearchResults.map((user) => (
+                            <button
+                              key={user.id}
+                              type="button"
+                              onClick={() => onMemberInvite?.(user)}
+                              className="text-text-2 text-main-text hover:bg-sub-4 w-full px-2 py-3 text-left transition-colors"
+                            >
+                              {user.studentNumber} {user.name}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               </div>
               {nonLeaderMembers.length > 0 && (
@@ -179,7 +184,7 @@ export default function ClubDetail({
                   {nonLeaderMembers.map((member) => (
                     <div
                       key={member.id}
-                      className="flex items-center justify-center gap-1.5 lg:gap-2 px-3 py-1.5 lg:px-4 lg:py-2 2xl:px-6 2xl:py-3 rounded-[38px] border border-sub-2 bg-background-surface text-caption-1 2xl:text-text-2 text-main-text"
+                      className="border-sub-2 bg-background-surface text-caption-1 2xl:text-text-2 text-main-text flex items-center justify-center gap-1.5 rounded-[38px] border px-3 py-1.5 lg:gap-2 lg:px-4 lg:py-2 2xl:px-6 2xl:py-3"
                     >
                       <span className="whitespace-nowrap">
                         {member.studentNumber} {member.name}
@@ -188,7 +193,7 @@ export default function ClubDetail({
                         <button
                           type="button"
                           onClick={() => onMemberExile(member.id)}
-                          className="shrink-0 flex items-center [&>svg]:w-3 [&>svg]:h-3 2xl:[&>svg]:w-3.5 2xl:[&>svg]:h-3.5 text-sub-2 hover:text-negative transition-colors"
+                          className="text-sub-2 hover:text-negative flex shrink-0 items-center transition-colors [&>svg]:h-3 [&>svg]:w-3 2xl:[&>svg]:h-3.5 2xl:[&>svg]:w-3.5"
                           aria-label={`${member.name} 추방`}
                         >
                           <Cancel />
@@ -203,8 +208,8 @@ export default function ClubDetail({
         </div>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-4 xl:self-stretch justify-between">
-        <div className="flex flex-col gap-4 h-full">
+      <div className="flex min-w-0 flex-1 flex-col justify-between gap-4 xl:self-stretch">
+        <div className="flex h-full flex-col gap-4">
           <span className="text-text-1 text-main-text">동아리 프로젝트</span>
           {projects.length > 0 ? (
             projects.map((p: Project) => (
@@ -224,8 +229,11 @@ export default function ClubDetail({
           {!isEdit && isLeader && (
             <button
               type="button"
-              onClick={() => { setIsEdit(true); onEditClick?.(); }}
-              className="flex items-center justify-center p-2.5 rounded-xl bg-sub-4"
+              onClick={() => {
+                setIsEdit(true);
+                onEditClick?.();
+              }}
+              className="bg-sub-4 flex items-center justify-center rounded-xl p-2.5"
               aria-label="동아리 수정"
             >
               <Edit />

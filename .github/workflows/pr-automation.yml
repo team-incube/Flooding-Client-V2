@@ -56,7 +56,7 @@ jobs:
 
           # ── 상태 & 콘텐츠 ──────────────────────
           status: ${{ job.status }}
-          content: "<@FE> PR 확인해주세요."
+          content: "<@1445205237462863922> PR 확인해주세요."
           title: "${{ github.event.pull_request.title }}"
           description: |
             작성자: @${{ github.event.pull_request.user.login }}

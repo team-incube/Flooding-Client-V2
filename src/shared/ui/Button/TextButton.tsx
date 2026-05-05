@@ -1,4 +1,9 @@
-export type TextButtonVariant = "filled" | "outlined" | "negative" | "disabled" | "ghost";
+export type TextButtonVariant =
+  | "filled"
+  | "outlined"
+  | "negative"
+  | "disabled"
+  | "ghost";
 type ButtonSize = "small" | "wide" | "medium" | "fit";
 
 interface TextButtonProps {
@@ -16,7 +21,7 @@ const variantStyles = {
     "bg-background-surface text-sub-1 border border-sub-2 cursor-pointer",
   negative: "bg-negative text-sub-4 cursor-pointer",
   disabled: "bg-p-3 text-sub-4",
-  ghost: "bg-p-3 text-sub-4 cursor-pointer"
+  ghost: "bg-p-3 text-sub-4 cursor-pointer",
 };
 
 const sizeStyles = {

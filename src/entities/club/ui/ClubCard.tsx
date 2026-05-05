@@ -10,10 +10,10 @@ interface ClubCardProps {
 export default function ClubCard({ club, onClick }: ClubCardProps) {
   return (
     <div
-      className="flex flex-col gap-4 bg-sub-4 rounded-2xl px-4 py-6 cursor-pointer"
+      className="bg-sub-4 flex cursor-pointer flex-col gap-4 rounded-2xl px-4 py-6"
       onClick={onClick}
     >
-      <div className="relative w-full bg-sub-4 rounded-2xl overflow-hidden h-33.5">
+      <div className="bg-sub-4 relative h-33.5 w-full overflow-hidden rounded-2xl">
         {club.imageUrl ? (
           <Image
             src={club.imageUrl}
@@ -22,12 +22,12 @@ export default function ClubCard({ club, onClick }: ClubCardProps) {
             className="object-cover"
           />
         ) : (
-          <div className="flex items-center justify-center w-full h-full">
+          <div className="flex h-full w-full items-center justify-center">
             <DefaultClubThumbnail />
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-1 items-start">
+      <div className="flex flex-col items-start gap-1">
         <span className="text-text-2 text-main-text">{club.name}</span>
         <p className="text-caption-1 text-sub-1 line-clamp-2">
           {club.description}

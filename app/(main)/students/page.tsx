@@ -16,7 +16,7 @@ function StudentsPageError({ resetErrorBoundary }: QueryErrorFallbackProps) {
 
   return (
     <main className="flex flex-1 flex-col overflow-y-auto px-8 pb-25 lg:px-10 2xl:px-18">
-      <section className="flex flex-col gap-4 rounded-2xl bg-background-surface p-6">
+      <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6">
         <div className="flex flex-col gap-1">
           <h2 className="text-title-3 text-main-text">
             학생관리 정보를 불러오지 못했어요
@@ -47,7 +47,7 @@ function StudentsPageContent() {
   if (!isManagementRole(user.role)) {
     return (
       <main className="flex flex-1 flex-col overflow-y-auto px-8 pb-25 lg:px-10 2xl:px-18">
-        <section className="flex flex-col gap-4 rounded-2xl bg-background-surface p-6">
+        <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6">
           <div className="flex flex-col gap-1">
             <h2 className="text-title-3 text-main-text">접근 권한이 없어요</h2>
             <p className="text-text-3 text-sub-1">
@@ -67,7 +67,7 @@ function StudentsPageContent() {
   }
 
   return (
-    <main className="flex flex-1 flex-col overflow-y-auto px-8 lg:px-10 2xl:px-18 pb-25">
+    <main className="flex flex-1 flex-col overflow-y-auto px-8 pb-25 lg:px-10 2xl:px-18">
       <ClientQueryBoundary
         loadingFallback={<StudentManagementSection.Loading />}
         errorFallback={StudentManagementSection.Error}

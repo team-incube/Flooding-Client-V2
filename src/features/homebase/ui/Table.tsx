@@ -31,15 +31,15 @@ export function Table({
     >
       {reserved ? (
         <div className="flex flex-col items-center gap-1">
-          <span className="text-text-1 font-medium text-sub-1">{name}</span>
-          <span className="text-center text-text-3 text-sub-2">
+          <span className="text-text-1 text-sub-1 font-medium">{name}</span>
+          <span className="text-text-3 text-sub-2 text-center">
             {members.join(", ")}
           </span>
         </div>
       ) : (
         <div className="flex flex-col items-center gap-1">
-          <div className="text-[18.93px] font-medium text-sub-2">{name}</div>
-          <div className="text-[16.82px] font-medium text-p-1">{capacity}</div>
+          <div className="text-sub-2 text-[18.93px] font-medium">{name}</div>
+          <div className="text-p-1 text-[16.82px] font-medium">{capacity}</div>
         </div>
       )}
     </button>

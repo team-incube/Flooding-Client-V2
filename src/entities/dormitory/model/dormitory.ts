@@ -1,5 +1,5 @@
-import type { Sex } from '@/entities/user/model/user';
-import type { Music } from '@/entities/music/model/music';
+import type { Sex } from "@/entities/user/model/user";
+import type { Music } from "@/entities/music/model/music";
 
 export type DormitoryMusic = Music;
 

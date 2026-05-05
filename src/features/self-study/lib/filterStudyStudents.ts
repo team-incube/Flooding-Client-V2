@@ -11,12 +11,8 @@ export function filterStudyStudents({
   filterState,
   students,
 }: FilterStudyStudentsParams): StudyApplicant[] {
-  const {
-    searchQuery,
-    selectedGrades,
-    selectedClasses,
-    selectedGender,
-  } = filterState;
+  const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
+    filterState;
 
   return students.filter((student) => {
     const matchesSearchQuery =
@@ -31,11 +27,6 @@ export function filterStudyStudents({
       selectedClasses.includes(getClassNumber(student.studentNumber));
     const matchesGender = !selectedGender || student.sex === selectedGender;
 
-    return (
-      matchesSearchQuery &&
-      matchesGrade &&
-      matchesClass &&
-      matchesGender
-    );
+    return matchesSearchQuery && matchesGrade && matchesClass && matchesGender;
   });
 }

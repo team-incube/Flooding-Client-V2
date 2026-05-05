@@ -38,7 +38,7 @@ function MusicRecommendEmpty({ reason }: MusicRecommendEmptyProps) {
       : "다시 시도 버튼으로 새 추천을 요청해주세요.";
 
   return (
-    <div className="flex min-h-[230px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-sub-3 bg-background">
+    <div className="border-sub-3 bg-background flex min-h-[230px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed">
       <SmallStar />
       <p className="text-text-2 text-main-text">{message}</p>
       <p className="text-text-3 text-sub-1">{description}</p>
@@ -77,8 +77,8 @@ export function MusicRecommendModal({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-background/40 z-50">
-      <div className="flex flex-col gap-6 bg-background-surface rounded-2xl p-6 w-[90%] max-w-[1152px] min-h-[447px]">
+    <div className="bg-background/40 fixed inset-0 z-50 flex items-center justify-center">
+      <div className="bg-background-surface flex min-h-[447px] w-[90%] max-w-[1152px] flex-col gap-6 rounded-2xl p-6">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1">

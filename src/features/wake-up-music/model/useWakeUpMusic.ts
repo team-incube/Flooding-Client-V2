@@ -110,8 +110,9 @@ export function useWakeUpMusic() {
       const previousSongs = queryClient.getQueryData<Music[]>(
         musicQuery.queryKey,
       );
-      queryClient.setQueryData<Music[]>(musicQuery.queryKey, (current) =>
-        current?.filter((item) => item.id !== musicId) ?? [],
+      queryClient.setQueryData<Music[]>(
+        musicQuery.queryKey,
+        (current) => current?.filter((item) => item.id !== musicId) ?? [],
       );
       return { previousSongs };
     },

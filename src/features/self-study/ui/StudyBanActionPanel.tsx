@@ -22,13 +22,15 @@ export function StudyBanActionPanel({
         <button
           type="button"
           onClick={onClearSelection}
-          className="cursor-pointer text-text-4 text-sub-1 transition-colors hover:text-p-1"
+          className="text-text-4 text-sub-1 hover:text-p-1 cursor-pointer transition-colors"
         >
           선택 해제
         </button>
       </div>
       <TextButton
-        variant={selectedBanTargetCount > 0 && !isPending ? "filled" : "disabled"}
+        variant={
+          selectedBanTargetCount > 0 && !isPending ? "filled" : "disabled"
+        }
         size="wide"
         onClick={onBanSelectedStudent}
       >

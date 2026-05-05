@@ -84,7 +84,9 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
       },
       error: (err: unknown) => {
         if (axios.isAxiosError(err)) {
-          return err.response?.data?.message ?? "권한이 없거나 신청 기간이 아닙니다.";
+          return (
+            err.response?.data?.message ?? "권한이 없거나 신청 기간이 아닙니다."
+          );
         }
         return "권한이 없거나 신청 기간이 아닙니다.";
       },
@@ -92,8 +94,8 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
   };
 
   return (
-    <div className="flex gap-10 h-full min-h-0 flex-1 flex-col lg:flex-row">
-      <div className="flex flex-1 flex-col h-[762px] items-center justify-center min-h-0">
+    <div className="flex h-full min-h-0 flex-1 flex-col gap-10 lg:flex-row">
+      <div className="flex h-[762px] min-h-0 flex-1 flex-col items-center justify-center">
         {!submitted ? (
           <>
             <FileOff />
@@ -109,7 +111,7 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
             </span>
             <button
               onClick={onGoBackToList}
-              className="flex gap-2 items-center mt-4 text-text-1 text-sub-2 cursor-pointer underline hover:opacity-80"
+              className="text-text-1 text-sub-2 mt-4 flex cursor-pointer items-center gap-2 underline hover:opacity-80"
             >
               돌아가기 <Back direction="right" />
             </button>
@@ -130,7 +132,7 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
 
           <div className="flex flex-col gap-1">
             <span className="text-text-3">유지, 신설 여부</span>
-            <div className="flex gap-1 w-full">
+            <div className="flex w-full gap-1">
               <TextButton
                 variant={regType === "NEW" ? "filled" : "outlined"}
                 size="fit"
@@ -168,15 +170,17 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
               onChange={(e) => handleChange("clubDetail", e.target.value)}
               value={clubDetail}
               maxLength={500}
-              className="w-full rounded-lg border border-sub-2 bg-background-surface text-main-text py-3 px-4 h-32 resize-none outline-none"
+              className="border-sub-2 bg-background-surface text-main-text h-32 w-full resize-none rounded-lg border px-4 py-3 outline-none"
             />
-            <span className="text-xs text-right text-sub-2">
+            <span className="text-sub-2 text-right text-xs">
               {clubDetail.length}/500
             </span>
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className="text-text-3 font-medium">배정 희망 전공 선생님 (없으면 공란)</span>
+            <span className="text-text-3 font-medium">
+              배정 희망 전공 선생님 (없으면 공란)
+            </span>
             <TextField
               placeholder="희망 전공 선생님을 적어주세요"
               onChange={(e) => handleChange("desiredTeacher", e.target.value)}
@@ -194,7 +198,7 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
                   onChange={(e) => setMemberName(e.target.value)}
                   rightIcon={<Search />}
                 />
-                <div className="absolute left-0 right-0 top-full z-10 mt-1">
+                <div className="absolute top-full right-0 left-0 z-10 mt-1">
                   <StudentSearch
                     filteredStudents={filteredMembers}
                     isFull={false}

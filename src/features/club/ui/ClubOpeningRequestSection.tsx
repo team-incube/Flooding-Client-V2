@@ -14,7 +14,9 @@ export function ClubOpeningRequestSection() {
 
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-text-1 text-main-text font-semibold">개설 신청 목록</span>
+      <span className="text-text-1 text-main-text font-semibold">
+        개설 신청 목록
+      </span>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(263px,1fr))] gap-4">
         {clubs.map((club) => (
           <ClubCard

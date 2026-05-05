@@ -1,7 +1,9 @@
 import { instance } from "@/shared/api/instance";
 import type { Club } from "../model/club";
 
-async function getClubsByType(type: "MAJOR_CLUB" | "AUTONOMOUS_CLUB"): Promise<Club[]> {
+async function getClubsByType(
+  type: "MAJOR_CLUB" | "AUTONOMOUS_CLUB",
+): Promise<Club[]> {
   const { data: body } = await instance.get("/clubs", { params: { type } });
   return body.data?.clubs ?? [];
 }

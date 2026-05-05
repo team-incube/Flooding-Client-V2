@@ -47,7 +47,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col w-[112px] lg:w-[240px] 2xl:w-[260px] h-screen bg-background-surface py-13 px-4 justify-between">
+    <div className="bg-background-surface flex h-screen w-[112px] flex-col justify-between px-4 py-13 lg:w-[240px] 2xl:w-[260px]">
       <div className="flex flex-col items-center gap-[47px]">
         <div>
           <div className="hidden lg:block">
@@ -57,7 +57,7 @@ export default function Sidebar() {
             <Logo iconOnly />
           </div>
         </div>
-        <nav className="flex flex-col gap-[6px] w-full">
+        <nav className="flex w-full flex-col gap-[6px]">
           {menuItems.map((item) => (
             <SidebarMenu
               key={item.href}
@@ -72,14 +72,14 @@ export default function Sidebar() {
 
       <button
         type="button"
-        className="flex items-center justify-center lg:justify-start h-14 w-full py-3 lg:px-4 cursor-pointer transition-all"
+        className="flex h-14 w-full cursor-pointer items-center justify-center py-3 transition-all lg:justify-start lg:px-4"
         onClick={handleLogout}
       >
         <div className="flex items-center gap-6">
           <div className="flex shrink-0 items-center justify-center">
             <Signout size={32} />
           </div>
-          <span className="hidden lg:block text-text-1 text-sub-2">
+          <span className="text-text-1 text-sub-2 hidden lg:block">
             로그아웃
           </span>
         </div>

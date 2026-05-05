@@ -2,10 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import {
-  clubMutations,
-  clubQueries,
-} from "@/entities/club/api/clubQueries";
+import { clubMutations, clubQueries } from "@/entities/club/api/clubQueries";
 
 interface ApproveClubApplicationVariables {
   userId: number;

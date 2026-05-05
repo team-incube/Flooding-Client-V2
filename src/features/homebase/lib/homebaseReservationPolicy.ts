@@ -114,8 +114,7 @@ export function getPeriodVariant({
   const startIdx = periods.indexOf(selectedStartPeriod);
   const endIdx = periods.indexOf(selectedEndPeriod);
 
-  return idx >= Math.min(startIdx, endIdx) &&
-    idx <= Math.max(startIdx, endIdx)
+  return idx >= Math.min(startIdx, endIdx) && idx <= Math.max(startIdx, endIdx)
     ? "filled"
     : "outlined";
 }
@@ -163,16 +162,12 @@ export function getReservedTableMembers({
       const members = reservation.members.map(
         (member) => `${member.studentNumber} ${member.name}`,
       );
-      acc[tableId] = Array.from(
-        new Set([...(acc[tableId] ?? []), ...members]),
-      );
+      acc[tableId] = Array.from(new Set([...(acc[tableId] ?? []), ...members]));
       return acc;
     }, {});
 }
 
-export function getReservationItems(
-  reservations: HomebaseReservation[],
-): {
+export function getReservationItems(reservations: HomebaseReservation[]): {
   reservationId: number;
   reservation: Reservation;
 }[] {

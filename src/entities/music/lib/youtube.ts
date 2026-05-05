@@ -17,7 +17,10 @@ export function extractYoutubeVideoId(url: string): string | null {
       }
 
       const [type, videoId] = parsedUrl.pathname.split("/").filter(Boolean);
-      if (["embed", "shorts", "live"].includes(type) && isYoutubeVideoId(videoId)) {
+      if (
+        ["embed", "shorts", "live"].includes(type) &&
+        isYoutubeVideoId(videoId)
+      ) {
         return videoId;
       }
     }

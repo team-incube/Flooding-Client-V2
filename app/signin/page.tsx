@@ -27,8 +27,8 @@ export default function Signin() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center overflow-hidden bg-background">
-      <div className="flex flex-col items-center gap-6 w-fit h-fit bg-background-surface px-8 py-13 rounded-2xl">
+    <div className="bg-background flex h-screen items-center justify-center overflow-hidden">
+      <div className="bg-background-surface flex h-fit w-fit flex-col items-center gap-6 rounded-2xl px-8 py-13">
         <Logo />
         <div className="flex flex-col items-center gap-3">
           <TextButton
@@ -40,7 +40,7 @@ export default function Signin() {
             {isLoggingIn ? "로그인 중" : "Data GSM으로 로그인"}
           </TextButton>
           {errorMessage && (
-            <p className="w-[330px] text-center text-caption-2 text-negative">
+            <p className="text-caption-2 text-negative w-[330px] text-center">
               {errorMessage}
             </p>
           )}

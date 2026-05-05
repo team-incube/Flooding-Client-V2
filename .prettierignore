@@ -1,0 +1,9 @@
+.next
+node_modules
+.agents
+.claude
+out
+build
+coverage
+package-lock.json
+public/mockServiceWorker.js

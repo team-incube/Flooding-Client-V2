@@ -37,13 +37,15 @@ export default function ClubMemberList({
               <span className="text-sub-1">{grade}학년 - </span>
               {gradeMembers.map((m, i) => {
                 const isCurrentLeader =
-                  leaderId !== undefined ? m.id === leaderId : m.name === leader;
+                  leaderId !== undefined
+                    ? m.id === leaderId
+                    : m.name === leader;
                 const isClickable =
                   isLeader && !isCurrentLeader && !!onMemberClick;
                 return (
                   <span key={m.id}>
                     <span
-                      className={`${isCurrentLeader ? "text-p-1" : "text-sub-1"} ${isClickable ? "cursor-pointer hover:text-p-1" : ""}`}
+                      className={`${isCurrentLeader ? "text-p-1" : "text-sub-1"} ${isClickable ? "hover:text-p-1 cursor-pointer" : ""}`}
                       onClick={isClickable ? () => onMemberClick(m) : undefined}
                     >
                       {m.name}

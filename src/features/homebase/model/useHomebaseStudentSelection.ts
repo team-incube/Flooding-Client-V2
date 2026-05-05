@@ -68,9 +68,7 @@ export function useHomebaseStudentSelection({
   };
 
   const handleRemoveStudent = (studentNumber: number) => {
-    setSelectedStudents((prev) =>
-      removeSelectedStudent(prev, studentNumber),
-    );
+    setSelectedStudents((prev) => removeSelectedStudent(prev, studentNumber));
     setTriedToOverfill(false);
   };
 

@@ -5,8 +5,13 @@ interface ClubDetailPageProps {
   searchParams: Promise<{ pending?: string }>;
 }
 
-export default async function ClubDetailPage({ params, searchParams }: ClubDetailPageProps) {
+export default async function ClubDetailPage({
+  params,
+  searchParams,
+}: ClubDetailPageProps) {
   const { id } = await params;
   const { pending } = await searchParams;
-  return <ClubDetailSectionBoundary id={Number(id)} isPending={pending === "true"} />;
+  return (
+    <ClubDetailSectionBoundary id={Number(id)} isPending={pending === "true"} />
+  );
 }
