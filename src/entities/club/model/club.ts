@@ -1,6 +1,8 @@
 import { Sex } from "@/entities/user/model/user";
 
 export type ClubType = "MAJOR_CLUB" | "AUTONOMOUS_CLUB";
+export type ClubStatus = "MAINTAIN" | "ACTIVE" | "ABOLISHED";
+export type RegistrationType = "NEW" | "MAINTAIN" | null;
 
 export interface Club {
   id: number;
@@ -17,6 +19,7 @@ export interface ClubListResponse {
 }
 
 export interface ClubDetail {
+  isClosed?: boolean;
   id: number;
   name: string;
   type: ClubType;
@@ -61,6 +64,7 @@ export interface ClubDetailResponse {
   club: ClubDetail;
   members: ClubMember[];
   projects: Project[];
+  isLeader: boolean;
 }
 
 export type ClubFormFieldType =
@@ -151,4 +155,15 @@ export interface ClubApplicationSummary {
 
 export interface ClubApplicationListResponse {
   applications: ClubApplicationSummary[];
+}
+
+export interface RegistrationData {
+  regType: RegistrationType;
+  clubType: ClubType;
+  status: ClubStatus;
+  clubName: string;
+  leaderInfo: string;
+  clubDetail: string;
+  desiredTeacher: string;
+  clubImage: File | string | null;
 }

@@ -19,6 +19,7 @@ const MOCK_ME: User = {
   specialty: 'FE',
   penaltyScore: 0,
   isBanned: false,
+  hasClubApplication: false,
 };
 
 export const userHandlers = [

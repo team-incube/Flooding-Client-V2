@@ -303,6 +303,14 @@ export const clubHandlers = [
     });
   }),
 
+  http.get('*/clubs/opening/requests', () => {
+    return HttpResponse.json({ data: { clubs: [] } });
+  }),
+
+  http.get('*/clubs/opening-status', () => {
+    return HttpResponse.json({ data: { isOpened: true, startDate: null, endDate: null } });
+  }),
+
   http.get('*/clubs/:id', ({ params }) => {
     const id = Number(params.id);
     const detail = MOCK_CLUB_DETAILS[id];
@@ -310,5 +318,29 @@ export const clubHandlers = [
       return new HttpResponse(null, { status: 404 });
     }
     return HttpResponse.json({ data: detail });
+  }),
+
+  http.post('*/clubs', () => {
+    return HttpResponse.json({ success: true }, { status: 201 });
+  }),
+
+  http.put('*/clubs/:clubId', async () => {
+    return HttpResponse.json({ success: true }, { status: 200 });
+  }),
+
+  http.patch('*/clubs/:clubId/approval', async ({ params, request }) => {
+    const { clubId } = params;
+    const body = (await request.json()) as { approved: boolean };
+    return HttpResponse.json(
+      {
+        clubId: Number(clubId),
+        status: body.approved ? 'APPROVED' : 'REJECTED',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.delete('*/clubs/:clubId', () => {
+    return HttpResponse.json({ success: true }, { status: 200 });
   }),
 ];

@@ -1,16 +1,20 @@
-import type { User } from "@/entities/user/model/user";
-
-interface StudentSearchProps {
-  filteredStudents: User[];
-  isFull: boolean;
-  onSelect: (student: User) => void;
+interface StudentItem {
+  id: number;
+  name: string;
+  studentNumber: number;
 }
 
-export function StudentSearch({
+interface StudentSearchProps<T extends StudentItem> {
+  filteredStudents: T[];
+  isFull: boolean;
+  onSelect: (student: T) => void;
+}
+
+export function StudentSearch<T extends StudentItem>({
   filteredStudents,
   isFull,
   onSelect,
-}: StudentSearchProps) {
+}: StudentSearchProps<T>) {
   if (filteredStudents.length === 0) return null;
 
   return (

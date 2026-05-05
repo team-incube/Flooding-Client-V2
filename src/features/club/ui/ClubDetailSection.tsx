@@ -6,10 +6,12 @@ import axios, { HttpStatusCode } from "axios";
 import { notFound, useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
-import { clubQueries } from "@/entities/club/api/clubQueries";
+import { clubQueries, usePatchClubApproval } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import type { ClubMember } from "@/entities/club/model/club";
 import type { SearchUser } from "@/entities/user/model/user";
+import { toast } from "sonner";
+import { TextButton } from "@/shared/ui/Button/TextButton";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 import { useTransferClubLeader } from "../model/useTransferClubLeader";
 import { useInviteClubMember } from "../model/useInviteClubMember";
@@ -18,11 +20,12 @@ import { ClubTransferModal } from "./ClubTransferModal";
 
 interface ClubDetailSectionProps {
   id: number;
+  isPending?: boolean;
 }
 
 const SEARCH_RESULT_LIMIT = 5;
 
-export function ClubDetailSection({ id }: ClubDetailSectionProps) {
+export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionProps) {
   if (!Number.isInteger(id)) {
     notFound();
   }
@@ -30,19 +33,19 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const router = useRouter();
   const autonomousApplyMutation = useApplyAutonomousClub(id);
   const transferMutation = useTransferClubLeader(id);
+  const { mutate: patchApproval, isPending: isApprovalPending } = usePatchClubApproval();
   const inviteMutation = useInviteClubMember(id);
   const exileMutation = useExileClubMember(id);
-
   const [transferTarget, setTransferTarget] = useState<ClubMember | null>(null);
   const [memberSearch, setMemberSearch] = useState("");
 
   const { data: detail, isLoading, isError, error } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
-  const isLeader = !!user && (
-    detail?.club.leaderId !== undefined
-      ? user.id === detail.club.leaderId
-      : user.name === detail?.club.leader
-  );
+  const { data: isRegistrationPeriod = false } = useQuery(clubQueries.openingStatus());
+
+  const isLeader = detail?.isLeader ?? false;
+  const isManager = user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL";
+  const canDeleteClub = (isLeader || user?.role === "ADMIN") && isRegistrationPeriod;
   const canCreateForm = detail?.club.type === "MAJOR_CLUB" && isLeader;
   const canViewApplications =
     !!detail &&
@@ -180,15 +183,15 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
             <Club isActive={false} size={20} />
             <span className="text-text-1 text-main-text">동아리</span>
           </div>
-          <div className="w-full">
+          <div className="w-full flex flex-col gap-4">
             <ClubDetail
               detail={detail}
-              isLeader={isLeader}
+              canDelete={canDeleteClub}
               isApplyPending={autonomousApplyMutation.isPending}
-              onApplyClick={handleApplyClick}
+              onApplyClick={isPending || isManager ? undefined : handleApplyClick}
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
               onViewApplicationsClick={
-                canViewApplications ? handleApplicationsClick : undefined
+                !isPending && canViewApplications ? handleApplicationsClick : undefined
               }
               onCreateFormClick={
                 canShowFormAction
@@ -205,6 +208,49 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
               onMemberInvite={isLeader ? handleMemberInvite : undefined}
               onMemberExile={isLeader ? handleMemberExile : undefined}
             />
+            {isManager && isPending && (
+              <div className="flex justify-end">
+                <div className="flex w-[240px] gap-2">
+                  <TextButton
+                    size="fit"
+                    className="flex-1"
+                    variant="negative"
+                    onClick={() =>
+                      patchApproval(
+                        { clubId: id, body: { approved: false } },
+                        {
+                          onSuccess: () => {
+                            toast.success("동아리 개설을 거부했습니다.");
+                            router.push("/club");
+                          },
+                          onError: () => toast.error("처리에 실패했습니다."),
+                        },
+                      )
+                    }
+                    disabled={isApprovalPending}
+                  >
+                    개설 거부
+                  </TextButton>
+                  <TextButton
+                    size="fit"
+                    className="flex-1"
+                    variant="filled"
+                    onClick={() =>
+                      patchApproval(
+                        { clubId: id, body: { approved: true } },
+                        {
+                          onSuccess: () => toast.success("동아리 개설을 승인했습니다."),
+                          onError: () => toast.error("처리에 실패했습니다."),
+                        },
+                      )
+                    }
+                    disabled={isApprovalPending}
+                  >
+                    개설 승인
+                  </TextButton>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

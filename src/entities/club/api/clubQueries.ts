@@ -1,19 +1,27 @@
-import { queryOptions } from '@tanstack/react-query';
+"use client";
+
+import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import { instance } from '@/shared/api/instance';
 import { getClubs } from './getClubs';
 import { getClubDetail } from './getClub';
 import { getClubForm } from './getClubForm';
 import { getClubApplications } from './getClubApplications';
+import { getClubOpeningRequests } from './getClubOpeningRequests';
+import { getClubOpeningStatus } from './getClubOpeningStatus';
 import type {
   ClubApplicationRequest,
   CreateClubFormRequest,
 } from '../model/club';
+import { patchClubApproval } from "./patchClubApproval";
+import { postClub } from "./postClub";
+import { deleteClub } from "./deleteClub";
+import { putClub } from "./putClub";
 
 export const clubQueries = {
   list: () =>
     queryOptions({
       queryKey: ['club', 'list'],
-      queryFn: getClubs,
+      queryFn: () => getClubs(),
     }),
 
   detail: (id: number) =>
@@ -32,6 +40,18 @@ export const clubQueries = {
     queryOptions({
       queryKey: ['club', 'applications', clubId],
       queryFn: () => getClubApplications(clubId),
+    }),
+
+  openingRequests: () =>
+    queryOptions({
+      queryKey: ['club', 'opening-requests'],
+      queryFn: getClubOpeningRequests,
+    }),
+
+  openingStatus: () =>
+    queryOptions({
+      queryKey: ['club', 'opening-status'],
+      queryFn: getClubOpeningStatus,
     }),
 } as const;
 
@@ -60,3 +80,57 @@ export const clubMutations = {
   exileMember: (clubId: number, userId: number) =>
     instance.delete(`/clubs/${clubId}/member/exile/${userId}`),
 } as const;
+
+export const usePatchClubApproval = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ clubId, body }: { clubId: number; body: { approved: boolean } }) =>
+      patchClubApproval(clubId, body),
+    onSuccess: (_, { clubId }) => {
+      queryClient.invalidateQueries({ queryKey: ["club"] });
+      queryClient.invalidateQueries({ queryKey: ["club", "detail", clubId] });
+    },
+  });
+};
+
+export const useDeleteClub = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (clubId: number) => deleteClub(clubId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club"] });
+    },
+  });
+};
+
+export const usePutClub = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      clubId,
+      body,
+    }: {
+      clubId: number;
+      body: {
+        name: string;
+        description: string;
+        imageUrl?: string;
+        maxMember?: number;
+      };
+    }) => putClub(clubId, body),
+    onSuccess: (_, { clubId }) => {
+      queryClient.invalidateQueries({ queryKey: ["club"] });
+      queryClient.invalidateQueries({ queryKey: ["club", "detail", clubId] });
+    },
+  });
+};
+
+export const usePostClub = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: postClub,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club"] });
+    },
+  });
+};

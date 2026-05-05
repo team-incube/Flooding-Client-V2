@@ -2,11 +2,13 @@ import type { InputHTMLAttributes, ReactNode } from "react";
 
 interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   rightIcon?: ReactNode;
+  inputClassName?: string;
 }
 
 export default function TextField({
   rightIcon,
   className,
+  inputClassName,
   ...props
 }: TextFieldProps) {
   return (
@@ -17,6 +19,7 @@ export default function TextField({
           bg-background-surface border-sub-2 text-main-text
           placeholder:text-sub-2 focus:border-sub-1 caret-[#527CD7]
           pl-4 ${rightIcon ? "pr-12" : "pr-4"}
+          ${inputClassName ?? ""}
         `}
         {...props}
       />
