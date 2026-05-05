@@ -1,12 +1,12 @@
 import { ClubDetailSection } from "@/features/club/ui/ClubDetailSection";
 
 interface ClubDetailPageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ pending?: string }>;
 }
 
-export default async function ClubDetailPage({ params }: ClubDetailPageProps) {
+export default async function ClubDetailPage({ params, searchParams }: ClubDetailPageProps) {
   const { id } = await params;
-  return <ClubDetailSection id={Number(id)} />;
+  const { pending } = await searchParams;
+  return <ClubDetailSection id={Number(id)} isPending={pending === "true"} />;
 }

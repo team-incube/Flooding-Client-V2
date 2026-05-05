@@ -262,7 +262,7 @@ export default function ClubDetail({
                   {formActionLabel}
                 </TextButton>
               )}
-              {!isLeader && (
+              {!isLeader && onApplyClick && (
                 <TextButton
                   size="fit"
                   variant={applyVariant}

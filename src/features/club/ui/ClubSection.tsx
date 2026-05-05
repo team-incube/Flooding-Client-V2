@@ -56,21 +56,22 @@ export function ClubSection() {
           </div>
         </div>
 
-        {isManager && <ClubOpeningRequestSection />}
-
         {isRegistrationPeriod && !hasClubApplication && viewMode !== "list" ? (
           <ClubRegistrationSection onGoBackToList={handleGoBackToList} />
         ) : (
           <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
             <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:overflow-y-scroll lg:pr-2">
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(263px,1fr))] gap-4">
-                {filteredClubs.map((club) => (
-                  <ClubCard
-                    key={club.id}
-                    club={club}
-                    onClick={() => router.push(`/club/${club.id}`)}
-                  />
-                ))}
+              <div className="flex flex-col gap-6">
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(263px,1fr))] gap-4">
+                  {filteredClubs.map((club) => (
+                    <ClubCard
+                      key={club.id}
+                      club={club}
+                      onClick={() => router.push(`/club/${club.id}`)}
+                    />
+                  ))}
+                </div>
+                {isManager && <ClubOpeningRequestSection />}
               </div>
             </div>
             <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
@@ -101,6 +102,7 @@ export function ClubSection() {
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

@@ -20,11 +20,12 @@ import { ClubTransferModal } from "./ClubTransferModal";
 
 interface ClubDetailSectionProps {
   id: number;
+  isPending?: boolean;
 }
 
 const SEARCH_RESULT_LIMIT = 5;
 
-export function ClubDetailSection({ id }: ClubDetailSectionProps) {
+export function ClubDetailSection({ id, isPending = false }: ClubDetailSectionProps) {
   if (!Number.isInteger(id)) {
     notFound();
   }
@@ -187,10 +188,10 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
               detail={detail}
               canDelete={canDeleteClub}
               isApplyPending={autonomousApplyMutation.isPending}
-              onApplyClick={handleApplyClick}
+              onApplyClick={isPending || isManager ? undefined : handleApplyClick}
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
               onViewApplicationsClick={
-                canViewApplications ? handleApplicationsClick : undefined
+                !isPending && canViewApplications ? handleApplicationsClick : undefined
               }
               onCreateFormClick={
                 canShowFormAction
@@ -207,7 +208,7 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
               onMemberInvite={isLeader ? handleMemberInvite : undefined}
               onMemberExile={isLeader ? handleMemberExile : undefined}
             />
-            {isManager && (
+            {isManager && isPending && (
               <div className="flex justify-end">
                 <div className="flex w-[240px] gap-2">
                   <TextButton

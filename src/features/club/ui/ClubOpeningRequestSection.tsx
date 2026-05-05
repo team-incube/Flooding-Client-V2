@@ -3,17 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { clubQueries } from "@/entities/club/api/clubQueries";
-import { userQueries } from "@/entities/user/api/userQueries";
 import ClubCard from "@/entities/club/ui/ClubCard";
 
 export function ClubOpeningRequestSection() {
   const router = useRouter();
-  const { data: user } = useQuery(userQueries.me());
-  const isManager = user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL";
-  const { data } = useQuery({
-    ...clubQueries.openingRequests(),
-    enabled: isManager,
-  });
+  const { data } = useQuery(clubQueries.openingRequests());
   const clubs = data?.clubs ?? [];
 
   if (clubs.length === 0) return null;
@@ -26,7 +20,7 @@ export function ClubOpeningRequestSection() {
           <ClubCard
             key={club.id}
             club={club}
-            onClick={() => router.push(`/club/${club.id}`)}
+            onClick={() => router.push(`/club/${club.id}?pending=true`)}
           />
         ))}
       </div>
