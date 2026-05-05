@@ -4,9 +4,9 @@ import { ReservationTableItem } from "@/entities/school/ui/ReservationTableItem"
 import { FLOORS, PERIODS } from "@/features/homebase/model/constants";
 import { useHomebaseReservation } from "@/features/homebase/model/useHomebaseReservation";
 import { FourthFloor } from "@/features/homebase/ui/FourthFloor";
-import { SelectedStudent } from "@/features/homebase/ui/SelectedStudent";
+import { SelectedStudent } from "@/entities/user/ui/SelectedStudent";
 import { SecondFloor } from "@/features/homebase/ui/SecondFloor";
-import { StudentSearch } from "@/features/homebase/ui/StudentSearch";
+import { StudentSearch } from "@/entities/user/ui/StudentSearch";
 import { ThirdFloor } from "@/features/homebase/ui/ThirdFloor";
 import HomeBase from "@/shared/asset/svg/HomeBase";
 import Search from "@/shared/asset/svg/Search";

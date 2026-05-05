@@ -1,8 +1,13 @@
-import type { User } from "@/entities/user/model/user";
 import Cancel from "@/shared/asset/svg/Cancel";
 
+interface StudentItem {
+  id: number;
+  name: string;
+  studentNumber: number;
+}
+
 interface SelectedStudentProps {
-  selectedStudents: User[];
+  selectedStudents: StudentItem[];
   onRemoveStudent: (studentNumber: number) => void;
 }
 

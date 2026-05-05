@@ -5,6 +5,7 @@ import {
   MOCK_CLUB_DETAILS,
   MOCK_CLUB_FORMS,
 } from '../model/mock';
+import { MOCK_STUDENTS } from '@/entities/user/model/mock';
 import type { CreateClubFormRequest } from '../model/club';
 
 const MAJOR_CLUBS = MOCK_CLUBS.filter((c) => c.type === 'MAJOR_CLUB');
@@ -205,6 +206,70 @@ export const clubHandlers = [
     }),
   ),
 
+  http.post('*/clubs/:clubId/member/:userId', ({ params }) => {
+    const clubId = Number(params.clubId);
+    const userId = Number(params.userId);
+    const detail = MOCK_CLUB_DETAILS[clubId];
+
+    if (!detail) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '동아리 없음' },
+        { status: 404 },
+      );
+    }
+
+    const alreadyMember = detail.members.some((m) => m.id === userId);
+    if (alreadyMember) {
+      return HttpResponse.json(
+        { status: 'CONFLICT', code: 409, message: '이미 멤버입니다.' },
+        { status: 409 },
+      );
+    }
+
+    const student = MOCK_STUDENTS.find((s) => s.id === userId);
+    if (!student) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '유저를 찾을 수 없습니다.' },
+        { status: 404 },
+      );
+    }
+
+    detail.members.push({
+      id: student.id,
+      name: student.name,
+      studentNumber: student.studentNumber,
+      sex: student.sex,
+      specialty: student.specialty,
+    });
+
+    return HttpResponse.json({
+      status: 'OK',
+      code: 200,
+      message: 'OK',
+    });
+  }),
+
+  http.delete('*/clubs/:clubId/member/exile/:userId', ({ params }) => {
+    const clubId = Number(params.clubId);
+    const userId = Number(params.userId);
+    const detail = MOCK_CLUB_DETAILS[clubId];
+
+    if (!detail) {
+      return HttpResponse.json(
+        { status: 'NOT_FOUND', code: 404, message: '동아리 없음' },
+        { status: 404 },
+      );
+    }
+
+    detail.members = detail.members.filter((m) => m.id !== userId);
+
+    return HttpResponse.json({
+      status: 'OK',
+      code: 200,
+      message: 'OK',
+    });
+  }),
+
   http.patch('*/clubs/:id/transfer/:targetUserId', ({ params }) => {
     const id = Number(params.id);
     const targetUserId = Number(params.targetUserId);
@@ -238,6 +303,14 @@ export const clubHandlers = [
     });
   }),
 
+  http.get('*/clubs/opening/requests', () => {
+    return HttpResponse.json({ data: { clubs: [] } });
+  }),
+
+  http.get('*/clubs/opening-status', () => {
+    return HttpResponse.json({ data: { isOpened: true, startDate: null, endDate: null } });
+  }),
+
   http.get('*/clubs/:id', ({ params }) => {
     const id = Number(params.id);
     const detail = MOCK_CLUB_DETAILS[id];
@@ -245,5 +318,29 @@ export const clubHandlers = [
       return new HttpResponse(null, { status: 404 });
     }
     return HttpResponse.json({ data: detail });
+  }),
+
+  http.post('*/clubs', () => {
+    return HttpResponse.json({ success: true }, { status: 201 });
+  }),
+
+  http.put('*/clubs/:clubId', async () => {
+    return HttpResponse.json({ success: true }, { status: 200 });
+  }),
+
+  http.patch('*/clubs/:clubId/approval', async ({ params, request }) => {
+    const { clubId } = params;
+    const body = (await request.json()) as { approved: boolean };
+    return HttpResponse.json(
+      {
+        clubId: Number(clubId),
+        status: body.approved ? 'APPROVED' : 'REJECTED',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.delete('*/clubs/:clubId', () => {
+    return HttpResponse.json({ success: true }, { status: 200 });
   }),
 ];
