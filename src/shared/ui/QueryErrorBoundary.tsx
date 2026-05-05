@@ -3,6 +3,7 @@
 import {
   Component,
   Suspense,
+  type ComponentType,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
@@ -15,13 +16,13 @@ export interface QueryErrorFallbackProps {
 
 interface QueryErrorBoundaryProps {
   children: ReactNode;
-  fallback: (props: QueryErrorFallbackProps) => ReactNode;
+  fallback: ComponentType<QueryErrorFallbackProps>;
 }
 
 interface ClientQueryBoundaryProps {
   children: ReactNode;
   loadingFallback: ReactNode;
-  errorFallback: (props: QueryErrorFallbackProps) => ReactNode;
+  errorFallback: ComponentType<QueryErrorFallbackProps>;
 }
 
 interface InnerErrorBoundaryProps extends QueryErrorBoundaryProps {
@@ -57,10 +58,14 @@ class InnerErrorBoundary extends Component<
     const { error } = this.state;
 
     if (error) {
-      return this.props.fallback({
-        error,
-        resetErrorBoundary: this.resetErrorBoundary,
-      });
+      const Fallback = this.props.fallback;
+
+      return (
+        <Fallback
+          error={error}
+          resetErrorBoundary={this.resetErrorBoundary}
+        />
+      );
     }
 
     return this.props.children;
