@@ -58,7 +58,7 @@ class InnerErrorBoundary extends Component<
     const { error } = this.state;
 
     if (error) {
-      const Fallback = this.props.fallback;
+      const { fallback: Fallback } = this.props;
 
       return (
         <Fallback error={error} resetErrorBoundary={this.resetErrorBoundary} />
