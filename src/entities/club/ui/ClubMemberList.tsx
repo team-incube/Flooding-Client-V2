@@ -5,6 +5,7 @@ import { getSortedGrades } from "../lib/getSortedGrades";
 interface ClubMemberListProps {
   members: ClubMember[];
   leader?: string;
+  leaderId?: number;
   showDescription?: boolean;
   isLeader?: boolean;
   onMemberClick?: (member: ClubMember) => void;
@@ -13,6 +14,7 @@ interface ClubMemberListProps {
 export default function ClubMemberList({
   members,
   leader,
+  leaderId,
   showDescription = true,
   isLeader = false,
   onMemberClick,
@@ -34,7 +36,8 @@ export default function ClubMemberList({
             <div key={grade} className="text-text-1">
               <span className="text-sub-1">{grade}학년 - </span>
               {gradeMembers.map((m, i) => {
-                const isCurrentLeader = m.name === leader;
+                const isCurrentLeader =
+                  leaderId !== undefined ? m.id === leaderId : m.name === leader;
                 const isClickable =
                   isLeader && !isCurrentLeader && !!onMemberClick;
                 return (

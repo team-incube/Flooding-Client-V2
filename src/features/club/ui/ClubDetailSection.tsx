@@ -6,20 +6,24 @@ import axios, { HttpStatusCode } from "axios";
 import { notFound, useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
-import { clubQueries } from "@/entities/club/api/clubQueries";
+import { clubQueries, usePatchClubApproval } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import type { ClubMember } from "@/entities/club/model/club";
+import type { SearchUser } from "@/entities/user/model/user";
 import { toast } from "sonner";
 import { TextButton } from "@/shared/ui/Button/TextButton";
-import { usePatchClubApproval } from "@/entities/club/api/clubQueries";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 import { isRegistrationPeriod } from "@/entities/club/config";
 import { useTransferClubLeader } from "../model/useTransferClubLeader";
+import { useInviteClubMember } from "../model/useInviteClubMember";
+import { useExileClubMember } from "../model/useExileClubMember";
 import { ClubTransferModal } from "./ClubTransferModal";
 
 interface ClubDetailSectionProps {
   id: number;
 }
+
+const SEARCH_RESULT_LIMIT = 5;
 
 export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   if (!Number.isInteger(id)) {
@@ -30,8 +34,12 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   const autonomousApplyMutation = useApplyAutonomousClub(id);
   const transferMutation = useTransferClubLeader(id);
   const { mutate: patchApproval, isPending: isApprovalPending } = usePatchClubApproval();
+  const inviteMutation = useInviteClubMember(id);
+  const exileMutation = useExileClubMember(id);
   const [transferTarget, setTransferTarget] = useState<ClubMember | null>(null);
-  const { data: detail, isLoading, isError } = useQuery(clubQueries.detail(id));
+  const [memberSearch, setMemberSearch] = useState("");
+
+  const { data: detail, isLoading, isError, error } = useQuery(clubQueries.detail(id));
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
 
   const isLeader = detail?.isLeader ?? false;
@@ -52,6 +60,16 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     enabled: canCreateForm,
     retry: false,
   });
+
+  const trimmedSearch = memberSearch.trim();
+  const { data: searchUsersPage } = useQuery({
+    ...userQueries.list({ name: trimmedSearch || undefined }),
+    enabled: isLeader && trimmedSearch.length > 0,
+  });
+  const memberIds = new Set((detail?.members ?? []).map((m) => m.id));
+  const memberSearchResults = (searchUsersPage?.content ?? [])
+    .filter((u) => u.id !== user?.id && !memberIds.has(u.id))
+    .slice(0, SEARCH_RESULT_LIMIT);
 
   const handleApplyClick = () => {
     if (!detail || autonomousApplyMutation.isPending) {
@@ -105,6 +123,16 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
     setTransferTarget(null);
   };
 
+  const handleMemberInvite = (invitedUser: SearchUser) => {
+    inviteMutation.mutate(invitedUser.id, {
+      onSuccess: () => setMemberSearch(""),
+    });
+  };
+
+  const handleMemberExile = (memberId: number) => {
+    exileMutation.mutate(memberId);
+  };
+
   if (isLoading || isUserLoading) {
     return (
       <div className="flex min-h-0 flex-1 w-full overflow-y-auto xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
@@ -122,6 +150,21 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
   }
 
   if (isError || !detail) {
+    const isForbidden =
+      axios.isAxiosError(error) &&
+      error.response?.status === HttpStatusCode.Forbidden;
+
+    if (isForbidden) {
+      return (
+        <div className="flex min-h-0 flex-1 w-full items-center justify-center xl:px-10 xl:pb-6 2xl:px-18 lg:px-8 sm:px-8">
+          <div className="flex flex-col items-center gap-2 text-center">
+            <span className="text-title-3 text-main-text">접근 권한이 없어요</span>
+            <span className="text-text-2 text-sub-1">이 동아리 정보를 볼 수 있는 권한이 없습니다.</span>
+          </div>
+        </div>
+      );
+    }
+
     notFound();
   }
 
@@ -157,6 +200,12 @@ export function ClubDetailSection({ id }: ClubDetailSectionProps) {
                   : undefined
               }
               onTransferClick={isLeader ? handleTransferClick : undefined}
+              onEditClick={isLeader ? () => {} : undefined}
+              memberSearchQuery={memberSearch}
+              memberSearchResults={memberSearchResults}
+              onMemberSearchChange={setMemberSearch}
+              onMemberInvite={isLeader ? handleMemberInvite : undefined}
+              onMemberExile={isLeader ? handleMemberExile : undefined}
             />
             {isManager && (
               <div className="flex justify-end">
