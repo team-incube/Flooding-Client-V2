@@ -116,7 +116,7 @@ export function WakeUpMusicSection({
           {isHovered && (
             <div className="pointer-events-none absolute right-0 bottom-full mb-4">
               <div className="bg-surface text-sub-1 relative rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap shadow-[0_0_24px_rgba(0,0,0,0.1)]">
-                오늘의 노래를 <span className="text-p-1">ai</span>한테 추천
+                오늘의 노래를 <span className="text-p-1">AI</span>한테 추천
                 받아봐요!
                 <div className="bg-background-surface absolute right-[22px] -bottom-1.5 h-3 w-3 rotate-45"></div>
               </div>
