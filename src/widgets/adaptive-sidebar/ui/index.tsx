@@ -10,6 +10,7 @@ import Club from "@/shared/asset/svg/Club";
 import Student from "@/shared/asset/svg/Student";
 import Logo from "@/shared/asset/svg/Logo";
 import Signout from "@/shared/asset/svg/Signout";
+import Link from "next/link";
 import { ROUTES } from "@/shared/config/routes";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { isManagementRole } from "@/entities/user/lib/userRole";
@@ -49,14 +50,14 @@ export default function Sidebar() {
   return (
     <div className="bg-background-surface flex h-screen w-[112px] flex-col justify-between px-4 py-13 lg:w-[240px] 2xl:w-[260px]">
       <div className="flex flex-col items-center gap-[47px]">
-        <div>
+        <Link href="/">
           <div className="hidden lg:block">
             <Logo />
           </div>
           <div className="block lg:hidden">
             <Logo iconOnly />
           </div>
-        </div>
+        </Link>
         <nav className="flex w-full flex-col gap-[6px]">
           {menuItems.map((item) => (
             <SidebarMenu
