@@ -138,7 +138,7 @@ export default function HomebaseCard({
           <div className="flex w-full min-w-0 flex-col gap-4 lg:w-full">
             <div className="relative">
               <TextField
-                placeholder="이름, 학번등을 입력해주세요"
+                placeholder="이름, 학번 등을 입력해주세요"
                 value={name}
                 onChange={(event) => handleNameChange(event.target.value)}
                 onKeyDown={handleNameKeyDown}
