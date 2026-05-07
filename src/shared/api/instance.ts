@@ -1,4 +1,8 @@
-import axios, { HttpStatusCode } from "axios";
+import axios, { HttpStatusCode, type InternalAxiosRequestConfig } from "axios";
+
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+  _retried?: boolean;
+}
 
 export const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -16,6 +20,7 @@ const authPathsWithoutRefresh = [
 ];
 
 let refreshPromise: Promise<string> | null = null;
+let isSessionExpired = false;
 
 instance.interceptors.request.use((config) => {
   if (config.url?.startsWith("/api/")) {
@@ -36,11 +41,12 @@ instance.interceptors.response.use(
   async (error) => {
     if (typeof window === "undefined") return Promise.reject(error);
 
-    const originalRequest = error.config;
+    const originalRequest = error.config as RetryableRequestConfig;
 
     if (
       error.response?.status === HttpStatusCode.Unauthorized &&
       !originalRequest._retried &&
+      !isSessionExpired &&
       !authPathsWithoutRefresh.some((path) =>
         originalRequest.url?.includes(path),
       )
@@ -67,9 +73,11 @@ instance.interceptors.response.use(
         const accessToken = await refreshPromise;
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return instance(originalRequest);
-      } catch {
+      } catch (refreshError) {
+        isSessionExpired = true;
         sessionStorage.removeItem("access_token");
         window.location.href = "/signin";
+        return Promise.reject(refreshError);
       }
     }
 
