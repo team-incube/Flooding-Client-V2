@@ -5,12 +5,38 @@ import Chair from "@/shared/asset/svg/Chair";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyMassage } from "../model/useApplyMassage";
+import { useCancelMassage } from "../model/useCancelMassage";
 
 export function MassageChairSection() {
   const massageQuery = dormitoryQueries.massage();
   const { data: applicants = [] } = useQuery(massageQuery);
+  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const applyMutation = useApplyMassage();
+  const cancelMutation = useCancelMassage();
+  const hasAppliedMassage =
+    user !== undefined &&
+    applicants.some((student) => student.studentNumber === user.studentNumber);
+  const isMassageActionPending =
+    applyMutation.isPending || cancelMutation.isPending;
+  const isMassageActionDisabled = isUserLoading || isMassageActionPending;
+
+  const handleApplyMassage = () => {
+    if (isMassageActionDisabled || hasAppliedMassage) {
+      return;
+    }
+
+    applyMutation.mutate();
+  };
+
+  const handleCancelMassage = () => {
+    if (isMassageActionDisabled || !hasAppliedMassage) {
+      return;
+    }
+
+    cancelMutation.mutate();
+  };
 
   return (
     <section className="bg-background-surface flex flex-col gap-6 rounded-2xl p-6">
@@ -40,11 +66,18 @@ export function MassageChairSection() {
 
         <div className="flex w-[330px] shrink-0 flex-col justify-end gap-3">
           <TextButton
-            variant="filled"
+            variant={isMassageActionDisabled ? "disabled" : "filled"}
             size="wide"
-            onClick={() => applyMutation.mutate()}
+            disabled={isMassageActionDisabled}
+            onClick={
+              hasAppliedMassage ? handleCancelMassage : handleApplyMassage
+            }
           >
-            신청하기
+            {isUserLoading
+              ? "확인 중"
+              : hasAppliedMassage
+                ? "취소하기"
+                : "신청하기"}
           </TextButton>
           <p className="text-sub-2 text-caption-2">
             안마의자 신청시간은 20:20 ~ 21:00 입니다

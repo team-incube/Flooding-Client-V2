@@ -11,6 +11,7 @@ import { userQueries } from "@/entities/user/api/userQueries";
 import { isManagementRole } from "@/entities/user/lib/userRole";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
+import { useCancelStudy } from "../model/useCancelStudy";
 import { useCheckStudyAttendance } from "../model/useCheckStudyAttendance";
 import { useStudyAttendanceSubscription } from "../model/useStudyAttendanceSubscription";
 import { StudyApplicantCard } from "./StudyApplicantCard";
@@ -26,9 +27,15 @@ export function SelfStudySection() {
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
     state;
   const applyMutation = useApplyStudy();
+  const cancelMutation = useCancelStudy();
   const isStudyBanned = user?.isBanned === true;
-  const isApplyDisabled =
-    isUserLoading || isStudyBanned || applyMutation.isPending;
+  const hasAppliedStudy =
+    user !== undefined &&
+    students.some((student) => student.userId === user.id);
+  const isStudyActionPending =
+    applyMutation.isPending || cancelMutation.isPending;
+  const isStudyActionDisabled =
+    isUserLoading || isStudyBanned || isStudyActionPending;
   const canManageStudy = isManagementRole(user?.role);
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
@@ -50,11 +57,19 @@ export function SelfStudySection() {
       payload: selectedGender === gender ? null : gender,
     });
   const handleApplyStudy = () => {
-    if (isApplyDisabled) {
+    if (isStudyActionDisabled || hasAppliedStudy) {
       return;
     }
 
     applyMutation.mutate();
+  };
+
+  const handleCancelStudy = () => {
+    if (isStudyActionDisabled || !hasAppliedStudy) {
+      return;
+    }
+
+    cancelMutation.mutate();
   };
 
   const handleCheckAttendance = (studentId: number) => {
@@ -184,19 +199,21 @@ export function SelfStudySection() {
             variant={
               isStudyBanned
                 ? "negative"
-                : isApplyDisabled
+                : isStudyActionDisabled
                   ? "disabled"
                   : "filled"
             }
             size="wide"
-            disabled={isApplyDisabled}
-            onClick={handleApplyStudy}
+            disabled={isStudyActionDisabled}
+            onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
           >
             {isStudyBanned
               ? "자습 금지를 당했어요!"
               : isUserLoading
                 ? "확인 중"
-                : "신청하기"}
+                : hasAppliedStudy
+                  ? "취소하기"
+                  : "신청하기"}
           </TextButton>
 
           <p className="text-sub-2 text-caption-2">

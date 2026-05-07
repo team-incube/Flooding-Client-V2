@@ -3,7 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 import ChairIcon from "@/shared/asset/svg/Chair";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyMassage } from "@/features/massage-chair/model/useApplyMassage";
+import { useCancelMassage } from "@/features/massage-chair/model/useCancelMassage";
 import ApplyCard from "./ApplyCard";
 
 const MASSAGE_MAX = 5;
@@ -11,7 +13,31 @@ const MASSAGE_MAX = 5;
 export default function MassageApplyCard() {
   const massageQuery = dormitoryQueries.massage();
   const { data: applicants = [] } = useQuery(massageQuery);
+  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const applyMutation = useApplyMassage();
+  const cancelMutation = useCancelMassage();
+  const hasAppliedMassage =
+    user !== undefined &&
+    applicants.some((student) => student.studentNumber === user.studentNumber);
+  const isMassageActionPending =
+    applyMutation.isPending || cancelMutation.isPending;
+  const isMassageActionDisabled = isUserLoading || isMassageActionPending;
+
+  const handleApplyMassage = () => {
+    if (isMassageActionDisabled || hasAppliedMassage) {
+      return;
+    }
+
+    applyMutation.mutate();
+  };
+
+  const handleCancelMassage = () => {
+    if (isMassageActionDisabled || !hasAppliedMassage) {
+      return;
+    }
+
+    cancelMutation.mutate();
+  };
 
   return (
     <ApplyCard
@@ -20,10 +46,13 @@ export default function MassageApplyCard() {
       current={applicants.length}
       total={MASSAGE_MAX}
       timeText="안마 의자 신청 시간은 20:20 ~ 21:00에 신청이 가능해요"
-      buttonText="신청"
+      buttonText={
+        isUserLoading ? "확인 중" : hasAppliedMassage ? "취소" : "신청"
+      }
       detailHref="/dormitory"
       femaleNotice
-      onApply={() => applyMutation.mutate()}
+      disabled={isMassageActionDisabled}
+      onApply={hasAppliedMassage ? handleCancelMassage : handleApplyMassage}
     />
   );
 }
