@@ -45,7 +45,9 @@ export async function POST(request: NextRequest) {
       }
 
       if (status === HttpStatusCode.Unauthorized) {
-        return NextResponse.json(body, { status });
+        const res = NextResponse.json(body, { status });
+        res.cookies.delete("refresh_token");
+        return res;
       }
 
       if (status === HttpStatusCode.InternalServerError) {
