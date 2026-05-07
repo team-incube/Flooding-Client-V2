@@ -48,17 +48,15 @@ instance.interceptors.response.use(
 
       try {
         if (!refreshPromise) {
-          refreshPromise = axios
-            .post("/api/auth/refresh")
-            .then(({ data }) => {
-              const token = data.data?.accessToken;
-              if (!token) {
-                throw new Error("Access token is missing");
-              }
-              sessionStorage.setItem("access_token", token);
-              refreshPromise = null;
-              return token;
-            });
+          refreshPromise = axios.post("/api/auth/refresh").then(({ data }) => {
+            const token = data.data?.accessToken;
+            if (!token) {
+              throw new Error("Access token is missing");
+            }
+            sessionStorage.setItem("access_token", token);
+            refreshPromise = null;
+            return token;
+          });
         }
 
         const accessToken = await refreshPromise;
