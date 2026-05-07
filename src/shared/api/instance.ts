@@ -1,8 +1,4 @@
-import axios, { HttpStatusCode, type InternalAxiosRequestConfig } from "axios";
-
-interface RetryableRequestConfig extends InternalAxiosRequestConfig {
-  _retried?: boolean;
-}
+import axios, { HttpStatusCode } from "axios";
 
 export const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -19,8 +15,8 @@ const authPathsWithoutRefresh = [
   "/api/auth/signout",
 ];
 
+const retriedRequests = new WeakSet<object>();
 let refreshPromise: Promise<string> | null = null;
-let isSessionExpired = false;
 
 instance.interceptors.request.use((config) => {
   if (config.url?.startsWith("/api/")) {
@@ -41,17 +37,14 @@ instance.interceptors.response.use(
   async (error) => {
     if (typeof window === "undefined") return Promise.reject(error);
 
-    const originalRequest = error.config as RetryableRequestConfig;
+    const config = error.config;
 
     if (
       error.response?.status === HttpStatusCode.Unauthorized &&
-      !originalRequest._retried &&
-      !isSessionExpired &&
-      !authPathsWithoutRefresh.some((path) =>
-        originalRequest.url?.includes(path),
-      )
+      !retriedRequests.has(config) &&
+      !authPathsWithoutRefresh.some((path) => config.url?.includes(path))
     ) {
-      originalRequest._retried = true;
+      retriedRequests.add(config);
 
       try {
         if (!refreshPromise) {
@@ -63,18 +56,15 @@ instance.interceptors.response.use(
                 throw new Error("Access token is missing");
               }
               sessionStorage.setItem("access_token", token);
-              return token;
-            })
-            .finally(() => {
               refreshPromise = null;
+              return token;
             });
         }
 
         const accessToken = await refreshPromise;
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return instance(originalRequest);
+        config.headers.Authorization = `Bearer ${accessToken}`;
+        return instance(config);
       } catch (refreshError) {
-        isSessionExpired = true;
         sessionStorage.removeItem("access_token");
         window.location.href = "/signin";
         return Promise.reject(refreshError);
