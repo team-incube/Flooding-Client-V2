@@ -15,7 +15,6 @@ const authPathsWithoutRefresh = [
   "/api/auth/signout",
 ];
 
-const retriedRequests = new WeakSet<object>();
 let refreshPromise: Promise<string> | null = null;
 
 instance.interceptors.request.use((config) => {
@@ -41,10 +40,10 @@ instance.interceptors.response.use(
 
     if (
       error.response?.status === HttpStatusCode.Unauthorized &&
-      !retriedRequests.has(config) &&
+      !config.headers["x-retried"] &&
       !authPathsWithoutRefresh.some((path) => config.url?.includes(path))
     ) {
-      retriedRequests.add(config);
+      config.headers["x-retried"] = "true";
 
       try {
         if (!refreshPromise) {
