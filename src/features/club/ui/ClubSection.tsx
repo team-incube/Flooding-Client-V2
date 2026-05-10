@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import Back from "@/shared/asset/svg/Back";
 import Smile from "@/shared/asset/svg/Smile";
@@ -106,7 +110,7 @@ const ClubSection = () => {
 
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const { data: isRegistrationPeriod = false } = useSuspenseQuery(
+  const { data: isRegistrationPeriod = false } = useQuery(
     clubQueries.openingStatus(),
   );
   const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
