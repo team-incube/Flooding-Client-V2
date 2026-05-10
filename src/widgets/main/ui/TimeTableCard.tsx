@@ -73,12 +73,12 @@ function TimeTableCardLoading() {
 
 function TimeTableCardError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-6 2xl:h-[354px]">
-      <div className="mb-4 flex items-center gap-1">
+    <div className="bg-background-surface flex h-[140px] w-full flex-col overflow-hidden rounded-2xl p-6 2xl:h-[354px]">
+      <div className="mb-2 flex items-center gap-1">
         <Calendar />
         <span className="text-text-1 text-main-text font-semibold">시간표</span>
       </div>
-      <div className="flex flex-1 flex-col items-center justify-center gap-3">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3">
         <span className="text-text-3 text-negative font-medium">
           시간표를 불러오지 못했습니다.
         </span>
