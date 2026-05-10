@@ -7,8 +7,10 @@ import ClubCard from "@/entities/club/ui/ClubCard";
 
 export function ClubOpeningRequestSection() {
   const router = useRouter();
-  const { data } = useQuery(clubQueries.openingRequests());
+  const { data, isError } = useQuery(clubQueries.openingRequests());
   const clubs = data?.clubs ?? [];
+
+  if (isError) return null;
 
   if (clubs.length === 0) return null;
 
