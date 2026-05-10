@@ -10,6 +10,9 @@ Analyze the changes below, draft a PR title and body, then create the PR using G
 
 Current branch: !`git branch --show-current`
 
+Current KST release ID:
+!`TZ=Asia/Seoul date '+v%Y.%m%d.%H%M'`
+
 Commits since develop:
 !`git log --oneline develop..HEAD`
 
@@ -27,12 +30,15 @@ The PR type is determined by the title format.
 
 | Title Format                                | Base Branch | Condition                                     |
 | ------------------------------------------- | ----------- | --------------------------------------------- |
-| `v0.0.0` (version)                          | `main`      | Only allowed when current branch is `develop` |
+| `vYYYY.MMDD.HHmm` (release ID)              | `main`      | Only allowed when current branch is `develop` |
 | `feat:`, `fix:`, etc. (conventional commit) | `develop`   | Allowed from any feature branch               |
 
-**Release PR rules** (`v0.0.0` format):
+**Release PR rules** (`vYYYY.MMDD.HHmm` format):
 
 - Must be created from the `develop` branch only.
+- Use the current Korea Standard Time (Asia/Seoul) to generate the release ID.
+- Release IDs are GitHub PR/tag/release identifiers only.
+- Do not update or compare `package.json` / `package-lock.json` versions for release PRs.
 - If the current branch is not `develop`, print an error message and abort.
 
 ## Title Rules
@@ -41,8 +47,8 @@ The PR type is determined by the title format.
   - Types: `feat`, `fix`, `refactor`, `change`, `remove`, `docs`, `chore`
   - Match type to branch prefix (e.g. `feat/xxx` → `feat:`)
   - Example: `feat: 기숙사 자습 신청 및 취소 기능 추가`
-- **Release PR**: `v<major>.<minor>.<patch>` format
-  - Example: `v1.2.0`
+- **Release PR**: `vYYYY.MMDD.HHmm` format
+  - Example: `v2026.0510.0109`
 
 ## Body Structure
 
@@ -78,7 +84,10 @@ Follow the org PR template (`team-incube/.github`). Omit reviewer assignment, la
 
 1. Finalize the **Title** and **Body**.
 2. Determine the base branch:
-   - If the title starts with `v` followed by a digit → `main` (verify current branch is `develop`)
+   - If the current branch is `develop`, create a release PR:
+     - Title: current KST release ID in `vYYYY.MMDD.HHmm` format
+     - Base: `main`
+   - If the title matches `^v[0-9]{4}\.[0-9]{4}\.[0-9]{4}$` → `main` (verify current branch is `develop`)
    - Otherwise → `develop`
 3. Create the PR directly using **GitHub MCP** (`mcp__github__create_pull_request`):
    - `owner`: `team-incube`
