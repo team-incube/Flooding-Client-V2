@@ -84,11 +84,10 @@ Follow the org PR template (`team-incube/.github`). Omit reviewer assignment, la
 
 1. Finalize the **Title** and **Body**.
 2. Determine the base branch:
-   - If the current branch is `develop`, create a release PR:
-     - Title: current KST release ID in `vYYYY.MMDD.HHmm` format
-     - Base: `main`
-   - If the title matches `^v[0-9]{4}\.[0-9]{4}\.[0-9]{4}$` → `main` (verify current branch is `develop`)
-   - Otherwise → `develop`
+   - If the current branch is develop, create a release PR:
+     - Title: current KST release ID in vYYYY.MMDD.HHmm format
+     - Base: main
+   - Otherwise → develop
 3. Create the PR directly using **GitHub MCP** (`mcp__github__create_pull_request`):
    - `owner`: `team-incube`
    - `repo`: `Flooding-Client-V2`
