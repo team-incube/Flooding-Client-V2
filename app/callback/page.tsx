@@ -57,7 +57,7 @@ function CallbackInner() {
           </div>
           <TextButton
             variant="filled"
-            size="wide"
+            size="fit"
             onClick={() => router.replace("/signin")}
           >
             다시 로그인
