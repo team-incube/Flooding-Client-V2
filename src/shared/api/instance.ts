@@ -36,40 +36,35 @@ instance.interceptors.response.use(
   async (error) => {
     if (typeof window === "undefined") return Promise.reject(error);
 
-    const originalRequest = error.config;
+    const config = error.config;
 
     if (
       error.response?.status === HttpStatusCode.Unauthorized &&
-      !originalRequest._retried &&
-      !authPathsWithoutRefresh.some((path) =>
-        originalRequest.url?.includes(path),
-      )
+      !config.headers["x-retried"] &&
+      !authPathsWithoutRefresh.some((path) => config.url?.includes(path))
     ) {
-      originalRequest._retried = true;
+      config.headers["x-retried"] = "true";
 
       try {
         if (!refreshPromise) {
-          refreshPromise = axios
-            .post("/api/auth/refresh")
-            .then(({ data }) => {
-              const token = data.data?.accessToken;
-              if (!token) {
-                throw new Error("Access token is missing");
-              }
-              sessionStorage.setItem("access_token", token);
-              return token;
-            })
-            .finally(() => {
-              refreshPromise = null;
-            });
+          refreshPromise = axios.post("/api/auth/refresh").then(({ data }) => {
+            const token = data.data?.accessToken;
+            if (!token) {
+              throw new Error("Access token is missing");
+            }
+            sessionStorage.setItem("access_token", token);
+            refreshPromise = null;
+            return token;
+          });
         }
 
         const accessToken = await refreshPromise;
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return instance(originalRequest);
-      } catch {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+        return instance(config);
+      } catch (refreshError) {
         sessionStorage.removeItem("access_token");
         window.location.href = "/signin";
+        return Promise.reject(refreshError);
       }
     }
 

@@ -7,6 +7,46 @@ on:
 
 jobs:
   # ─────────────────────────────────────────────
+  # 0. develop → main 릴리즈 PR 버전 검사
+  # ─────────────────────────────────────────────
+  release-version-check:
+    name: Release Version Check
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'develop'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PR 제목 및 package 버전 검사
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ ! "$PR_TITLE" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "develop → main PR 제목은 vX.Y.Z 형식이어야 합니다. 예: v0.2.2"
+            echo "현재 PR 제목: $PR_TITLE"
+            exit 1
+          fi
+
+          RELEASE_VERSION="${PR_TITLE#v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          LOCKFILE_VERSION="$(node -p "require('./package-lock.json').version")"
+          LOCKFILE_ROOT_VERSION="$(node -p "require('./package-lock.json').packages[''].version")"
+
+          if [[ "$PACKAGE_VERSION" != "$RELEASE_VERSION" ]]; then
+            echo "package.json version이 PR 제목 버전과 일치해야 합니다."
+            echo "PR 제목 버전: $RELEASE_VERSION"
+            echo "package.json version: $PACKAGE_VERSION"
+            exit 1
+          fi
+
+          if [[ "$LOCKFILE_VERSION" != "$RELEASE_VERSION" || "$LOCKFILE_ROOT_VERSION" != "$RELEASE_VERSION" ]]; then
+            echo "package-lock.json version이 PR 제목 버전과 일치해야 합니다."
+            echo "PR 제목 버전: $RELEASE_VERSION"
+            echo "package-lock.json version: $LOCKFILE_VERSION"
+            echo "package-lock.json packages[''].version: $LOCKFILE_ROOT_VERSION"
+            exit 1
+          fi
+
+  # ─────────────────────────────────────────────
   # 1. ESLint 린트 검사
   # ─────────────────────────────────────────────
   lint:
@@ -59,7 +99,13 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [lint, type-check, format-check]
+    needs: [release-version-check, lint, type-check, format-check]
+    if: |
+      always() &&
+      needs.lint.result == 'success' &&
+      needs.type-check.result == 'success' &&
+      needs.format-check.result == 'success' &&
+      (needs.release-version-check.result == 'success' || needs.release-version-check.result == 'skipped')
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -75,7 +121,7 @@ jobs:
   discord-ci-failure:
     name: Discord CI 실패 알림
     runs-on: ubuntu-latest
-    needs: [lint, type-check, format-check, build]
+    needs: [release-version-check, lint, type-check, format-check, build]
     if: failure()
     steps:
       - name: Discord 알림 전송
