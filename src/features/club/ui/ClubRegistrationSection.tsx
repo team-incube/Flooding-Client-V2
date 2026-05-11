@@ -20,9 +20,13 @@ import { toast } from "sonner";
 
 interface Props {
   onGoBackToList?: () => void;
+  compact?: boolean;
 }
 
-export default function ClubRegistrationSection({ onGoBackToList }: Props) {
+export default function ClubRegistrationSection({
+  onGoBackToList,
+  compact = false,
+}: Props) {
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState<RegistrationData>({
     regType: null,
@@ -93,9 +97,33 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
     });
   };
 
+  if (compact && submitted) {
+    return (
+      <div className="flex w-full flex-col items-center justify-center gap-4 py-12">
+        <Great />
+        <span className="text-sub-2 text-text-1 text-center">
+          동아리 개설이 성공적으로 완료 되었습니다
+        </span>
+        <button
+          onClick={onGoBackToList}
+          className="text-text-1 text-sub-2 flex cursor-pointer items-center gap-2 underline hover:opacity-80"
+        >
+          돌아가기 <Back direction="right" />
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col gap-10 lg:flex-row">
-      <div className="flex h-[762px] min-h-0 flex-1 flex-col items-center justify-center">
+    <div
+      className={
+        compact
+          ? "flex w-full flex-col"
+          : "flex h-full min-h-0 flex-1 flex-col gap-10 lg:flex-row"
+      }
+    >
+      {!compact && (
+        <div className="flex h-[762px] min-h-0 flex-1 flex-col items-center justify-center">
         {!submitted ? (
           <>
             <FileOff />
@@ -117,10 +145,15 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
             </button>
           </>
         )}
-      </div>
+        </div>
+      )}
 
-      <div className="flex w-full flex-col lg:w-[330px]">
-        <div className="flex flex-col gap-4 overflow-y-auto">
+      <div
+        className={
+          compact ? "flex w-full flex-col" : "flex w-full flex-col lg:w-[330px]"
+        }
+      >
+        <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <span className="text-text-3">동아리명 (추후 변경 가능)</span>
             <TextField

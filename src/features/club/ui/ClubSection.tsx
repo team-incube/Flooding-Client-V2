@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import Back from "@/shared/asset/svg/Back";
 import Smile from "@/shared/asset/svg/Smile";
@@ -53,7 +49,7 @@ function ClubSearchSkeleton() {
 
 function ClubSectionLoading() {
   return (
-    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -67,7 +63,7 @@ function ClubSectionLoading() {
         </div>
 
         <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
-          <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:overflow-y-scroll lg:pr-2">
+          <div className="order-2 min-h-0 flex-1 lg:order-1 lg:h-full lg:pr-2">
             <div className="grid grid-cols-[repeat(auto-fill,minmax(263px,1fr))] gap-4">
               {Array.from({ length: 8 }).map((_, index) => (
                 <ClubCardSkeleton key={index} />
@@ -86,7 +82,7 @@ function ClubSectionLoading() {
 
 function ClubSectionError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
         <Club isActive={false} size={32} />
         <p className="text-text-1 text-main-text">
@@ -104,7 +100,7 @@ const ClubSection = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const [viewMode, setViewMode] = useState<"form" | "list">("form");
+  const [viewMode, setViewMode] = useState<"form" | "list">("list");
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
@@ -119,7 +115,6 @@ const ClubSection = () => {
 
   const filteredClubs = filterClubs({
     clubs,
-    openingStatus,
     searchValue,
   });
 
@@ -134,14 +129,39 @@ const ClubSection = () => {
   };
 
   const handleSearch = () => setSearchValue(query);
-  const shouldShowRegistrationForm =
-    openingStatus.isOpened &&
-    !hasClubApplication &&
-    !isManager &&
-    viewMode !== "list";
+  const canRegisterClub = openingStatus.isOpened;
+  const clubModeToggle = (
+    <div className="flex w-full gap-1">
+      <TextButton
+        variant={viewMode === "list" ? "filled" : "outlined"}
+        size="fit"
+        className="flex-1"
+        onClick={() => setViewMode("list")}
+      >
+        동아리 검색
+      </TextButton>
+      <TextButton
+        variant={
+          viewMode === "form" && canRegisterClub
+            ? "filled"
+            : canRegisterClub
+              ? "outlined"
+              : "disabled"
+        }
+        size="fit"
+        className="flex-1"
+        disabled={!canRegisterClub}
+        onClick={() => {
+          if (canRegisterClub) setViewMode("form");
+        }}
+      >
+        개설 신청
+      </TextButton>
+    </div>
+  );
 
   return (
-    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -156,36 +176,42 @@ const ClubSection = () => {
           </div>
         </div>
 
-        {shouldShowRegistrationForm ? (
-          <ClubRegistrationSection onGoBackToList={handleGoBackToList} />
-        ) : (
-          <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
-            <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:overflow-y-scroll lg:pr-2">
-              <div className="flex flex-col gap-6">
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(263px,1fr))] gap-4">
-                  {filteredClubs.map((club) => (
-                    <ClubCard
-                      key={club.id}
-                      club={club}
-                      onClick={() => router.push(`/club/${club.id}`)}
-                    />
-                  ))}
-                </div>
-                {isManager && <ClubOpeningRequestSection />}
-              </div>
-            </div>
-            <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
-              {!openingStatus.isOpened && (
-                <div className="mb-auto w-full">
-                  <ClubSearch
-                    query={query}
-                    setQuery={handleQueryChange}
-                    onSearch={handleSearch}
+        <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
+          <div className="order-2 min-h-0 flex-1 lg:order-1 lg:h-full lg:pr-2">
+            <div className="flex flex-col gap-6">
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(263px,1fr))] gap-4">
+                {filteredClubs.map((club) => (
+                  <ClubCard
+                    key={club.id}
+                    club={club}
+                    onClick={() => router.push(`/club/${club.id}`)}
                   />
-                </div>
-              )}
+                ))}
+              </div>
+              {isManager && <ClubOpeningRequestSection />}
+            </div>
+          </div>
+          <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
+            <div className="mb-auto flex w-full flex-col gap-4">
+              {clubModeToggle}
 
-              {openingStatus.isOpened && hasClubApplication && (
+              {viewMode === "form" && canRegisterClub ? (
+                <ClubRegistrationSection
+                  compact
+                  onGoBackToList={handleGoBackToList}
+                />
+              ) : (
+                <ClubSearch
+                  query={query}
+                  setQuery={handleQueryChange}
+                  onSearch={handleSearch}
+                />
+              )}
+            </div>
+
+            {viewMode === "list" &&
+              openingStatus.isOpened &&
+              hasClubApplication && (
                 <div className="flex flex-col items-center justify-center gap-4">
                   <Smile />
                   <p className="text-sub-2 text-text-1">
@@ -200,9 +226,8 @@ const ClubSection = () => {
                   </button>
                 </div>
               )}
-            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
