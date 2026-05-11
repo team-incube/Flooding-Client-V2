@@ -73,7 +73,7 @@ export default function Sidebar() {
 
       <button
         type="button"
-        className="flex h-14 w-full cursor-pointer items-center justify-center py-3 transition-all lg:justify-start lg:px-4"
+        className="flex h-14 w-full cursor-pointer items-center justify-center py-3 lg:justify-start lg:px-4"
         onClick={handleLogout}
       >
         <div className="flex items-center gap-6">

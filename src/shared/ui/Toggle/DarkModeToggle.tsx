@@ -27,7 +27,7 @@ export function DarkModeToggle() {
   return (
     <button
       onClick={toggle}
-      className={`relative flex h-[39px] w-[70px] cursor-pointer items-center rounded-[43px] p-1 transition-colors duration-300 ${
+      className={`relative flex h-[39px] w-[70px] cursor-pointer items-center rounded-[43px] p-1 ${
         isDark ? "bg-background-surface" : "bg-sub-3"
       }`}
     >

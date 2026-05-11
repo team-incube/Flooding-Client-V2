@@ -51,7 +51,7 @@ export default function ApplyCard({
         {detailHref && (
           <Link
             href={detailHref}
-            className="text-text-3 text-sub-2 hover:text-p-1 flex items-center transition-colors"
+            className="text-text-3 text-sub-2 hover:text-p-1 flex items-center"
           >
             전체보기
             <ChevronRight direction="right" />
