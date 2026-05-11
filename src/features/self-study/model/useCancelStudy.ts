@@ -14,8 +14,10 @@ export function useCancelStudy() {
 
   return useMutation({
     mutationFn: dormitoryMutations.cancelStudy,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: studyQuery.queryKey }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
+      toast.success("자습 신청이 취소되었습니다.");
+    },
     onError: (error) => {
       const status = axios.isAxiosError(error)
         ? error.response?.status

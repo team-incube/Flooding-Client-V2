@@ -14,8 +14,10 @@ export function useCancelMassage() {
 
   return useMutation({
     mutationFn: dormitoryMutations.cancelMassage,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: massageQuery.queryKey }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: massageQuery.queryKey });
+      toast.success("안마의자 신청이 취소되었습니다.");
+    },
     onError: (error) => {
       const status = axios.isAxiosError(error)
         ? error.response?.status
