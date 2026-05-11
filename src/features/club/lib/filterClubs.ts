@@ -1,19 +1,19 @@
-import type { Club } from "@/entities/club/model/club";
+import type { Club, ClubOpeningStatus } from "@/entities/club/model/club";
 
 interface FilterClubsParams {
   clubs: Club[];
-  isRegistrationPeriod: boolean;
+  openingStatus: ClubOpeningStatus;
   searchValue: string;
 }
 
 export function filterClubs({
   clubs,
-  isRegistrationPeriod,
+  openingStatus,
   searchValue,
 }: FilterClubsParams): Club[] {
   const normalizedSearchValue = searchValue.trim().toLowerCase();
 
-  if (!normalizedSearchValue || isRegistrationPeriod) {
+  if (!normalizedSearchValue || openingStatus.isOpened) {
     return clubs;
   }
 

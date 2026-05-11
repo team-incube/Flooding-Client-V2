@@ -157,6 +157,12 @@ export interface ClubApplicationListResponse {
   applications: ClubApplicationSummary[];
 }
 
+export interface ClubOpeningStatus {
+  isOpened: boolean;
+  startDate: string | null;
+  endDate: string | null;
+}
+
 export interface RegistrationData {
   regType: RegistrationType;
   clubType: ClubType;

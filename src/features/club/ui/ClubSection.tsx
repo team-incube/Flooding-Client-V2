@@ -110,7 +110,7 @@ const ClubSection = () => {
 
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const { data: isRegistrationPeriod = false } = useQuery(
+  const { data: openingStatus } = useSuspenseQuery(
     clubQueries.openingStatus(),
   );
   const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
@@ -119,7 +119,7 @@ const ClubSection = () => {
 
   const filteredClubs = filterClubs({
     clubs,
-    isRegistrationPeriod,
+    openingStatus,
     searchValue,
   });
 
@@ -135,7 +135,7 @@ const ClubSection = () => {
 
   const handleSearch = () => setSearchValue(query);
   const shouldShowRegistrationForm =
-    isRegistrationPeriod &&
+    openingStatus.isOpened &&
     !hasClubApplication &&
     !isManager &&
     viewMode !== "list";
@@ -175,7 +175,7 @@ const ClubSection = () => {
               </div>
             </div>
             <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
-              {!isRegistrationPeriod && (
+              {!openingStatus.isOpened && (
                 <div className="mb-auto w-full">
                   <ClubSearch
                     query={query}
@@ -185,7 +185,7 @@ const ClubSection = () => {
                 </div>
               )}
 
-              {isRegistrationPeriod && hasClubApplication && (
+              {openingStatus.isOpened && hasClubApplication && (
                 <div className="flex flex-col items-center justify-center gap-4">
                   <Smile />
                   <p className="text-sub-2 text-text-1">
