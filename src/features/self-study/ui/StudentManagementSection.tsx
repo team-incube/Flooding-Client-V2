@@ -13,6 +13,7 @@ import {
   type StudyBanFilter,
 } from "@/features/self-study/lib/filterManagedStudents";
 import { useBanStudy } from "@/features/self-study/model/useBanStudy";
+import { useUnbanStudy } from "@/features/self-study/model/useUnbanStudy";
 import { ManagedStudentCard } from "./ManagedStudentCard";
 import { StudentManagementFilterPanel } from "./StudentManagementFilterPanel";
 import { StudyBanActionPanel } from "./StudyBanActionPanel";
@@ -68,6 +69,7 @@ function StudentManagementSectionEmpty() {
 const StudentManagementSection = () => {
   const { data: studentPage } = useSuspenseQuery(userQueries.list());
   const banStudyMutation = useBanStudy();
+  const unbanStudyMutation = useUnbanStudy();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGrades, setSelectedGrades] = useState<number[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<number[]>([]);
@@ -125,6 +127,7 @@ const StudentManagementSection = () => {
     filter: Exclude<StudyBanFilter, null>,
   ) => {
     setSelectedStudyBanFilter((prev) => (prev === filter ? null : filter));
+    setSelectedStudentIds([]);
   };
 
   const handleToggleStudentSelect = (studentId: number) => {
@@ -138,10 +141,16 @@ const StudentManagementSection = () => {
   const isStudyBanned = (studentId: number) =>
     bannedStudentIdSet.has(studentId);
 
-  const handleBanSelectedStudent = () => {
-    const targetStudentIds = selectedStudentIds.filter(
+  const getSelectedBanTargetIds = () =>
+    selectedStudentIds.filter(
       (studentId) => !isStudyBanned(studentId),
     );
+
+  const getSelectedUnbanTargetIds = () =>
+    selectedStudentIds.filter(isStudyBanned);
+
+  const handleBanSelectedStudent = () => {
+    const targetStudentIds = getSelectedBanTargetIds();
 
     if (targetStudentIds.length === 0) {
       return;
@@ -151,9 +160,22 @@ const StudentManagementSection = () => {
     banStudyMutation.mutate(targetStudentIds);
   };
 
-  const selectedBanTargetCount = selectedStudentIds.filter(
-    (studentId) => !isStudyBanned(studentId),
-  ).length;
+  const handleUnbanSelectedStudent = () => {
+    const targetStudentIds = getSelectedUnbanTargetIds();
+
+    if (targetStudentIds.length === 0) {
+      return;
+    }
+
+    setSelectedStudentIds([]);
+    unbanStudyMutation.mutate(targetStudentIds);
+  };
+
+  const selectedBanTargetCount = getSelectedBanTargetIds().length;
+  const selectedUnbanTargetCount =
+    selectedStudentIds.length - selectedBanTargetCount;
+  const isStudyBanActionPending =
+    banStudyMutation.isPending || unbanStudyMutation.isPending;
 
   return (
     <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
@@ -205,10 +227,12 @@ const StudentManagementSection = () => {
           />
 
           <StudyBanActionPanel
+            selectedStudyBanFilter={selectedStudyBanFilter}
             selectedBanTargetCount={selectedBanTargetCount}
-            isPending={banStudyMutation.isPending}
-            onClearSelection={() => setSelectedStudentIds([])}
+            selectedUnbanTargetCount={selectedUnbanTargetCount}
+            isPending={isStudyBanActionPending}
             onBanSelectedStudent={handleBanSelectedStudent}
+            onUnbanSelectedStudent={handleUnbanSelectedStudent}
           />
         </aside>
       </div>
