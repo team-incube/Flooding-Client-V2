@@ -1,8 +1,8 @@
 import { instance } from "@/shared/api/instance";
 import type {
-  DormitoryStudent,
   DormitoryMusic,
-  StudyApplicant,
+  MassageApplicants,
+  StudyApplicants,
   MyPenaltyResponse,
   AllPenaltiesResponse,
   CleaningZones,
@@ -34,22 +34,24 @@ export async function getDormitoryMusic(
   }));
 }
 
-type DormitoryStudentResponse =
-  | DormitoryStudent[]
-  | { data?: DormitoryStudent[] };
-type StudyApplicantResponse = StudyApplicant[] | { data?: StudyApplicant[] };
+type ApiResponse<TData> = {
+  status: string;
+  code: number;
+  message: string;
+  data: TData;
+};
 
-export async function getMassageApplicants(): Promise<DormitoryStudent[]> {
-  const { data } = await instance.get<DormitoryStudentResponse>(
+export async function getMassageApplicants(): Promise<MassageApplicants> {
+  const { data } = await instance.get<ApiResponse<MassageApplicants>>(
     "/dormitory/massages",
   );
-  return Array.isArray(data) ? data : (data.data ?? []);
+  return data.data;
 }
 
-export async function getSelfStudyApplicants(): Promise<StudyApplicant[]> {
+export async function getSelfStudyApplicants(): Promise<StudyApplicants> {
   const { data } =
-    await instance.get<StudyApplicantResponse>("/dormitory/studies");
-  return Array.isArray(data) ? data : (data.data ?? []);
+    await instance.get<ApiResponse<StudyApplicants>>("/dormitory/studies");
+  return data.data;
 }
 
 export async function getMyPenalties(): Promise<MyPenaltyResponse> {
