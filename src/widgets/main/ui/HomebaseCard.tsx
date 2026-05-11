@@ -159,7 +159,7 @@ export default function HomebaseCard({
                 value={reason}
                 maxLength={20}
                 onChange={(event) => handleReasonChange(event.target.value)}
-                className="border-sub-2 bg-background-surface text-main-text caret-p-1 placeholder:text-sub-2 focus:border-sub-1 h-30 w-full resize-none rounded-lg border p-4 transition-all outline-none"
+                className="border-sub-2 bg-background-surface text-main-text caret-p-1 placeholder:text-sub-2 focus:border-sub-1 h-30 w-full resize-none rounded-lg border p-4 outline-none"
               />
               <span className="text-size-caption-1 text-sub-2 text-right">
                 {reason.length}/20

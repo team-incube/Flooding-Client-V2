@@ -31,10 +31,10 @@ interface ClubFormFieldEditorProps {
 }
 
 const fieldBoxStyles =
-  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none transition-all placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
+  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
 
 const secondaryButtonStyles =
-  "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 transition-all hover:border-sub-1";
+  "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 hover:border-sub-1";
 
 export function ClubFormFieldEditor({
   field,

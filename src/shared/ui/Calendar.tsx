@@ -112,7 +112,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
                 if (!isCurrentMonth) setViewDate(date);
                 onDateSelect?.(date);
               }}
-              className={`text-caption-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg p-2 transition-colors outline-none ${
+              className={`text-caption-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg p-2 outline-none ${
                 isSelected
                   ? "bg-p-1 text-sub-4"
                   : isCurrentMonth

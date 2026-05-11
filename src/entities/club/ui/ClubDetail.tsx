@@ -123,7 +123,7 @@ export default function ClubDetail({
             {isEdit ? (
               <div className="flex flex-col gap-1">
                 <textarea
-                  className="text-text-1 text-sub-1 border-sub-2 bg-background-surface focus:border-sub-1 w-full resize-none rounded-lg border p-4 transition-all outline-none"
+                  className="text-text-1 text-sub-1 border-sub-2 bg-background-surface focus:border-sub-1 w-full resize-none rounded-lg border p-4 outline-none"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -169,7 +169,7 @@ export default function ClubDetail({
                               key={user.id}
                               type="button"
                               onClick={() => onMemberInvite?.(user)}
-                              className="text-text-2 text-main-text hover:bg-sub-4 w-full px-2 py-3 text-left transition-colors"
+                              className="text-text-2 text-main-text hover:bg-sub-4 w-full px-2 py-3 text-left"
                             >
                               {user.studentNumber} {user.name}
                             </button>
@@ -193,7 +193,7 @@ export default function ClubDetail({
                         <button
                           type="button"
                           onClick={() => onMemberExile(member.id)}
-                          className="text-sub-2 hover:text-negative flex shrink-0 items-center transition-colors [&>svg]:h-3 [&>svg]:w-3 2xl:[&>svg]:h-3.5 2xl:[&>svg]:w-3.5"
+                          className="text-sub-2 hover:text-negative flex shrink-0 items-center [&>svg]:h-3 [&>svg]:w-3 2xl:[&>svg]:h-3.5 2xl:[&>svg]:w-3.5"
                           aria-label={`${member.name} 추방`}
                         >
                           <Cancel />

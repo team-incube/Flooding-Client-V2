@@ -83,7 +83,7 @@ export default function ImageUpload({
             {!disabled && (
               <button
                 onClick={handleDelete}
-                className="absolute top-2 right-2 cursor-pointer p-1 transition-all"
+                className="absolute top-2 right-2 cursor-pointer p-1"
               >
                 <Delete className="text-negative" />
               </button>

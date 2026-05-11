@@ -124,7 +124,7 @@ export function SelfStudySection() {
             <button
               type="button"
               onClick={handleResetFilters}
-              className="text-sub-1 text-caption-2 hover:text-p-1 cursor-pointer transition-colors"
+              className="text-sub-1 text-caption-2 hover:text-p-1 cursor-pointer"
             >
               초기화
             </button>

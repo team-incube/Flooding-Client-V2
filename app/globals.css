@@ -172,9 +172,6 @@ body {
   background-color: var(--background);
   color: var(--color-main-text);
   font-family: "SUIT Variable", sans-serif;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
 }
 
 /* 6. 스크롤바 스타일 */
