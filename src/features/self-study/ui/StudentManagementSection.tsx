@@ -5,6 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { userQueries } from "@/entities/user/api/userQueries";
 import type { Sex } from "@/entities/user/model/user";
 import Student from "@/shared/asset/svg/Student";
+import { useDebouncedValue } from "@/shared/lib/useDebouncedValue";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import type { QueryErrorFallbackProps } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
@@ -17,6 +18,8 @@ import { useUnbanStudy } from "@/features/self-study/model/useUnbanStudy";
 import { ManagedStudentCard } from "./ManagedStudentCard";
 import { StudentManagementFilterPanel } from "./StudentManagementFilterPanel";
 import { StudyBanActionPanel } from "./StudyBanActionPanel";
+
+const SEARCH_DEBOUNCE_DELAY = 300;
 
 function StudentManagementSectionLoading() {
   return (
@@ -60,7 +63,7 @@ function StudentManagementSectionError({
 
 function StudentManagementSectionEmpty() {
   return (
-    <div className="border-sub-3 bg-background flex h-[320px] w-full items-center justify-center rounded-2xl border border-dashed">
+    <div className="flex h-[320px] w-full items-center justify-center">
       <p className="text-text-2 text-sub-1">표시할 학생이 없습니다.</p>
     </div>
   );
@@ -71,6 +74,10 @@ const StudentManagementSection = () => {
   const banStudyMutation = useBanStudy();
   const unbanStudyMutation = useUnbanStudy();
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebouncedValue(
+    searchQuery,
+    SEARCH_DEBOUNCE_DELAY,
+  );
   const [selectedGrades, setSelectedGrades] = useState<number[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<number[]>([]);
   const [selectedGender, setSelectedGender] = useState<Sex | null>(null);
@@ -84,7 +91,7 @@ const StudentManagementSection = () => {
 
   const filteredStudents = filterManagedStudents({
     students,
-    searchQuery,
+    searchQuery: debouncedSearchQuery,
     selectedGrades,
     selectedClasses,
     selectedGender,
