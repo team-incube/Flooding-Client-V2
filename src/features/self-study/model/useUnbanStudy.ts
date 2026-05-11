@@ -41,12 +41,12 @@ export function useUnbanStudy() {
       };
     },
     onMutate: async (studentIds) => {
-      await queryClient.cancelQueries({ queryKey: ["user", "list"] });
+      await queryClient.cancelQueries({ queryKey: userQueries.list().queryKey });
       const previousData = queryClient.getQueriesData<SearchUsersPage>({
-        queryKey: ["user", "list"],
+        queryKey: userQueries.list().queryKey,
       });
       queryClient.setQueriesData<SearchUsersPage>(
-        { queryKey: ["user", "list"] },
+        { queryKey: userQueries.list().queryKey },
         (current) => {
           if (!current) return current;
           return {
