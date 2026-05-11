@@ -91,7 +91,7 @@ export function useUnbanStudy() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
-      queryClient.invalidateQueries({ queryKey: ["user", "list"] });
+      queryClient.invalidateQueries({ queryKey: userQueries.list().queryKey });
     },
   });
 }
