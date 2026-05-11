@@ -8,6 +8,7 @@ import {
   dormitoryQueries,
 } from "@/entities/dormitory/api/dormitoryQueries";
 import type { SearchUsersPage } from "@/entities/user/model/user";
+import { userQueries } from "@/entities/user/api/userQueries";
 
 interface UnbanStudyResult {
   successfulStudentIds: number[];
@@ -41,7 +42,9 @@ export function useUnbanStudy() {
       };
     },
     onMutate: async (studentIds) => {
-      await queryClient.cancelQueries({ queryKey: userQueries.list().queryKey });
+      await queryClient.cancelQueries({
+        queryKey: userQueries.list().queryKey,
+      });
       const previousData = queryClient.getQueriesData<SearchUsersPage>({
         queryKey: userQueries.list().queryKey,
       });
