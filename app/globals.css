@@ -175,26 +175,26 @@ body {
 }
 
 /* 6. 스크롤바 스타일 */
-* {
+html {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-sub-2) transparent;
+  scrollbar-color: var(--color-sub-2) var(--background);
 }
 
-*::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
-*::-webkit-scrollbar-track {
-  background: transparent;
+::-webkit-scrollbar-track {
+  background: var(--background);
 }
 
-*::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background-color: var(--color-sub-2);
   border-radius: 9999px;
 }
 
-*::-webkit-scrollbar-button {
+::-webkit-scrollbar-button {
   display: none;
   width: 0;
   height: 0;
