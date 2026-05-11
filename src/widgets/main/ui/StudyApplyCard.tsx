@@ -12,7 +12,8 @@ const STUDY_MAX = 50;
 
 export default function StudyApplyCard() {
   const studyQuery = dormitoryQueries.study();
-  const { data: studyApplicants } = useQuery(studyQuery);
+  const { data: studyApplicants, isLoading: isStudyLoading } =
+    useQuery(studyQuery);
   const students = studyApplicants?.applicants ?? [];
   const isApplicationOpen = studyApplicants?.isApplicationOpen ?? false;
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
@@ -26,6 +27,7 @@ export default function StudyApplyCard() {
     applyMutation.isPending || cancelMutation.isPending;
   const isStudyActionDisabled =
     isUserLoading ||
+    isStudyLoading ||
     isStudyBanned ||
     isStudyActionPending ||
     !isApplicationOpen;
@@ -56,7 +58,7 @@ export default function StudyApplyCard() {
       buttonText={
         isStudyBanned
           ? "자습 금지를 당했어요!"
-          : isUserLoading
+          : isUserLoading || isStudyLoading
             ? "확인 중"
             : !isApplicationOpen
               ? "신청 불가"

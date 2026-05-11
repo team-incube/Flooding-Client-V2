@@ -11,7 +11,8 @@ import { useCancelMassage } from "../model/useCancelMassage";
 
 export function MassageChairSection() {
   const massageQuery = dormitoryQueries.massage();
-  const { data: massageApplicants } = useQuery(massageQuery);
+  const { data: massageApplicants, isLoading: isMassageLoading } =
+    useQuery(massageQuery);
   const applicants = massageApplicants?.applicants ?? [];
   const isApplicationOpen = massageApplicants?.isApplicationOpen ?? false;
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
@@ -23,7 +24,10 @@ export function MassageChairSection() {
   const isMassageActionPending =
     applyMutation.isPending || cancelMutation.isPending;
   const isMassageActionDisabled =
-    isUserLoading || isMassageActionPending || !isApplicationOpen;
+    isUserLoading ||
+    isMassageLoading ||
+    isMassageActionPending ||
+    !isApplicationOpen;
 
   const handleApplyMassage = () => {
     if (isMassageActionDisabled || hasAppliedMassage) {
@@ -76,7 +80,7 @@ export function MassageChairSection() {
               hasAppliedMassage ? handleCancelMassage : handleApplyMassage
             }
           >
-            {isUserLoading
+            {isUserLoading || isMassageLoading
               ? "확인 중"
               : !isApplicationOpen
                 ? "신청 불가"
