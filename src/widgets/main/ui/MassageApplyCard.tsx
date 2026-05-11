@@ -12,7 +12,9 @@ const MASSAGE_MAX = 5;
 
 export default function MassageApplyCard() {
   const massageQuery = dormitoryQueries.massage();
-  const { data: applicants = [] } = useQuery(massageQuery);
+  const { data: massageApplicants } = useQuery(massageQuery);
+  const applicants = massageApplicants?.applicants ?? [];
+  const isApplicationOpen = massageApplicants?.isApplicationOpen ?? false;
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const applyMutation = useApplyMassage();
   const cancelMutation = useCancelMassage();
@@ -21,7 +23,8 @@ export default function MassageApplyCard() {
     applicants.some((student) => student.studentNumber === user.studentNumber);
   const isMassageActionPending =
     applyMutation.isPending || cancelMutation.isPending;
-  const isMassageActionDisabled = isUserLoading || isMassageActionPending;
+  const isMassageActionDisabled =
+    isUserLoading || isMassageActionPending || !isApplicationOpen;
 
   const handleApplyMassage = () => {
     if (isMassageActionDisabled || hasAppliedMassage) {
@@ -47,8 +50,15 @@ export default function MassageApplyCard() {
       total={MASSAGE_MAX}
       timeText="안마 의자 신청 시간은 20:20 ~ 21:00에 신청이 가능해요"
       buttonText={
-        isUserLoading ? "확인 중" : hasAppliedMassage ? "취소" : "신청"
+        isUserLoading
+          ? "확인 중"
+          : !isApplicationOpen
+            ? "신청 불가"
+            : hasAppliedMassage
+              ? "취소"
+              : "신청"
       }
+      buttonSize={!isApplicationOpen ? "fit" : "small"}
       detailHref="/dormitory"
       femaleNotice
       disabled={isMassageActionDisabled}

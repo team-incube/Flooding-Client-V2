@@ -11,7 +11,9 @@ import { useCancelMassage } from "../model/useCancelMassage";
 
 export function MassageChairSection() {
   const massageQuery = dormitoryQueries.massage();
-  const { data: applicants = [] } = useQuery(massageQuery);
+  const { data: massageApplicants } = useQuery(massageQuery);
+  const applicants = massageApplicants?.applicants ?? [];
+  const isApplicationOpen = massageApplicants?.isApplicationOpen ?? false;
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const applyMutation = useApplyMassage();
   const cancelMutation = useCancelMassage();
@@ -20,7 +22,8 @@ export function MassageChairSection() {
     applicants.some((student) => student.studentNumber === user.studentNumber);
   const isMassageActionPending =
     applyMutation.isPending || cancelMutation.isPending;
-  const isMassageActionDisabled = isUserLoading || isMassageActionPending;
+  const isMassageActionDisabled =
+    isUserLoading || isMassageActionPending || !isApplicationOpen;
 
   const handleApplyMassage = () => {
     if (isMassageActionDisabled || hasAppliedMassage) {
@@ -75,9 +78,11 @@ export function MassageChairSection() {
           >
             {isUserLoading
               ? "확인 중"
-              : hasAppliedMassage
-                ? "취소하기"
-                : "신청하기"}
+              : !isApplicationOpen
+                ? "신청 불가"
+                : hasAppliedMassage
+                  ? "취소하기"
+                  : "신청하기"}
           </TextButton>
           <p className="text-sub-2 text-caption-2">
             안마의자 신청시간은 20:20 ~ 21:00 입니다
