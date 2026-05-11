@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
-import Back from "@/shared/asset/svg/Back";
-import Smile from "@/shared/asset/svg/Smile";
 import ClubCard from "@/entities/club/ui/ClubCard";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
@@ -108,7 +106,6 @@ const ClubSection = () => {
   const { data: user } = useSuspenseQuery(userQueries.me());
   const { data: openingStatus } = useSuspenseQuery(clubQueries.openingStatus());
   const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
-  const hasClubApplication = user.hasClubApplication ?? false;
   const clubs = data.clubs;
 
   const filteredClubs = filterClubs({
@@ -206,24 +203,6 @@ const ClubSection = () => {
                 />
               )}
             </div>
-
-            {viewMode === "list" &&
-              openingStatus.isOpened &&
-              hasClubApplication && (
-                <div className="flex flex-col items-center justify-center gap-4">
-                  <Smile />
-                  <p className="text-sub-2 text-text-1">
-                    동아리 신청은 1인 1회 신청입니다
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("form")}
-                    className="text-sub-2 text-text-1 flex cursor-pointer items-center gap-1"
-                  >
-                    내 동아리 수정하기 <Back direction="right" />
-                  </button>
-                </div>
-              )}
           </div>
         </div>
       </div>

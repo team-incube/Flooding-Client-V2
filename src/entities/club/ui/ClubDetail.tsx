@@ -9,6 +9,7 @@ import { ClubActionButtons } from "@/entities/club/ui/ClubActionButtons";
 import Edit from "@/shared/asset/svg/Edit";
 import Search from "@/shared/asset/svg/Search";
 import Cancel from "@/shared/asset/svg/Cancel";
+import Smile from "@/shared/asset/svg/Smile";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 import ClubMemberList from "./ClubMemberList";
@@ -21,6 +22,7 @@ import FileOff from "@/shared/asset/svg/FileOff";
 interface ClubDetailProps {
   detail: ClubDetailResponse;
   isApplyPending?: boolean;
+  applyDisabledMessage?: string;
   onApplyClick?: () => void;
   onViewApplicationsClick?: () => void;
   onCreateFormClick?: () => void;
@@ -38,6 +40,7 @@ interface ClubDetailProps {
 export default function ClubDetail({
   detail,
   isApplyPending = false,
+  applyDisabledMessage,
   onApplyClick,
   onViewApplicationsClick,
   onCreateFormClick,
@@ -59,7 +62,12 @@ export default function ClubDetail({
   const [description, setDescription] = useState(club.description ?? "");
   const [previewUrl, setPreviewUrl] = useState(club.imageUrl ?? "");
 
-  const applyVariant = isApplyPending || !onApplyClick ? "disabled" : "filled";
+  const applyVariant =
+    isApplyPending || !onApplyClick || applyDisabledMessage
+      ? "disabled"
+      : "filled";
+  const shouldShowApplyButton =
+    !isLeader && (!!onApplyClick || !!applyDisabledMessage);
   const nonLeaderMembers = members.filter((m) =>
     club.leaderId !== undefined
       ? m.id !== club.leaderId
@@ -270,15 +278,27 @@ export default function ClubDetail({
                   {formActionLabel}
                 </TextButton>
               )}
-              {!isLeader && onApplyClick && (
-                <TextButton
-                  size="fit"
-                  variant={applyVariant}
-                  className="flex-1"
-                  onClick={applyVariant === "filled" ? onApplyClick : undefined}
-                >
-                  동아리 신청하기
-                </TextButton>
+              {shouldShowApplyButton && (
+                <div className="flex flex-col items-end gap-2">
+                  {applyDisabledMessage && (
+                    <div className="flex items-center gap-2">
+                      <Smile />
+                      <p className="text-sub-2 text-text-1">
+                        {applyDisabledMessage}
+                      </p>
+                    </div>
+                  )}
+                  <TextButton
+                    size="fit"
+                    variant={applyVariant}
+                    className="flex-1"
+                    onClick={
+                      applyVariant === "filled" ? onApplyClick : undefined
+                    }
+                  >
+                    동아리 신청하기
+                  </TextButton>
+                </div>
               )}
             </>
           )}
