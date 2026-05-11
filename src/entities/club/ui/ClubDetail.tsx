@@ -9,7 +9,6 @@ import { ClubActionButtons } from "@/entities/club/ui/ClubActionButtons";
 import Edit from "@/shared/asset/svg/Edit";
 import Search from "@/shared/asset/svg/Search";
 import Cancel from "@/shared/asset/svg/Cancel";
-import Smile from "@/shared/asset/svg/Smile";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 import ClubMemberList from "./ClubMemberList";
@@ -241,7 +240,7 @@ export default function ClubDetail({
                 setIsEdit(true);
                 onEditClick?.();
               }}
-              className="bg-sub-4 flex items-center justify-center rounded-xl p-2.5"
+              className="bg-sub-4 flex cursor-pointer items-center justify-center rounded-xl p-2.5"
               aria-label="동아리 수정"
             >
               <Edit />
@@ -279,26 +278,13 @@ export default function ClubDetail({
                 </TextButton>
               )}
               {shouldShowApplyButton && (
-                <div className="flex flex-col items-end gap-2">
-                  {applyDisabledMessage && (
-                    <div className="flex items-center gap-2">
-                      <Smile />
-                      <p className="text-sub-2 text-text-1">
-                        {applyDisabledMessage}
-                      </p>
-                    </div>
-                  )}
-                  <TextButton
-                    size="fit"
-                    variant={applyVariant}
-                    className="flex-1"
-                    onClick={
-                      applyVariant === "filled" ? onApplyClick : undefined
-                    }
-                  >
-                    동아리 신청하기
-                  </TextButton>
-                </div>
+                <TextButton
+                  size="wide"
+                  variant={applyVariant}
+                  onClick={applyVariant === "filled" ? onApplyClick : undefined}
+                >
+                  {applyDisabledMessage ? "신청 불가" : "동아리 신청하기"}
+                </TextButton>
               )}
             </>
           )}

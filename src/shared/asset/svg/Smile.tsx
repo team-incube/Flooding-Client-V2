@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export default function Smile() {
   return (
     <svg
