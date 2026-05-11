@@ -149,9 +149,7 @@ const StudentManagementSection = () => {
     bannedStudentIdSet.has(studentId);
 
   const getSelectedBanTargetIds = () =>
-    selectedStudentIds.filter(
-      (studentId) => !isStudyBanned(studentId),
-    );
+    selectedStudentIds.filter((studentId) => !isStudyBanned(studentId));
 
   const getSelectedUnbanTargetIds = () =>
     selectedStudentIds.filter(isStudyBanned);
