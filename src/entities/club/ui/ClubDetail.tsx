@@ -21,6 +21,7 @@ import FileOff from "@/shared/asset/svg/FileOff";
 interface ClubDetailProps {
   detail: ClubDetailResponse;
   isApplyPending?: boolean;
+  applyDisabledMessage?: string;
   onApplyClick?: () => void;
   onViewApplicationsClick?: () => void;
   onCreateFormClick?: () => void;
@@ -38,6 +39,7 @@ interface ClubDetailProps {
 export default function ClubDetail({
   detail,
   isApplyPending = false,
+  applyDisabledMessage,
   onApplyClick,
   onViewApplicationsClick,
   onCreateFormClick,
@@ -59,7 +61,12 @@ export default function ClubDetail({
   const [description, setDescription] = useState(club.description ?? "");
   const [previewUrl, setPreviewUrl] = useState(club.imageUrl ?? "");
 
-  const applyVariant = isApplyPending || !onApplyClick ? "disabled" : "filled";
+  const applyVariant =
+    isApplyPending || !onApplyClick || applyDisabledMessage
+      ? "disabled"
+      : "filled";
+  const shouldShowApplyButton =
+    !isLeader && (!!onApplyClick || !!applyDisabledMessage);
   const nonLeaderMembers = members.filter((m) =>
     club.leaderId !== undefined
       ? m.id !== club.leaderId
@@ -233,7 +240,7 @@ export default function ClubDetail({
                 setIsEdit(true);
                 onEditClick?.();
               }}
-              className="bg-sub-4 flex items-center justify-center rounded-xl p-2.5"
+              className="bg-sub-4 flex cursor-pointer items-center justify-center rounded-xl p-2.5"
               aria-label="동아리 수정"
             >
               <Edit />
@@ -270,14 +277,13 @@ export default function ClubDetail({
                   {formActionLabel}
                 </TextButton>
               )}
-              {!isLeader && onApplyClick && (
+              {shouldShowApplyButton && (
                 <TextButton
-                  size="fit"
+                  size="wide"
                   variant={applyVariant}
-                  className="flex-1"
                   onClick={applyVariant === "filled" ? onApplyClick : undefined}
                 >
-                  동아리 신청하기
+                  {applyDisabledMessage ? "신청 불가" : "동아리 신청하기"}
                 </TextButton>
               )}
             </>

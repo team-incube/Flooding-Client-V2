@@ -21,7 +21,7 @@ export function ClubActionButtons({
   if (isEdit) {
     return (
       <>
-        <div className={`flex gap-2 ${canDelete ? "w-[350px]" : "w-[240px]"}`}>
+        <div className="flex gap-2">
           <TextButton
             size="fit"
             variant="ghost"

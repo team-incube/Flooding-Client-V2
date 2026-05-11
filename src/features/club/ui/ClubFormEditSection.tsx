@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import TextField from "@/shared/ui/textField";
@@ -30,6 +31,7 @@ interface ClubFormEditContentProps extends ClubFormEditSectionProps {
 }
 
 function ClubFormEditContent({ id, form }: ClubFormEditContentProps) {
+  const router = useRouter();
   const {
     title,
     description,
@@ -115,13 +117,18 @@ function ClubFormEditContent({ id, form }: ClubFormEditContentProps) {
         >
           질문 추가
         </button>
-        <TextButton
-          size="wide"
-          variant={canSubmit ? "filled" : "disabled"}
-          className="max-w-full"
-        >
-          폼 수정하기
-        </TextButton>
+        <div className="flex gap-3">
+          <TextButton
+            size="fit"
+            variant="outlined"
+            onClick={() => router.back()}
+          >
+            뒤로가기
+          </TextButton>
+          <TextButton size="wide" variant={canSubmit ? "filled" : "disabled"}>
+            폼 수정하기
+          </TextButton>
+        </div>
       </div>
     </form>
   );
@@ -142,6 +149,8 @@ function ClubFormEditSectionLoading() {
 function ClubFormEditSectionError({
   resetErrorBoundary,
 }: QueryErrorFallbackProps) {
+  const router = useRouter();
+
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
@@ -149,26 +158,45 @@ function ClubFormEditSectionError({
         <p className="text-text-1 text-main-text">
           동아리 신청 폼을 불러오지 못했어요.
         </p>
-        <TextButton variant="outlined" size="fit" onClick={resetErrorBoundary}>
-          다시 시도
-        </TextButton>
+        <div className="flex gap-3">
+          <TextButton
+            variant="outlined"
+            size="fit"
+            onClick={resetErrorBoundary}
+          >
+            다시 시도
+          </TextButton>
+          <TextButton
+            variant="outlined"
+            size="fit"
+            onClick={() => router.back()}
+          >
+            뒤로가기
+          </TextButton>
+        </div>
       </div>
     </div>
   );
 }
 
 function ClubFormEditSectionEmpty() {
+  const router = useRouter();
+
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
         <Club isActive={false} size={32} />
         <p className="text-text-1 text-main-text">수정할 신청 폼이 없어요.</p>
+        <TextButton variant="outlined" size="fit" onClick={() => router.back()}>
+          뒤로가기
+        </TextButton>
       </div>
     </div>
   );
 }
 
 const ClubFormEditSection = ({ id }: ClubFormEditSectionProps) => {
+  const router = useRouter();
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: form } = useSuspenseQuery({
     ...clubQueries.form(id),
@@ -189,6 +217,13 @@ const ClubFormEditSection = ({ id }: ClubFormEditSectionProps) => {
               ? "자율 동아리는 신청 폼을 수정할 수 없어요."
               : "동아리 리더만 신청 폼을 수정할 수 있어요."}
           </p>
+          <TextButton
+            variant="outlined"
+            size="fit"
+            onClick={() => router.back()}
+          >
+            뒤로가기
+          </TextButton>
         </div>
       </div>
     );

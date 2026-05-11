@@ -107,14 +107,13 @@ const ClubDetailSection = ({
 
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const { data: isRegistrationPeriod = false } = useSuspenseQuery(
-    clubQueries.openingStatus(),
-  );
+  const { data: openingStatus } = useSuspenseQuery(clubQueries.openingStatus());
 
   const isLeader = detail.isLeader;
   const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
+  const hasClubApplication = user.hasClubApplication ?? false;
   const canDeleteClub =
-    (isLeader || user.role === "ADMIN") && isRegistrationPeriod;
+    (isLeader || user.role === "ADMIN") && openingStatus.isOpened;
   const canCreateForm = detail.club.type === "MAJOR_CLUB" && isLeader;
   const canViewApplications = isLeader || isManager;
   const formQuery = clubQueries.form(id);
@@ -138,7 +137,7 @@ const ClubDetailSection = ({
     .slice(0, SEARCH_RESULT_LIMIT);
 
   const handleApplyClick = () => {
-    if (autonomousApplyMutation.isPending) {
+    if (autonomousApplyMutation.isPending || hasClubApplication) {
       return;
     }
 
@@ -206,8 +205,15 @@ const ClubDetailSection = ({
               detail={detail}
               canDelete={canDeleteClub}
               isApplyPending={autonomousApplyMutation.isPending}
+              applyDisabledMessage={
+                hasClubApplication
+                  ? "동아리 신청은 1인 1회 신청입니다"
+                  : undefined
+              }
               onApplyClick={
-                isPending || isManager ? undefined : handleApplyClick
+                isPending || isManager || hasClubApplication
+                  ? undefined
+                  : handleApplyClick
               }
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
               onViewApplicationsClick={
