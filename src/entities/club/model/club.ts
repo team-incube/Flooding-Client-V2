@@ -164,12 +164,10 @@ export interface ClubOpeningStatus {
 }
 
 export interface RegistrationData {
-  regType: RegistrationType;
-  clubType: ClubType;
+  name: string;
   status: ClubStatus;
-  clubName: string;
-  leaderInfo: string;
-  clubDetail: string;
-  desiredTeacher: string;
-  clubImage: File | string | null;
+  type: ClubType;
+  description: string;
+  imageUrl: string;
+  maxMember: number;
 }

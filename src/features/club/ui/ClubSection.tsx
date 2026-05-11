@@ -106,9 +106,7 @@ const ClubSection = () => {
 
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const { data: openingStatus } = useSuspenseQuery(
-    clubQueries.openingStatus(),
-  );
+  const { data: openingStatus } = useSuspenseQuery(clubQueries.openingStatus());
   const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
   const hasClubApplication = user.hasClubApplication ?? false;
   const clubs = data.clubs;

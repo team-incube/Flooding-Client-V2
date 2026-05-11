@@ -5,10 +5,7 @@ interface FilterClubsParams {
   searchValue: string;
 }
 
-export function filterClubs({
-  clubs,
-  searchValue,
-}: FilterClubsParams): Club[] {
+export function filterClubs({ clubs, searchValue }: FilterClubsParams): Club[] {
   const normalizedSearchValue = searchValue.trim().toLowerCase();
 
   if (!normalizedSearchValue) {
