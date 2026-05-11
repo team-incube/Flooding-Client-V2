@@ -236,6 +236,7 @@ const StudentManagementSection = () => {
             selectedBanTargetCount={selectedBanTargetCount}
             selectedUnbanTargetCount={selectedUnbanTargetCount}
             isPending={isStudyBanActionPending}
+            onClearSelection={() => setSelectedStudentIds([])}
             onBanSelectedStudent={handleBanSelectedStudent}
             onUnbanSelectedStudent={handleUnbanSelectedStudent}
           />

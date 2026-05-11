@@ -8,6 +8,7 @@ interface StudyBanActionPanelProps {
   selectedBanTargetCount: number;
   selectedUnbanTargetCount: number;
   isPending: boolean;
+  onClearSelection: () => void;
   onBanSelectedStudent: () => void;
   onUnbanSelectedStudent: () => void;
 }
@@ -17,6 +18,7 @@ export function StudyBanActionPanel({
   selectedBanTargetCount,
   selectedUnbanTargetCount,
   isPending,
+  onClearSelection,
   onBanSelectedStudent,
   onUnbanSelectedStudent,
 }: StudyBanActionPanelProps) {
@@ -37,7 +39,16 @@ export function StudyBanActionPanel({
 
   return (
     <div className="flex flex-col gap-[24px]">
-      <span className="text-main-text text-text-1">{actionTitle}</span>
+      <div className="flex items-end justify-between">
+        <span className="text-main-text text-text-1">{actionTitle}</span>
+        <button
+          type="button"
+          onClick={onClearSelection}
+          className="text-text-4 text-sub-1 hover:text-p-1 cursor-pointer transition-colors"
+        >
+          선택 해제
+        </button>
+      </div>
       {isAllowedFilterSelected ? (
         <TextButton
           variant={isActionEnabled ? "filled" : "disabled"}
