@@ -35,6 +35,7 @@ interface ReservedTableMembersParams {
 }
 
 interface HomebaseApplyRequestParams {
+  reservationDate: string;
   startPeriod: number;
   endPeriod: number;
   reason: string;
@@ -204,6 +205,7 @@ export function getMyHomebaseReservations(
 }
 
 export function createHomebaseApplyRequest({
+  reservationDate,
   startPeriod,
   endPeriod,
   reason,
@@ -220,6 +222,7 @@ export function createHomebaseApplyRequest({
     : [];
 
   return {
+    reservationDate,
     startPeriod,
     endPeriod,
     reason,

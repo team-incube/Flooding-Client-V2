@@ -13,6 +13,7 @@ export interface HomebaseReservation {
 }
 
 export interface HomebaseApplyRequest {
+  reservationDate: string;
   startPeriod: number;
   endPeriod: number;
   reason: string;

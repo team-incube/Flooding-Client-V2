@@ -14,6 +14,7 @@ import {
   type QueryErrorFallbackProps,
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
+import { formatDateParam } from "@/shared/lib/date";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -42,13 +43,6 @@ function formatDisplayDate(date: Date): string {
   const dd = String(date.getDate()).padStart(2, "0");
   const day = DAYS[date.getDay()];
   return `${yy}.${mm}.${dd} (${day})`;
-}
-
-function formatParamDate(date: Date): string {
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
 }
 
 function TimeTableCardLoading() {
@@ -106,7 +100,7 @@ const TimeTableCard = () => {
 
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + offset);
-  const dateStr = formatParamDate(currentDate);
+  const dateStr = formatDateParam(currentDate);
 
   const currentPeriod = offset === 0 ? getCurrentPeriod() : null;
 
