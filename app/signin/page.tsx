@@ -27,45 +27,34 @@ export default function Signin() {
   };
 
   return (
-    <main className="bg-background flex min-h-screen items-center justify-center overflow-hidden px-5 py-10">
-      <section className="bg-background-surface grid w-full max-w-[960px] overflow-hidden rounded-2xl shadow-[0_18px_60px_rgba(0,0,0,0.08)] md:grid-cols-[1.08fr_0.92fr] dark:shadow-none">
-        <div className="bg-p-2 dark:bg-p-3 flex min-h-[280px] flex-col justify-between gap-8 px-8 py-8 md:min-h-[520px] md:px-10 md:py-10">
-          <Logo width={260} height={71} />
-          <div className="flex max-w-[360px] flex-col gap-4">
-            <p className="text-text-2 text-p-1">GSM 통합 관리 시스템</p>
-            <h1 className="text-main-text text-title-1">
-              학교생활과 기숙사 생활을
-              <br />한 곳에서 시작하세요
-            </h1>
-            <p className="text-sub-1 text-text-3">
-              동아리 개설부터 자습 관리, 안마의자 예약, 기상음악 신청과 AI
-              기능까지 플러딩에서 통합해 관리합니다.
-            </p>
-          </div>
+    <main className="bg-background relative isolate flex min-h-screen items-center justify-center overflow-hidden px-5 py-12 before:absolute before:inset-0 before:-z-20 before:bg-[linear-gradient(135deg,var(--background)_0%,var(--color-p-2)_52%,var(--background-surface)_100%)] after:absolute after:inset-0 after:-z-10 after:bg-[radial-gradient(circle_at_20%_20%,var(--color-p-3)_0_1px,transparent_1px),radial-gradient(circle_at_78%_72%,var(--color-sub-3)_0_1px,transparent_1px)] after:bg-[length:34px_34px,48px_48px] after:opacity-45 dark:before:bg-[linear-gradient(135deg,var(--background)_0%,var(--color-p-2)_50%,var(--background-surface)_100%)] dark:after:opacity-25">
+      <div className="absolute top-0 right-0 -z-10 h-[42vh] w-[42vw] min-w-[260px] bg-[radial-gradient(circle,var(--color-p-3)_0%,transparent_62%)] opacity-55 blur-3xl dark:opacity-35" />
+
+      <section className="flex w-full max-w-[760px] flex-col items-center gap-9 text-center">
+        <div>
+          <Logo width={318} height={86} />
         </div>
 
-        <div className="flex min-h-[320px] items-center justify-center px-6 py-8 md:min-h-[520px] md:px-10">
-          <div className="flex w-full max-w-[330px] flex-col gap-8">
-            <div className="flex flex-col gap-3">
-              <h2 className="text-title-2 text-main-text">로그인</h2>
-              <p className="text-text-3 text-sub-1">
-                DataGSM 계정으로 안전하게 접속합니다.
-              </p>
-            </div>
+        <div className="flex flex-col items-center gap-4">
+          <h1 className="text-title-3 text-main-text">
+            GSM 통합 관리 시스템
+          </h1>
+          <p className="text-text-3 text-sub-1 max-w-[430px]">
+            동아리, 기숙사, 홈베이스 기능을 한 곳에서 사용할 수 있어요.
+          </p>
+        </div>
 
-            <div className="flex min-h-[78px] flex-col gap-3">
-              <DataGsmLoginButton
-                className="w-full"
-                disabled={isLoggingIn}
-                onClick={handleLogin}
-              />
-              {errorMessage && (
-                <p className="text-caption-2 text-negative text-center">
-                  {errorMessage}
-                </p>
-              )}
-            </div>
-          </div>
+        <div className="flex min-h-[80px] w-full max-w-[330px] flex-col gap-3">
+          <DataGsmLoginButton
+            className="w-full"
+            disabled={isLoggingIn}
+            onClick={handleLogin}
+          />
+          {errorMessage && (
+            <p className="text-caption-2 text-negative text-center">
+              {errorMessage}
+            </p>
+          )}
         </div>
       </section>
     </main>
