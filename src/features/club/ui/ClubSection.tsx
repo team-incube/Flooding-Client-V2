@@ -48,7 +48,7 @@ function ClubSearchSkeleton() {
 
 function ClubSectionLoading() {
   return (
-    <div className="flex min-h-0 w-full flex-1 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ function ClubSectionLoading() {
 
 function ClubSectionError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="flex min-h-0 w-full flex-1 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
         <Club isActive={false} size={32} />
         <p className="text-text-1 text-main-text">
@@ -157,7 +157,7 @@ const ClubSection = () => {
   );
 
   return (
-    <div className="flex min-h-0 w-full flex-1 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -187,8 +187,8 @@ const ClubSection = () => {
               {isManager && <ClubOpeningRequestSection />}
             </div>
           </div>
-          <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
-            <div className="mb-auto flex w-full flex-col gap-4">
+          <div className="order-1 flex flex-col lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
+            <div className="flex w-full flex-col gap-10">
               {clubModeToggle}
 
               {viewMode === "form" && canRegisterClub ? (
