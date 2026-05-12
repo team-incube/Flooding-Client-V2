@@ -35,7 +35,7 @@ interface ReservedTableMembersParams {
 }
 
 interface HomebaseApplyRequestParams {
-  reservationDate?: Date;
+  reservationDate: string;
   startPeriod: number;
   endPeriod: number;
   reason: string;
@@ -44,14 +44,6 @@ interface HomebaseApplyRequestParams {
 }
 
 const floorOrder: Record<string, number> = { "2F": 0, "3F": 1, "4F": 2 };
-
-function formatReservationDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
 
 export function getPeriodNumber(period: string, periods: string[]): number {
   return 8 + periods.indexOf(period);
@@ -213,7 +205,7 @@ export function getMyHomebaseReservations(
 }
 
 export function createHomebaseApplyRequest({
-  reservationDate = new Date(),
+  reservationDate,
   startPeriod,
   endPeriod,
   reason,
@@ -230,7 +222,7 @@ export function createHomebaseApplyRequest({
     : [];
 
   return {
-    reservationDate: formatReservationDate(reservationDate),
+    reservationDate,
     startPeriod,
     endPeriod,
     reason,
