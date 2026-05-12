@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { exportClubs } from "@/entities/club/api/exportClubs";
 
@@ -16,6 +17,13 @@ export default function ClubExportButton() {
     setIsLoading(true);
     try {
       await exportClubs();
+      toast.success("동아리 명단 엑셀 다운로드를 시작했습니다.");
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "동아리 명단 엑셀 다운로드에 실패했습니다.";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
