@@ -11,7 +11,8 @@ export function AiChatButton() {
   return (
     <>
       <button
-        className="bg-p-1 fixed right-6 bottom-6 z-40 flex h-13 w-13 cursor-pointer items-center justify-center rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.16)]"
+        type="button"
+        className="fixed right-6 bottom-6 z-40 flex h-13 w-13 cursor-pointer items-center justify-center overflow-hidden rounded-full border-0 bg-transparent p-0 shadow-[0_4px_16px_rgba(0,0,0,0.16)]"
         onClick={() => setIsOpen(true)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
