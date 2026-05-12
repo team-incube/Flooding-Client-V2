@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Logo from "@/shared/asset/svg/Logo";
-import { TextButton } from "@/shared/ui/Button/TextButton";
+import { DataGsmLoginButton } from "@/shared/ui/Button/DataGsmLoginButton";
 import { useOAuth } from "@themoment-team/datagsm-oauth-react";
 
 export default function Signin() {
@@ -27,18 +27,17 @@ export default function Signin() {
   };
 
   return (
-    <div className="bg-background flex h-screen items-center justify-center overflow-hidden">
-      <div className="bg-background-surface flex h-fit w-fit flex-col items-center gap-6 rounded-2xl px-8 py-13">
-        <Logo />
-        <div className="flex flex-col items-center gap-3">
-          <TextButton
-            variant={isLoggingIn ? "disabled" : "filled"}
-            size="wide"
-            disabled={isLoggingIn}
-            onClick={handleLogin}
-          >
-            {isLoggingIn ? "로그인 중" : "Data GSM으로 로그인"}
-          </TextButton>
+    <div className="bg-background flex min-h-screen items-center justify-center overflow-hidden px-5 py-10">
+      <div className="bg-background-surface flex min-h-[430px] w-full max-w-[480px] flex-col items-center justify-center gap-10 rounded-2xl px-8 py-12 shadow-[0_18px_60px_rgba(0,0,0,0.08)] dark:shadow-none">
+        <div className="flex flex-col items-center gap-8">
+          <Logo width={265} height={72} />
+          <div className="flex flex-col items-center gap-3 text-center">
+            <h1 className="text-title-1 text-main-text">로그인</h1>
+            <p className="text-text-3 text-sub-1">GSM 통합 관리 시스템</p>
+          </div>
+        </div>
+        <div className="flex min-h-[62px] flex-col items-center gap-3">
+          <DataGsmLoginButton disabled={isLoggingIn} onClick={handleLogin} />
           {errorMessage && (
             <p className="text-caption-2 text-negative w-[330px] text-center">
               {errorMessage}
