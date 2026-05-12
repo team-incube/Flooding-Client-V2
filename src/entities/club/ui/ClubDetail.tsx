@@ -79,12 +79,10 @@ export default function ClubDetail({
       ? m.id !== club.leaderId
       : m.name !== club.leader,
   );
-  const editableMemberIds = new Set(
-    editableMembers.map((member) => member.id),
-  );
-  const filteredMemberSearchResults = memberSearchResults.filter(
-    (user) => !editableMemberIds.has(user.id),
-  ).slice(0, SEARCH_RESULT_LIMIT);
+  const editableMemberIds = new Set(editableMembers.map((member) => member.id));
+  const filteredMemberSearchResults = memberSearchResults
+    .filter((user) => !editableMemberIds.has(user.id))
+    .slice(0, SEARCH_RESULT_LIMIT);
 
   const { mutateAsync: updateClub } = usePutClub();
   const { mutateAsync: deleteClub } = useDeleteClub();
@@ -174,9 +172,7 @@ export default function ClubDetail({
       });
 
       const originalMemberIds = new Set(members.map((member) => member.id));
-      const nextMemberIds = new Set(
-        editableMembers.map((member) => member.id),
-      );
+      const nextMemberIds = new Set(editableMembers.map((member) => member.id));
       const invitedMemberIds = editableMembers
         .map((member) => member.id)
         .filter((memberId) => !originalMemberIds.has(memberId));

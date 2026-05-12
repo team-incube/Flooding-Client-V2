@@ -122,8 +122,9 @@ const ClubDetailSection = ({
     ...userQueries.list({ name: trimmedSearch || undefined }),
     enabled: isLeader && trimmedSearch.length > 0,
   });
-  const memberSearchResults = (searchUsersPage?.content ?? [])
-    .filter((searchUser) => searchUser.id !== user.id);
+  const memberSearchResults = (searchUsersPage?.content ?? []).filter(
+    (searchUser) => searchUser.id !== user.id,
+  );
 
   const handleApplyClick = () => {
     if (autonomousApplyMutation.isPending || hasClubApplication) {

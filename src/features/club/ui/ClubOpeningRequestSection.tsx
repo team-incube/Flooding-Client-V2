@@ -41,11 +41,7 @@ function ClubOpeningRequestSectionEmpty() {
   );
 }
 
-function ClubOpeningRequestSectionError({
-  onRetry,
-}: {
-  onRetry: () => void;
-}) {
+function ClubOpeningRequestSectionError({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="border-sub-3 bg-background flex h-[320px] flex-col items-center justify-center gap-3 rounded-2xl border">

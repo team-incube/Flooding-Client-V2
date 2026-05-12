@@ -38,8 +38,10 @@ export default function ClubRegistrationSection({
   );
 
   const { mutateAsync: postClubAsync } = usePostClub();
-  const { mutateAsync: uploadRepresentativeImageAsync, isPending: isUploading } =
-    useUploadClubRepresentativeImage();
+  const {
+    mutateAsync: uploadRepresentativeImageAsync,
+    isPending: isUploading,
+  } = useUploadClubRepresentativeImage();
   const { name, type, description, imageUrl, maxMember } = formData;
 
   const handleChange = <K extends keyof RegistrationData>(
