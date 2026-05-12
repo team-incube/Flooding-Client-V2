@@ -1,10 +1,12 @@
+import type { SvgProps } from "@/shared/model/svg";
+
 type Direction = "up" | "down" | "left" | "right";
 
-interface BackProps {
+interface BackProps extends SvgProps {
   direction?: Direction;
 }
 
-export default function Back({ direction = "down" }: BackProps) {
+export default function Back({ direction = "down", size = 20 }: BackProps) {
   const getRotation = () => {
     switch (direction) {
       case "up":
@@ -21,8 +23,8 @@ export default function Back({ direction = "down" }: BackProps) {
 
   return (
     <svg
-      width="20"
-      height="20"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

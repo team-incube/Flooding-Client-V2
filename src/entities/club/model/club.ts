@@ -1,7 +1,7 @@
 import { Sex } from "@/entities/user/model/user";
 
 export type ClubType = "MAJOR_CLUB" | "AUTONOMOUS_CLUB";
-export type ClubStatus = "MAINTAIN" | "ACTIVE" | "ABOLISHED";
+export type ClubStatus = "MAINTAIN" | "NEW";
 export type RegistrationType = "NEW" | "MAINTAIN" | null;
 
 export interface Club {
@@ -170,4 +170,8 @@ export interface RegistrationData {
   description: string;
   imageUrl: string;
   maxMember: number;
+}
+
+export interface UploadClubRepresentativeImageResponse {
+  imageUrl: string;
 }
