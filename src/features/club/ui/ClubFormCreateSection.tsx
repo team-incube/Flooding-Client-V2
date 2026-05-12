@@ -12,6 +12,7 @@ import {
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useClubFormBuilder } from "../model/useClubFormBuilder";
+import { ClubBackButton } from "./ClubBackButton";
 import { ClubFormFieldEditor } from "./ClubFormFieldEditor";
 
 interface ClubFormCreateSectionProps {
@@ -107,7 +108,7 @@ const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
         <div className="flex items-center gap-2">
-          <Club isActive={false} size={20} />
+          <ClubBackButton />
           <span className="text-text-1 text-main-text">동아리 폼 만들기</span>
         </div>
 

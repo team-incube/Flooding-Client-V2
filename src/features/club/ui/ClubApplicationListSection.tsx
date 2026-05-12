@@ -12,6 +12,7 @@ import {
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useApproveClubApplication } from "../model/useApproveClubApplication";
+import { ClubBackButton } from "./ClubBackButton";
 
 interface ClubApplicationListSectionProps {
   id: number;
@@ -149,7 +150,7 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Club isActive={false} size={20} />
+            <ClubBackButton />
             <span className="text-text-1 text-main-text">
               동아리 신청자 목록
             </span>
