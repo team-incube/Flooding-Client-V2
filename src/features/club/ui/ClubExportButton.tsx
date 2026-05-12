@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { exportClubs } from "@/entities/club/api/exportClubs";
+import Back from "@/shared/asset/svg/Back";
 
 export default function ClubExportButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,14 +31,14 @@ export default function ClubExportButton() {
   };
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-caption-1 text-sub-1">동아리 엑셀로 뽑기</span>
+    <div className="flex flex-col items-center gap-4">
+      <span className="text-text-1 font-semibold text-sub-2">개설 신청 동아리 엑셀로 뽑기</span>
       <button
         onClick={handleExport}
         disabled={isLoading}
-        className="text-caption-1 text-p-1 cursor-pointer text-left disabled:opacity-50 disabled:cursor-default"
+        className="text-text-1 text-sub-2 flex cursor-pointer items-center gap-1 disabled:cursor-default disabled:opacity-50"
       >
-        {isLoading ? "다운로드 중..." : "다운로드 >"}
+        다운로드 <Back direction="right" />
       </button>
     </div>
   );
