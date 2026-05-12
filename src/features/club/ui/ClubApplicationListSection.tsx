@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import Club from "@/shared/asset/svg/Club";
@@ -83,8 +82,6 @@ function ClubApplicationListSectionError({
   error,
   resetErrorBoundary,
 }: QueryErrorFallbackProps) {
-  const router = useRouter();
-
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
@@ -99,13 +96,6 @@ function ClubApplicationListSectionError({
             onClick={resetErrorBoundary}
           >
             다시 시도
-          </TextButton>
-          <TextButton
-            variant="outlined"
-            size="fit"
-            onClick={() => router.back()}
-          >
-            뒤로가기
           </TextButton>
         </div>
       </div>
@@ -122,7 +112,6 @@ function ClubApplicationListSectionEmpty() {
 }
 
 function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
-  const router = useRouter();
   const approveMutation = useApproveClubApplication(id);
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
@@ -150,13 +139,6 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
           <p className="text-text-1 text-main-text text-center">
             신청자 목록을 조회할 권한이 없어요.
           </p>
-          <TextButton
-            variant="outlined"
-            size="fit"
-            onClick={() => router.back()}
-          >
-            뒤로가기
-          </TextButton>
         </div>
       </div>
     );
@@ -172,13 +154,6 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
               동아리 신청자 목록
             </span>
           </div>
-          <TextButton
-            variant="outlined"
-            size="fit"
-            onClick={() => router.back()}
-          >
-            뒤로가기
-          </TextButton>
         </div>
 
         <div className="flex flex-col gap-1">

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import TextField from "@/shared/ui/textField";
@@ -40,8 +39,6 @@ function ClubFormCreateSectionLoading() {
 function ClubFormCreateSectionError({
   resetErrorBoundary,
 }: QueryErrorFallbackProps) {
-  const router = useRouter();
-
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
@@ -57,13 +54,6 @@ function ClubFormCreateSectionError({
           >
             다시 시도
           </TextButton>
-          <TextButton
-            variant="outlined"
-            size="fit"
-            onClick={() => router.back()}
-          >
-            뒤로가기
-          </TextButton>
         </div>
       </div>
     </div>
@@ -71,7 +61,6 @@ function ClubFormCreateSectionError({
 }
 
 const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
-  const router = useRouter();
   const titleInputId = `club-form-title-${id}`;
   const descriptionInputId = `club-form-description-${id}`;
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
@@ -109,13 +98,6 @@ const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
               ? "자율 동아리는 신청 폼을 만들 수 없어요."
               : "동아리 리더만 신청 폼을 만들 수 있어요."}
           </p>
-          <TextButton
-            variant="outlined"
-            size="fit"
-            onClick={() => router.back()}
-          >
-            뒤로가기
-          </TextButton>
         </div>
       </div>
     );
@@ -192,13 +174,6 @@ const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
               질문 추가
             </button>
             <div className="flex gap-3">
-              <TextButton
-                size="fit"
-                variant="outlined"
-                onClick={() => router.back()}
-              >
-                뒤로가기
-              </TextButton>
               <TextButton
                 size="wide"
                 type="submit"
