@@ -17,6 +17,14 @@ const authPathsWithoutRefresh = [
 
 let refreshPromise: Promise<string> | null = null;
 
+function redirectToSignin() {
+  const authPages = ["/signin", "/callback"];
+
+  if (!authPages.includes(window.location.pathname)) {
+    window.location.href = "/signin";
+  }
+}
+
 instance.interceptors.request.use((config) => {
   if (config.url?.startsWith("/api/")) {
     config.baseURL = undefined;
@@ -47,15 +55,19 @@ instance.interceptors.response.use(
 
       try {
         if (!refreshPromise) {
-          refreshPromise = axios.post("/api/auth/refresh").then(({ data }) => {
-            const token = data.data?.accessToken;
-            if (!token) {
-              throw new Error("Access token is missing");
-            }
-            sessionStorage.setItem("access_token", token);
-            refreshPromise = null;
-            return token;
-          });
+          refreshPromise = axios
+            .post("/api/auth/refresh")
+            .then(({ data }) => {
+              const token = data.data?.accessToken;
+              if (!token) {
+                throw new Error("Access token is missing");
+              }
+              sessionStorage.setItem("access_token", token);
+              return token;
+            })
+            .finally(() => {
+              refreshPromise = null;
+            });
         }
 
         const accessToken = await refreshPromise;
@@ -63,7 +75,7 @@ instance.interceptors.response.use(
         return instance(config);
       } catch (refreshError) {
         sessionStorage.removeItem("access_token");
-        window.location.href = "/signin";
+        redirectToSignin();
         return Promise.reject(refreshError);
       }
     }
