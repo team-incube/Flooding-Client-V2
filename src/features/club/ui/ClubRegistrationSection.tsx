@@ -7,9 +7,13 @@ import TextField from "@/shared/ui/textField";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import Great from "@/shared/asset/svg/Great";
 import Back from "@/shared/asset/svg/Back";
-import { usePostClub } from "@/entities/club/api/clubQueries";
+import {
+  usePostClub,
+  useUploadClubRepresentativeImage,
+} from "@/entities/club/api/clubQueries";
 import type { RegistrationData } from "@/entities/club/model/club";
 import { toast } from "sonner";
+import ImageUpload from "@/shared/ui/ImageUpload";
 
 interface Props {
   onGoBackToList?: () => void;
@@ -24,13 +28,18 @@ export default function ClubRegistrationSection({
   const [formData, setFormData] = useState<RegistrationData>({
     name: "",
     type: "MAJOR_CLUB",
-    status: "MAINTAIN",
+    status: "NEW",
     description: "",
     imageUrl: "",
     maxMember: 0,
   });
+  const [representativeImage, setRepresentativeImage] = useState<File | null>(
+    null,
+  );
 
   const { mutateAsync: postClubAsync } = usePostClub();
+  const { mutateAsync: uploadRepresentativeImageAsync, isPending: isUploading } =
+    useUploadClubRepresentativeImage();
   const { name, type, description, imageUrl, maxMember } = formData;
 
   const handleChange = <K extends keyof RegistrationData>(
@@ -40,19 +49,24 @@ export default function ClubRegistrationSection({
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const canSubmit = !!name.trim() && !!description.trim() && maxMember >= 0;
+  const canSubmit =
+    !!name.trim() && !!description.trim() && maxMember >= 0 && !isUploading;
 
-  const handleSubmit = async () => {
-    const requestBody = {
-      name,
-      type,
-      status: formData.status,
-      description,
-      imageUrl,
-      maxMember,
-    };
+  const handleSubmit = () => {
+    const promise = (async () => {
+      const uploadedImageUrl = representativeImage
+        ? (await uploadRepresentativeImageAsync(representativeImage)).imageUrl
+        : imageUrl;
 
-    const promise = postClubAsync(requestBody);
+      return postClubAsync({
+        name,
+        type,
+        status: formData.status,
+        description,
+        imageUrl: uploadedImageUrl,
+        maxMember,
+      });
+    })();
 
     toast.promise(promise, {
       loading: "동아리 개설 신청 중...",
@@ -176,11 +190,13 @@ export default function ClubRegistrationSection({
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className="text-text-3 font-medium">대표 이미지 URL</span>
-            <TextField
-              placeholder="이미지 URL을 입력해주세요"
-              onChange={(e) => handleChange("imageUrl", e.target.value)}
-              value={imageUrl}
+            <span className="text-text-3 font-medium">대표 이미지</span>
+            <ImageUpload
+              onImageChange={(file) => {
+                setRepresentativeImage(file);
+                if (!file) handleChange("imageUrl", "");
+              }}
+              disabled={isUploading}
             />
           </div>
 

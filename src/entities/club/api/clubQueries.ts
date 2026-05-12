@@ -20,6 +20,7 @@ import { patchClubApproval } from "./patchClubApproval";
 import { postClub } from "./postClub";
 import { deleteClub } from "./deleteClub";
 import { putClub } from "./putClub";
+import { uploadClubRepresentativeImage } from "./uploadClubRepresentativeImage";
 
 export const clubQueries = {
   list: () =>
@@ -143,3 +144,8 @@ export const usePostClub = () => {
     },
   });
 };
+
+export const useUploadClubRepresentativeImage = () =>
+  useMutation({
+    mutationFn: uploadClubRepresentativeImage,
+  });

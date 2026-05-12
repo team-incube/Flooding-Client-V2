@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,11 @@ import ClubMemberList from "./ClubMemberList";
 import ProjectCard from "./ProjectCard";
 import type { ClubMember, ClubDetailResponse, Project } from "../model/club";
 import type { SearchUser } from "@/entities/user/model/user";
-import { usePutClub, useDeleteClub } from "../api/clubQueries";
+import {
+  usePutClub,
+  useDeleteClub,
+  useUploadClubRepresentativeImage,
+} from "../api/clubQueries";
 import FileOff from "@/shared/asset/svg/FileOff";
 
 interface ClubDetailProps {
@@ -60,6 +64,9 @@ export default function ClubDetail({
   const [isEdit, setIsEdit] = useState(false);
   const [description, setDescription] = useState(club.description ?? "");
   const [previewUrl, setPreviewUrl] = useState(club.imageUrl ?? "");
+  const [representativeImage, setRepresentativeImage] = useState<File | null>(
+    null,
+  );
 
   const applyVariant =
     isApplyPending || !onApplyClick || applyDisabledMessage
@@ -75,21 +82,43 @@ export default function ClubDetail({
 
   const { mutateAsync: updateClub } = usePutClub();
   const { mutateAsync: deleteClub } = useDeleteClub();
+  const { mutateAsync: uploadRepresentativeImage } =
+    useUploadClubRepresentativeImage();
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleSave = () => {
-    const promise = updateClub({
-      clubId: club.id,
-      body: {
-        name: club.name,
-        description,
-        imageUrl: previewUrl,
-        maxMember: club.maxMember,
-      },
-    });
+    const promise = (async () => {
+      const uploadedImageUrl = representativeImage
+        ? (await uploadRepresentativeImage(representativeImage)).imageUrl
+        : previewUrl;
+
+      if (representativeImage) {
+        setPreviewUrl(uploadedImageUrl);
+      }
+
+      return updateClub({
+        clubId: club.id,
+        body: {
+          name: club.name,
+          description,
+          imageUrl: uploadedImageUrl,
+          maxMember: club.maxMember,
+        },
+      });
+    })();
+
     toast.promise(promise, {
       loading: "저장 중...",
       success: () => {
         setIsEdit(false);
+        setRepresentativeImage(null);
         queryClient.invalidateQueries({
           queryKey: ["club", "detail", club.id],
         });
@@ -113,9 +142,11 @@ export default function ClubDetail({
           imageUrl={previewUrl}
           isEdit={isEdit}
           onImageChange={(file) => {
-            const reader = new FileReader();
-            reader.onloadend = () => setPreviewUrl(reader.result as string);
-            reader.readAsDataURL(file);
+            if (previewUrl.startsWith("blob:")) {
+              URL.revokeObjectURL(previewUrl);
+            }
+            setRepresentativeImage(file);
+            setPreviewUrl(URL.createObjectURL(file));
           }}
         />
 
@@ -252,6 +283,7 @@ export default function ClubDetail({
             onSave={handleSave}
             onCancel={() => {
               setIsEdit(false);
+              setRepresentativeImage(null);
               setPreviewUrl(club.imageUrl ?? "");
             }}
             onDelete={handleDelete}
