@@ -36,9 +36,7 @@ export default function Signin() {
         </div>
 
         <div className="flex flex-col items-center gap-4">
-          <h1 className="text-title-3 text-main-text">
-            GSM 통합 관리 시스템
-          </h1>
+          <h1 className="text-title-3 text-main-text">GSM 통합 관리 시스템</h1>
           <p className="text-text-3 text-sub-1 max-w-[430px]">
             동아리, 기숙사, 홈베이스 기능을 한 곳에서 사용할 수 있어요.
           </p>
