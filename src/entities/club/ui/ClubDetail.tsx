@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,8 +15,15 @@ import ClubMemberList from "./ClubMemberList";
 import ProjectCard from "./ProjectCard";
 import type { ClubMember, ClubDetailResponse, Project } from "../model/club";
 import type { SearchUser } from "@/entities/user/model/user";
-import { usePutClub, useDeleteClub } from "../api/clubQueries";
+import {
+  clubMutations,
+  usePutClub,
+  useDeleteClub,
+  useUploadClubRepresentativeImage,
+} from "../api/clubQueries";
 import FileOff from "@/shared/asset/svg/FileOff";
+
+const SEARCH_RESULT_LIMIT = 5;
 
 interface ClubDetailProps {
   detail: ClubDetailResponse;
@@ -30,8 +37,6 @@ interface ClubDetailProps {
   memberSearchQuery?: string;
   memberSearchResults?: SearchUser[];
   onMemberSearchChange?: (query: string) => void;
-  onMemberInvite?: (user: SearchUser) => void;
-  onMemberExile?: (memberId: number) => void;
   formActionLabel?: string;
   canDelete?: boolean;
 }
@@ -48,8 +53,6 @@ export default function ClubDetail({
   memberSearchQuery = "",
   memberSearchResults = [],
   onMemberSearchChange,
-  onMemberInvite,
-  onMemberExile,
   formActionLabel = "폼 만들기",
   canDelete = false,
 }: ClubDetailProps) {
@@ -60,6 +63,10 @@ export default function ClubDetail({
   const [isEdit, setIsEdit] = useState(false);
   const [description, setDescription] = useState(club.description ?? "");
   const [previewUrl, setPreviewUrl] = useState(club.imageUrl ?? "");
+  const [representativeImage, setRepresentativeImage] = useState<File | null>(
+    null,
+  );
+  const [editableMembers, setEditableMembers] = useState<ClubMember[]>(members);
 
   const applyVariant =
     isApplyPending || !onApplyClick || applyDisabledMessage
@@ -67,29 +74,136 @@ export default function ClubDetail({
       : "filled";
   const shouldShowApplyButton =
     !isLeader && (!!onApplyClick || !!applyDisabledMessage);
-  const nonLeaderMembers = members.filter((m) =>
+  const nonLeaderMembers = editableMembers.filter((m) =>
     club.leaderId !== undefined
       ? m.id !== club.leaderId
       : m.name !== club.leader,
   );
+  const editableMemberIds = new Set(editableMembers.map((member) => member.id));
+  const filteredMemberSearchResults = memberSearchResults
+    .filter((user) => !editableMemberIds.has(user.id))
+    .slice(0, SEARCH_RESULT_LIMIT);
 
   const { mutateAsync: updateClub } = usePutClub();
   const { mutateAsync: deleteClub } = useDeleteClub();
+  const { mutateAsync: uploadRepresentativeImage } =
+    useUploadClubRepresentativeImage();
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  const handleEditStart = () => {
+    setDescription(club.description ?? "");
+    setRepresentativeImage(null);
+    setPreviewUrl(club.imageUrl ?? "");
+    setEditableMembers(members);
+    setIsEdit(true);
+    onEditClick?.();
+  };
+
+  const handleCancel = () => {
+    setIsEdit(false);
+    setDescription(club.description ?? "");
+    setRepresentativeImage(null);
+    setPreviewUrl(club.imageUrl ?? "");
+    setEditableMembers(members);
+    onMemberSearchChange?.("");
+  };
+
+  const handleMemberInvite = (user: SearchUser) => {
+    setEditableMembers((currentMembers) => {
+      if (currentMembers.some((member) => member.id === user.id)) {
+        return currentMembers;
+      }
+
+      return [
+        ...currentMembers,
+        {
+          id: user.id,
+          name: user.name,
+          studentNumber: user.studentNumber,
+          sex: user.sex,
+          specialty: "",
+        },
+      ];
+    });
+    onMemberSearchChange?.("");
+  };
+
+  const handleMemberExile = (memberId: number) => {
+    const isCurrentLeader =
+      club.leaderId !== undefined
+        ? memberId === club.leaderId
+        : editableMembers.find((member) => member.id === memberId)?.name ===
+          club.leader;
+
+    if (isCurrentLeader) {
+      return;
+    }
+
+    setEditableMembers((currentMembers) =>
+      currentMembers.filter((member) => member.id !== memberId),
+    );
+  };
 
   const handleSave = () => {
-    const promise = updateClub({
-      clubId: club.id,
-      body: {
-        name: club.name,
-        description,
-        imageUrl: previewUrl,
-        maxMember: club.maxMember,
-      },
-    });
+    const promise = (async () => {
+      const uploadedImageUrl = representativeImage
+        ? (await uploadRepresentativeImage(representativeImage)).imageUrl
+        : previewUrl;
+
+      if (representativeImage) {
+        setPreviewUrl(uploadedImageUrl);
+      }
+
+      await updateClub({
+        clubId: club.id,
+        body: {
+          name: club.name,
+          description,
+          imageUrl: uploadedImageUrl,
+          maxMember: club.maxMember,
+        },
+      });
+
+      const originalMemberIds = new Set(members.map((member) => member.id));
+      const nextMemberIds = new Set(editableMembers.map((member) => member.id));
+      const invitedMemberIds = editableMembers
+        .map((member) => member.id)
+        .filter((memberId) => !originalMemberIds.has(memberId));
+      const exiledMemberIds = members
+        .map((member) => member.id)
+        .filter((memberId) => !nextMemberIds.has(memberId))
+        .filter((memberId) =>
+          club.leaderId !== undefined
+            ? memberId !== club.leaderId
+            : members.find((member) => member.id === memberId)?.name !==
+              club.leader,
+        );
+
+      await Promise.all([
+        ...invitedMemberIds.map((memberId) =>
+          clubMutations.inviteMember(club.id, memberId),
+        ),
+        ...exiledMemberIds.map((memberId) =>
+          clubMutations.exileMember(club.id, memberId),
+        ),
+      ]);
+    })();
+
     toast.promise(promise, {
       loading: "저장 중...",
       success: () => {
         setIsEdit(false);
+        setRepresentativeImage(null);
+        setEditableMembers(members);
+        onMemberSearchChange?.("");
+        queryClient.invalidateQueries({ queryKey: ["club"] });
         queryClient.invalidateQueries({
           queryKey: ["club", "detail", club.id],
         });
@@ -110,12 +224,14 @@ export default function ClubDetail({
     <div className="flex w-full flex-col gap-6 xl:flex-row">
       <div className="flex w-full flex-col gap-6 lg:w-100 2xl:w-121">
         <ClubThumbnail
-          imageUrl={previewUrl}
+          imageUrl={isEdit ? previewUrl : club.imageUrl}
           isEdit={isEdit}
           onImageChange={(file) => {
-            const reader = new FileReader();
-            reader.onloadend = () => setPreviewUrl(reader.result as string);
-            reader.readAsDataURL(file);
+            if (previewUrl.startsWith("blob:")) {
+              URL.revokeObjectURL(previewUrl);
+            }
+            setRepresentativeImage(file);
+            setPreviewUrl(URL.createObjectURL(file));
           }}
         />
 
@@ -140,7 +256,7 @@ export default function ClubDetail({
               </div>
             ) : (
               <p className="2xl:text-text-1 lg:text-text-2 text-sub-1 leading-relaxed whitespace-pre-wrap">
-                {description}
+                {club.description}
               </p>
             )}
           </div>
@@ -154,7 +270,7 @@ export default function ClubDetail({
           ) : (
             <div className="flex flex-col gap-4">
               <ClubMemberList
-                members={members}
+                members={editableMembers}
                 leader={club.leader}
                 showDescription={false}
               />
@@ -167,15 +283,15 @@ export default function ClubDetail({
                     onChange={(e) => onMemberSearchChange?.(e.target.value)}
                     rightIcon={<Search />}
                   />
-                  {memberSearchResults.length > 0 &&
+                  {filteredMemberSearchResults.length > 0 &&
                     memberSearchQuery.trim() && (
                       <div className="border-sub-4 bg-background-surface absolute z-10 mt-1 w-full overflow-hidden rounded-lg border shadow-md">
                         <div className="divide-sub-4 flex flex-col divide-y px-2">
-                          {memberSearchResults.map((user) => (
+                          {filteredMemberSearchResults.map((user) => (
                             <button
                               key={user.id}
                               type="button"
-                              onClick={() => onMemberInvite?.(user)}
+                              onClick={() => handleMemberInvite(user)}
                               className="text-text-2 text-main-text hover:bg-sub-4 w-full px-2 py-3 text-left"
                             >
                               {user.studentNumber} {user.name}
@@ -196,16 +312,14 @@ export default function ClubDetail({
                       <span className="whitespace-nowrap">
                         {member.studentNumber} {member.name}
                       </span>
-                      {onMemberExile && (
-                        <button
-                          type="button"
-                          onClick={() => onMemberExile(member.id)}
-                          className="text-sub-2 hover:text-negative flex shrink-0 items-center [&>svg]:h-3 [&>svg]:w-3 2xl:[&>svg]:h-3.5 2xl:[&>svg]:w-3.5"
-                          aria-label={`${member.name} 추방`}
-                        >
-                          <Cancel />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleMemberExile(member.id)}
+                        className="text-sub-2 hover:text-negative flex shrink-0 items-center [&>svg]:h-3 [&>svg]:w-3 2xl:[&>svg]:h-3.5 2xl:[&>svg]:w-3.5"
+                        aria-label={`${member.name} 추방`}
+                      >
+                        <Cancel />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -236,10 +350,7 @@ export default function ClubDetail({
           {!isEdit && isLeader && (
             <button
               type="button"
-              onClick={() => {
-                setIsEdit(true);
-                onEditClick?.();
-              }}
+              onClick={handleEditStart}
               className="bg-sub-4 flex cursor-pointer items-center justify-center rounded-xl p-2.5"
               aria-label="동아리 수정"
             >
@@ -250,10 +361,7 @@ export default function ClubDetail({
             isEdit={isEdit}
             canDelete={canDelete}
             onSave={handleSave}
-            onCancel={() => {
-              setIsEdit(false);
-              setPreviewUrl(club.imageUrl ?? "");
-            }}
+            onCancel={handleCancel}
             onDelete={handleDelete}
           />
           {!isEdit && (

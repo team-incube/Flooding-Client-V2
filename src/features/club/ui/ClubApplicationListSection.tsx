@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import Club from "@/shared/asset/svg/Club";
@@ -13,6 +12,7 @@ import {
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useApproveClubApplication } from "../model/useApproveClubApplication";
+import { ClubBackButton } from "./ClubBackButton";
 
 interface ClubApplicationListSectionProps {
   id: number;
@@ -52,7 +52,7 @@ function getErrorMessage(error: unknown) {
     return "신청자 목록을 조회할 권한이 없어요.";
   }
   if (status === HttpStatusCode.NotFound) {
-    return "동아리 또는 신청 폼을 찾을 수 없어요.";
+    return "신청자 목록을 찾을 수 없어요.";
   }
 
   return "신청자 목록을 불러오지 못했어요.";
@@ -83,8 +83,6 @@ function ClubApplicationListSectionError({
   error,
   resetErrorBoundary,
 }: QueryErrorFallbackProps) {
-  const router = useRouter();
-
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
@@ -99,13 +97,6 @@ function ClubApplicationListSectionError({
             onClick={resetErrorBoundary}
           >
             다시 시도
-          </TextButton>
-          <TextButton
-            variant="outlined"
-            size="fit"
-            onClick={() => router.back()}
-          >
-            뒤로가기
           </TextButton>
         </div>
       </div>
@@ -126,6 +117,7 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
   const isLeader = !!user && user.name === detail?.club.leader;
+  const canApproveApplications = isLeader || user?.role === "ADMIN";
   const canViewApplications =
     !!detail &&
     (isLeader || user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL");
@@ -156,9 +148,13 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
-        <div className="flex items-center gap-2">
-          <Club isActive={false} size={20} />
-          <span className="text-text-1 text-main-text">동아리 신청자 목록</span>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <ClubBackButton />
+            <span className="text-text-1 text-main-text">
+              동아리 신청자 목록
+            </span>
+          </div>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -195,19 +191,21 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
                     <span className="text-caption-1 text-sub-1">
                       {formatSubmittedAt(application.submittedAt)}
                     </span>
-                    <TextButton
-                      variant={
-                        approveMutation.isPending ? "disabled" : "filled"
-                      }
-                      size="small"
-                      onClick={() =>
-                        approveMutation.mutate({
-                          userId: application.applicant.id,
-                        })
-                      }
-                    >
-                      승인
-                    </TextButton>
+                    {canApproveApplications && (
+                      <TextButton
+                        variant={
+                          approveMutation.isPending ? "disabled" : "filled"
+                        }
+                        size="small"
+                        onClick={() =>
+                          approveMutation.mutate({
+                            userId: application.applicant.id,
+                          })
+                        }
+                      >
+                        승인
+                      </TextButton>
+                    )}
                   </div>
                 </div>
 
