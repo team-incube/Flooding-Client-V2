@@ -32,7 +32,9 @@ export default function ClubExportButton() {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <span className="text-text-1 font-semibold text-sub-2">개설 신청 동아리 엑셀로 뽑기</span>
+      <span className="text-text-1 text-sub-2 font-semibold">
+        개설 신청 동아리 엑셀로 뽑기
+      </span>
       <button
         onClick={handleExport}
         disabled={isLoading}

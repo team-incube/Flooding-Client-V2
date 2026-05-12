@@ -27,9 +27,7 @@ export async function exportClubs(): Promise<void> {
     throw new Error("다운로드할 동아리 데이터가 없습니다.");
   }
 
-  const fileName = getDownloadFileName(
-    response.headers["content-disposition"],
-  );
+  const fileName = getDownloadFileName(response.headers["content-disposition"]);
   const blob = new Blob([response.data], {
     type: String(response.headers["content-type"] ?? EXCEL_MIME_TYPE),
   });
