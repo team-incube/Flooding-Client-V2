@@ -1,4 +1,4 @@
-import { useState } from "react";
+import Image from "next/image";
 import DefaultClubThumbnail from "@/shared/asset/svg/DefaultThumbnail";
 import { Club } from "../model/club";
 
@@ -8,20 +8,18 @@ interface ClubCardProps {
 }
 
 export default function ClubCard({ club, onClick }: ClubCardProps) {
-  const [imageError, setImageError] = useState(false);
-
   return (
     <div
       className="bg-sub-4 flex cursor-pointer flex-col gap-4 rounded-2xl px-4 py-6"
       onClick={onClick}
     >
       <div className="bg-sub-4 relative h-33.5 w-full overflow-hidden rounded-2xl">
-        {club.imageUrl && !imageError ? (
-          <img
+        {club.imageUrl ? (
+          <Image
             src={club.imageUrl}
             alt={club.name}
-            className="h-full w-full object-cover"
-            onError={() => setImageError(true)}
+            fill
+            className="object-cover"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
