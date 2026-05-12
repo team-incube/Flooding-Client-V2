@@ -14,8 +14,10 @@ export function useApplyMassage() {
 
   return useMutation({
     mutationFn: dormitoryMutations.applyMassage,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: massageQuery.queryKey }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: massageQuery.queryKey });
+      toast.success("안마의자 신청이 완료되었습니다.");
+    },
     onError: (error) => {
       const status = axios.isAxiosError(error)
         ? error.response?.status

@@ -63,19 +63,16 @@ export default function ImageUpload({
 
   return (
     <div className={`relative flex flex-col gap-2 ${className}`}>
-
       <div
         {...getRootProps({
           onClick: preview ? (e) => e.stopPropagation() : undefined,
         })}
-        className={`relative w-full rounded-[6.85px]
-          ${preview ? "" : "border-p-1 "}
-        `}
+        className={`relative w-full rounded-[6.85px] ${preview ? "" : "border-p-1"} `}
       >
         <input {...getInputProps()} />
-        
+
         {preview ? (
-          <div className="relative w-full h-[191.43px] rounded-[6.85px] overflow-hidden">
+          <div className="relative h-[191.43px] w-full overflow-hidden rounded-[6.85px]">
             <Image
               src={preview}
               alt="Preview"
@@ -86,14 +83,14 @@ export default function ImageUpload({
             {!disabled && (
               <button
                 onClick={handleDelete}
-                className="absolute top-2 right-2 cursor-pointer transition-all p-1"
+                className="absolute top-2 right-2 cursor-pointer p-1"
               >
                 <Delete className="text-negative" />
               </button>
             )}
           </div>
         ) : (
-          <div className="flex flex-col gap-2 items-center justify-center w-full h-[191.43px] bg-background cursor-pointer rounded-[6.85px]">
+          <div className="bg-background flex h-[191.43px] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-[6.85px]">
             <DashedBorder />
             <Camera />
             <span className="text-text-4 text-sub-2">

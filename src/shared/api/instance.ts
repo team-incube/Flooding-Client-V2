@@ -15,6 +15,8 @@ const authPathsWithoutRefresh = [
   "/api/auth/signout",
 ];
 
+let refreshPromise: Promise<string> | null = null;
+
 instance.interceptors.request.use((config) => {
   if (config.url?.startsWith("/api/")) {
     config.baseURL = undefined;
@@ -34,26 +36,35 @@ instance.interceptors.response.use(
   async (error) => {
     if (typeof window === "undefined") return Promise.reject(error);
 
-    const originalRequest = error.config;
+    const config = error.config;
 
     if (
       error.response?.status === HttpStatusCode.Unauthorized &&
-      !originalRequest._retried &&
-      !authPathsWithoutRefresh.some((path) =>
-        originalRequest.url?.includes(path),
-      )
+      !config.headers["x-retried"] &&
+      !authPathsWithoutRefresh.some((path) => config.url?.includes(path))
     ) {
-      originalRequest._retried = true;
+      config.headers["x-retried"] = "true";
 
       try {
-        const { data } = await axios.post("/api/auth/refresh");
-        const accessToken = data.data?.accessToken ?? data.accessToken;
-        sessionStorage.setItem("access_token", accessToken);
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return instance(originalRequest);
-      } catch {
+        if (!refreshPromise) {
+          refreshPromise = axios.post("/api/auth/refresh").then(({ data }) => {
+            const token = data.data?.accessToken;
+            if (!token) {
+              throw new Error("Access token is missing");
+            }
+            sessionStorage.setItem("access_token", token);
+            refreshPromise = null;
+            return token;
+          });
+        }
+
+        const accessToken = await refreshPromise;
+        config.headers.Authorization = `Bearer ${accessToken}`;
+        return instance(config);
+      } catch (refreshError) {
         sessionStorage.removeItem("access_token");
         window.location.href = "/signin";
+        return Promise.reject(refreshError);
       }
     }
 

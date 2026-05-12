@@ -1,8 +1,14 @@
-import type { User, Sex } from '@/entities/user/model/user';
-import type { Music } from '@/entities/music/model/music';
+import type { Sex } from "@/entities/user/model/user";
+import type { Music } from "@/entities/music/model/music";
 
-export type DormitoryStudent = User;
 export type DormitoryMusic = Music;
+
+export interface DormitoryStudent {
+  order: number;
+  name: string;
+  studentNumber: number;
+  sex: Sex;
+}
 
 export interface StudyApplicant {
   userId: number;
@@ -12,6 +18,14 @@ export interface StudyApplicant {
   isBanned: boolean;
   isChecked: boolean;
 }
+
+export interface ApplicationStatus<TApplicant> {
+  isApplicationOpen: boolean;
+  applicants: TApplicant[];
+}
+
+export type MassageApplicants = ApplicationStatus<DormitoryStudent>;
+export type StudyApplicants = ApplicationStatus<StudyApplicant>;
 
 export interface MusicApplyRequest {
   musicUrl: string;

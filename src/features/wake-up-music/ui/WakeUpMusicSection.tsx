@@ -37,7 +37,7 @@ export function WakeUpMusicSection({
 
   return (
     <section
-      className={`relative bg-background-surface rounded-2xl p-6 flex flex-col gap-6 h-[424px] 2xl:h-[520px] ${className ?? ""}`}
+      className={`bg-background-surface relative flex h-[424px] flex-col gap-6 rounded-2xl p-6 2xl:h-[520px] ${className ?? ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -52,8 +52,8 @@ export function WakeUpMusicSection({
         </div>
       </div>
 
-      <div className="flex gap-6 flex-1 overflow-hidden">
-        <div className="flex-1 min-w-0 overflow-y-auto pr-2">
+      <div className="flex flex-1 gap-6 overflow-hidden">
+        <div className="min-w-0 flex-1 overflow-y-auto pr-2">
           <div className="flex flex-col">
             {songs.map((music) => (
               <MusicListItem
@@ -77,7 +77,7 @@ export function WakeUpMusicSection({
           </div>
         </div>
 
-        <div className="w-[240px] lg:w-[330px] shrink-0 flex flex-col gap-20">
+        <div className="flex w-[240px] shrink-0 flex-col gap-20 lg:w-[330px]">
           <div className="flex flex-col gap-3">
             <span className="text-main-text text-text-2">음악 신청</span>
             <TextField
@@ -110,15 +110,15 @@ export function WakeUpMusicSection({
 
       {icon && (
         <button
-          className="absolute bottom-6 right-6 w-13 h-13 rounded-full bg-p-2 flex items-center justify-center cursor-pointer"
+          className="bg-p-2 absolute right-6 bottom-6 flex h-13 w-13 cursor-pointer items-center justify-center rounded-full"
           onClick={() => setIsModalOpen(true)}
         >
           {isHovered && (
-            <div className="absolute bottom-full mb-4 right-0 pointer-events-none">
-              <div className="relative bg-surface text-sub-1 px-4 py-2 rounded-lg shadow-[0_0_24px_rgba(0,0,0,0.1)] whitespace-nowrap text-sm font-medium">
-                오늘의 노래를 <span className="text-p-1">ai</span>한테 추천
+            <div className="pointer-events-none absolute right-0 bottom-full mb-4">
+              <div className="bg-surface text-sub-1 relative rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap shadow-[0_0_24px_rgba(0,0,0,0.1)]">
+                오늘의 노래를 <span className="text-p-1">AI</span>한테 추천
                 받아봐요!
-                <div className="absolute -bottom-1.5 right-[22px] w-3 h-3 bg-background-surface rotate-45"></div>
+                <div className="bg-background-surface absolute right-[22px] -bottom-1.5 h-3 w-3 rotate-45"></div>
               </div>
             </div>
           )}

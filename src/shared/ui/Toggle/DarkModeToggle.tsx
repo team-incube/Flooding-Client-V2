@@ -21,18 +21,18 @@ export function DarkModeToggle() {
   };
 
   if (isDark === null) {
-    return <div className="w-[70px] h-[39px]" />;
+    return <div className="h-[39px] w-[70px]" />;
   }
 
   return (
     <button
       onClick={toggle}
-      className={`relative w-[70px] h-[39px] rounded-[43px] transition-colors duration-300 cursor-pointer flex items-center p-1 ${
+      className={`relative flex h-[39px] w-[70px] cursor-pointer items-center rounded-[43px] p-1 ${
         isDark ? "bg-background-surface" : "bg-sub-3"
       }`}
     >
       <span
-        className={`w-[31px] h-[31px] rounded-full flex items-center justify-center transition-transform duration-300 ${
+        className={`flex h-[31px] w-[31px] items-center justify-center rounded-full transition-transform duration-300 ${
           isDark ? "bg-sub-1 translate-x-[30px]" : "translate-x-0"
         }`}
       >

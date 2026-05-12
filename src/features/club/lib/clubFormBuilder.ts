@@ -53,9 +53,7 @@ export function isClubFormFieldOptionValueValid(value: string) {
   return !!trimmedValue && !trimmedValue.includes(",");
 }
 
-export function createDefaultClubFormField(
-  id: number,
-): ClubFormFieldDraft {
+export function createDefaultClubFormField(id: number): ClubFormFieldDraft {
   return {
     id,
     label: "",
@@ -94,10 +92,7 @@ export function createClubFormDraftState(form: ClubForm) {
     }));
   const maxOptionId = fields.reduce(
     (currentMax, field) =>
-      Math.max(
-        currentMax,
-        ...field.options.map((option) => option.id),
-      ),
+      Math.max(currentMax, ...field.options.map((option) => option.id)),
     0,
   );
 

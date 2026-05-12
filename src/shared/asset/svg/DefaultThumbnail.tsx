@@ -2,7 +2,9 @@ interface DefaultClubThumbnailProps {
   className?: string;
 }
 
-export default function DefaultClubThumbnail({ className }: DefaultClubThumbnailProps) {
+export default function DefaultClubThumbnail({
+  className,
+}: DefaultClubThumbnailProps) {
   return (
     <svg
       width="231"
@@ -12,7 +14,6 @@ export default function DefaultClubThumbnail({ className }: DefaultClubThumbnail
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-
       <ellipse
         cx="50.7212"
         cy="63.3223"

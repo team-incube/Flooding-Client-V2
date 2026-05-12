@@ -5,6 +5,8 @@ import { getSortedGrades } from "../lib/getSortedGrades";
 interface ClubMemberListProps {
   members: ClubMember[];
   leader?: string;
+  leaderId?: number;
+  showDescription?: boolean;
   isLeader?: boolean;
   onMemberClick?: (member: ClubMember) => void;
 }
@@ -12,6 +14,8 @@ interface ClubMemberListProps {
 export default function ClubMemberList({
   members,
   leader,
+  leaderId,
+  showDescription = true,
   isLeader = false,
   onMemberClick,
 }: ClubMemberListProps) {
@@ -32,13 +36,16 @@ export default function ClubMemberList({
             <div key={grade} className="text-text-1">
               <span className="text-sub-1">{grade}학년 - </span>
               {gradeMembers.map((m, i) => {
-                const isCurrentLeader = m.name === leader;
+                const isCurrentLeader =
+                  leaderId !== undefined
+                    ? m.id === leaderId
+                    : m.name === leader;
                 const isClickable =
                   isLeader && !isCurrentLeader && !!onMemberClick;
                 return (
                   <span key={m.id}>
                     <span
-                      className={`${isCurrentLeader ? "text-p-1" : "text-sub-1"} ${isClickable ? "cursor-pointer hover:text-p-1" : ""}`}
+                      className={`${isCurrentLeader ? "text-p-1" : "text-sub-1"} ${isClickable ? "hover:text-p-1 cursor-pointer" : ""}`}
                       onClick={isClickable ? () => onMemberClick(m) : undefined}
                     >
                       {m.name}
@@ -55,10 +62,12 @@ export default function ClubMemberList({
             </div>
           );
         })}
-        <p className="2xl:text-text-4 lg:text-caption-1 text-sub-2 mt-1">
-          ※ 보라색 이름은 부장이에요
-          {isLeader && " · 이름을 클릭해 소유권을 위임할 수 있어요"}
-        </p>
+        {showDescription && (
+          <p className="2xl:text-text-4 lg:text-caption-1 text-sub-2 mt-1">
+            ※ 보라색 이름은 부장이에요
+            {isLeader && " · 이름을 클릭해 소유권을 위임할 수 있어요"}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ export default function ClubSearch({
     <div className="flex w-full min-w-82.5 flex-col items-start gap-4">
       <div className="w-full">
         <TextField
-          placeholder="동아리명, 부장 이름등을 입력해주세요"
+          placeholder="동아리명, 부장 이름 등을 입력해주세요"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}

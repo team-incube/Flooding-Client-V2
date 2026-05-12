@@ -1,4 +1,4 @@
-import Retry  from "@/shared/asset/svg/Retry";
+import Retry from "@/shared/asset/svg/Retry";
 
 interface RetryButtonProps {
   onClick: () => void;
@@ -7,17 +7,16 @@ interface RetryButtonProps {
 }
 
 export default function RetryButton({ onClick, count, max }: RetryButtonProps) {
-
   return (
     <button
       onClick={onClick}
       disabled={count === max}
-      className="flex flex-col items-center cursor-pointer"
+      className="flex cursor-pointer flex-col items-center"
     >
       <Retry />
       <span className="text-sub-2">
         ({count}/{max})
       </span>
     </button>
-  )
+  );
 }

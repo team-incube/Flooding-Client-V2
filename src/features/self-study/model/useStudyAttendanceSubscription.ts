@@ -3,13 +3,8 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { isManagementRole } from "@/entities/user/lib/userRole";
 import type { UserRole } from "@/entities/user/model/user";
-
-const sseAllowedRoles: UserRole[] = [
-  "STUDENT_COUNCIL",
-  "DORMITORY_MANAGER",
-  "ADMIN",
-];
 
 function collectCheckedUserIds(value: unknown): number[] {
   if (typeof value === "number") {
@@ -56,7 +51,7 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
   const [checkedStudentIds, setCheckedStudentIds] = useState<number[]>([]);
 
   useEffect(() => {
-    if (!role || !sseAllowedRoles.includes(role)) {
+    if (!isManagementRole(role)) {
       return;
     }
 
@@ -81,9 +76,7 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
         return;
       }
 
-      setCheckedStudentIds((prev) => [
-        ...new Set([...prev, ...userIds]),
-      ]);
+      setCheckedStudentIds((prev) => [...new Set([...prev, ...userIds])]);
     };
 
     eventSource.addEventListener("init", updateCheckedIds);

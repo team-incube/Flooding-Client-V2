@@ -17,7 +17,7 @@ const fieldContainerStyles = "flex flex-col gap-2";
 const fieldLabelStyles = "text-text-3 text-main-text";
 const fieldDescriptionStyles = "text-caption-1 text-sub-1";
 const fieldBoxStyles =
-  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none transition-all placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
+  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
 
 export function ClubApplicationField({
   field,
@@ -74,7 +74,7 @@ export function ClubApplicationField({
             return (
               <label
                 key={option.optionId}
-                className={`flex h-[43px] cursor-pointer items-center justify-center rounded-lg border px-4 text-text-4 transition-all ${optionStyles[state]}`}
+                className={`text-text-4 flex h-[43px] cursor-pointer items-center justify-center rounded-lg border px-4 ${optionStyles[state]}`}
               >
                 <input
                   type="radio"
@@ -100,7 +100,7 @@ export function ClubApplicationField({
             return (
               <label
                 key={option.optionId}
-                className={`flex h-[43px] cursor-pointer items-center justify-center rounded-lg border px-4 text-text-4 transition-all ${optionStyles[state]}`}
+                className={`text-text-4 flex h-[43px] cursor-pointer items-center justify-center rounded-lg border px-4 ${optionStyles[state]}`}
               >
                 <input
                   type="checkbox"

@@ -64,9 +64,9 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-end justify-end p-6 z-50 pointer-events-none">
-      <div className="flex flex-col bg-background-surface rounded-2xl shadow-[0_0_24px_rgba(0,0,0,0.12)] w-[400px] h-[560px] pointer-events-auto">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-sub-4">
+    <div className="pointer-events-none fixed inset-0 z-50 flex items-end justify-end p-6">
+      <div className="bg-background-surface pointer-events-auto flex h-[560px] w-[400px] flex-col rounded-2xl shadow-[0_0_24px_rgba(0,0,0,0.12)]">
+        <div className="border-sub-4 flex items-center justify-between border-b px-5 py-4">
           <div className="flex items-center gap-1">
             <SmallStar />
             <span className="text-main-text text-text-2">AI 챗봇</span>
@@ -76,9 +76,9 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
+        <div className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-4">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full gap-2">
+            <div className="flex h-full flex-col items-center justify-center gap-2">
               <SmallStar />
               <p className="text-sub-2 text-caption-1 text-center">
                 무엇이든 물어보세요!
@@ -91,9 +91,9 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
               className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[75%] px-4 py-3 rounded-2xl text-caption-1 ${
+                className={`text-caption-1 max-w-[75%] rounded-2xl px-4 py-3 ${
                   msg.role === "user"
-                    ? "bg-p-1 text-white rounded-br-sm"
+                    ? "bg-p-1 rounded-br-sm text-white"
                     : "bg-sub-4 text-main-text rounded-bl-sm"
                 }`}
               >
@@ -103,11 +103,11 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
           ))}
           {isPending && (
             <div className="flex justify-start">
-              <div className="bg-sub-4 px-4 py-3 rounded-2xl rounded-bl-sm">
-                <div className="flex gap-1 items-center">
-                  <span className="w-1.5 h-1.5 bg-sub-2 rounded-full animate-bounce [animation-delay:0ms]" />
-                  <span className="w-1.5 h-1.5 bg-sub-2 rounded-full animate-bounce [animation-delay:150ms]" />
-                  <span className="w-1.5 h-1.5 bg-sub-2 rounded-full animate-bounce [animation-delay:300ms]" />
+              <div className="bg-sub-4 rounded-2xl rounded-bl-sm px-4 py-3">
+                <div className="flex items-center gap-1">
+                  <span className="bg-sub-2 h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:0ms]" />
+                  <span className="bg-sub-2 h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:150ms]" />
+                  <span className="bg-sub-2 h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:300ms]" />
                 </div>
               </div>
             </div>
@@ -115,10 +115,10 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="px-4 py-3 border-t border-sub-4 flex gap-2 justify-center items-end">
+        <div className="border-sub-4 flex items-end justify-center gap-2 border-t px-4 py-3">
           <textarea
             ref={textareaRef}
-            className="flex-1 resize-none rounded-[8px] border border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 outline-none px-4 py-3 text-caption-1 caret-p-1 transition-colors"
+            className="border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 text-caption-1 caret-p-1 flex-1 resize-none rounded-[8px] border px-4 py-3 outline-none"
             rows={1}
             placeholder="메시지를 입력하세요"
             value={input}
@@ -129,7 +129,7 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
           <button
             onClick={handleSend}
             disabled={!input.trim() || isPending}
-            className="shrink-0 w-9 h-9 rounded-full bg-p-1 flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+            className="bg-p-1 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
           >
             <SendArrow />
           </button>

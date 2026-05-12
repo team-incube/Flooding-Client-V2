@@ -26,7 +26,7 @@ export function ManagedStudentCard({
     <div
       className={`relative h-[165px] w-[170px] shrink-0 rounded-2xl p-4 transition-[background-color,box-shadow] ${cardStyles}`}
     >
-      <span className="absolute top-4 left-4 text-caption-3 text-sub-1">
+      <span className="text-caption-3 text-sub-1 absolute top-4 left-4">
         {index}
       </span>
       <button
@@ -34,7 +34,7 @@ export function ManagedStudentCard({
         aria-label={`${student.name} 선택`}
         aria-pressed={isSelected}
         onClick={() => onToggleSelect(student.id)}
-        className="absolute top-3 right-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg transition-colors hover:bg-background-surface"
+        className="hover:bg-background-surface absolute top-3 right-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg"
       >
         <Checkbox isActive={isSelected} />
       </button>

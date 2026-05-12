@@ -19,10 +19,7 @@ interface ClubFormFieldEditorProps {
     key: ClubFormFieldDraftKey,
     value: string | boolean,
   ) => void;
-  onFieldTypeChange: (
-    fieldId: number,
-    fieldType: ClubFormFieldType,
-  ) => void;
+  onFieldTypeChange: (fieldId: number, fieldType: ClubFormFieldType) => void;
   onAddOption: (fieldId: number) => void;
   onRemoveOption: (fieldId: number, optionId: number) => void;
   onOptionChange: (
@@ -34,10 +31,10 @@ interface ClubFormFieldEditorProps {
 }
 
 const fieldBoxStyles =
-  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none transition-all placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
+  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
 
 const secondaryButtonStyles =
-  "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 transition-all hover:border-sub-1";
+  "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 hover:border-sub-1";
 
 export function ClubFormFieldEditor({
   field,
@@ -55,7 +52,7 @@ export function ClubFormFieldEditor({
   const fieldDescriptionInputId = `club-form-field-description-${field.id}`;
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-sub-3 bg-background p-4">
+    <div className="border-sub-3 bg-background flex flex-col gap-4 rounded-xl border p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="text-text-1 text-main-text">질문 {index + 1}</span>
         <button
@@ -70,7 +67,10 @@ export function ClubFormFieldEditor({
 
       <div className="grid gap-4 lg:grid-cols-[1fr_180px]">
         <div className="flex flex-col gap-1">
-          <label htmlFor={fieldLabelInputId} className="text-text-3 text-main-text">
+          <label
+            htmlFor={fieldLabelInputId}
+            className="text-text-3 text-main-text"
+          >
             질문 제목 <span className="text-p-1">*</span>
           </label>
           <TextField
@@ -82,17 +82,17 @@ export function ClubFormFieldEditor({
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor={fieldTypeInputId} className="text-text-3 text-main-text">
+          <label
+            htmlFor={fieldTypeInputId}
+            className="text-text-3 text-main-text"
+          >
             질문 타입
           </label>
           <select
             id={fieldTypeInputId}
             value={field.fieldType}
             onChange={(e) =>
-              onFieldTypeChange(
-                field.id,
-                e.target.value as ClubFormFieldType,
-              )
+              onFieldTypeChange(field.id, e.target.value as ClubFormFieldType)
             }
             className={`${fieldBoxStyles} h-[52px]`}
           >
@@ -106,7 +106,10 @@ export function ClubFormFieldEditor({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={fieldDescriptionInputId} className="text-text-3 text-main-text">
+        <label
+          htmlFor={fieldDescriptionInputId}
+          className="text-text-3 text-main-text"
+        >
           질문 설명
         </label>
         <TextField
@@ -119,14 +122,14 @@ export function ClubFormFieldEditor({
         />
       </div>
 
-      <label className="flex w-fit cursor-pointer items-center gap-2 text-text-4 text-sub-1">
+      <label className="text-text-4 text-sub-1 flex w-fit cursor-pointer items-center gap-2">
         <input
           type="checkbox"
           checked={field.required}
           onChange={(e) =>
             onFieldChange(field.id, "required", e.target.checked)
           }
-          className="size-4 accent-p-1"
+          className="accent-p-1 size-4"
         />
         필수 질문
       </label>
@@ -157,12 +160,7 @@ export function ClubFormFieldEditor({
                   value={option.label}
                   placeholder="표시 이름"
                   onChange={(e) =>
-                    onOptionChange(
-                      field.id,
-                      option.id,
-                      "label",
-                      e.target.value,
-                    )
+                    onOptionChange(field.id, option.id, "label", e.target.value)
                   }
                 />
                 <div className="flex flex-col gap-1">
@@ -179,11 +177,12 @@ export function ClubFormFieldEditor({
                       )
                     }
                   />
-                  {option.value && !isClubFormFieldOptionValueValid(option.value) && (
-                    <p className="text-caption-2 text-negative">
-                      전송 값에는 쉼표(,)를 사용할 수 없어요.
-                    </p>
-                  )}
+                  {option.value &&
+                    !isClubFormFieldOptionValueValid(option.value) && (
+                      <p className="text-caption-2 text-negative">
+                        전송 값에는 쉼표(,)를 사용할 수 없어요.
+                      </p>
+                    )}
                 </div>
                 <button
                   type="button"

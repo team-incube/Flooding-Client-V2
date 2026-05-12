@@ -26,9 +26,7 @@ export function filterAvailableStudents({
       student.name.includes(normalizedSearchKeyword) ||
       student.studentNumber.toString().includes(normalizedSearchKeyword);
 
-    return (
-      matchesSearchKeyword && !selectedStudentIds.has(student.id)
-    );
+    return matchesSearchKeyword && !selectedStudentIds.has(student.id);
   });
 }
 

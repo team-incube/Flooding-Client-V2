@@ -11,16 +11,16 @@ export function AiChatButton() {
   return (
     <>
       <button
-        className="fixed bottom-6 right-6 w-13 h-13 rounded-full bg-p-1 flex items-center justify-center cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.16)] z-40"
+        className="bg-p-1 fixed right-6 bottom-6 z-40 flex h-13 w-13 cursor-pointer items-center justify-center rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.16)]"
         onClick={() => setIsOpen(true)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {isHovered && (
-          <div className="absolute bottom-full mb-4 right-0 pointer-events-none">
-            <div className="relative bg-background-surface text-sub-1 px-4 py-2 rounded-lg shadow-[0_0_24px_rgba(0,0,0,0.1)] whitespace-nowrap text-sm font-medium">
+          <div className="pointer-events-none absolute right-0 bottom-full mb-4">
+            <div className="bg-background-surface text-sub-1 relative rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap shadow-[0_0_24px_rgba(0,0,0,0.1)]">
               AI 챗봇에게 무엇이든 물어보세요!
-              <div className="absolute -bottom-1.5 right-[22px] w-3 h-3 bg-background-surface rotate-45" />
+              <div className="bg-background-surface absolute right-[22px] -bottom-1.5 h-3 w-3 rotate-45" />
             </div>
           </div>
         )}

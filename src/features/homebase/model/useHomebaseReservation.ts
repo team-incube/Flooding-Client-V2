@@ -27,6 +27,7 @@ export function useHomebaseReservation() {
     filteredReservations,
     myReservationItems,
     myReservationIds,
+    isError,
   } = useHomebaseReservationData({
     selectedFloor,
     selectedStartNum,
@@ -130,6 +131,7 @@ export function useHomebaseReservation() {
     myReservationItems,
     myReservationIds,
     isLoading,
+    isError,
     canSubmit,
     selectedStudents,
     handleFloorChange,

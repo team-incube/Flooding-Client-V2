@@ -2,15 +2,17 @@ import type { User } from "@/entities/user/model/user";
 import Gender from "@/shared/asset/svg/Gender";
 import Profile from "@/shared/asset/svg/Profile";
 
+type ProfileCardStudent = Pick<User, "name" | "studentNumber" | "sex">;
+
 interface ProfileCardProps {
   index: number;
-  student: User;
+  student: ProfileCardStudent;
 }
 
 export function ProfileCard({ index, student }: ProfileCardProps) {
   return (
-    <div className="relative h-[165px] w-[170px] rounded-2xl bg-sub-4">
-      <span className="absolute top-4 left-4 text-caption-3 text-sub-1">
+    <div className="bg-sub-4 relative h-[165px] w-[170px] rounded-2xl">
+      <span className="text-caption-3 text-sub-1 absolute top-4 left-4">
         {index}
       </span>
       <div className="flex flex-col items-center justify-center gap-2 py-6">
