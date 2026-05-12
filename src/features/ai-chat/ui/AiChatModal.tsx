@@ -64,8 +64,14 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
   };
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-50 flex items-end justify-end p-6">
-      <div className="bg-background-surface pointer-events-auto flex h-[560px] w-[400px] flex-col rounded-2xl shadow-[0_0_24px_rgba(0,0,0,0.12)]">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-end p-6"
+      onClick={onClose}
+    >
+      <div
+        className="bg-background-surface flex h-[560px] w-[400px] flex-col rounded-2xl shadow-[0_0_24px_rgba(0,0,0,0.12)]"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="border-sub-4 flex items-center justify-between border-b px-5 py-4">
           <div className="flex items-center gap-1">
             <SmallStar />
