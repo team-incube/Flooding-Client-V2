@@ -201,6 +201,7 @@ const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
               </TextButton>
               <TextButton
                 size="wide"
+                type="submit"
                 variant={canSubmit ? "filled" : "disabled"}
               >
                 폼 생성하기

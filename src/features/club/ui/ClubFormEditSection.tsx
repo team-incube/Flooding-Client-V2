@@ -125,7 +125,11 @@ function ClubFormEditContent({ id, form }: ClubFormEditContentProps) {
           >
             뒤로가기
           </TextButton>
-          <TextButton size="wide" variant={canSubmit ? "filled" : "disabled"}>
+          <TextButton
+            size="wide"
+            type="submit"
+            variant={canSubmit ? "filled" : "disabled"}
+          >
             폼 수정하기
           </TextButton>
         </div>

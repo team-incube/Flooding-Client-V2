@@ -9,6 +9,7 @@ type ButtonSize = "small" | "wide" | "medium" | "fit";
 interface TextButtonProps {
   variant?: TextButtonVariant;
   size?: ButtonSize;
+  type?: "button" | "submit" | "reset";
   className?: string;
   children: React.ReactNode;
   onClick?: () => void;
@@ -37,6 +38,7 @@ const baseStyles =
 export function TextButton({
   variant = "filled",
   size = "small",
+  type = "button",
   className,
   children,
   onClick,
@@ -46,6 +48,7 @@ export function TextButton({
 
   return (
     <button
+      type={type}
       disabled={isDisabled}
       className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className ?? ""}`}
       onClick={onClick}
