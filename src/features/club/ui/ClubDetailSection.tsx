@@ -13,7 +13,6 @@ import {
 } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import type { ClubMember } from "@/entities/club/model/club";
-import type { SearchUser } from "@/entities/user/model/user";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
   ClientQueryBoundary,
@@ -22,16 +21,13 @@ import {
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
 import { useTransferClubLeader } from "../model/useTransferClubLeader";
-import { useInviteClubMember } from "../model/useInviteClubMember";
-import { useExileClubMember } from "../model/useExileClubMember";
+import { ClubBackButton } from "./ClubBackButton";
 import { ClubTransferModal } from "./ClubTransferModal";
 
 interface ClubDetailSectionProps {
   id: number;
   isPending?: boolean;
 }
-
-const SEARCH_RESULT_LIMIT = 5;
 
 function ClubDetailSectionLoading() {
   return (
@@ -100,8 +96,6 @@ const ClubDetailSection = ({
   const transferMutation = useTransferClubLeader(id);
   const { mutate: patchApproval, isPending: isApprovalPending } =
     usePatchClubApproval();
-  const inviteMutation = useInviteClubMember(id);
-  const exileMutation = useExileClubMember(id);
   const [transferTarget, setTransferTarget] = useState<ClubMember | null>(null);
   const [memberSearch, setMemberSearch] = useState("");
 
@@ -128,13 +122,9 @@ const ClubDetailSection = ({
     ...userQueries.list({ name: trimmedSearch || undefined }),
     enabled: isLeader && trimmedSearch.length > 0,
   });
-  const memberIds = new Set(detail.members.map((member) => member.id));
-  const memberSearchResults = (searchUsersPage?.content ?? [])
-    .filter(
-      (searchUser) =>
-        searchUser.id !== user.id && !memberIds.has(searchUser.id),
-    )
-    .slice(0, SEARCH_RESULT_LIMIT);
+  const memberSearchResults = (searchUsersPage?.content ?? []).filter(
+    (searchUser) => searchUser.id !== user.id,
+  );
 
   const handleApplyClick = () => {
     if (autonomousApplyMutation.isPending || hasClubApplication) {
@@ -176,16 +166,6 @@ const ClubDetailSection = ({
     setTransferTarget(null);
   };
 
-  const handleMemberInvite = (invitedUser: SearchUser) => {
-    inviteMutation.mutate(invitedUser.id, {
-      onSuccess: () => setMemberSearch(""),
-    });
-  };
-
-  const handleMemberExile = (memberId: number) => {
-    exileMutation.mutate(memberId);
-  };
-
   const hasForm = !!form;
   const hasNoForm =
     axios.isAxiosError(formError) &&
@@ -197,7 +177,7 @@ const ClubDetailSection = ({
       <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
         <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
           <div className="flex items-center gap-2">
-            <Club isActive={false} size={20} />
+            <ClubBackButton />
             <span className="text-text-1 text-main-text">동아리</span>
           </div>
           <div className="flex w-full flex-col gap-4">
@@ -233,8 +213,6 @@ const ClubDetailSection = ({
               memberSearchQuery={memberSearch}
               memberSearchResults={memberSearchResults}
               onMemberSearchChange={setMemberSearch}
-              onMemberInvite={isLeader ? handleMemberInvite : undefined}
-              onMemberExile={isLeader ? handleMemberExile : undefined}
             />
             {isManager && isPending && (
               <div className="flex justify-end">

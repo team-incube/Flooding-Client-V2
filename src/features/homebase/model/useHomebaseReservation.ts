@@ -7,11 +7,13 @@ import { useHomebasePeriodSelection } from "@/features/homebase/model/useHomebas
 import { useHomebaseReservationActions } from "@/features/homebase/model/useHomebaseReservationActions";
 import { useHomebaseReservationData } from "@/features/homebase/model/useHomebaseReservationData";
 import { useHomebaseStudentSelection } from "@/features/homebase/model/useHomebaseStudentSelection";
+import { formatDateParam } from "@/shared/lib/date";
 
 export function useHomebaseReservation() {
   const [selectedFloor, setSelectedFloor] = useState("2F");
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [reason, setReason] = useState("");
+  const [reservationDate] = useState(() => formatDateParam(new Date()));
   const {
     selectedStartPeriod,
     selectedStartNum,
@@ -109,6 +111,7 @@ export function useHomebaseReservation() {
       selectedStartPeriod,
       selectedStartNum,
       selectedEndNum,
+      reservationDate,
       reason,
       reservations,
       currentUser,
