@@ -111,6 +111,7 @@ function ClubHomeSection() {
   const { data: user } = useSuspenseQuery(userQueries.me());
   const { data: openingStatus } = useSuspenseQuery(clubQueries.openingStatus());
   const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
+  const isAdmin = user.role === "ADMIN";
   const { data: openingRequests, isLoading: isOpeningRequestsLoading } =
     useQuery({
       ...clubQueries.openingRequests(),
@@ -214,7 +215,7 @@ function ClubHomeSection() {
                   onSearch={handleSearch}
                 />
               )}
-              <ClubExportButton />
+              {isAdmin && <ClubExportButton />}
             </div>
           </div>
         </div>
