@@ -5,9 +5,9 @@ import "./globals.css";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
-  title: "플러딩 | 광주소마고 통합 관리 시스템",
+  title: "플러딩",
   description:
-    "광주소마고 통합 관리 시스템 플러딩의 공식 웹사이트입니다. 플러딩은 광주소마고의 기숙사, 홈베이스, 동아리 관리와 같은 다양한 기능을 통합, 제공하여 학생들의 편리한 생활을 지원합니다",
+    "플러딩은 GSM의 학교생활과 기숙사 생활을 하나로 연결하는 통합 관리 시스템입니다. 동아리 개설과 모집, 자습 관리, 안마의자 예약, 기상음악 신청, AI 추천과 챗봇 기능을 한 곳에서 제공해 학생들의 편리한 생활을 지원합니다.",
 };
 
 export default function RootLayout({

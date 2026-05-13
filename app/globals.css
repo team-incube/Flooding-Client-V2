@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* 1. 기본값 및 라이트 모드 설정 */
 :root,
 .light {

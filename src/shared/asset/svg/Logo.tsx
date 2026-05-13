@@ -1,12 +1,20 @@
 interface LogoProps {
   iconOnly?: boolean;
+  width?: number;
+  height?: number;
 }
 
-export default function Logo({ iconOnly = false }: LogoProps) {
+export default function Logo({
+  iconOnly = false,
+  width,
+  height = 52,
+}: LogoProps) {
+  const defaultWidth = iconOnly ? 52 : 191;
+
   return (
     <svg
-      width={iconOnly ? "52" : "191"}
-      height="52"
+      width={width ?? defaultWidth}
+      height={height}
       viewBox={iconOnly ? "128 0 64 52" : "0 0 191 52"}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -49,9 +49,9 @@ function CallbackInner() {
 
   if (status === "error") {
     return (
-      <div className="bg-background flex h-screen items-center justify-center">
-        <div className="bg-background-surface flex w-[360px] flex-col gap-4 rounded-2xl p-6">
-          <div className="flex flex-col gap-1">
+      <div className="bg-background flex min-h-screen items-center justify-center px-5">
+        <div className="bg-background-surface flex w-full max-w-[380px] flex-col gap-5 rounded-2xl p-7 shadow-[0_18px_60px_rgba(0,0,0,0.08)] dark:shadow-none">
+          <div className="flex flex-col gap-2">
             <h1 className="text-title-3 text-main-text">로그인 실패</h1>
             <p className="text-text-3 text-sub-1">{errorMessage}</p>
           </div>
@@ -68,9 +68,10 @@ function CallbackInner() {
   }
 
   return (
-    <div className="bg-background flex h-screen items-center justify-center">
-      <div className="bg-background-surface text-title-3 text-main-text rounded-2xl p-12">
-        로그인 처리 중...
+    <div className="bg-background flex min-h-screen items-center justify-center">
+      <div className="flex items-center gap-3">
+        <span className="bg-p-1 size-2.5 animate-pulse rounded-full" />
+        <p className="text-title-3 text-main-text">로그인 처리 중...</p>
       </div>
     </div>
   );
@@ -80,8 +81,11 @@ export default function Callback() {
   return (
     <Suspense
       fallback={
-        <div className="bg-background text-text-3 text-main-text flex h-screen items-center justify-center">
-          로딩 중...
+        <div className="bg-background flex min-h-screen items-center justify-center">
+          <div className="flex items-center gap-3">
+            <span className="bg-p-1 size-2.5 animate-pulse rounded-full" />
+            <p className="text-text-3 text-main-text">로딩 중...</p>
+          </div>
         </div>
       }
     >

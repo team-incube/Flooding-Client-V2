@@ -40,11 +40,10 @@ export async function POST(request: NextRequest) {
       const { data, status } = error.response;
       const body = data ?? fallbackBody;
 
-      if (status === HttpStatusCode.BadRequest) {
-        return NextResponse.json(body, { status });
-      }
-
-      if (status === HttpStatusCode.Unauthorized) {
+      if (
+        status === HttpStatusCode.BadRequest ||
+        status === HttpStatusCode.Unauthorized
+      ) {
         const res = NextResponse.json(body, { status });
         res.cookies.delete("refresh_token");
         return res;
