@@ -214,7 +214,7 @@ function ClubHomeSection() {
                   onSearch={handleSearch}
                 />
               )}
-              {isManager && <ClubExportButton />}
+              <ClubExportButton />
             </div>
           </div>
         </div>
