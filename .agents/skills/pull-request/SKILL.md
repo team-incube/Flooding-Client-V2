@@ -6,21 +6,16 @@ allowed-tools: Bash, mcp__github__create_pull_request, mcp__github__get_me
 
 # PR Title & Body Generation
 
-Analyze the changes below, draft a PR title and body, then create the PR using GitHub MCP.
+Analyze the PR context, draft a PR title and body, then create the PR using GitHub MCP.
 
-Current branch: !`git branch --show-current`
+Shared agent rules:
+!`sed -n '1,220p' AGENTS.md`
 
-Current KST release ID:
-!`TZ=Asia/Seoul date '+v%Y.%m%d.%H%M'`
+PR format rules:
+!`sed -n '1,220p' .agents/pr-format.md`
 
-Commits since develop:
-!`git log --oneline develop..HEAD`
-
-Changed files:
-!`git diff --stat develop..HEAD`
-
-Diff (excluding lock files):
-!`git diff develop..HEAD -- . ':(exclude)package-lock.json'`
+PR context:
+!`bash .agents/scripts/pr-context.sh`
 
 ---
 
@@ -40,6 +35,8 @@ The PR type is determined by the title format.
 - Release IDs are GitHub PR/tag/release identifiers only.
 - Do not update or compare `package.json` / `package-lock.json` versions for release PRs.
 - If the current branch is not `develop`, print an error message and abort.
+- Before drafting the body, run `bash .agents/scripts/previous-release-pr.sh` and read the latest merged release PR.
+- Use the previous release PR body as a format reference and as a check against missing or duplicated release notes.
 
 ## Title Rules
 
@@ -52,33 +49,9 @@ The PR type is determined by the title format.
 
 ## Body Structure
 
-Follow the org PR template (`team-incube/.github`). Omit reviewer assignment, labels, and Discord notifications — these are handled by GitHub Actions.
+Follow `.agents/pr-format.md` for both general PRs and release PRs. Omit reviewer assignment, labels, and Discord notifications because these are handled by GitHub Actions.
 
-```markdown
-## #️⃣연관된 이슈
-
-> ex) #이슈번호, #이슈번호
-
-<!-- Write "없음" if no related issue -->
-
-## 📝작업 내용
-
-> 이번 PR에서 작업한 내용을 간략히 설명해주세요(이미지 첨부 가능)
-
-<!-- Describe changes based on git diff. Reference FSD layers where applicable -->
-
-### 스크린샷 (선택)
-
-<!-- Include only if there are UI changes; otherwise remove this section -->
-
-## 💬리뷰 요구사항(선택)
-
-> 리뷰어가 특별히 봐주었으면 하는 부분이 있다면 작성해주세요
->
-> ex) 메서드 XXX의 이름을 더 잘 짓고 싶은데 혹시 좋은 명칭이 있을까요?
-
-<!-- Remove this section if not needed -->
-```
+Do not leave template examples, placeholder text, HTML comments, or empty optional sections in the final body.
 
 ## Output & Execution
 
@@ -93,4 +66,5 @@ Follow the org PR template (`team-incube/.github`). Omit reviewer assignment, la
    - `repo`: `Flooding-Client-V2`
    - `head`: current branch
    - `base`: branch determined above
-4. Return the created PR URL to the user.
+4. Do not attach labels from this skill. Release labels are handled by `.github/labeler.yml`.
+5. Return the created PR URL to the user.
