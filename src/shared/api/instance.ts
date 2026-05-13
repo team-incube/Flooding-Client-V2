@@ -21,7 +21,7 @@ function redirectToSignin() {
   const authPages = ["/signin", "/callback"];
 
   if (!authPages.includes(window.location.pathname)) {
-    window.location.href = "/signin";
+    window.location.replace("/signin");
   }
 }
 
