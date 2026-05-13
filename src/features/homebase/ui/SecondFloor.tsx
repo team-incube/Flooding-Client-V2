@@ -37,12 +37,16 @@ export function SecondFloor({
         <Table
           name="테이블 3"
           capacity="4명"
-          className="border-sub-2 border-r"
+          className="border-sub-2"
           selected={selectedTable === "3"}
           reserved={!!reservedTables["3"]}
           members={reservedTables["3"] ?? []}
           onClick={() => onTableSelect("3")}
         />
+        <div className="border-sub-2 flex items-center justify-center border-x">
+          <span className="text-text-3 text-sub-2 font-medium">칸막이</span>
+        </div>
+        <div />
       </div>
     </FloorLayout>
   );

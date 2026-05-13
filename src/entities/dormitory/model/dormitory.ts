@@ -19,6 +19,14 @@ export interface StudyApplicant {
   isChecked: boolean;
 }
 
+export interface ApplicationStatus<TApplicant> {
+  isApplicationOpen: boolean;
+  applicants: TApplicant[];
+}
+
+export type MassageApplicants = ApplicationStatus<DormitoryStudent>;
+export type StudyApplicants = ApplicationStatus<StudyApplicant>;
+
 export interface MusicApplyRequest {
   musicUrl: string;
 }

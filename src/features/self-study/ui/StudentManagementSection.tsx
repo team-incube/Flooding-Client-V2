@@ -5,6 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { userQueries } from "@/entities/user/api/userQueries";
 import type { Sex } from "@/entities/user/model/user";
 import Student from "@/shared/asset/svg/Student";
+import { useDebouncedValue } from "@/shared/lib/useDebouncedValue";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import type { QueryErrorFallbackProps } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
@@ -13,9 +14,12 @@ import {
   type StudyBanFilter,
 } from "@/features/self-study/lib/filterManagedStudents";
 import { useBanStudy } from "@/features/self-study/model/useBanStudy";
+import { useUnbanStudy } from "@/features/self-study/model/useUnbanStudy";
 import { ManagedStudentCard } from "./ManagedStudentCard";
 import { StudentManagementFilterPanel } from "./StudentManagementFilterPanel";
 import { StudyBanActionPanel } from "./StudyBanActionPanel";
+
+const SEARCH_DEBOUNCE_DELAY = 300;
 
 function StudentManagementSectionLoading() {
   return (
@@ -59,7 +63,7 @@ function StudentManagementSectionError({
 
 function StudentManagementSectionEmpty() {
   return (
-    <div className="border-sub-3 bg-background flex h-[320px] w-full items-center justify-center rounded-2xl border border-dashed">
+    <div className="flex h-[320px] w-full items-center justify-center">
       <p className="text-text-2 text-sub-1">표시할 학생이 없습니다.</p>
     </div>
   );
@@ -68,7 +72,12 @@ function StudentManagementSectionEmpty() {
 const StudentManagementSection = () => {
   const { data: studentPage } = useSuspenseQuery(userQueries.list());
   const banStudyMutation = useBanStudy();
+  const unbanStudyMutation = useUnbanStudy();
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebouncedValue(
+    searchQuery,
+    SEARCH_DEBOUNCE_DELAY,
+  );
   const [selectedGrades, setSelectedGrades] = useState<number[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<number[]>([]);
   const [selectedGender, setSelectedGender] = useState<Sex | null>(null);
@@ -82,7 +91,7 @@ const StudentManagementSection = () => {
 
   const filteredStudents = filterManagedStudents({
     students,
-    searchQuery,
+    searchQuery: debouncedSearchQuery,
     selectedGrades,
     selectedClasses,
     selectedGender,
@@ -125,6 +134,7 @@ const StudentManagementSection = () => {
     filter: Exclude<StudyBanFilter, null>,
   ) => {
     setSelectedStudyBanFilter((prev) => (prev === filter ? null : filter));
+    setSelectedStudentIds([]);
   };
 
   const handleToggleStudentSelect = (studentId: number) => {
@@ -138,10 +148,14 @@ const StudentManagementSection = () => {
   const isStudyBanned = (studentId: number) =>
     bannedStudentIdSet.has(studentId);
 
+  const getSelectedBanTargetIds = () =>
+    selectedStudentIds.filter((studentId) => !isStudyBanned(studentId));
+
+  const getSelectedUnbanTargetIds = () =>
+    selectedStudentIds.filter(isStudyBanned);
+
   const handleBanSelectedStudent = () => {
-    const targetStudentIds = selectedStudentIds.filter(
-      (studentId) => !isStudyBanned(studentId),
-    );
+    const targetStudentIds = getSelectedBanTargetIds();
 
     if (targetStudentIds.length === 0) {
       return;
@@ -151,9 +165,22 @@ const StudentManagementSection = () => {
     banStudyMutation.mutate(targetStudentIds);
   };
 
-  const selectedBanTargetCount = selectedStudentIds.filter(
-    (studentId) => !isStudyBanned(studentId),
-  ).length;
+  const handleUnbanSelectedStudent = () => {
+    const targetStudentIds = getSelectedUnbanTargetIds();
+
+    if (targetStudentIds.length === 0) {
+      return;
+    }
+
+    setSelectedStudentIds([]);
+    unbanStudyMutation.mutate(targetStudentIds);
+  };
+
+  const selectedBanTargetCount = getSelectedBanTargetIds().length;
+  const selectedUnbanTargetCount =
+    selectedStudentIds.length - selectedBanTargetCount;
+  const isStudyBanActionPending =
+    banStudyMutation.isPending || unbanStudyMutation.isPending;
 
   return (
     <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
@@ -205,10 +232,13 @@ const StudentManagementSection = () => {
           />
 
           <StudyBanActionPanel
+            selectedStudyBanFilter={selectedStudyBanFilter}
             selectedBanTargetCount={selectedBanTargetCount}
-            isPending={banStudyMutation.isPending}
+            selectedUnbanTargetCount={selectedUnbanTargetCount}
+            isPending={isStudyBanActionPending}
             onClearSelection={() => setSelectedStudentIds([])}
             onBanSelectedStudent={handleBanSelectedStudent}
+            onUnbanSelectedStudent={handleUnbanSelectedStudent}
           />
         </aside>
       </div>

@@ -36,7 +36,7 @@ export function StudyApplicantCard({
           aria-pressed={isChecked}
           disabled={isDisabled}
           onClick={() => onCheck(student.userId)}
-          className="enabled:hover:bg-background-surface absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg transition-colors enabled:cursor-pointer disabled:cursor-default"
+          className="enabled:hover:bg-background-surface absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg enabled:cursor-pointer disabled:cursor-default"
         >
           <Checkbox isActive={isChecked} />
         </button>

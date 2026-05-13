@@ -6,8 +6,8 @@ export const postClub = async (body: {
   description: string;
   type: ClubType;
   status: ClubStatus;
-  imageUrl?: string;
-  maxMember?: number;
+  imageUrl: string;
+  maxMember: number;
 }) => {
   const { data } = await instance.post("/clubs", body);
   return data;

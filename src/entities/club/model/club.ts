@@ -1,7 +1,7 @@
 import { Sex } from "@/entities/user/model/user";
 
 export type ClubType = "MAJOR_CLUB" | "AUTONOMOUS_CLUB";
-export type ClubStatus = "MAINTAIN" | "ACTIVE" | "ABOLISHED";
+export type ClubStatus = "MAINTAIN" | "NEW";
 export type RegistrationType = "NEW" | "MAINTAIN" | null;
 
 export interface Club {
@@ -157,13 +157,21 @@ export interface ClubApplicationListResponse {
   applications: ClubApplicationSummary[];
 }
 
+export interface ClubOpeningStatus {
+  isOpened: boolean;
+  startDate: string | null;
+  endDate: string | null;
+}
+
 export interface RegistrationData {
-  regType: RegistrationType;
-  clubType: ClubType;
+  name: string;
   status: ClubStatus;
-  clubName: string;
-  leaderInfo: string;
-  clubDetail: string;
-  desiredTeacher: string;
-  clubImage: File | string | null;
+  type: ClubType;
+  description: string;
+  imageUrl: string;
+  maxMember: number;
+}
+
+export interface UploadClubRepresentativeImageResponse {
+  imageUrl: string;
 }

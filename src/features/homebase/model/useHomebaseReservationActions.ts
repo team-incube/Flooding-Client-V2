@@ -24,6 +24,7 @@ interface UseHomebaseReservationActionsParams {
   selectedStartPeriod: string;
   selectedStartNum: number;
   selectedEndNum: number;
+  reservationDate: string;
   reason: string;
   reservations: HomebaseReservation[];
   currentUser?: User | null;
@@ -37,6 +38,7 @@ export function useHomebaseReservationActions({
   selectedStartPeriod,
   selectedStartNum,
   selectedEndNum,
+  reservationDate,
   reason,
   reservations,
   currentUser,
@@ -111,6 +113,7 @@ export function useHomebaseReservationActions({
     applyMutation.mutate({
       homebaseId,
       body: createHomebaseApplyRequest({
+        reservationDate,
         startPeriod: selectedStartNum,
         endPeriod: selectedEndNum,
         reason,

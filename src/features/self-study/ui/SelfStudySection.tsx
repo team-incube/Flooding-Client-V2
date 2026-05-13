@@ -21,7 +21,10 @@ const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
 export function SelfStudySection() {
   const studyQuery = dormitoryQueries.study();
-  const { data: students = [] } = useQuery(studyQuery);
+  const { data: studyApplicants, isLoading: isStudyLoading } =
+    useQuery(studyQuery);
+  const students = studyApplicants?.applicants ?? [];
+  const isApplicationOpen = studyApplicants?.isApplicationOpen ?? false;
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
   const { searchQuery, selectedGrades, selectedClasses, selectedGender } =
@@ -35,7 +38,11 @@ export function SelfStudySection() {
   const isStudyActionPending =
     applyMutation.isPending || cancelMutation.isPending;
   const isStudyActionDisabled =
-    isUserLoading || isStudyBanned || isStudyActionPending;
+    isUserLoading ||
+    isStudyLoading ||
+    isStudyBanned ||
+    isStudyActionPending ||
+    !isApplicationOpen;
   const canManageStudy = isManagementRole(user?.role);
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
@@ -124,7 +131,7 @@ export function SelfStudySection() {
             <button
               type="button"
               onClick={handleResetFilters}
-              className="text-sub-1 text-caption-2 hover:text-p-1 cursor-pointer transition-colors"
+              className="text-sub-1 text-caption-2 hover:text-p-1 cursor-pointer"
             >
               초기화
             </button>
@@ -209,11 +216,13 @@ export function SelfStudySection() {
           >
             {isStudyBanned
               ? "자습 금지를 당했어요!"
-              : isUserLoading
+              : isUserLoading || isStudyLoading
                 ? "확인 중"
-                : hasAppliedStudy
-                  ? "취소하기"
-                  : "신청하기"}
+                : !isApplicationOpen
+                  ? "신청 불가"
+                  : hasAppliedStudy
+                    ? "취소하기"
+                    : "신청하기"}
           </TextButton>
 
           <p className="text-sub-2 text-caption-2">

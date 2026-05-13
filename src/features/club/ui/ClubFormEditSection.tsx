@@ -13,6 +13,7 @@ import {
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useClubFormBuilder } from "../model/useClubFormBuilder";
+import { ClubBackButton } from "./ClubBackButton";
 import { ClubFormFieldEditor } from "./ClubFormFieldEditor";
 
 interface ClubFormEditSectionProps {
@@ -20,10 +21,10 @@ interface ClubFormEditSectionProps {
 }
 
 const fieldBoxStyles =
-  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none transition-all placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
+  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
 
 const secondaryButtonStyles =
-  "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 transition-all hover:border-sub-1";
+  "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 hover:border-sub-1";
 
 interface ClubFormEditContentProps extends ClubFormEditSectionProps {
   form: ClubForm;
@@ -115,13 +116,15 @@ function ClubFormEditContent({ id, form }: ClubFormEditContentProps) {
         >
           질문 추가
         </button>
-        <TextButton
-          size="wide"
-          variant={canSubmit ? "filled" : "disabled"}
-          className="max-w-full"
-        >
-          폼 수정하기
-        </TextButton>
+        <div className="flex gap-3">
+          <TextButton
+            size="wide"
+            type="submit"
+            variant={canSubmit ? "filled" : "disabled"}
+          >
+            폼 수정하기
+          </TextButton>
+        </div>
       </div>
     </form>
   );
@@ -149,9 +152,15 @@ function ClubFormEditSectionError({
         <p className="text-text-1 text-main-text">
           동아리 신청 폼을 불러오지 못했어요.
         </p>
-        <TextButton variant="outlined" size="fit" onClick={resetErrorBoundary}>
-          다시 시도
-        </TextButton>
+        <div className="flex gap-3">
+          <TextButton
+            variant="outlined"
+            size="fit"
+            onClick={resetErrorBoundary}
+          >
+            다시 시도
+          </TextButton>
+        </div>
       </div>
     </div>
   );
@@ -202,7 +211,7 @@ const ClubFormEditSection = ({ id }: ClubFormEditSectionProps) => {
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
         <div className="flex items-center gap-2">
-          <Club isActive={false} size={20} />
+          <ClubBackButton />
           <span className="text-text-1 text-main-text">동아리 폼 수정</span>
         </div>
 

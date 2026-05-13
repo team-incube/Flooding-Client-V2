@@ -14,7 +14,7 @@ export default function TextField({
   return (
     <div className={`relative ${className}`}>
       <input
-        className={`bg-background-surface border-sub-2 text-main-text placeholder:text-sub-2 focus:border-sub-1 h-[52px] w-full rounded-[8px] border pl-4 caret-[#527CD7] transition-all outline-none ${rightIcon ? "pr-12" : "pr-4"} ${inputClassName ?? ""} `}
+        className={`bg-background-surface border-sub-2 text-main-text placeholder:text-sub-2 focus:border-sub-1 h-[52px] w-full rounded-[8px] border pl-4 caret-[#527CD7] outline-none ${rightIcon ? "pr-12" : "pr-4"} ${inputClassName ?? ""} `}
         {...props}
       />
 
