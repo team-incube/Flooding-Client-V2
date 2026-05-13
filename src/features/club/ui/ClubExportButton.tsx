@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { exportClubs } from "@/entities/club/api/exportClubs";
@@ -9,9 +9,9 @@ import Back from "@/shared/asset/svg/Back";
 
 export default function ClubExportButton() {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: user } = useQuery(userQueries.me());
+  const { data: user } = useSuspenseQuery(userQueries.me());
 
-  if (user?.role !== "ADMIN") return null;
+  if (user.role !== "ADMIN") return null;
 
   const handleExport = async () => {
     if (isLoading) return;
