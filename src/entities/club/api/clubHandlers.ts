@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, bypass } from "msw";
 import {
   MOCK_CLUB_APPLICATIONS,
   MOCK_CLUBS,
@@ -313,6 +313,15 @@ export const clubHandlers = [
   http.get("*/clubs/opening-status", () => {
     return HttpResponse.json({
       data: { isOpened: true, startDate: null, endDate: null },
+    });
+  }),
+
+  http.get("*/clubs/export", async ({ request }) => {
+    const real = await fetch(bypass(request));
+    const body = await real.arrayBuffer();
+    return new HttpResponse(body, {
+      status: real.status,
+      headers: Object.fromEntries(real.headers.entries()),
     });
   }),
 

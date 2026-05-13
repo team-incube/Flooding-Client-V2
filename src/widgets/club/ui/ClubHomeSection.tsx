@@ -20,6 +20,7 @@ import { ClubSection } from "@/features/club/ui/ClubSection";
 import ClubSearch from "@/features/club/ui/ClubSearch";
 import ClubRegistrationSection from "@/features/club/ui/ClubRegistrationSection";
 import { ClubOpeningRequestSection } from "@/features/club/ui/ClubOpeningRequestSection";
+import ClubExportButton from "@/features/club/ui/ClubExportButton";
 import { filterClubs } from "@/features/club/lib/filterClubs";
 
 function ClubCardSkeleton() {
@@ -110,6 +111,7 @@ function ClubHomeSection() {
   const { data: user } = useSuspenseQuery(userQueries.me());
   const { data: openingStatus } = useSuspenseQuery(clubQueries.openingStatus());
   const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
+  const isAdmin = user.role === "ADMIN";
   const { data: openingRequests, isLoading: isOpeningRequestsLoading } =
     useQuery({
       ...clubQueries.openingRequests(),
@@ -169,7 +171,7 @@ function ClubHomeSection() {
   );
 
   return (
-    <div className="flex min-h-0 w-full flex-1 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -213,6 +215,7 @@ function ClubHomeSection() {
                   onSearch={handleSearch}
                 />
               )}
+              {isAdmin && <ClubExportButton />}
             </div>
           </div>
         </div>
