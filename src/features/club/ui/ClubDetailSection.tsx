@@ -12,6 +12,7 @@ import {
   usePatchClubApproval,
 } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import { isManagementRole } from "@/entities/user/lib/userRole";
 import type { ClubMember } from "@/entities/club/model/club";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
@@ -101,15 +102,21 @@ const ClubDetailSection = ({
 
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const { data: openingStatus } = useSuspenseQuery(clubQueries.openingStatus());
+  const canCheckOpeningStatus = isManagementRole(user.role);
+  const { data: openingStatus } = useQuery({
+    ...clubQueries.openingStatus(),
+    enabled: canCheckOpeningStatus,
+    retry: false,
+  });
 
   const isLeader = detail.isLeader;
-  const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
+  const isClubManager =
+    user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
   const hasClubApplication = user.hasClubApplication ?? false;
   const canDeleteClub =
-    (isLeader || user.role === "ADMIN") && openingStatus.isOpened;
+    (isLeader || user.role === "ADMIN") && openingStatus?.isOpened === true;
   const canCreateForm = detail.club.type === "MAJOR_CLUB" && isLeader;
-  const canViewApplications = isLeader || isManager;
+  const canViewApplications = isLeader || isClubManager;
   const formQuery = clubQueries.form(id);
   const { data: form, error: formError } = useQuery({
     ...formQuery,
@@ -191,7 +198,7 @@ const ClubDetailSection = ({
                   : undefined
               }
               onApplyClick={
-                isPending || isManager || hasClubApplication
+                isPending || isClubManager || hasClubApplication
                   ? undefined
                   : handleApplyClick
               }
@@ -214,7 +221,7 @@ const ClubDetailSection = ({
               memberSearchResults={memberSearchResults}
               onMemberSearchChange={setMemberSearch}
             />
-            {isManager && isPending && (
+            {isClubManager && isPending && (
               <div className="flex justify-end">
                 <div className="flex w-[240px] gap-2">
                   <TextButton

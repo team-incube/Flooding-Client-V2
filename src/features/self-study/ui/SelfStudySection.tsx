@@ -37,12 +37,17 @@ export function SelfStudySection() {
     students.some((student) => student.userId === user.id);
   const isStudyActionPending =
     applyMutation.isPending || cancelMutation.isPending;
-  const isStudyActionDisabled =
+  const isStudyApplyDisabled =
     isUserLoading ||
     isStudyLoading ||
     isStudyBanned ||
     isStudyActionPending ||
-    !isApplicationOpen;
+    isApplicationOpen;
+  const isStudyCancelDisabled =
+    isUserLoading || isStudyLoading || isStudyBanned || isStudyActionPending;
+  const isStudyActionDisabled = hasAppliedStudy
+    ? isStudyCancelDisabled
+    : isStudyApplyDisabled;
   const canManageStudy = isManagementRole(user?.role);
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
@@ -64,7 +69,7 @@ export function SelfStudySection() {
       payload: selectedGender === gender ? null : gender,
     });
   const handleApplyStudy = () => {
-    if (isStudyActionDisabled || hasAppliedStudy) {
+    if (isStudyApplyDisabled || hasAppliedStudy) {
       return;
     }
 
@@ -72,7 +77,7 @@ export function SelfStudySection() {
   };
 
   const handleCancelStudy = () => {
-    if (isStudyActionDisabled || !hasAppliedStudy) {
+    if (isStudyCancelDisabled || !hasAppliedStudy) {
       return;
     }
 
@@ -218,10 +223,10 @@ export function SelfStudySection() {
               ? "자습 금지를 당했어요!"
               : isUserLoading || isStudyLoading
                 ? "확인 중"
-                : !isApplicationOpen
-                  ? "신청 불가"
-                  : hasAppliedStudy
-                    ? "취소하기"
+                : hasAppliedStudy
+                  ? "취소하기"
+                  : isApplicationOpen
+                    ? "신청 불가"
                     : "신청하기"}
           </TextButton>
 

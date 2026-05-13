@@ -21,7 +21,11 @@ import ClubSearch from "@/features/club/ui/ClubSearch";
 import ClubRegistrationSection from "@/features/club/ui/ClubRegistrationSection";
 import { ClubOpeningRequestSection } from "@/features/club/ui/ClubOpeningRequestSection";
 import ClubExportButton from "@/features/club/ui/ClubExportButton";
-import { filterClubs } from "@/features/club/lib/filterClubs";
+import {
+  filterClubs,
+  type ClubTypeFilter,
+} from "@/features/club/lib/filterClubs";
+import { isManagementRole } from "@/entities/user/lib/userRole";
 
 function ClubCardSkeleton() {
   return (
@@ -106,21 +110,29 @@ function ClubHomeSection() {
   const [viewMode, setViewMode] = useState<"form" | "list">("list");
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
+  const [selectedType, setSelectedType] = useState<ClubTypeFilter>("ALL");
 
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const { data: openingStatus } = useSuspenseQuery(clubQueries.openingStatus());
-  const isManager = user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
+  const canCheckOpeningStatus = isManagementRole(user.role);
+  const { data: openingStatus } = useQuery({
+    ...clubQueries.openingStatus(),
+    enabled: canCheckOpeningStatus,
+    retry: false,
+  });
+  const isClubManager =
+    user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
   const isAdmin = user.role === "ADMIN";
   const { data: openingRequests, isLoading: isOpeningRequestsLoading } =
     useQuery({
       ...clubQueries.openingRequests(),
-      enabled: isManager && viewMode === "form",
+      enabled: isClubManager && viewMode === "form",
     });
 
   const filteredClubs = filterClubs({
     clubs: data.clubs,
     searchValue,
+    type: selectedType,
   });
   const sectionTitle = viewMode === "form" ? "개설 신청" : "동아리";
   const count =
@@ -139,7 +151,8 @@ function ClubHomeSection() {
   };
 
   const handleSearch = () => setSearchValue(query);
-  const canRegisterClub = openingStatus.isOpened;
+  const canRegisterClub =
+    canCheckOpeningStatus && openingStatus?.isOpened === true;
   const clubModeToggle = (
     <div className="flex w-full gap-1">
       <TextButton
@@ -196,7 +209,7 @@ function ClubHomeSection() {
                 onClubClick={(clubId) => router.push(`/club/${clubId}`)}
               />
             ) : (
-              isManager && <ClubOpeningRequestSection />
+              isClubManager && <ClubOpeningRequestSection />
             )}
           </div>
           <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
@@ -213,6 +226,8 @@ function ClubHomeSection() {
                   query={query}
                   setQuery={handleQueryChange}
                   onSearch={handleSearch}
+                  selectedType={selectedType}
+                  onTypeChange={setSelectedType}
                 />
               )}
               {isAdmin && <ClubExportButton />}
