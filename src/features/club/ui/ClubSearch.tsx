@@ -49,9 +49,7 @@ export default function ClubSearch({
             전공
           </TextButton>
           <TextButton
-            variant={
-              selectedType === "AUTONOMOUS_CLUB" ? "filled" : "outlined"
-            }
+            variant={selectedType === "AUTONOMOUS_CLUB" ? "filled" : "outlined"}
             size="fit"
             className="flex-1"
             onClick={() =>
