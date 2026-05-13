@@ -1,12 +1,17 @@
 import axios, { HttpStatusCode } from "axios";
 
+export const DEFAULT_API_TIMEOUT_MS = 10 * 1000;
+export const LONG_API_TIMEOUT_MS = 30 * 1000;
+
 export const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   headers: { "Content-Type": "application/json" },
+  timeout: DEFAULT_API_TIMEOUT_MS,
 });
 
 export const serverInstance = axios.create({
   headers: { "Content-Type": "application/json" },
+  timeout: DEFAULT_API_TIMEOUT_MS,
 });
 
 const authPathsWithoutRefresh = [
@@ -56,7 +61,9 @@ instance.interceptors.response.use(
       try {
         if (!refreshPromise) {
           refreshPromise = axios
-            .post("/api/auth/refresh")
+            .post("/api/auth/refresh", undefined, {
+              timeout: DEFAULT_API_TIMEOUT_MS,
+            })
             .then(({ data }) => {
               const token = data.data?.accessToken;
               if (!token) {
