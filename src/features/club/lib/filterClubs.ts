@@ -1,21 +1,27 @@
-import type { Club } from "@/entities/club/model/club";
+import type { Club, ClubType } from "@/entities/club/model/club";
+
+export type ClubTypeFilter = ClubType | "ALL";
 
 interface FilterClubsParams {
   clubs: Club[];
   searchValue: string;
+  type: ClubTypeFilter;
 }
 
-export function filterClubs({ clubs, searchValue }: FilterClubsParams): Club[] {
+export function filterClubs({
+  clubs,
+  searchValue,
+  type,
+}: FilterClubsParams): Club[] {
   const normalizedSearchValue = searchValue.trim().toLowerCase();
 
-  if (!normalizedSearchValue) {
-    return clubs;
-  }
-
   return clubs.filter((club) => {
-    return (
+    const matchesType = type === "ALL" || club.type === type;
+    const matchesSearch =
+      !normalizedSearchValue ||
       club.name.toLowerCase().includes(normalizedSearchValue) ||
-      club.leader?.toLowerCase().includes(normalizedSearchValue)
-    );
+      club.leader?.toLowerCase().includes(normalizedSearchValue);
+
+    return matchesType && matchesSearch;
   });
 }
