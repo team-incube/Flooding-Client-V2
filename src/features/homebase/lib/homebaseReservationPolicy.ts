@@ -11,13 +11,13 @@ import type { User } from "@/entities/user/model/user";
 import type { HomebaseSelectableStudent } from "@/features/homebase/lib/studentSelection";
 
 type PeriodButtonVariant = "filled" | "outlined" | "disabled";
-const PERIOD_BLOCK_SIZE = 2;
 
 interface SelectPeriodRangeParams {
   period: string;
   selectedStartPeriod: string;
   selectedEndPeriod: string;
   periods: string[];
+  canSelectMultiplePeriods: boolean;
 }
 
 interface HomebaseReservationConflictParams {
@@ -55,6 +55,7 @@ export function selectPeriodRange({
   selectedStartPeriod,
   selectedEndPeriod,
   periods,
+  canSelectMultiplePeriods,
 }: SelectPeriodRangeParams): {
   startPeriod: string;
   endPeriod: string;
@@ -63,40 +64,46 @@ export function selectPeriodRange({
   const clickedIdx = periods.indexOf(period);
   const startIdx = periods.indexOf(selectedStartPeriod);
   const endIdx = periods.indexOf(selectedEndPeriod);
-  const isSameBlock =
-    Math.floor(clickedIdx / PERIOD_BLOCK_SIZE) ===
-    Math.floor(startIdx / PERIOD_BLOCK_SIZE);
+  const minIdx = Math.min(startIdx, endIdx);
+  const maxIdx = Math.max(startIdx, endIdx);
 
-  if (!isSameBlock) {
+  if (!canSelectMultiplePeriods) {
     return {
       startPeriod: period,
       endPeriod: period,
-      shouldResetTable: true,
-    };
-  }
-
-  if (clickedIdx === startIdx && startIdx !== endIdx) {
-    return {
-      startPeriod: periods[startIdx + 1],
-      endPeriod: selectedEndPeriod,
       shouldResetTable: false,
     };
   }
 
-  if (clickedIdx === endIdx && startIdx !== endIdx) {
+  const isSinglePeriodSelected = minIdx === maxIdx;
+
+  if (isSinglePeriodSelected) {
+    if (Math.abs(clickedIdx - minIdx) === 1) {
+      return {
+        startPeriod: periods[Math.min(clickedIdx, minIdx)],
+        endPeriod: periods[Math.max(clickedIdx, minIdx)],
+        shouldResetTable: false,
+      };
+    }
+
     return {
-      startPeriod: selectedStartPeriod,
-      endPeriod: periods[endIdx - 1],
+      startPeriod: period,
+      endPeriod: period,
       shouldResetTable: false,
     };
   }
 
-  const newMin = Math.min(startIdx, endIdx, clickedIdx);
-  const newMax = Math.max(startIdx, endIdx, clickedIdx);
+  if (clickedIdx >= minIdx && clickedIdx <= maxIdx) {
+    return {
+      startPeriod: period,
+      endPeriod: period,
+      shouldResetTable: false,
+    };
+  }
 
   return {
-    startPeriod: periods[newMin],
-    endPeriod: periods[newMax],
+    startPeriod: period,
+    endPeriod: period,
     shouldResetTable: false,
   };
 }
@@ -107,7 +114,7 @@ export function getPeriodVariant({
   selectedEndPeriod,
   periods,
   isStarted,
-}: SelectPeriodRangeParams & {
+}: Omit<SelectPeriodRangeParams, "canSelectMultiplePeriods"> & {
   isStarted: boolean;
 }): PeriodButtonVariant {
   if (isStarted) return "disabled";
