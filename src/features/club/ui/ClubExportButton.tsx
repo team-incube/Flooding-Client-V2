@@ -18,15 +18,18 @@ export default function ClubExportButton() {
   const handleExport = async () => {
     if (isLoading) return;
     setIsLoading(true);
+    const toastId = toast.loading("동아리 명단 엑셀 다운로드를 준비 중입니다.");
     try {
       await exportClubs();
-      toast.success("동아리 명단 엑셀 다운로드를 시작했습니다.");
+      toast.success("동아리 명단 엑셀 다운로드를 시작했습니다.", {
+        id: toastId,
+      });
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
           : "동아리 명단 엑셀 다운로드에 실패했습니다.";
-      toast.error(message);
+      toast.error(message, { id: toastId });
     } finally {
       setIsLoading(false);
     }
