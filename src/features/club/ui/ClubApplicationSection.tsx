@@ -61,9 +61,7 @@ function ClubApplicationSectionEmpty() {
         </div>
 
         <div className="border-sub-3 bg-background flex h-[320px] items-center justify-center rounded-2xl border border-dashed">
-          <p className="text-text-2 text-sub-1">
-            활성화된 신청 폼이 없어요.
-          </p>
+          <p className="text-text-2 text-sub-1">활성화된 신청 폼이 없어요.</p>
         </div>
       </div>
     </div>

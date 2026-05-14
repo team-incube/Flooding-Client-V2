@@ -26,7 +26,8 @@ export function useClubApplicationForm({
   const [values, setValues] = useState<ClubApplicationFormValues>({});
   const applyMutation = useApplyClub(clubId);
   const sortedFields = getSortedClubFormFields(fields);
-  const validation = createClubApplicationSchema(sortedFields).safeParse(values);
+  const validation =
+    createClubApplicationSchema(sortedFields).safeParse(values);
   const canSubmit = !applyMutation.isPending;
 
   const handleFieldChange = (

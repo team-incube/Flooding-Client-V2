@@ -196,9 +196,7 @@ const ClubDetailSection = ({
                   : undefined
               }
               onApplyClick={
-                isPending || hasClubApplication
-                  ? undefined
-                  : handleApplyClick
+                isPending || hasClubApplication ? undefined : handleApplyClick
               }
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
               onViewApplicationsClick={
