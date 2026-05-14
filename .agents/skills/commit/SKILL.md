@@ -1,7 +1,7 @@
 ---
 name: commit
 description: 깃허브 커밋 메시지 작성
-allowed-tools: Read
+allowed-tools: Bash, Read
 ---
 
 # Git Commit Convention
@@ -25,13 +25,13 @@ allowed-tools: Read
 
 ## Commit Workflow
 
-- Before committing, check the current branch.
+- Before committing, run `bash .agents/scripts/commit-context.sh` to inspect the current branch, working tree, changed files, diff stats, staged changes, and recent commits.
 - If the current branch is `develop`, do not commit directly.
 - Propose a new branch name using the `type/description` format based on the intended commit.
 - Confirm the branch name with the user before creating it.
 - After confirmation, create and checkout the branch with `git checkout -b <branch-name>`, then commit on that branch.
 - If the current branch is not `develop`, continue with the normal commit flow.
-- Before staging or committing, inspect the current changes with `git status --short`, `git diff --stat`, and file-level diffs as needed.
+- Before staging or committing, inspect file-level diffs with `bash .agents/scripts/commit-diff.sh <files...>` as needed.
 - Group changed files by commit intent autonomously. Do not default to a single commit when unrelated changes are present.
 - Present the planned commit groups to the user before staging:
   - files included in each group
