@@ -39,7 +39,7 @@ function CallbackInner() {
 
         sessionStorage.setItem("access_token", accessToken);
 
-        router.replace("/");
+        router.replace("/", { scroll: false });
       } catch {
         setStatus("error");
         setErrorMessage("로그인 처리에 실패했어요. 다시 로그인해주세요.");
