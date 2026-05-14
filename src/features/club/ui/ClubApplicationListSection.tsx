@@ -36,7 +36,7 @@ function getErrorMessage(error: unknown) {
   const status = axios.isAxiosError(error) ? error.response?.status : undefined;
 
   if (status === HttpStatusCode.BadRequest) {
-    return "정규 동아리만 신청자 목록을 조회할 수 있어요.";
+    return "전공 동아리만 신청자 목록을 조회할 수 있어요.";
   }
   if (status === HttpStatusCode.Forbidden) {
     return "신청자 목록을 조회할 권한이 없어요.";
@@ -110,6 +110,7 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
   const canApproveApplications = isLeader || user?.role === "ADMIN";
   const canViewApplications =
     !!detail &&
+    detail.club.type === "MAJOR_CLUB" &&
     (isLeader || user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL");
   const applicationListQuery = clubQueries.applicationList(id);
   const { data: applicationList } = useSuspenseQuery({
