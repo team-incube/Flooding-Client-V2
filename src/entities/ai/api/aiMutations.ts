@@ -14,9 +14,13 @@ interface CommonResponse<T> {
 
 export const aiMutations = {
   recommendSong: () =>
-    instance.post<CommonResponse<RecommendAiSongResponse>>("/ai/song", undefined, {
-      timeout: LONG_API_TIMEOUT_MS,
-    }),
+    instance.post<CommonResponse<RecommendAiSongResponse>>(
+      "/ai/song",
+      undefined,
+      {
+        timeout: LONG_API_TIMEOUT_MS,
+      },
+    ),
 
   sendChat: (body: SendAiChatRequest) =>
     instance.post<CommonResponse<SendAiChatResponse>>("/ai/chat", body, {
