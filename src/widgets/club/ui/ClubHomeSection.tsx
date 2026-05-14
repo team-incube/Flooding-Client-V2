@@ -25,7 +25,7 @@ import {
   filterClubs,
   type ClubTypeFilter,
 } from "@/features/club/lib/filterClubs";
-import { createClubPermission } from "@/entities/user/lib/permission";
+import { createClubPermission } from "@/entities/club/lib/permission";
 
 function ClubCardSkeleton() {
   return (

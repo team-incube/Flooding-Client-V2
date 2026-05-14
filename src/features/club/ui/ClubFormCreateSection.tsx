@@ -7,7 +7,7 @@ import TextArea from "@/shared/ui/textArea";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { createClubPermission } from "@/entities/user/lib/permission";
+import { createClubPermission } from "@/entities/club/lib/permission";
 import {
   ClientQueryBoundary,
   type QueryErrorFallbackProps,

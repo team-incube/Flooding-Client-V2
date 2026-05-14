@@ -11,7 +11,7 @@ import type {
   HomebaseApplyRequest,
   HomebaseReservation,
 } from "@/entities/homebase/model/homebase";
-import { createHomebasePermission } from "@/entities/user/lib/permission";
+import { createHomebasePermission } from "@/entities/homebase/lib/permission";
 import type { User } from "@/entities/user/model/user";
 import {
   createHomebaseApplyRequest,

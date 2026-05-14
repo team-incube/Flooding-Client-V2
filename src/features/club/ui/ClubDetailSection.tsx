@@ -12,7 +12,7 @@ import {
   usePatchClubApproval,
 } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { createClubPermission } from "@/entities/user/lib/permission";
+import { createClubPermission } from "@/entities/club/lib/permission";
 import type { ClubMember } from "@/entities/club/model/club";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {

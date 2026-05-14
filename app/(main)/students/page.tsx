@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { StudentManagementSection } from "@/features/self-study/ui/StudentManagementSection";
+import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { createStudyPermission } from "@/entities/user/lib/permission";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
   ClientQueryBoundary,
