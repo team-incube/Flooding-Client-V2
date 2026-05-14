@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { instance } from "@/shared/api/instance";
+import { instance, LONG_ROUTE_TIMEOUT_MS } from "@/shared/api/instance";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 
 type CallbackStatus = "loading" | "error";
@@ -28,9 +28,15 @@ function CallbackInner() {
 
     (async () => {
       try {
-        const { data } = await instance.post("/api/auth/callback", {
-          code,
-        });
+        const { data } = await instance.post(
+          "/api/auth/callback",
+          {
+            code,
+          },
+          {
+            timeout: LONG_ROUTE_TIMEOUT_MS,
+          },
+        );
         const accessToken = data.data?.accessToken ?? data.accessToken;
 
         if (!accessToken) {

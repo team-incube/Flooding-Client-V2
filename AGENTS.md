@@ -18,7 +18,26 @@ Integrated school management system for dormitory, clubs, and home bases.
 npm run dev      # Start dev server (localhost:3000)
 npm run build    # Production build
 npm run lint     # Run ESLint
+npm run type-check # Run TypeScript type check
 ```
+
+## Agent Automation
+
+Use `AGENTS.md` as the shared source of truth for Codex, Claude Code, Gemini CLI, and other coding agents. `CLAUDE.md` points to this file, and Gemini CLI must be configured to load this file through `.gemini/settings.json`.
+
+### PR Creation
+
+- Follow `.agents/pr-format.md` for every PR body, including both general PRs and release PRs.
+- Use `.agents/scripts/pr-context.sh` before drafting a PR title or body.
+- For release PRs, use `.agents/scripts/previous-release-pr.sh` to read the latest merged `develop` → `main` release PR before drafting the new body.
+- Release PR labels are owned by GitHub Actions labeler. Do not add release labels from PR creation scripts or skills.
+- Do not leave template examples, HTML comments, empty optional sections, or reviewer/label/Discord automation notes in the final PR body.
+
+### PR Branch Rules
+
+- General PR: current feature/fix/etc. branch → `develop`.
+- Release PR: `develop` → `main`, title `vYYYY.MMDD.HHmm` using Korea Standard Time.
+- Release IDs are PR/tag/release identifiers only. Do not update or compare `package.json` or `package-lock.json` versions for release PRs.
 
 ## Architecture – Feature-Sliced Design (FSD)
 

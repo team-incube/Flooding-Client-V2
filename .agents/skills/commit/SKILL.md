@@ -1,7 +1,7 @@
 ---
 name: commit
 description: 깃허브 커밋 메시지 작성
-allowed-tools: Read
+allowed-tools: Bash, Read
 ---
 
 # Git Commit Convention
@@ -25,20 +25,22 @@ allowed-tools: Read
 
 ## Commit Workflow
 
-- Before committing, check the current branch.
+- Before committing, run `bash .agents/scripts/commit-context.sh` to inspect the current branch, working tree, changed files, diff stats, staged changes, and recent commits.
 - If the current branch is `develop`, do not commit directly.
 - Propose a new branch name using the `type/description` format based on the intended commit.
 - Confirm the branch name with the user before creating it.
 - After confirmation, create and checkout the branch with `git checkout -b <branch-name>`, then commit on that branch.
 - If the current branch is not `develop`, continue with the normal commit flow.
-- Before staging or committing, inspect the current changes with `git status --short`, `git diff --stat`, and file-level diffs as needed.
+- Before staging or committing, inspect file-level diffs with `bash .agents/scripts/commit-diff.sh <files...>` as needed.
 - Group changed files by commit intent autonomously. Do not default to a single commit when unrelated changes are present.
 - Present the planned commit groups to the user before staging:
   - files included in each group
   - commit type
   - Korean commit message
 - Get explicit user approval for each commit group before staging or committing that group.
-- Request any required tool or sandbox permission approvals before running `git add`, `git commit`, or `git checkout -b`.
+- Run `git add`, `git commit`, and `git checkout -b` with escalated filesystem permission when the environment requires Git metadata writes.
+- If `git add`, `git commit`, or `git checkout -b` fails with `.git/index.lock` or another Git metadata permission error, immediately retry the same command with escalated filesystem permission.
+- Use a narrow approval prefix for repeated Git commit operations, such as `["git", "commit"]`, instead of requesting broad shell access.
 - Treat tool/sandbox permission approval separately from commit-content approval. A permission approval does not approve the commit contents.
 - After each approved commit, re-check the remaining changes and repeat the grouping and approval flow until no intended changes remain.
 - If the user says "commit now" or "바로 커밋", still split commits by intent when multiple independent changes are present.
