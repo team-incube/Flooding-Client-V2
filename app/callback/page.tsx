@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { instance, LONG_API_TIMEOUT_MS } from "@/shared/api/instance";
+import { instance, LONG_ROUTE_TIMEOUT_MS } from "@/shared/api/instance";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 
 type CallbackStatus = "loading" | "error";
@@ -34,7 +34,7 @@ function CallbackInner() {
             code,
           },
           {
-            timeout: LONG_API_TIMEOUT_MS,
+            timeout: LONG_ROUTE_TIMEOUT_MS,
           },
         );
         const accessToken = data.data?.accessToken ?? data.accessToken;
