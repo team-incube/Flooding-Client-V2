@@ -215,8 +215,8 @@ function ClubHomeSection() {
               )
             )}
           </div>
-          <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
-            <div className="mb-auto flex w-full flex-col gap-4">
+          <div className="order-1 flex flex-col lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
+            <div className="flex w-full flex-col gap-4">
               {clubModeToggle}
 
               {viewMode === "form" && canRegisterClub ? (
@@ -233,8 +233,12 @@ function ClubHomeSection() {
                   onTypeChange={setSelectedType}
                 />
               )}
-              {clubPermission.canExport && <ClubExportButton />}
             </div>
+            {clubPermission.canExport && viewMode === "list" && (
+              <div className="flex flex-1 items-center justify-center py-12">
+                <ClubExportButton />
+              </div>
+            )}
           </div>
         </div>
       </div>
