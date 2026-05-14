@@ -19,6 +19,14 @@ export interface ClubFormFieldDraft {
   options: ClubFormFieldOptionDraft[];
 }
 
+export interface ClubFormDraftState {
+  title: string;
+  description: string;
+  fields: ClubFormFieldDraft[];
+  nextFieldId: number;
+  nextOptionId: number;
+}
+
 export type ClubFormFieldDraftKey = keyof Omit<
   ClubFormFieldDraft,
   "id" | "options"
@@ -74,7 +82,17 @@ export function createDefaultClubFormFieldOption(
   };
 }
 
-export function createClubFormDraftState(form: ClubForm) {
+export function createDefaultClubFormDraftState(): ClubFormDraftState {
+  return {
+    title: "",
+    description: "",
+    fields: [createDefaultClubFormField(1)],
+    nextFieldId: 2,
+    nextOptionId: 1,
+  };
+}
+
+export function createClubFormDraftState(form: ClubForm): ClubFormDraftState {
   const fields = form.fields
     .slice()
     .sort((a, b) => a.order - b.order)
@@ -103,6 +121,137 @@ export function createClubFormDraftState(form: ClubForm) {
     nextFieldId: fields.length + 1,
     nextOptionId: maxOptionId + 1,
   };
+}
+
+export type ClubFormDraftAction =
+  | { type: "SET_TITLE"; value: string }
+  | { type: "SET_DESCRIPTION"; value: string }
+  | { type: "ADD_FIELD" }
+  | { type: "REMOVE_FIELD"; fieldId: number }
+  | {
+      type: "SET_FIELD";
+      fieldId: number;
+      key: ClubFormFieldDraftKey;
+      value: string | boolean;
+    }
+  | { type: "SET_FIELD_TYPE"; fieldId: number; fieldType: ClubFormFieldType }
+  | { type: "ADD_OPTION"; fieldId: number }
+  | { type: "REMOVE_OPTION"; fieldId: number; optionId: number }
+  | {
+      type: "SET_OPTION";
+      fieldId: number;
+      optionId: number;
+      key: ClubFormFieldOptionDraftKey;
+      value: string;
+    };
+
+export function clubFormDraftReducer(
+  state: ClubFormDraftState,
+  action: ClubFormDraftAction,
+): ClubFormDraftState {
+  switch (action.type) {
+    case "SET_TITLE":
+      return { ...state, title: action.value };
+    case "SET_DESCRIPTION":
+      return { ...state, description: action.value };
+    case "ADD_FIELD":
+      return {
+        ...state,
+        fields: [
+          ...state.fields,
+          createDefaultClubFormField(state.nextFieldId),
+        ],
+        nextFieldId: state.nextFieldId + 1,
+      };
+    case "REMOVE_FIELD":
+      return {
+        ...state,
+        fields: state.fields.filter((field) => field.id !== action.fieldId),
+      };
+    case "SET_FIELD":
+      return {
+        ...state,
+        fields: state.fields.map((field) =>
+          field.id === action.fieldId
+            ? { ...field, [action.key]: action.value }
+            : field,
+        ),
+      };
+    case "SET_FIELD_TYPE": {
+      const shouldCreateOption = needsClubFormFieldOptions(action.fieldType);
+
+      return {
+        ...state,
+        fields: state.fields.map((field) => {
+          if (field.id !== action.fieldId) {
+            return field;
+          }
+
+          if (!shouldCreateOption) {
+            return { ...field, fieldType: action.fieldType, options: [] };
+          }
+
+          return {
+            ...field,
+            fieldType: action.fieldType,
+            options:
+              field.options.length > 0
+                ? field.options
+                : [createDefaultClubFormFieldOption(state.nextOptionId)],
+          };
+        }),
+        nextOptionId: shouldCreateOption
+          ? state.nextOptionId + 1
+          : state.nextOptionId,
+      };
+    }
+    case "ADD_OPTION":
+      return {
+        ...state,
+        fields: state.fields.map((field) =>
+          field.id === action.fieldId
+            ? {
+                ...field,
+                options: [
+                  ...field.options,
+                  createDefaultClubFormFieldOption(state.nextOptionId),
+                ],
+              }
+            : field,
+        ),
+        nextOptionId: state.nextOptionId + 1,
+      };
+    case "REMOVE_OPTION":
+      return {
+        ...state,
+        fields: state.fields.map((field) =>
+          field.id === action.fieldId
+            ? {
+                ...field,
+                options: field.options.filter(
+                  (option) => option.id !== action.optionId,
+                ),
+              }
+            : field,
+        ),
+      };
+    case "SET_OPTION":
+      return {
+        ...state,
+        fields: state.fields.map((field) =>
+          field.id === action.fieldId
+            ? {
+                ...field,
+                options: field.options.map((option) =>
+                  option.id === action.optionId
+                    ? { ...option, [action.key]: action.value }
+                    : option,
+                ),
+              }
+            : field,
+        ),
+      };
+  }
 }
 
 export function createClubFormRequest({

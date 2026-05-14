@@ -6,6 +6,7 @@ import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyStudy } from "@/features/self-study/model/useApplyStudy";
 import { useCancelStudy } from "@/features/self-study/model/useCancelStudy";
+import { createApplicationActionState } from "@/shared/lib/applicationActionState";
 import ApplyCard from "./ApplyCard";
 
 const STUDY_MAX = 50;
@@ -23,22 +24,17 @@ export default function StudyApplyCard() {
   const hasAppliedStudy =
     user !== undefined &&
     students.some((student) => student.userId === user.id);
-  const isStudyActionPending =
-    applyMutation.isPending || cancelMutation.isPending;
-  const isStudyApplyDisabled =
-    isUserLoading ||
-    isStudyLoading ||
-    isStudyBanned ||
-    isStudyActionPending ||
-    isApplicationOpen;
-  const isStudyCancelDisabled =
-    isUserLoading || isStudyLoading || isStudyBanned || isStudyActionPending;
-  const isStudyActionDisabled = hasAppliedStudy
-    ? isStudyCancelDisabled
-    : isStudyApplyDisabled;
+  const studyActionState = createApplicationActionState({
+    hasApplied: hasAppliedStudy,
+    isUserLoading,
+    isDataLoading: isStudyLoading,
+    isBanned: isStudyBanned,
+    isActionPending: applyMutation.isPending || cancelMutation.isPending,
+    isApplicationOpen,
+  });
 
   const handleApplyStudy = () => {
-    if (isStudyApplyDisabled || hasAppliedStudy) {
+    if (!studyActionState.canApply) {
       return;
     }
 
@@ -46,7 +42,7 @@ export default function StudyApplyCard() {
   };
 
   const handleCancelStudy = () => {
-    if (isStudyCancelDisabled || !hasAppliedStudy) {
+    if (!studyActionState.canCancel) {
       return;
     }
 
@@ -78,7 +74,7 @@ export default function StudyApplyCard() {
           : "small"
       }
       detailHref="/dormitory"
-      disabled={isStudyActionDisabled}
+      disabled={studyActionState.isActionDisabled}
       onApply={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
     />
   );

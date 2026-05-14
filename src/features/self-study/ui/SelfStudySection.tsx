@@ -9,6 +9,7 @@ import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createStudyPermission } from "@/entities/user/lib/permission";
+import { createApplicationActionState } from "@/shared/lib/applicationActionState";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCancelStudy } from "../model/useCancelStudy";
@@ -35,19 +36,14 @@ export function SelfStudySection() {
   const hasAppliedStudy =
     user !== undefined &&
     students.some((student) => student.userId === user.id);
-  const isStudyActionPending =
-    applyMutation.isPending || cancelMutation.isPending;
-  const isStudyApplyDisabled =
-    isUserLoading ||
-    isStudyLoading ||
-    isStudyBanned ||
-    isStudyActionPending ||
-    isApplicationOpen;
-  const isStudyCancelDisabled =
-    isUserLoading || isStudyLoading || isStudyBanned || isStudyActionPending;
-  const isStudyActionDisabled = hasAppliedStudy
-    ? isStudyCancelDisabled
-    : isStudyApplyDisabled;
+  const studyActionState = createApplicationActionState({
+    hasApplied: hasAppliedStudy,
+    isUserLoading,
+    isDataLoading: isStudyLoading,
+    isBanned: isStudyBanned,
+    isActionPending: applyMutation.isPending || cancelMutation.isPending,
+    isApplicationOpen,
+  });
   const studyPermission = createStudyPermission({ role: user?.role });
   const canManageStudy = studyPermission.canManage;
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
@@ -70,7 +66,7 @@ export function SelfStudySection() {
       payload: selectedGender === gender ? null : gender,
     });
   const handleApplyStudy = () => {
-    if (isStudyApplyDisabled || hasAppliedStudy) {
+    if (!studyActionState.canApply) {
       return;
     }
 
@@ -78,7 +74,7 @@ export function SelfStudySection() {
   };
 
   const handleCancelStudy = () => {
-    if (isStudyCancelDisabled || !hasAppliedStudy) {
+    if (!studyActionState.canCancel) {
       return;
     }
 
@@ -212,12 +208,12 @@ export function SelfStudySection() {
             variant={
               isStudyBanned
                 ? "negative"
-                : isStudyActionDisabled
+                : studyActionState.isActionDisabled
                   ? "disabled"
                   : "filled"
             }
             size="wide"
-            disabled={isStudyActionDisabled}
+            disabled={studyActionState.isActionDisabled}
             onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
           >
             {isStudyBanned

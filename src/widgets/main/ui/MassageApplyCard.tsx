@@ -6,6 +6,7 @@ import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyMassage } from "@/features/massage-chair/model/useApplyMassage";
 import { useCancelMassage } from "@/features/massage-chair/model/useCancelMassage";
+import { createApplicationActionState } from "@/shared/lib/applicationActionState";
 import ApplyCard from "./ApplyCard";
 
 const MASSAGE_MAX = 5;
@@ -22,21 +23,16 @@ export default function MassageApplyCard() {
   const hasAppliedMassage =
     user !== undefined &&
     applicants.some((student) => student.studentNumber === user.studentNumber);
-  const isMassageActionPending =
-    applyMutation.isPending || cancelMutation.isPending;
-  const isMassageApplyDisabled =
-    isUserLoading ||
-    isMassageLoading ||
-    isMassageActionPending ||
-    isApplicationOpen;
-  const isMassageCancelDisabled =
-    isUserLoading || isMassageLoading || isMassageActionPending;
-  const isMassageActionDisabled = hasAppliedMassage
-    ? isMassageCancelDisabled
-    : isMassageApplyDisabled;
+  const massageActionState = createApplicationActionState({
+    hasApplied: hasAppliedMassage,
+    isUserLoading,
+    isDataLoading: isMassageLoading,
+    isActionPending: applyMutation.isPending || cancelMutation.isPending,
+    isApplicationOpen,
+  });
 
   const handleApplyMassage = () => {
-    if (isMassageApplyDisabled || hasAppliedMassage) {
+    if (!massageActionState.canApply) {
       return;
     }
 
@@ -44,7 +40,7 @@ export default function MassageApplyCard() {
   };
 
   const handleCancelMassage = () => {
-    if (isMassageCancelDisabled || !hasAppliedMassage) {
+    if (!massageActionState.canCancel) {
       return;
     }
 
@@ -70,7 +66,7 @@ export default function MassageApplyCard() {
       buttonSize={!hasAppliedMassage && isApplicationOpen ? "fit" : "small"}
       detailHref="/dormitory"
       femaleNotice
-      disabled={isMassageActionDisabled}
+      disabled={massageActionState.isActionDisabled}
       onApply={hasAppliedMassage ? handleCancelMassage : handleApplyMassage}
     />
   );
