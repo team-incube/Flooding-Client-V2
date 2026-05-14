@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export function useCurrentTime(intervalMs = 30_000): Date {
+export function useCurrentTime(intervalMs = 5_000): Date {
   const [currentTime, setCurrentTime] = useState(() => new Date());
 
   useEffect(() => {
