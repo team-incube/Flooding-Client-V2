@@ -10,6 +10,7 @@ import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createStudyPermission } from "@/entities/user/lib/permission";
 import { createApplicationActionState } from "@/shared/lib/applicationActionState";
+import { getStudyApplyButtonState } from "../lib/getStudyApplyButtonState";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCancelStudy } from "../model/useCancelStudy";
@@ -42,6 +43,13 @@ export function SelfStudySection() {
     isDataLoading: isStudyLoading,
     isBanned: isStudyBanned,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
+    isApplicationOpen,
+  });
+  const studyApplyButtonState = getStudyApplyButtonState({
+    isStudyBanned,
+    isActionDisabled: studyActionState.isActionDisabled,
+    isLoading: isUserLoading || isStudyLoading,
+    hasApplied: hasAppliedStudy,
     isApplicationOpen,
   });
   const studyPermission = createStudyPermission({ role: user?.role });
@@ -205,26 +213,12 @@ export function SelfStudySection() {
           <div className="flex-1" />
 
           <TextButton
-            variant={
-              isStudyBanned
-                ? "negative"
-                : studyActionState.isActionDisabled
-                  ? "disabled"
-                  : "filled"
-            }
+            variant={studyApplyButtonState.variant}
             size="wide"
             disabled={studyActionState.isActionDisabled}
             onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
           >
-            {isStudyBanned
-              ? "자습 금지를 당했어요!"
-              : isUserLoading || isStudyLoading
-                ? "확인 중"
-                : hasAppliedStudy
-                  ? "취소하기"
-                  : isApplicationOpen
-                    ? "신청 불가"
-                    : "신청하기"}
+            {studyApplyButtonState.text}
           </TextButton>
 
           <p className="text-sub-2 text-caption-2">

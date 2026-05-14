@@ -6,6 +6,7 @@ import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyMassage } from "@/features/massage-chair/model/useApplyMassage";
 import { useCancelMassage } from "@/features/massage-chair/model/useCancelMassage";
+import { getMassageApplyButtonText } from "@/features/massage-chair/lib/getMassageApplyButtonText";
 import { createApplicationActionState } from "@/shared/lib/applicationActionState";
 import ApplyCard from "./ApplyCard";
 
@@ -54,15 +55,11 @@ export default function MassageApplyCard() {
       current={applicants.length}
       total={MASSAGE_MAX}
       timeText="안마 의자 신청 시간은 20:20 ~ 21:00에 신청이 가능해요"
-      buttonText={
-        isUserLoading || isMassageLoading
-          ? "확인 중"
-          : hasAppliedMassage
-            ? "취소"
-            : isApplicationOpen
-              ? "신청 불가"
-              : "신청"
-      }
+      buttonText={getMassageApplyButtonText({
+        isLoading: isUserLoading || isMassageLoading,
+        hasApplied: hasAppliedMassage,
+        isApplicationOpen,
+      })}
       buttonSize={!hasAppliedMassage && isApplicationOpen ? "fit" : "small"}
       detailHref="/dormitory"
       femaleNotice
