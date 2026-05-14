@@ -101,17 +101,12 @@ export function useHomebaseReservationActions({
     },
     onError: () => toast.error("취소에 실패했습니다. 다시 시도해주세요"),
   });
-  const canSubmit =
-    homebasePermission.canReserve &&
-    reservationValidation.success &&
-    !applyMutation.isPending;
+  const canSubmit = homebasePermission.canReserve && !applyMutation.isPending;
 
   const handleSubmit = () => {
     if (!homebasePermission.canReserve || applyMutation.isPending) return;
 
-    const parsed = homebaseReservationDraftSchema.safeParse(reservationDraft);
-
-    if (!parsed.success) {
+    if (!reservationValidation.success) {
       if (!selectedTable) {
         toast.warning("테이블을 선택해주세요");
         return;
@@ -122,6 +117,10 @@ export function useHomebaseReservationActions({
         return;
       }
 
+      toast.warning(
+        reservationValidation.error.issues[0]?.message ??
+          "입력값을 확인해주세요",
+      );
       return;
     }
 
@@ -135,17 +134,20 @@ export function useHomebaseReservationActions({
       return;
     }
 
-    const homebaseId = getHomebaseId(selectedFloor, parsed.data.selectedTable);
+    const homebaseId = getHomebaseId(
+      selectedFloor,
+      reservationValidation.data.selectedTable,
+    );
 
     if (!homebaseId) return;
 
     applyMutation.mutate({
       homebaseId,
       body: createHomebaseApplyRequest({
-        reservationDate: parsed.data.reservationDate,
-        startPeriod: parsed.data.startPeriod,
-        endPeriod: parsed.data.endPeriod,
-        reason: parsed.data.reason,
+        reservationDate: reservationValidation.data.reservationDate,
+        startPeriod: reservationValidation.data.startPeriod,
+        endPeriod: reservationValidation.data.endPeriod,
+        reason: reservationValidation.data.reason,
         currentUser,
         selectedStudents,
       }),
