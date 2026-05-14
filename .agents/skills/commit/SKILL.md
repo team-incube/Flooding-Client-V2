@@ -38,7 +38,9 @@ allowed-tools: Bash, Read
   - commit type
   - Korean commit message
 - Get explicit user approval for each commit group before staging or committing that group.
-- Request any required tool or sandbox permission approvals before running `git add`, `git commit`, or `git checkout -b`.
+- Run `git add`, `git commit`, and `git checkout -b` with escalated filesystem permission when the environment requires Git metadata writes.
+- If `git add`, `git commit`, or `git checkout -b` fails with `.git/index.lock` or another Git metadata permission error, immediately retry the same command with escalated filesystem permission.
+- Use a narrow approval prefix for repeated Git commit operations, such as `["git", "commit"]`, instead of requesting broad shell access.
 - Treat tool/sandbox permission approval separately from commit-content approval. A permission approval does not approve the commit contents.
 - After each approved commit, re-check the remaining changes and repeat the grouping and approval flow until no intended changes remain.
 - If the user says "commit now" or "바로 커밋", still split commits by intent when multiple independent changes are present.
