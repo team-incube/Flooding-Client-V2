@@ -25,15 +25,20 @@ export default function StudyApplyCard() {
     students.some((student) => student.userId === user.id);
   const isStudyActionPending =
     applyMutation.isPending || cancelMutation.isPending;
-  const isStudyActionDisabled =
+  const isStudyApplyDisabled =
     isUserLoading ||
     isStudyLoading ||
     isStudyBanned ||
     isStudyActionPending ||
-    !isApplicationOpen;
+    isApplicationOpen;
+  const isStudyCancelDisabled =
+    isUserLoading || isStudyLoading || isStudyBanned || isStudyActionPending;
+  const isStudyActionDisabled = hasAppliedStudy
+    ? isStudyCancelDisabled
+    : isStudyApplyDisabled;
 
   const handleApplyStudy = () => {
-    if (isStudyActionDisabled || hasAppliedStudy) {
+    if (isStudyApplyDisabled || hasAppliedStudy) {
       return;
     }
 
@@ -41,7 +46,7 @@ export default function StudyApplyCard() {
   };
 
   const handleCancelStudy = () => {
-    if (isStudyActionDisabled || !hasAppliedStudy) {
+    if (isStudyCancelDisabled || !hasAppliedStudy) {
       return;
     }
 
@@ -60,14 +65,18 @@ export default function StudyApplyCard() {
           ? "자습 금지를 당했어요!"
           : isUserLoading || isStudyLoading
             ? "확인 중"
-            : !isApplicationOpen
-              ? "신청 불가"
-              : hasAppliedStudy
-                ? "취소"
+            : hasAppliedStudy
+              ? "취소"
+              : isApplicationOpen
+                ? "신청 불가"
                 : "신청"
       }
       buttonVariant={isStudyBanned ? "negative" : "filled"}
-      buttonSize={isStudyBanned || !isApplicationOpen ? "fit" : "small"}
+      buttonSize={
+        isStudyBanned || (!hasAppliedStudy && isApplicationOpen)
+          ? "fit"
+          : "small"
+      }
       detailHref="/dormitory"
       disabled={isStudyActionDisabled}
       onApply={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}

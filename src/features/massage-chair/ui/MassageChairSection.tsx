@@ -23,14 +23,19 @@ export function MassageChairSection() {
     applicants.some((student) => student.studentNumber === user.studentNumber);
   const isMassageActionPending =
     applyMutation.isPending || cancelMutation.isPending;
-  const isMassageActionDisabled =
+  const isMassageApplyDisabled =
     isUserLoading ||
     isMassageLoading ||
     isMassageActionPending ||
-    !isApplicationOpen;
+    isApplicationOpen;
+  const isMassageCancelDisabled =
+    isUserLoading || isMassageLoading || isMassageActionPending;
+  const isMassageActionDisabled = hasAppliedMassage
+    ? isMassageCancelDisabled
+    : isMassageApplyDisabled;
 
   const handleApplyMassage = () => {
-    if (isMassageActionDisabled || hasAppliedMassage) {
+    if (isMassageApplyDisabled || hasAppliedMassage) {
       return;
     }
 
@@ -38,7 +43,7 @@ export function MassageChairSection() {
   };
 
   const handleCancelMassage = () => {
-    if (isMassageActionDisabled || !hasAppliedMassage) {
+    if (isMassageCancelDisabled || !hasAppliedMassage) {
       return;
     }
 
@@ -82,10 +87,10 @@ export function MassageChairSection() {
           >
             {isUserLoading || isMassageLoading
               ? "확인 중"
-              : !isApplicationOpen
-                ? "신청 불가"
-                : hasAppliedMassage
-                  ? "취소하기"
+              : hasAppliedMassage
+                ? "취소하기"
+                : isApplicationOpen
+                  ? "신청 불가"
                   : "신청하기"}
           </TextButton>
           <p className="text-sub-2 text-caption-2">

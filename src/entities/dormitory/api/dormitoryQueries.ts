@@ -26,12 +26,16 @@ export const dormitoryQueries = {
     queryOptions({
       queryKey: ["dormitory", "massage"],
       queryFn: getMassageApplicants,
+      refetchOnMount: "always",
+      refetchOnWindowFocus: "always",
     }),
 
   study: () =>
     queryOptions({
       queryKey: ["dormitory", "study"],
       queryFn: getSelfStudyApplicants,
+      refetchOnMount: "always",
+      refetchOnWindowFocus: "always",
     }),
 
   myPenalties: () =>

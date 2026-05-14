@@ -5,7 +5,7 @@ const MINUTE = 60 * 1000;
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 30 * MINUTE,
+      staleTime: MINUTE,
       gcTime: 60 * MINUTE,
       retry: 1,
       refetchOnWindowFocus: false,
