@@ -2,6 +2,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
+import { useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
@@ -73,6 +74,8 @@ function ClubApplicationListSectionError({
   error,
   resetErrorBoundary,
 }: QueryErrorFallbackProps) {
+  const router = useRouter();
+
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
@@ -81,6 +84,13 @@ function ClubApplicationListSectionError({
           {getErrorMessage(error)}
         </p>
         <div className="flex gap-3">
+          <TextButton
+            variant="outlined"
+            size="fit"
+            onClick={() => router.back()}
+          >
+            뒤로가기
+          </TextButton>
           <TextButton
             variant="outlined"
             size="fit"
