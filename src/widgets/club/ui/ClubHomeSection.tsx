@@ -115,10 +115,9 @@ function ClubHomeSection() {
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
   const baseClubPermission = createClubPermission({ role: user.role });
-  const canCheckOpeningStatus = baseClubPermission.canCheckOpeningStatus;
   const { data: openingStatus } = useQuery({
     ...clubQueries.openingStatus(),
-    enabled: canCheckOpeningStatus,
+    enabled: baseClubPermission.canCheckOpeningStatus,
     retry: false,
   });
   const clubPermission = createClubPermission({
@@ -153,7 +152,6 @@ function ClubHomeSection() {
   };
 
   const handleSearch = () => setSearchValue(query);
-  const canRegisterClub = clubPermission.canRegisterClub;
   const clubModeToggle = (
     <div className="flex w-full gap-1">
       <TextButton
@@ -166,17 +164,17 @@ function ClubHomeSection() {
       </TextButton>
       <TextButton
         variant={
-          viewMode === "form" && canRegisterClub
+          viewMode === "form" && clubPermission.canRegisterClub
             ? "filled"
-            : canRegisterClub
+            : clubPermission.canRegisterClub
               ? "outlined"
               : "disabled"
         }
         size="fit"
         className="flex-1"
-        disabled={!canRegisterClub}
+        disabled={!clubPermission.canRegisterClub}
         onClick={() => {
-          if (canRegisterClub) setViewMode("form");
+          if (clubPermission.canRegisterClub) setViewMode("form");
         }}
       >
         개설 신청
@@ -219,7 +217,7 @@ function ClubHomeSection() {
             <div className="mb-auto flex w-full flex-col gap-4">
               {clubModeToggle}
 
-              {viewMode === "form" && canRegisterClub ? (
+              {viewMode === "form" && clubPermission.canRegisterClub ? (
                 <ClubRegistrationSection
                   compact
                   onGoBackToList={handleGoBackToList}

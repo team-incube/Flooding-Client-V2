@@ -64,7 +64,6 @@ export function SelfStudySection() {
           ? "신청 불가"
           : "신청하기";
   const studyPermission = createStudyPermission({ role: user?.role });
-  const canManageStudy = studyPermission.canManage;
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
   );
@@ -101,7 +100,7 @@ export function SelfStudySection() {
   };
 
   const handleCheckAttendance = (studentId: number) => {
-    if (!canManageStudy) {
+    if (!studyPermission.canManage) {
       return;
     }
 
@@ -139,7 +138,7 @@ export function SelfStudySection() {
                   checkAttendanceMutation.isPending &&
                   checkAttendanceMutation.variables === student.userId
                 }
-                canCheck={canManageStudy}
+                canCheck={studyPermission.canManage}
                 onCheck={handleCheckAttendance}
               />
             ))}
