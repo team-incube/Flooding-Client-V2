@@ -162,7 +162,7 @@ export default function ClubRegistrationSection({
                 className="flex-1"
                 onClick={() => handleChange("type", "MAJOR_CLUB")}
               >
-                정규
+                전공
               </TextButton>
               <TextButton
                 variant={type === "AUTONOMOUS_CLUB" ? "filled" : "outlined"}

@@ -24,14 +24,19 @@ export default function MassageApplyCard() {
     applicants.some((student) => student.studentNumber === user.studentNumber);
   const isMassageActionPending =
     applyMutation.isPending || cancelMutation.isPending;
-  const isMassageActionDisabled =
+  const isMassageApplyDisabled =
     isUserLoading ||
     isMassageLoading ||
     isMassageActionPending ||
-    !isApplicationOpen;
+    isApplicationOpen;
+  const isMassageCancelDisabled =
+    isUserLoading || isMassageLoading || isMassageActionPending;
+  const isMassageActionDisabled = hasAppliedMassage
+    ? isMassageCancelDisabled
+    : isMassageApplyDisabled;
 
   const handleApplyMassage = () => {
-    if (isMassageActionDisabled || hasAppliedMassage) {
+    if (isMassageApplyDisabled || hasAppliedMassage) {
       return;
     }
 
@@ -39,7 +44,7 @@ export default function MassageApplyCard() {
   };
 
   const handleCancelMassage = () => {
-    if (isMassageActionDisabled || !hasAppliedMassage) {
+    if (isMassageCancelDisabled || !hasAppliedMassage) {
       return;
     }
 
@@ -56,13 +61,13 @@ export default function MassageApplyCard() {
       buttonText={
         isUserLoading || isMassageLoading
           ? "확인 중"
-          : !isApplicationOpen
-            ? "신청 불가"
-            : hasAppliedMassage
-              ? "취소"
+          : hasAppliedMassage
+            ? "취소"
+            : isApplicationOpen
+              ? "신청 불가"
               : "신청"
       }
-      buttonSize={!isApplicationOpen ? "fit" : "small"}
+      buttonSize={!hasAppliedMassage && isApplicationOpen ? "fit" : "small"}
       detailHref="/dormitory"
       femaleNotice
       disabled={isMassageActionDisabled}
