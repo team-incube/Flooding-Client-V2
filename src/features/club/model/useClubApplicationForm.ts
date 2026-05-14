@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { ClubFormField } from "@/entities/club/model/club";
 import {
@@ -35,7 +35,7 @@ export function useClubApplicationForm({
     fieldId: number,
     value: ClubApplicationFieldValue,
   ) => {
-    setValues((prev) => ({ ...prev, [fieldId]: value }));
+    setValues((prev) => ({ ...prev, [String(fieldId)]: value }));
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

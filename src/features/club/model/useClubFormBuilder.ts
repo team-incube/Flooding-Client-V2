@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { ClubForm, ClubFormFieldType } from "@/entities/club/model/club";
 import {
@@ -8,12 +8,12 @@ import {
   createClubFormRequest,
   createDefaultClubFormField,
   createDefaultClubFormFieldOption,
-  isClubFormFieldDraftValid,
   needsClubFormFieldOptions,
   type ClubFormFieldDraft,
   type ClubFormFieldDraftKey,
   type ClubFormFieldOptionDraftKey,
 } from "../lib/clubFormBuilder";
+import { clubFormDraftSchema } from "../lib/clubFormSchema";
 import { useCreateClubForm } from "./useCreateClubForm";
 import { useUpdateClubForm } from "./useUpdateClubForm";
 
@@ -50,12 +50,12 @@ export function useClubFormBuilder({
   const [nextOptionId, setNextOptionId] = useState(
     initialDraftState?.nextOptionId ?? 1,
   );
-  const canSubmit =
-    canCreateForm &&
-    !!title.trim() &&
-    fields.length > 0 &&
-    fields.every(isClubFormFieldDraftValid) &&
-    !mutation.isPending;
+  const validation = clubFormDraftSchema.safeParse({
+    title,
+    description,
+    fields,
+  });
+  const canSubmit = canCreateForm && validation.success && !mutation.isPending;
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
@@ -171,15 +171,25 @@ export function useClubFormBuilder({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!canSubmit) {
+    if (!canCreateForm || mutation.isPending) {
+      return;
+    }
+
+    const parsed = clubFormDraftSchema.safeParse({
+      title,
+      description,
+      fields,
+    });
+
+    if (!parsed.success) {
       return;
     }
 
     mutation.mutate(
       createClubFormRequest({
-        title,
-        description,
-        fields,
+        title: parsed.data.title,
+        description: parsed.data.description,
+        fields: parsed.data.fields,
       }),
       {
         onSuccess: () => router.push(`/club/${clubId}/apply`),

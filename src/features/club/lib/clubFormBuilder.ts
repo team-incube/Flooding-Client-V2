@@ -105,24 +105,6 @@ export function createClubFormDraftState(form: ClubForm) {
   };
 }
 
-export function isClubFormFieldDraftValid(field: ClubFormFieldDraft) {
-  if (!field.label.trim()) {
-    return false;
-  }
-
-  if (!needsClubFormFieldOptions(field.fieldType)) {
-    return true;
-  }
-
-  return (
-    field.options.length > 0 &&
-    field.options.every(
-      (option) =>
-        option.label.trim() && isClubFormFieldOptionValueValid(option.value),
-    )
-  );
-}
-
 export function createClubFormRequest({
   title,
   description,

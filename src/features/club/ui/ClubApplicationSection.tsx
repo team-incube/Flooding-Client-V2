@@ -98,7 +98,7 @@ const ClubApplicationSection = ({ id }: ClubApplicationSectionProps) => {
               <ClubApplicationField
                 key={field.fieldId}
                 field={field}
-                value={values[field.fieldId]}
+                value={values[String(field.fieldId)]}
                 onChange={(value) => handleFieldChange(field.fieldId, value)}
               />
             ))}
