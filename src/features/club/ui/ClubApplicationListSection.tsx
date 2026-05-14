@@ -20,7 +20,7 @@ interface ClubApplicationListSectionProps {
   id: number;
 }
 
-function formatSubmittedAt(value: string) {
+function formatSubmittedAt(value: string): string {
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
