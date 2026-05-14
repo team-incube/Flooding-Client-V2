@@ -2,12 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
+import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { isMassageApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { createApplicationActionState } from "@/shared/lib/applicationActionState";
 import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import { useApplyMassage } from "../model/useApplyMassage";
 import { useCancelMassage } from "../model/useCancelMassage";
