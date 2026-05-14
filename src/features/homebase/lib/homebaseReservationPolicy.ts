@@ -8,6 +8,7 @@ import type {
 } from "@/entities/homebase/model/homebase";
 import type { Reservation } from "@/entities/school/model/reservation";
 import type { User } from "@/entities/user/model/user";
+import type { HomebaseSelectableStudent } from "@/features/homebase/lib/studentSelection";
 
 type PeriodButtonVariant = "filled" | "outlined" | "disabled";
 const PERIOD_BLOCK_SIZE = 2;
@@ -40,7 +41,7 @@ interface HomebaseApplyRequestParams {
   endPeriod: number;
   reason: string;
   currentUser?: User | null;
-  selectedStudents: User[];
+  selectedStudents: HomebaseSelectableStudent[];
 }
 
 const floorOrder: Record<string, number> = { "2F": 0, "3F": 1, "4F": 2 };
