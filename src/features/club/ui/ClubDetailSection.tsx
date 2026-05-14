@@ -119,7 +119,7 @@ const ClubDetailSection = ({
   });
   const hasClubApplication = user.hasClubApplication ?? false;
   const formQuery = clubQueries.form(id);
-  const { data: form, error: formError } = useQuery({
+  const { data: form } = useQuery({
     ...formQuery,
     enabled: clubPermission.canCreateForm,
     retry: false,
@@ -175,11 +175,7 @@ const ClubDetailSection = ({
   };
 
   const hasForm = !!form;
-  const hasNoForm =
-    axios.isAxiosError(formError) &&
-    formError.response?.status === HttpStatusCode.NotFound;
-  const canShowFormAction =
-    clubPermission.canCreateForm && (hasForm || hasNoForm);
+  const canShowFormAction = clubPermission.canCreateForm;
 
   return (
     <>
@@ -200,7 +196,7 @@ const ClubDetailSection = ({
                   : undefined
               }
               onApplyClick={
-                isPending || clubPermission.isManager || hasClubApplication
+                isPending || hasClubApplication
                   ? undefined
                   : handleApplyClick
               }

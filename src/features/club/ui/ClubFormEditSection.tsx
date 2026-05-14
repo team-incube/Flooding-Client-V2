@@ -166,9 +166,15 @@ function ClubFormEditSectionError({
 function ClubFormEditSectionEmpty() {
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
-      <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
-        <Club isActive={false} size={32} />
-        <p className="text-text-1 text-main-text">수정할 신청 폼이 없어요.</p>
+      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-6 rounded-2xl p-6">
+        <div className="flex items-center gap-2">
+          <ClubBackButton />
+          <span className="text-text-1 text-main-text">동아리 폼 수정</span>
+        </div>
+
+        <div className="border-sub-3 bg-background flex h-[320px] items-center justify-center rounded-2xl border border-dashed">
+          <p className="text-text-2 text-sub-1">수정할 신청 폼이 없어요.</p>
+        </div>
       </div>
     </div>
   );
