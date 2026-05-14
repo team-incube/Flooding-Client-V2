@@ -8,7 +8,7 @@ import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { isManagementRole } from "@/entities/user/lib/userRole";
+import { createStudyPermission } from "@/entities/user/lib/permission";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCancelStudy } from "../model/useCancelStudy";
@@ -48,7 +48,8 @@ export function SelfStudySection() {
   const isStudyActionDisabled = hasAppliedStudy
     ? isStudyCancelDisabled
     : isStudyApplyDisabled;
-  const canManageStudy = isManagementRole(user?.role);
+  const studyPermission = createStudyPermission({ role: user?.role });
+  const canManageStudy = studyPermission.canManage;
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
   );

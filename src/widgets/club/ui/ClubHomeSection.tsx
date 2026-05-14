@@ -25,7 +25,7 @@ import {
   filterClubs,
   type ClubTypeFilter,
 } from "@/features/club/lib/filterClubs";
-import { isManagementRole } from "@/entities/user/lib/userRole";
+import { createClubPermission } from "@/entities/user/lib/permission";
 
 function ClubCardSkeleton() {
   return (
@@ -114,19 +114,21 @@ function ClubHomeSection() {
 
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const canCheckOpeningStatus = isManagementRole(user.role);
+  const baseClubPermission = createClubPermission({ role: user.role });
+  const canCheckOpeningStatus = baseClubPermission.canCheckOpeningStatus;
   const { data: openingStatus } = useQuery({
     ...clubQueries.openingStatus(),
     enabled: canCheckOpeningStatus,
     retry: false,
   });
-  const isClubManager =
-    user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
-  const isAdmin = user.role === "ADMIN";
+  const clubPermission = createClubPermission({
+    role: user.role,
+    isOpeningApplicationOpen: openingStatus?.isOpened,
+  });
   const { data: openingRequests, isLoading: isOpeningRequestsLoading } =
     useQuery({
       ...clubQueries.openingRequests(),
-      enabled: isClubManager && viewMode === "form",
+      enabled: clubPermission.canViewOpeningRequests && viewMode === "form",
     });
 
   const filteredClubs = filterClubs({
@@ -151,8 +153,7 @@ function ClubHomeSection() {
   };
 
   const handleSearch = () => setSearchValue(query);
-  const canRegisterClub =
-    canCheckOpeningStatus && openingStatus?.isOpened === true;
+  const canRegisterClub = clubPermission.canRegisterClub;
   const clubModeToggle = (
     <div className="flex w-full gap-1">
       <TextButton
@@ -209,7 +210,9 @@ function ClubHomeSection() {
                 onClubClick={(clubId) => router.push(`/club/${clubId}`)}
               />
             ) : (
-              isClubManager && <ClubOpeningRequestSection />
+              clubPermission.canViewOpeningRequests && (
+                <ClubOpeningRequestSection />
+              )
             )}
           </div>
           <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
@@ -230,7 +233,7 @@ function ClubHomeSection() {
                   onTypeChange={setSelectedType}
                 />
               )}
-              {isAdmin && <ClubExportButton />}
+              {clubPermission.canExport && <ClubExportButton />}
             </div>
           </div>
         </div>

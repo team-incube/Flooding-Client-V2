@@ -6,6 +6,7 @@ import TextField from "@/shared/ui/textField";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import { createClubPermission } from "@/entities/user/lib/permission";
 import type { ClubForm } from "@/entities/club/model/club";
 import {
   ClientQueryBoundary,
@@ -185,10 +186,13 @@ const ClubFormEditSection = ({ id }: ClubFormEditSectionProps) => {
   });
   const { data: user } = useSuspenseQuery(userQueries.me());
   const isMajorClub = detail?.club.type === "MAJOR_CLUB";
-  const isLeader = !!user && user.name === detail?.club.leader;
-  const canEditForm = !!detail && isMajorClub && isLeader;
+  const clubPermission = createClubPermission({
+    role: user?.role,
+    clubType: detail?.club.type,
+    isLeader: detail?.isLeader,
+  });
 
-  if (!canEditForm) {
+  if (!clubPermission.canEditForm) {
     return (
       <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
         <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">

@@ -12,7 +12,7 @@ import {
   usePatchClubApproval,
 } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { isManagementRole } from "@/entities/user/lib/userRole";
+import { createClubPermission } from "@/entities/user/lib/permission";
 import type { ClubMember } from "@/entities/club/model/club";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
@@ -102,7 +102,8 @@ const ClubDetailSection = ({
 
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const canCheckOpeningStatus = isManagementRole(user.role);
+  const baseClubPermission = createClubPermission({ role: user.role });
+  const canCheckOpeningStatus = baseClubPermission.canCheckOpeningStatus;
   const { data: openingStatus } = useQuery({
     ...clubQueries.openingStatus(),
     enabled: canCheckOpeningStatus,
@@ -110,17 +111,17 @@ const ClubDetailSection = ({
   });
 
   const isLeader = detail.isLeader;
-  const isClubManager =
-    user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
+  const clubPermission = createClubPermission({
+    role: user.role,
+    clubType: detail.club.type,
+    isLeader,
+    isOpeningApplicationOpen: openingStatus?.isOpened,
+  });
   const hasClubApplication = user.hasClubApplication ?? false;
-  const canDeleteClub =
-    (isLeader || user.role === "ADMIN") && openingStatus?.isOpened === true;
-  const canCreateForm = detail.club.type === "MAJOR_CLUB" && isLeader;
-  const canViewApplications = isLeader || isClubManager;
   const formQuery = clubQueries.form(id);
   const { data: form, error: formError } = useQuery({
     ...formQuery,
-    enabled: canCreateForm,
+    enabled: clubPermission.canCreateForm,
     retry: false,
   });
 
@@ -177,7 +178,8 @@ const ClubDetailSection = ({
   const hasNoForm =
     axios.isAxiosError(formError) &&
     formError.response?.status === HttpStatusCode.NotFound;
-  const canShowFormAction = canCreateForm && (hasForm || hasNoForm);
+  const canShowFormAction =
+    clubPermission.canCreateForm && (hasForm || hasNoForm);
 
   return (
     <>
@@ -190,7 +192,7 @@ const ClubDetailSection = ({
           <div className="flex w-full flex-col gap-4">
             <ClubDetail
               detail={detail}
-              canDelete={canDeleteClub}
+              canDelete={clubPermission.canDelete}
               isApplyPending={autonomousApplyMutation.isPending}
               applyDisabledMessage={
                 hasClubApplication
@@ -198,13 +200,13 @@ const ClubDetailSection = ({
                   : undefined
               }
               onApplyClick={
-                isPending || isClubManager || hasClubApplication
+                isPending || clubPermission.isManager || hasClubApplication
                   ? undefined
                   : handleApplyClick
               }
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
               onViewApplicationsClick={
-                !isPending && canViewApplications
+                !isPending && clubPermission.canViewApplications
                   ? handleApplicationsClick
                   : undefined
               }
@@ -215,13 +217,15 @@ const ClubDetailSection = ({
                     : handleCreateFormClick
                   : undefined
               }
-              onTransferClick={isLeader ? handleTransferClick : undefined}
-              onEditClick={isLeader ? () => {} : undefined}
+              onTransferClick={
+                clubPermission.canTransferLeader ? handleTransferClick : undefined
+              }
+              onEditClick={clubPermission.canEditClub ? () => {} : undefined}
               memberSearchQuery={memberSearch}
               memberSearchResults={memberSearchResults}
               onMemberSearchChange={setMemberSearch}
             />
-            {isClubManager && isPending && (
+            {clubPermission.isManager && isPending && (
               <div className="flex justify-end">
                 <div className="flex w-[240px] gap-2">
                   <TextButton

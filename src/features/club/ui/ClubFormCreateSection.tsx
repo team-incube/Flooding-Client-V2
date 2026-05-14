@@ -6,6 +6,7 @@ import TextField from "@/shared/ui/textField";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import { createClubPermission } from "@/entities/user/lib/permission";
 import {
   ClientQueryBoundary,
   type QueryErrorFallbackProps,
@@ -67,8 +68,11 @@ const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
   const isMajorClub = detail?.club.type === "MAJOR_CLUB";
-  const isLeader = !!user && user.name === detail?.club.leader;
-  const canCreateForm = !!detail && isMajorClub && isLeader;
+  const clubPermission = createClubPermission({
+    role: user?.role,
+    clubType: detail?.club.type,
+    isLeader: detail?.isLeader,
+  });
   const {
     title,
     description,
@@ -86,10 +90,10 @@ const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
     handleSubmit,
   } = useClubFormBuilder({
     clubId: id,
-    canCreateForm,
+    canCreateForm: clubPermission.canCreateForm,
   });
 
-  if (!canCreateForm) {
+  if (!clubPermission.canCreateForm) {
     return (
       <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
         <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">

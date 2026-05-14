@@ -5,13 +5,15 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { exportClubs } from "@/entities/club/api/exportClubs";
+import { createClubPermission } from "@/entities/user/lib/permission";
 import Back from "@/shared/asset/svg/Back";
 
 export default function ClubExportButton() {
   const [isLoading, setIsLoading] = useState(false);
   const { data: user } = useSuspenseQuery(userQueries.me());
+  const clubPermission = createClubPermission({ role: user.role });
 
-  if (user.role !== "ADMIN") return null;
+  if (!clubPermission.canExport) return null;
 
   const handleExport = async () => {
     if (isLoading) return;

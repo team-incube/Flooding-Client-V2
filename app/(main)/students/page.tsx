@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { StudentManagementSection } from "@/features/self-study/ui/StudentManagementSection";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { isManagementRole } from "@/entities/user/lib/userRole";
+import { createStudyPermission } from "@/entities/user/lib/permission";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
   ClientQueryBoundary,
@@ -43,8 +43,9 @@ function StudentsPageError({ resetErrorBoundary }: QueryErrorFallbackProps) {
 function StudentsPageContent() {
   const router = useRouter();
   const { data: user } = useSuspenseQuery(userQueries.me());
+  const studyPermission = createStudyPermission({ role: user.role });
 
-  if (!isManagementRole(user.role)) {
+  if (!studyPermission.canManage) {
     return (
       <main className="flex flex-1 flex-col overflow-y-auto px-8 pb-25 lg:px-10 2xl:px-18">
         <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6">

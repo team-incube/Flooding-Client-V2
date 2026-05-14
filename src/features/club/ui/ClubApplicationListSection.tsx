@@ -5,6 +5,7 @@ import axios, { HttpStatusCode } from "axios";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import { createClubPermission } from "@/entities/user/lib/permission";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { formatDateParam } from "@/shared/lib/date";
 import {
@@ -106,23 +107,23 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
   const approveMutation = useApproveClubApplication(id);
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const isLeader = !!user && user.name === detail?.club.leader;
-  const canApproveApplications = isLeader || user?.role === "ADMIN";
-  const canViewApplications =
-    !!detail &&
-    (isLeader || user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL");
+  const clubPermission = createClubPermission({
+    role: user?.role,
+    clubType: detail?.club.type,
+    isLeader: detail?.isLeader,
+  });
   const applicationListQuery = clubQueries.applicationList(id);
   const { data: applicationList } = useSuspenseQuery({
     ...applicationListQuery,
-    queryKey: canViewApplications
+    queryKey: clubPermission.canViewApplications
       ? applicationListQuery.queryKey
       : ["club", "applications", "permission-denied", id],
-    queryFn: canViewApplications
+    queryFn: clubPermission.canViewApplications
       ? applicationListQuery.queryFn
       : () => Promise.resolve({ applications: [] }),
   });
 
-  if (!canViewApplications) {
+  if (!clubPermission.canViewApplications) {
     return (
       <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
         <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
@@ -181,7 +182,7 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
                     <span className="text-caption-1 text-sub-1">
                       {formatSubmittedAt(application.submittedAt)}
                     </span>
-                    {canApproveApplications && (
+                    {clubPermission.canApprove && (
                       <TextButton
                         variant={
                           approveMutation.isPending ? "disabled" : "filled"

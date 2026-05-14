@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
-import { isManagementRole } from "@/entities/user/lib/userRole";
+import { createStudyPermission } from "@/entities/user/lib/permission";
 import type { UserRole } from "@/entities/user/model/user";
 
 function collectCheckedUserIds(value: unknown): number[] {
@@ -51,7 +51,9 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
   const [checkedStudentIds, setCheckedStudentIds] = useState<number[]>([]);
 
   useEffect(() => {
-    if (!isManagementRole(role)) {
+    const studyPermission = createStudyPermission({ role });
+
+    if (!studyPermission.canCheckAttendance) {
       return;
     }
 
