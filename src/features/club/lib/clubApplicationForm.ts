@@ -2,8 +2,6 @@ import type {
   ClubApplicationRequest,
   ClubFormField,
 } from "@/entities/club/model/club";
-import { createClubApplicationSchema } from "./clubApplicationSchema";
-
 export type ClubApplicationFieldValue = string | string[];
 export type ClubApplicationFormValues = Record<
   string,
@@ -36,18 +34,4 @@ export function createClubApplicationRequest(
       value: normalizeClubApplicationAnswerValue(values[String(field.fieldId)]),
     })),
   };
-}
-
-export function canSubmitClubApplication({
-  fields,
-  values,
-  isPending,
-}: {
-  fields: ClubFormField[];
-  values: ClubApplicationFormValues;
-  isPending: boolean;
-}) {
-  return (
-    createClubApplicationSchema(fields).safeParse(values).success && !isPending
-  );
 }

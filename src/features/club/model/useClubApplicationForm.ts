@@ -2,14 +2,15 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import type { ClubFormField } from "@/entities/club/model/club";
 import {
-  canSubmitClubApplication,
   createClubApplicationRequest,
   getSortedClubFormFields,
   type ClubApplicationFieldValue,
   type ClubApplicationFormValues,
 } from "../lib/clubApplicationForm";
+import { createClubApplicationSchema } from "../lib/clubApplicationSchema";
 import { useApplyClub } from "./useApplyClub";
 
 interface UseClubApplicationFormParams {
@@ -25,11 +26,8 @@ export function useClubApplicationForm({
   const [values, setValues] = useState<ClubApplicationFormValues>({});
   const applyMutation = useApplyClub(clubId);
   const sortedFields = getSortedClubFormFields(fields);
-  const canSubmit = canSubmitClubApplication({
-    fields: sortedFields,
-    values,
-    isPending: applyMutation.isPending,
-  });
+  const validation = createClubApplicationSchema(sortedFields).safeParse(values);
+  const canSubmit = !applyMutation.isPending;
 
   const handleFieldChange = (
     fieldId: number,
@@ -41,7 +39,14 @@ export function useClubApplicationForm({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!canSubmit) {
+    if (applyMutation.isPending) {
+      return;
+    }
+
+    if (!validation.success) {
+      toast.warning(
+        validation.error.issues[0]?.message ?? "입력값을 확인해주세요",
+      );
       return;
     }
 

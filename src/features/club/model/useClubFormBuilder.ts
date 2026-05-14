@@ -2,6 +2,7 @@
 
 import { useReducer, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import type { ClubForm, ClubFormFieldType } from "@/entities/club/model/club";
 import {
   clubFormDraftReducer,
@@ -43,7 +44,7 @@ export function useClubFormBuilder({
     description: draft.description,
     fields: draft.fields,
   });
-  const canSubmit = canCreateForm && validation.success && !mutation.isPending;
+  const canSubmit = canCreateForm && !mutation.isPending;
 
   const handleTitleChange = (value: string) => {
     dispatch({ type: "SET_TITLE", value });
@@ -100,21 +101,18 @@ export function useClubFormBuilder({
       return;
     }
 
-    const parsed = clubFormDraftSchema.safeParse({
-      title: draft.title,
-      description: draft.description,
-      fields: draft.fields,
-    });
-
-    if (!parsed.success) {
+    if (!validation.success) {
+      toast.warning(
+        validation.error.issues[0]?.message ?? "입력값을 확인해주세요",
+      );
       return;
     }
 
     mutation.mutate(
       createClubFormRequest({
-        title: parsed.data.title,
-        description: parsed.data.description,
-        fields: parsed.data.fields,
+        title: validation.data.title,
+        description: validation.data.description,
+        fields: validation.data.fields,
       }),
       {
         onSuccess: () => router.push(`/club/${clubId}/apply`),
