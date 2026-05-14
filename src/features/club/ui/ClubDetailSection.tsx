@@ -218,7 +218,9 @@ const ClubDetailSection = ({
                   : undefined
               }
               onTransferClick={
-                clubPermission.canTransferLeader ? handleTransferClick : undefined
+                clubPermission.canTransferLeader
+                  ? handleTransferClick
+                  : undefined
               }
               onEditClick={clubPermission.canEditClub ? () => {} : undefined}
               memberSearchQuery={memberSearch}

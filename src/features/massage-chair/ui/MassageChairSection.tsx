@@ -74,7 +74,9 @@ export function MassageChairSection() {
 
         <div className="flex w-[330px] shrink-0 flex-col justify-end gap-3">
           <TextButton
-            variant={massageActionState.isActionDisabled ? "disabled" : "filled"}
+            variant={
+              massageActionState.isActionDisabled ? "disabled" : "filled"
+            }
             size="wide"
             disabled={massageActionState.isActionDisabled}
             onClick={

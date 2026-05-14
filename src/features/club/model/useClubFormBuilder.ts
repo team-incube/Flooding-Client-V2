@@ -36,9 +36,7 @@ export function useClubFormBuilder({
     clubFormDraftReducer,
     initialForm,
     (form) =>
-      form
-        ? createClubFormDraftState(form)
-        : createDefaultClubFormDraftState(),
+      form ? createClubFormDraftState(form) : createDefaultClubFormDraftState(),
   );
   const validation = clubFormDraftSchema.safeParse({
     title: draft.title,
