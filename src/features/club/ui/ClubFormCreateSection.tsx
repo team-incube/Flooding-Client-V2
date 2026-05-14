@@ -3,6 +3,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import TextField from "@/shared/ui/textField";
+import TextArea from "@/shared/ui/textArea";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
@@ -19,12 +20,6 @@ import { ClubFormFieldEditor } from "./ClubFormFieldEditor";
 interface ClubFormCreateSectionProps {
   id: number;
 }
-
-const fieldBoxStyles =
-  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
-
-const secondaryButtonStyles =
-  "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 hover:border-sub-1";
 
 function ClubFormCreateSectionLoading() {
   return (
@@ -143,12 +138,11 @@ const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
               >
                 폼 설명
               </label>
-              <textarea
+              <TextArea
                 id={descriptionInputId}
                 value={description}
                 placeholder="신청자에게 보여줄 안내 문구를 입력해주세요"
                 onChange={(e) => handleDescriptionChange(e.target.value)}
-                className={`${fieldBoxStyles} min-h-[96px] resize-y`}
               />
             </div>
           </div>
@@ -171,13 +165,15 @@ const ClubFormCreateSection = ({ id }: ClubFormCreateSectionProps) => {
           </div>
 
           <div className="flex flex-wrap justify-between gap-3">
-            <button
+            <TextButton
               type="button"
-              className={secondaryButtonStyles}
+              variant="outlined"
+              size="fit"
+              className="hover:border-sub-1"
               onClick={handleAddField}
             >
               질문 추가
-            </button>
+            </TextButton>
             <div className="flex gap-3">
               <TextButton
                 size="wide"
