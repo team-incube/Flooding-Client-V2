@@ -102,19 +102,17 @@ const ClubDetailSection = ({
 
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const baseClubPermission = createClubPermission({ role: user.role });
-  const { data: openingStatus } = useQuery({
-    ...clubQueries.openingStatus(),
-    enabled: baseClubPermission.canCheckOpeningStatus,
-    retry: false,
-  });
-
   const clubPermission = createClubPermission({
     role: user.role,
     clubType: detail.club.type,
     isLeader: detail.isLeader,
-    isOpeningApplicationOpen: openingStatus?.isOpened,
   });
+  const { data: openingStatus } = useQuery({
+    ...clubQueries.openingStatus(),
+    enabled: clubPermission.canCheckOpeningStatus,
+    retry: false,
+  });
+
   const hasClubApplication = user.hasClubApplication ?? false;
   const formQuery = clubQueries.form(id);
   const { data: form, error: formError } = useQuery({
@@ -190,7 +188,9 @@ const ClubDetailSection = ({
           <div className="flex w-full flex-col gap-4">
             <ClubDetail
               detail={detail}
-              canDelete={clubPermission.canDelete}
+              canDelete={
+                openingStatus?.isOpened === true && clubPermission.canDelete
+              }
               isApplyPending={autonomousApplyMutation.isPending}
               applyDisabledMessage={
                 hasClubApplication

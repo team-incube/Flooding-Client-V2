@@ -114,16 +114,16 @@ function ClubHomeSection() {
 
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const baseClubPermission = createClubPermission({ role: user.role });
-  const { data: openingStatus } = useQuery({
-    ...clubQueries.openingStatus(),
-    enabled: baseClubPermission.canCheckOpeningStatus,
-    retry: false,
-  });
   const clubPermission = createClubPermission({
     role: user.role,
-    isOpeningApplicationOpen: openingStatus?.isOpened,
   });
+  const { data: openingStatus } = useQuery({
+    ...clubQueries.openingStatus(),
+    enabled: clubPermission.canCheckOpeningStatus,
+    retry: false,
+  });
+  const canRegisterClub =
+    openingStatus?.isOpened === true && clubPermission.canRegisterClub;
   const { data: openingRequests, isLoading: isOpeningRequestsLoading } =
     useQuery({
       ...clubQueries.openingRequests(),
@@ -164,17 +164,17 @@ function ClubHomeSection() {
       </TextButton>
       <TextButton
         variant={
-          viewMode === "form" && clubPermission.canRegisterClub
+          viewMode === "form" && canRegisterClub
             ? "filled"
-            : clubPermission.canRegisterClub
+            : canRegisterClub
               ? "outlined"
               : "disabled"
         }
         size="fit"
         className="flex-1"
-        disabled={!clubPermission.canRegisterClub}
+        disabled={!canRegisterClub}
         onClick={() => {
-          if (clubPermission.canRegisterClub) setViewMode("form");
+          if (canRegisterClub) setViewMode("form");
         }}
       >
         개설 신청
@@ -217,7 +217,7 @@ function ClubHomeSection() {
             <div className="mb-auto flex w-full flex-col gap-4">
               {clubModeToggle}
 
-              {viewMode === "form" && clubPermission.canRegisterClub ? (
+              {viewMode === "form" && canRegisterClub ? (
                 <ClubRegistrationSection
                   compact
                   onGoBackToList={handleGoBackToList}

@@ -5,14 +5,12 @@ interface CreateClubPermissionParams {
   role?: UserRole;
   clubType?: ClubType;
   isLeader?: boolean;
-  isOpeningApplicationOpen?: boolean;
 }
 
 export function createClubPermission({
   role,
   clubType,
   isLeader = false,
-  isOpeningApplicationOpen = false,
 }: CreateClubPermissionParams) {
   const isAdmin = role === "ADMIN";
   const isStudentCouncil = role === "STUDENT_COUNCIL";
@@ -27,11 +25,11 @@ export function createClubPermission({
     isManager: isClubManager,
     isAdmin,
     canCheckOpeningStatus: canManageStudy,
-    canRegisterClub: isOpeningApplicationOpen && canManageStudy,
+    canRegisterClub: canManageStudy,
     canViewOpeningRequests: isClubManager,
     canExport: isAdmin,
     canApprove: isLeader || isAdmin,
-    canDelete: isOpeningApplicationOpen && (isLeader || isAdmin),
+    canDelete: isLeader || isAdmin,
     canCreateForm: isMajorClub && isLeader,
     canEditForm: isMajorClub && isLeader,
     canViewApplications: isMajorClub && (isLeader || isClubManager),
