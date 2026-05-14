@@ -40,8 +40,7 @@ export default function ClubSearch({
         <div className="flex w-full gap-1">
           <TextButton
             variant={selectedType === "MAJOR_CLUB" ? "filled" : "outlined"}
-            size="fit"
-            className="flex-1"
+            size="small"
             onClick={() =>
               onTypeChange(selectedType === "MAJOR_CLUB" ? "ALL" : "MAJOR_CLUB")
             }
@@ -50,8 +49,7 @@ export default function ClubSearch({
           </TextButton>
           <TextButton
             variant={selectedType === "AUTONOMOUS_CLUB" ? "filled" : "outlined"}
-            size="fit"
-            className="flex-1"
+            size="small"
             onClick={() =>
               onTypeChange(
                 selectedType === "AUTONOMOUS_CLUB" ? "ALL" : "AUTONOMOUS_CLUB",

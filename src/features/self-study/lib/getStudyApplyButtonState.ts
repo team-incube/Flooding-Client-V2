@@ -6,6 +6,7 @@ interface GetStudyApplyButtonStateParams {
   isLoading: boolean;
   hasApplied: boolean;
   isApplicationOpen: boolean;
+  isApplicationTime?: boolean;
 }
 
 interface StudyApplyButtonState {
@@ -19,6 +20,7 @@ export function getStudyApplyButtonState({
   isLoading,
   hasApplied,
   isApplicationOpen,
+  isApplicationTime = true,
 }: GetStudyApplyButtonStateParams): StudyApplyButtonState {
   const variant: TextButtonVariant = isStudyBanned
     ? "negative"
@@ -32,7 +34,7 @@ export function getStudyApplyButtonState({
       ? "확인 중"
       : hasApplied
         ? "취소하기"
-        : isApplicationOpen
+        : isApplicationOpen || !isApplicationTime
           ? "신청 불가"
           : "신청하기";
 

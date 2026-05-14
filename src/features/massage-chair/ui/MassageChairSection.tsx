@@ -2,15 +2,18 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
+import { isMassageApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createApplicationActionState } from "@/shared/lib/applicationActionState";
+import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import { useApplyMassage } from "../model/useApplyMassage";
 import { useCancelMassage } from "../model/useCancelMassage";
 
 export function MassageChairSection() {
+  const currentTime = useCurrentTime();
   const massageQuery = dormitoryQueries.massage();
   const { data: massageApplicants, isLoading: isMassageLoading } =
     useQuery(massageQuery);
@@ -22,12 +25,14 @@ export function MassageChairSection() {
   const hasAppliedMassage =
     user !== undefined &&
     applicants.some((student) => student.studentNumber === user.studentNumber);
+  const isMassageApplyTime = isMassageApplicationTime(currentTime);
   const massageActionState = createApplicationActionState({
     hasApplied: hasAppliedMassage,
     isUserLoading,
     isDataLoading: isMassageLoading,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
+    isApplicationTime: isMassageApplyTime,
   });
 
   const handleApplyMassage = () => {
@@ -87,7 +92,7 @@ export function MassageChairSection() {
               ? "확인 중"
               : hasAppliedMassage
                 ? "취소하기"
-                : isApplicationOpen
+                : isApplicationOpen || !isMassageApplyTime
                   ? "신청 불가"
                   : "신청하기"}
           </TextButton>

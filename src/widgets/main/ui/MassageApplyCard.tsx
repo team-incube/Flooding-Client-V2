@@ -3,16 +3,19 @@
 import { useQuery } from "@tanstack/react-query";
 import ChairIcon from "@/shared/asset/svg/Chair";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { isMassageApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyMassage } from "@/features/massage-chair/model/useApplyMassage";
 import { useCancelMassage } from "@/features/massage-chair/model/useCancelMassage";
 import { getMassageApplyButtonText } from "@/features/massage-chair/lib/getMassageApplyButtonText";
 import { createApplicationActionState } from "@/shared/lib/applicationActionState";
+import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import ApplyCard from "./ApplyCard";
 
 const MASSAGE_MAX = 5;
 
 export default function MassageApplyCard() {
+  const currentTime = useCurrentTime();
   const massageQuery = dormitoryQueries.massage();
   const { data: massageApplicants, isLoading: isMassageLoading } =
     useQuery(massageQuery);
@@ -24,12 +27,14 @@ export default function MassageApplyCard() {
   const hasAppliedMassage =
     user !== undefined &&
     applicants.some((student) => student.studentNumber === user.studentNumber);
+  const isMassageApplyTime = isMassageApplicationTime(currentTime);
   const massageActionState = createApplicationActionState({
     hasApplied: hasAppliedMassage,
     isUserLoading,
     isDataLoading: isMassageLoading,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
+    isApplicationTime: isMassageApplyTime,
   });
 
   const handleApplyMassage = () => {
@@ -59,8 +64,13 @@ export default function MassageApplyCard() {
         isLoading: isUserLoading || isMassageLoading,
         hasApplied: hasAppliedMassage,
         isApplicationOpen,
+        isApplicationTime: isMassageApplyTime,
       })}
-      buttonSize={!hasAppliedMassage && isApplicationOpen ? "fit" : "small"}
+      buttonSize={
+        !hasAppliedMassage && (isApplicationOpen || !isMassageApplyTime)
+          ? "fit"
+          : "small"
+      }
       detailHref="/dormitory"
       femaleNotice
       disabled={massageActionState.isActionDisabled}

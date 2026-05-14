@@ -5,9 +5,14 @@ import { Club } from "../model/club";
 interface ClubCardProps {
   club: Club;
   onClick?: () => void;
+  showMemberCount?: boolean;
 }
 
-export default function ClubCard({ club, onClick }: ClubCardProps) {
+export default function ClubCard({
+  club,
+  onClick,
+  showMemberCount = true,
+}: ClubCardProps) {
   return (
     <div
       className="bg-sub-4 flex cursor-pointer flex-col gap-4 rounded-2xl px-4 py-6"
@@ -32,9 +37,11 @@ export default function ClubCard({ club, onClick }: ClubCardProps) {
         <p className="text-caption-1 text-sub-1 line-clamp-2">
           {club.description}
         </p>
-        <span className="text-caption-1 text-sub-2">
-          동아리 인원: {club.totalMember}명
-        </span>
+        {showMemberCount && (
+          <span className="text-caption-1 text-sub-2">
+            동아리 인원: {club.totalMember}명
+          </span>
+        )}
       </div>
     </div>
   );

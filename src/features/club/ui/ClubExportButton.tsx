@@ -35,7 +35,7 @@ export default function ClubExportButton() {
   return (
     <div className="flex flex-col items-center gap-4">
       <span className="text-text-1 text-sub-2 font-semibold">
-        개설 신청 동아리 엑셀로 뽑기
+        전공 동아리 전체 명단 엑셀로 출력하기
       </span>
       <button
         onClick={handleExport}

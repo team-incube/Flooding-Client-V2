@@ -7,10 +7,12 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { isStudyApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createStudyPermission } from "@/entities/user/lib/permission";
 import { createApplicationActionState } from "@/shared/lib/applicationActionState";
 import { getStudyApplyButtonState } from "../lib/getStudyApplyButtonState";
+import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCancelStudy } from "../model/useCancelStudy";
@@ -22,6 +24,7 @@ const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
 export function SelfStudySection() {
+  const currentTime = useCurrentTime();
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
     useQuery(studyQuery);
@@ -37,6 +40,7 @@ export function SelfStudySection() {
   const hasAppliedStudy =
     user !== undefined &&
     students.some((student) => student.userId === user.id);
+  const isStudyApplyTime = isStudyApplicationTime(currentTime);
   const studyActionState = createApplicationActionState({
     hasApplied: hasAppliedStudy,
     isUserLoading,
@@ -44,6 +48,7 @@ export function SelfStudySection() {
     isBanned: isStudyBanned,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
+    isApplicationTime: isStudyApplyTime,
   });
   const studyApplyButtonState = getStudyApplyButtonState({
     isStudyBanned,
@@ -51,6 +56,7 @@ export function SelfStudySection() {
     isLoading: isUserLoading || isStudyLoading,
     hasApplied: hasAppliedStudy,
     isApplicationOpen,
+    isApplicationTime: isStudyApplyTime,
   });
   const studyPermission = createStudyPermission({ role: user?.role });
   const canManageStudy = studyPermission.canManage;
