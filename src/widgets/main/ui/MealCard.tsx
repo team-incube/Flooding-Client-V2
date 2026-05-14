@@ -5,39 +5,19 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import Bowl from "@/shared/asset/svg/Bowl";
 import Back from "@/shared/asset/svg/Back";
 import { neisQueries } from "@/entities/neis/api/neisQueries";
+import {
+  MEAL_TYPES,
+  MEAL_TYPE_MAP,
+  type MealType,
+} from "@/entities/neis/model/neis";
+import { getCurrentMealType } from "@/entities/neis/lib/getCurrentMealType";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
   ClientQueryBoundary,
   type QueryErrorFallbackProps,
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { formatDateParam } from "@/shared/lib/date";
-
-const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
-const MEAL_TYPES = ["조식", "중식", "석식"] as const;
-type MealType = (typeof MEAL_TYPES)[number];
-
-const MEAL_TYPE_MAP: Record<MealType, string> = {
-  조식: "BREAKFAST",
-  중식: "LUNCH",
-  석식: "DINNER",
-};
-
-function getCurrentMealType(): MealType {
-  const now = new Date();
-  const totalMinutes = now.getHours() * 60 + now.getMinutes();
-  if (totalMinutes <= 8 * 60) return "조식";
-  if (totalMinutes <= 13 * 60 + 30) return "중식";
-  return "석식";
-}
-
-function formatDisplayDate(date: Date): string {
-  const yy = String(date.getFullYear()).slice(2);
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  const day = DAYS[date.getDay()];
-  return `${yy}.${mm}.${dd} (${day})`;
-}
+import { formatDateParam, formatDisplayDate } from "@/shared/lib/date";
 
 function MealCardLoading() {
   return (
