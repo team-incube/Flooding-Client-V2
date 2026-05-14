@@ -2,6 +2,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
+import { useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
@@ -36,7 +37,7 @@ function getErrorMessage(error: unknown) {
   const status = axios.isAxiosError(error) ? error.response?.status : undefined;
 
   if (status === HttpStatusCode.BadRequest) {
-    return "정규 동아리만 신청자 목록을 조회할 수 있어요.";
+    return "전공 동아리만 신청자 목록을 조회할 수 있어요.";
   }
   if (status === HttpStatusCode.Forbidden) {
     return "신청자 목록을 조회할 권한이 없어요.";
@@ -73,6 +74,8 @@ function ClubApplicationListSectionError({
   error,
   resetErrorBoundary,
 }: QueryErrorFallbackProps) {
+  const router = useRouter();
+
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
@@ -81,6 +84,13 @@ function ClubApplicationListSectionError({
           {getErrorMessage(error)}
         </p>
         <div className="flex gap-3">
+          <TextButton
+            variant="outlined"
+            size="fit"
+            onClick={() => router.back()}
+          >
+            뒤로가기
+          </TextButton>
           <TextButton
             variant="outlined"
             size="fit"
@@ -110,6 +120,7 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
   const canApproveApplications = isLeader || user?.role === "ADMIN";
   const canViewApplications =
     !!detail &&
+    detail.club.type === "MAJOR_CLUB" &&
     (isLeader || user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL");
   const applicationListQuery = clubQueries.applicationList(id);
   const { data: applicationList } = useSuspenseQuery({

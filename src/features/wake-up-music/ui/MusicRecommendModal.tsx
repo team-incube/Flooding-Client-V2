@@ -77,8 +77,14 @@ export function MusicRecommendModal({
   };
 
   return (
-    <div className="bg-background/40 fixed inset-0 z-50 flex items-center justify-center">
-      <div className="bg-background-surface flex min-h-[447px] w-[90%] max-w-[1152px] flex-col gap-6 rounded-2xl p-6">
+    <div
+      className="bg-background/40 fixed inset-0 z-50 flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        className="bg-background-surface flex min-h-[447px] w-[90%] max-w-[1152px] flex-col gap-6 rounded-2xl p-6"
+        onClick={(event) => event.stopPropagation()}
+      >
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1">

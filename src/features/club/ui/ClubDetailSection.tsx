@@ -116,7 +116,8 @@ const ClubDetailSection = ({
   const canDeleteClub =
     (isLeader || user.role === "ADMIN") && openingStatus?.isOpened === true;
   const canCreateForm = detail.club.type === "MAJOR_CLUB" && isLeader;
-  const canViewApplications = isLeader || isClubManager;
+  const canViewApplications =
+    detail.club.type === "MAJOR_CLUB" && (isLeader || isClubManager);
   const formQuery = clubQueries.form(id);
   const { data: form, error: formError } = useQuery({
     ...formQuery,

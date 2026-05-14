@@ -1,16 +1,20 @@
-import type { User } from "@/entities/user/model/user";
+export interface HomebaseSelectableStudent {
+  id: number;
+  name: string;
+  studentNumber: number;
+}
 
 interface FilterAvailableStudentsParams {
   searchKeyword: string;
-  selectedStudents: User[];
-  students: User[];
+  selectedStudents: HomebaseSelectableStudent[];
+  students: HomebaseSelectableStudent[];
 }
 
 export function filterAvailableStudents({
   searchKeyword,
   selectedStudents,
   students,
-}: FilterAvailableStudentsParams): User[] {
+}: FilterAvailableStudentsParams): HomebaseSelectableStudent[] {
   const normalizedSearchKeyword = searchKeyword.trim();
 
   if (!normalizedSearchKeyword) {
@@ -31,9 +35,9 @@ export function filterAvailableStudents({
 }
 
 export function removeSelectedStudent(
-  selectedStudents: User[],
+  selectedStudents: HomebaseSelectableStudent[],
   studentNumber: number,
-): User[] {
+): HomebaseSelectableStudent[] {
   return selectedStudents.filter(
     (selectedStudent) => selectedStudent.studentNumber !== studentNumber,
   );

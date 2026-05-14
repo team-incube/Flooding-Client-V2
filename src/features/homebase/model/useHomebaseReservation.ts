@@ -20,7 +20,9 @@ export function useHomebaseReservation() {
     selectedEndNum,
     handlePeriodSelect: selectPeriod,
     getPeriodButtonVariant,
-  } = useHomebasePeriodSelection();
+  } = useHomebasePeriodSelection({
+    canSelectMultiplePeriods: selectedTable !== null,
+  });
   const {
     currentUser,
     reservations,

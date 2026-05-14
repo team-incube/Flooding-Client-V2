@@ -3,14 +3,17 @@
 import { useQuery } from "@tanstack/react-query";
 import BookIcon from "@/shared/asset/svg/ApplyStudy";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { isStudyApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyStudy } from "@/features/self-study/model/useApplyStudy";
 import { useCancelStudy } from "@/features/self-study/model/useCancelStudy";
+import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import ApplyCard from "./ApplyCard";
 
 const STUDY_MAX = 50;
 
 export default function StudyApplyCard() {
+  const currentTime = useCurrentTime();
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
     useQuery(studyQuery);
@@ -25,12 +28,14 @@ export default function StudyApplyCard() {
     students.some((student) => student.userId === user.id);
   const isStudyActionPending =
     applyMutation.isPending || cancelMutation.isPending;
+  const isStudyApplyTime = isStudyApplicationTime(currentTime);
   const isStudyApplyDisabled =
     isUserLoading ||
     isStudyLoading ||
     isStudyBanned ||
     isStudyActionPending ||
-    isApplicationOpen;
+    isApplicationOpen ||
+    !isStudyApplyTime;
   const isStudyCancelDisabled =
     isUserLoading || isStudyLoading || isStudyBanned || isStudyActionPending;
   const isStudyActionDisabled = hasAppliedStudy
@@ -67,13 +72,14 @@ export default function StudyApplyCard() {
             ? "확인 중"
             : hasAppliedStudy
               ? "취소"
-              : isApplicationOpen
+              : isApplicationOpen || !isStudyApplyTime
                 ? "신청 불가"
                 : "신청"
       }
       buttonVariant={isStudyBanned ? "negative" : "filled"}
       buttonSize={
-        isStudyBanned || (!hasAppliedStudy && isApplicationOpen)
+        isStudyBanned ||
+        (!hasAppliedStudy && (isApplicationOpen || !isStudyApplyTime))
           ? "fit"
           : "small"
       }

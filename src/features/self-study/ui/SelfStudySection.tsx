@@ -7,8 +7,10 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { isStudyApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { isManagementRole } from "@/entities/user/lib/userRole";
+import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCancelStudy } from "../model/useCancelStudy";
@@ -20,6 +22,7 @@ const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
 export function SelfStudySection() {
+  const currentTime = useCurrentTime();
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
     useQuery(studyQuery);
@@ -37,12 +40,14 @@ export function SelfStudySection() {
     students.some((student) => student.userId === user.id);
   const isStudyActionPending =
     applyMutation.isPending || cancelMutation.isPending;
+  const isStudyApplyTime = isStudyApplicationTime(currentTime);
   const isStudyApplyDisabled =
     isUserLoading ||
     isStudyLoading ||
     isStudyBanned ||
     isStudyActionPending ||
-    isApplicationOpen;
+    isApplicationOpen ||
+    !isStudyApplyTime;
   const isStudyCancelDisabled =
     isUserLoading || isStudyLoading || isStudyBanned || isStudyActionPending;
   const isStudyActionDisabled = hasAppliedStudy
@@ -225,7 +230,7 @@ export function SelfStudySection() {
                 ? "확인 중"
                 : hasAppliedStudy
                   ? "취소하기"
-                  : isApplicationOpen
+                  : isApplicationOpen || !isStudyApplyTime
                     ? "신청 불가"
                     : "신청하기"}
           </TextButton>

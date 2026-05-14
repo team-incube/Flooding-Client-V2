@@ -16,6 +16,7 @@ import {
   createHomebaseApplyRequest,
   hasHomebaseReservationConflict,
 } from "@/features/homebase/lib/homebaseReservationPolicy";
+import type { HomebaseSelectableStudent } from "@/features/homebase/lib/studentSelection";
 import { isPeriodStarted } from "@/features/homebase/lib/isPeriodStarted";
 
 interface UseHomebaseReservationActionsParams {
@@ -28,7 +29,7 @@ interface UseHomebaseReservationActionsParams {
   reason: string;
   reservations: HomebaseReservation[];
   currentUser?: User | null;
-  selectedStudents: User[];
+  selectedStudents: HomebaseSelectableStudent[];
   onApplySuccess: () => void;
 }
 
