@@ -6,7 +6,12 @@ import Back from "@/shared/asset/svg/Back";
 import Calendar from "@/shared/asset/svg/Calender";
 import { getTimetables } from "@/entities/neis/api/getNeis";
 import { neisQueries } from "@/entities/neis/api/neisQueries";
-import { NEIS_OFFICE_CODE, NEIS_SCHOOL_CODE } from "@/entities/neis/model/neis";
+import {
+  NEIS_OFFICE_CODE,
+  NEIS_SCHOOL_CODE,
+  PERIOD_TIMES,
+} from "@/entities/neis/model/neis";
+import { getCurrentPeriod } from "@/entities/neis/lib/getCurrentPeriod";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
@@ -14,36 +19,7 @@ import {
   type QueryErrorFallbackProps,
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { formatDateParam } from "@/shared/lib/date";
-
-const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
-
-const PERIOD_TIMES: Record<number, [string, string]> = {
-  1: ["08:40", "09:30"],
-  2: ["09:40", "10:30"],
-  3: ["10:40", "11:30"],
-  4: ["11:40", "12:30"],
-  5: ["13:20", "14:10"],
-  6: ["14:20", "15:10"],
-  7: ["15:20", "16:10"],
-};
-
-function getCurrentPeriod(): number | null {
-  const now = new Date();
-  const hhmm = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-  for (const [period, [start, end]] of Object.entries(PERIOD_TIMES)) {
-    if (hhmm >= start && hhmm <= end) return Number(period);
-  }
-  return null;
-}
-
-function formatDisplayDate(date: Date): string {
-  const yy = String(date.getFullYear()).slice(2);
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  const day = DAYS[date.getDay()];
-  return `${yy}.${mm}.${dd} (${day})`;
-}
+import { formatDateParam, formatDisplayDate } from "@/shared/lib/date";
 
 function TimeTableCardLoading() {
   return (

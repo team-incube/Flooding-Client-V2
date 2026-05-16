@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
+import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { isMassageApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -24,23 +25,18 @@ export function MassageChairSection() {
   const hasAppliedMassage =
     user !== undefined &&
     applicants.some((student) => student.studentNumber === user.studentNumber);
-  const isMassageActionPending =
-    applyMutation.isPending || cancelMutation.isPending;
   const isMassageApplyTime = isMassageApplicationTime(currentTime);
-  const isMassageApplyDisabled =
-    isUserLoading ||
-    isMassageLoading ||
-    isMassageActionPending ||
-    isApplicationOpen ||
-    !isMassageApplyTime;
-  const isMassageCancelDisabled =
-    isUserLoading || isMassageLoading || isMassageActionPending;
-  const isMassageActionDisabled = hasAppliedMassage
-    ? isMassageCancelDisabled
-    : isMassageApplyDisabled;
+  const massageActionState = createApplicationActionState({
+    hasApplied: hasAppliedMassage,
+    isUserLoading,
+    isDataLoading: isMassageLoading,
+    isActionPending: applyMutation.isPending || cancelMutation.isPending,
+    isApplicationOpen,
+    isApplicationTime: isMassageApplyTime,
+  });
 
   const handleApplyMassage = () => {
-    if (isMassageApplyDisabled || hasAppliedMassage) {
+    if (!massageActionState.canApply) {
       return;
     }
 
@@ -48,7 +44,7 @@ export function MassageChairSection() {
   };
 
   const handleCancelMassage = () => {
-    if (isMassageCancelDisabled || !hasAppliedMassage) {
+    if (!massageActionState.canCancel) {
       return;
     }
 
@@ -83,9 +79,11 @@ export function MassageChairSection() {
 
         <div className="flex w-[330px] shrink-0 flex-col justify-end gap-3">
           <TextButton
-            variant={isMassageActionDisabled ? "disabled" : "filled"}
+            variant={
+              massageActionState.isActionDisabled ? "disabled" : "filled"
+            }
             size="wide"
-            disabled={isMassageActionDisabled}
+            disabled={massageActionState.isActionDisabled}
             onClick={
               hasAppliedMassage ? handleCancelMassage : handleApplyMassage
             }

@@ -1,19 +1,18 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useReducer, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import type { ClubForm, ClubFormFieldType } from "@/entities/club/model/club";
 import {
+  clubFormDraftReducer,
   createClubFormDraftState,
   createClubFormRequest,
-  createDefaultClubFormField,
-  createDefaultClubFormFieldOption,
-  isClubFormFieldDraftValid,
-  needsClubFormFieldOptions,
-  type ClubFormFieldDraft,
+  createDefaultClubFormDraftState,
   type ClubFormFieldDraftKey,
   type ClubFormFieldOptionDraftKey,
 } from "../lib/clubFormBuilder";
+import { clubFormDraftSchema } from "../lib/clubFormSchema";
 import { useCreateClubForm } from "./useCreateClubForm";
 import { useUpdateClubForm } from "./useUpdateClubForm";
 
@@ -33,45 +32,34 @@ export function useClubFormBuilder({
   const router = useRouter();
   const createMutation = useCreateClubForm(clubId);
   const updateMutation = useUpdateClubForm(clubId);
-  const initialDraftState = initialForm
-    ? createClubFormDraftState(initialForm)
-    : undefined;
   const mutation = mode === "edit" ? updateMutation : createMutation;
-  const [title, setTitle] = useState(initialDraftState?.title ?? "");
-  const [description, setDescription] = useState(
-    initialDraftState?.description ?? "",
+  const [draft, dispatch] = useReducer(
+    clubFormDraftReducer,
+    initialForm,
+    (form) =>
+      form ? createClubFormDraftState(form) : createDefaultClubFormDraftState(),
   );
-  const [fields, setFields] = useState<ClubFormFieldDraft[]>(
-    initialDraftState?.fields ?? [createDefaultClubFormField(1)],
-  );
-  const [nextFieldId, setNextFieldId] = useState(
-    initialDraftState?.nextFieldId ?? 2,
-  );
-  const [nextOptionId, setNextOptionId] = useState(
-    initialDraftState?.nextOptionId ?? 1,
-  );
-  const canSubmit =
-    canCreateForm &&
-    !!title.trim() &&
-    fields.length > 0 &&
-    fields.every(isClubFormFieldDraftValid) &&
-    !mutation.isPending;
+  const validation = clubFormDraftSchema.safeParse({
+    title: draft.title,
+    description: draft.description,
+    fields: draft.fields,
+  });
+  const canSubmit = canCreateForm && !mutation.isPending;
 
   const handleTitleChange = (value: string) => {
-    setTitle(value);
+    dispatch({ type: "SET_TITLE", value });
   };
 
   const handleDescriptionChange = (value: string) => {
-    setDescription(value);
+    dispatch({ type: "SET_DESCRIPTION", value });
   };
 
   const handleAddField = () => {
-    setFields((prev) => [...prev, createDefaultClubFormField(nextFieldId)]);
-    setNextFieldId((prev) => prev + 1);
+    dispatch({ type: "ADD_FIELD" });
   };
 
   const handleRemoveField = (fieldId: number) => {
-    setFields((prev) => prev.filter((field) => field.id !== fieldId));
+    dispatch({ type: "REMOVE_FIELD", fieldId });
   };
 
   const handleFieldChange = (
@@ -79,73 +67,22 @@ export function useClubFormBuilder({
     key: ClubFormFieldDraftKey,
     value: string | boolean,
   ) => {
-    setFields((prev) =>
-      prev.map((field) =>
-        field.id === fieldId ? { ...field, [key]: value } : field,
-      ),
-    );
+    dispatch({ type: "SET_FIELD", fieldId, key, value });
   };
 
   const handleFieldTypeChange = (
     fieldId: number,
     fieldType: ClubFormFieldType,
   ) => {
-    const optionId = nextOptionId;
-
-    setFields((prev) =>
-      prev.map((field) => {
-        if (field.id !== fieldId) {
-          return field;
-        }
-
-        if (!needsClubFormFieldOptions(fieldType)) {
-          return { ...field, fieldType, options: [] };
-        }
-
-        return {
-          ...field,
-          fieldType,
-          options:
-            field.options.length > 0
-              ? field.options
-              : [createDefaultClubFormFieldOption(optionId)],
-        };
-      }),
-    );
-
-    if (needsClubFormFieldOptions(fieldType)) {
-      setNextOptionId((prev) => prev + 1);
-    }
+    dispatch({ type: "SET_FIELD_TYPE", fieldId, fieldType });
   };
 
   const handleAddOption = (fieldId: number) => {
-    setFields((prev) =>
-      prev.map((field) =>
-        field.id === fieldId
-          ? {
-              ...field,
-              options: [
-                ...field.options,
-                createDefaultClubFormFieldOption(nextOptionId),
-              ],
-            }
-          : field,
-      ),
-    );
-    setNextOptionId((prev) => prev + 1);
+    dispatch({ type: "ADD_OPTION", fieldId });
   };
 
   const handleRemoveOption = (fieldId: number, optionId: number) => {
-    setFields((prev) =>
-      prev.map((field) =>
-        field.id === fieldId
-          ? {
-              ...field,
-              options: field.options.filter((option) => option.id !== optionId),
-            }
-          : field,
-      ),
-    );
+    dispatch({ type: "REMOVE_OPTION", fieldId, optionId });
   };
 
   const handleOptionChange = (
@@ -154,32 +91,28 @@ export function useClubFormBuilder({
     key: ClubFormFieldOptionDraftKey,
     value: string,
   ) => {
-    setFields((prev) =>
-      prev.map((field) =>
-        field.id === fieldId
-          ? {
-              ...field,
-              options: field.options.map((option) =>
-                option.id === optionId ? { ...option, [key]: value } : option,
-              ),
-            }
-          : field,
-      ),
-    );
+    dispatch({ type: "SET_OPTION", fieldId, optionId, key, value });
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!canSubmit) {
+    if (!canCreateForm || mutation.isPending) {
+      return;
+    }
+
+    if (!validation.success) {
+      toast.warning(
+        validation.error.issues[0]?.message ?? "입력값을 확인해주세요",
+      );
       return;
     }
 
     mutation.mutate(
       createClubFormRequest({
-        title,
-        description,
-        fields,
+        title: validation.data.title,
+        description: validation.data.description,
+        fields: validation.data.fields,
       }),
       {
         onSuccess: () => router.push(`/club/${clubId}/apply`),
@@ -188,9 +121,9 @@ export function useClubFormBuilder({
   };
 
   return {
-    title,
-    description,
-    fields,
+    title: draft.title,
+    description: draft.description,
+    fields: draft.fields,
     canSubmit,
     handleTitleChange,
     handleDescriptionChange,

@@ -1,4 +1,6 @@
 import TextField from "@/shared/ui/textField";
+import Select from "@/shared/ui/select";
+import { TextButton } from "@/shared/ui/Button/TextButton";
 import type { ClubFormFieldType } from "@/entities/club/model/club";
 import {
   clubFormFieldTypeOptions,
@@ -30,12 +32,6 @@ interface ClubFormFieldEditorProps {
   ) => void;
 }
 
-const fieldBoxStyles =
-  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
-
-const secondaryButtonStyles =
-  "h-[43px] rounded-lg border border-sub-2 bg-background-surface px-4 text-text-4 text-sub-1 hover:border-sub-1";
-
 export function ClubFormFieldEditor({
   field,
   index,
@@ -55,14 +51,16 @@ export function ClubFormFieldEditor({
     <div className="border-sub-3 bg-background flex flex-col gap-4 rounded-xl border p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="text-text-1 text-main-text">질문 {index + 1}</span>
-        <button
+        <TextButton
           type="button"
-          className={secondaryButtonStyles}
+          variant="outlined"
+          size="fit"
+          className="hover:border-sub-1 disabled:hover:border-sub-2"
           onClick={() => onRemoveField(field.id)}
           disabled={isOnlyField}
         >
           삭제
-        </button>
+        </TextButton>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_180px]">
@@ -88,20 +86,19 @@ export function ClubFormFieldEditor({
           >
             질문 타입
           </label>
-          <select
+          <Select
             id={fieldTypeInputId}
             value={field.fieldType}
             onChange={(e) =>
               onFieldTypeChange(field.id, e.target.value as ClubFormFieldType)
             }
-            className={`${fieldBoxStyles} h-[52px]`}
           >
             {clubFormFieldTypeOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       </div>
 
@@ -140,13 +137,15 @@ export function ClubFormFieldEditor({
             <span className="text-text-3 text-main-text">
               선택지 <span className="text-p-1">*</span>
             </span>
-            <button
+            <TextButton
               type="button"
-              className={secondaryButtonStyles}
+              variant="outlined"
+              size="fit"
+              className="hover:border-sub-1"
               onClick={() => onAddOption(field.id)}
             >
               선택지 추가
-            </button>
+            </TextButton>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -184,14 +183,16 @@ export function ClubFormFieldEditor({
                       </p>
                     )}
                 </div>
-                <button
+                <TextButton
                   type="button"
-                  className={secondaryButtonStyles}
+                  variant="outlined"
+                  size="fit"
+                  className="hover:border-sub-1 disabled:hover:border-sub-2"
                   onClick={() => onRemoveOption(field.id, option.id)}
                   disabled={field.options.length === 1}
                 >
                   삭제
-                </button>
+                </TextButton>
               </div>
             ))}
           </div>

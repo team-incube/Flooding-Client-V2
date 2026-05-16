@@ -11,11 +11,13 @@ import type {
   HomebaseApplyRequest,
   HomebaseReservation,
 } from "@/entities/homebase/model/homebase";
+import { createHomebasePermission } from "@/entities/homebase/lib/permission";
 import type { User } from "@/entities/user/model/user";
 import {
   createHomebaseApplyRequest,
   hasHomebaseReservationConflict,
 } from "@/features/homebase/lib/homebaseReservationPolicy";
+import { homebaseReservationDraftSchema } from "@/features/homebase/lib/homebaseReservationSchema";
 import type { HomebaseSelectableStudent } from "@/features/homebase/lib/studentSelection";
 import { isPeriodStarted } from "@/features/homebase/lib/isPeriodStarted";
 
@@ -47,7 +49,16 @@ export function useHomebaseReservationActions({
   onApplySuccess,
 }: UseHomebaseReservationActionsParams) {
   const queryClient = useQueryClient();
-  const canSubmit = selectedTable !== null;
+  const homebasePermission = createHomebasePermission({
+    role: currentUser?.role,
+  });
+  const reservationDraft = {
+    reservationDate,
+    startPeriod: selectedStartNum,
+    endPeriod: selectedEndNum,
+    reason,
+    selectedTable: selectedTable ?? "",
+  };
   const targetHomebaseId = selectedTable
     ? getHomebaseId(selectedFloor, selectedTable)
     : null;
@@ -88,17 +99,24 @@ export function useHomebaseReservationActions({
     },
     onError: () => toast.error("취소에 실패했습니다. 다시 시도해주세요"),
   });
+  const canSubmit = homebasePermission.canReserve && !applyMutation.isPending;
 
   const handleSubmit = () => {
-    if (!canSubmit || !selectedTable) return;
+    if (!homebasePermission.canReserve || applyMutation.isPending) return;
 
-    if (isPeriodStarted(selectedStartPeriod)) {
-      toast.warning("이미 지난 교시는 신청할 수 없습니다");
+    const reservationValidation =
+      homebaseReservationDraftSchema.safeParse(reservationDraft);
+
+    if (!reservationValidation.success) {
+      toast.warning(
+        reservationValidation.error.issues[0]?.message ??
+          "입력값을 확인해주세요",
+      );
       return;
     }
 
-    if (!reason.trim()) {
-      toast.warning("신청사유를 입력해주세요");
+    if (isPeriodStarted(selectedStartPeriod)) {
+      toast.warning("이미 지난 교시는 신청할 수 없습니다");
       return;
     }
 
@@ -107,17 +125,20 @@ export function useHomebaseReservationActions({
       return;
     }
 
-    const homebaseId = getHomebaseId(selectedFloor, selectedTable);
+    const homebaseId = getHomebaseId(
+      selectedFloor,
+      reservationValidation.data.selectedTable,
+    );
 
     if (!homebaseId) return;
 
     applyMutation.mutate({
       homebaseId,
       body: createHomebaseApplyRequest({
-        reservationDate,
-        startPeriod: selectedStartNum,
-        endPeriod: selectedEndNum,
-        reason,
+        reservationDate: reservationValidation.data.reservationDate,
+        startPeriod: reservationValidation.data.startPeriod,
+        endPeriod: reservationValidation.data.endPeriod,
+        reason: reservationValidation.data.reason,
         currentUser,
         selectedStudents,
       }),
