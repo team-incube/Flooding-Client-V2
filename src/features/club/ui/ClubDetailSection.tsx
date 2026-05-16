@@ -115,7 +115,7 @@ const ClubDetailSection = ({
 
   const hasClubApplication = user.hasClubApplication ?? false;
   const formQuery = clubQueries.form(id);
-  const { data: form } = useQuery({
+  const { data: form, isFetched: isFormFetched } = useQuery({
     ...formQuery,
     enabled: clubPermission.canCreateForm,
     retry: false,
@@ -171,7 +171,7 @@ const ClubDetailSection = ({
   };
 
   const hasForm = !!form;
-  const canShowFormAction = clubPermission.canCreateForm;
+  const canShowFormAction = clubPermission.canCreateForm && isFormFetched;
 
   return (
     <>
