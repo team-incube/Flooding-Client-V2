@@ -3,11 +3,11 @@
 import { useQuery } from "@tanstack/react-query";
 import BookIcon from "@/shared/asset/svg/ApplyStudy";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { isStudyApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyStudy } from "@/features/self-study/model/useApplyStudy";
 import { useCancelStudy } from "@/features/self-study/model/useCancelStudy";
-import { createApplicationActionState } from "@/shared/lib/applicationActionState";
 import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import ApplyCard from "./ApplyCard";
 

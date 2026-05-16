@@ -25,7 +25,7 @@ import {
   filterClubs,
   type ClubTypeFilter,
 } from "@/features/club/lib/filterClubs";
-import { createClubPermission } from "@/entities/user/lib/permission";
+import { createClubPermission } from "@/entities/club/lib/permission";
 
 function ClubCardSkeleton() {
   return (
@@ -114,17 +114,16 @@ function ClubHomeSection() {
 
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const baseClubPermission = createClubPermission({ role: user.role });
-  const canCheckOpeningStatus = baseClubPermission.canCheckOpeningStatus;
-  const { data: openingStatus } = useQuery({
-    ...clubQueries.openingStatus(),
-    enabled: canCheckOpeningStatus,
-    retry: false,
-  });
   const clubPermission = createClubPermission({
     role: user.role,
-    isOpeningApplicationOpen: openingStatus?.isOpened,
   });
+  const { data: openingStatus } = useQuery({
+    ...clubQueries.openingStatus(),
+    enabled: clubPermission.canCheckOpeningStatus,
+    retry: false,
+  });
+  const canRegisterClub =
+    openingStatus?.isOpened === true && clubPermission.canRegisterClub;
   const { data: openingRequests, isLoading: isOpeningRequestsLoading } =
     useQuery({
       ...clubQueries.openingRequests(),
@@ -153,7 +152,6 @@ function ClubHomeSection() {
   };
 
   const handleSearch = () => setSearchValue(query);
-  const canRegisterClub = clubPermission.canRegisterClub;
   const clubModeToggle = (
     <div className="flex w-full gap-1">
       <TextButton

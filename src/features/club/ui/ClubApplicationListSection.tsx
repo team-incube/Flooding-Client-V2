@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { createClubPermission } from "@/entities/user/lib/permission";
+import { createClubPermission } from "@/entities/club/lib/permission";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { formatDateParam } from "@/shared/lib/date";
 import {

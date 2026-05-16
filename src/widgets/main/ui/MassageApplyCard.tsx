@@ -3,12 +3,11 @@
 import { useQuery } from "@tanstack/react-query";
 import ChairIcon from "@/shared/asset/svg/Chair";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { isMassageApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyMassage } from "@/features/massage-chair/model/useApplyMassage";
 import { useCancelMassage } from "@/features/massage-chair/model/useCancelMassage";
-import { getMassageApplyButtonText } from "@/features/massage-chair/lib/getMassageApplyButtonText";
-import { createApplicationActionState } from "@/shared/lib/applicationActionState";
 import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import ApplyCard from "./ApplyCard";
 
@@ -36,6 +35,14 @@ export default function MassageApplyCard() {
     isApplicationOpen,
     isApplicationTime: isMassageApplyTime,
   });
+  const massageApplyButtonText =
+    isUserLoading || isMassageLoading
+      ? "확인 중"
+      : hasAppliedMassage
+        ? "취소"
+        : isApplicationOpen || !isMassageApplyTime
+          ? "신청 불가"
+          : "신청";
 
   const handleApplyMassage = () => {
     if (!massageActionState.canApply) {
@@ -60,12 +67,7 @@ export default function MassageApplyCard() {
       current={applicants.length}
       total={MASSAGE_MAX}
       timeText="안마 의자 신청 시간은 20:20 ~ 21:00에 신청이 가능해요"
-      buttonText={getMassageApplyButtonText({
-        isLoading: isUserLoading || isMassageLoading,
-        hasApplied: hasAppliedMassage,
-        isApplicationOpen,
-        isApplicationTime: isMassageApplyTime,
-      })}
+      buttonText={massageApplyButtonText}
       buttonSize={
         !hasAppliedMassage && (isApplicationOpen || !isMassageApplyTime)
           ? "fit"

@@ -7,11 +7,10 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { isStudyApplicationTime } from "@/entities/dormitory/lib/applicationTime";
+import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { createStudyPermission } from "@/entities/user/lib/permission";
-import { createApplicationActionState } from "@/shared/lib/applicationActionState";
-import { getStudyApplyButtonState } from "../lib/getStudyApplyButtonState";
 import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
@@ -50,16 +49,21 @@ export function SelfStudySection() {
     isApplicationOpen,
     isApplicationTime: isStudyApplyTime,
   });
-  const studyApplyButtonState = getStudyApplyButtonState({
-    isStudyBanned,
-    isActionDisabled: studyActionState.isActionDisabled,
-    isLoading: isUserLoading || isStudyLoading,
-    hasApplied: hasAppliedStudy,
-    isApplicationOpen,
-    isApplicationTime: isStudyApplyTime,
-  });
+  const studyApplyButtonVariant = isStudyBanned
+    ? "negative"
+    : studyActionState.isActionDisabled
+      ? "disabled"
+      : "filled";
+  const studyApplyButtonText = isStudyBanned
+    ? "자습 금지를 당했어요!"
+    : isUserLoading || isStudyLoading
+      ? "확인 중"
+      : hasAppliedStudy
+        ? "취소하기"
+        : isApplicationOpen || !isStudyApplyTime
+          ? "신청 불가"
+          : "신청하기";
   const studyPermission = createStudyPermission({ role: user?.role });
-  const canManageStudy = studyPermission.canManage;
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
   );
@@ -96,7 +100,7 @@ export function SelfStudySection() {
   };
 
   const handleCheckAttendance = (studentId: number) => {
-    if (!canManageStudy) {
+    if (!studyPermission.canManage) {
       return;
     }
 
@@ -134,7 +138,7 @@ export function SelfStudySection() {
                   checkAttendanceMutation.isPending &&
                   checkAttendanceMutation.variables === student.userId
                 }
-                canCheck={canManageStudy}
+                canCheck={studyPermission.canManage}
                 onCheck={handleCheckAttendance}
               />
             ))}
@@ -219,12 +223,12 @@ export function SelfStudySection() {
           <div className="flex-1" />
 
           <TextButton
-            variant={studyApplyButtonState.variant}
+            variant={studyApplyButtonVariant}
             size="wide"
             disabled={studyActionState.isActionDisabled}
             onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
           >
-            {studyApplyButtonState.text}
+            {studyApplyButtonText}
           </TextButton>
 
           <p className="text-sub-2 text-caption-2">

@@ -13,7 +13,7 @@ import Signout from "@/shared/asset/svg/Signout";
 import Link from "next/link";
 import { ROUTES } from "@/shared/config/routes";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { createStudyPermission } from "@/entities/user/lib/permission";
+import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import type { ReactNode } from "react";
 
 const ICONS: Record<string, (active: boolean) => ReactNode> = {

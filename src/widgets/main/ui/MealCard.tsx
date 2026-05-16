@@ -10,7 +10,7 @@ import {
   MEAL_TYPE_MAP,
   type MealType,
 } from "@/entities/neis/model/neis";
-import { getCurrentMealType } from "@/entities/neis/lib/getCurrentMealType";
+import { getCurrentMealSelection } from "@/entities/neis/lib/getCurrentMealType";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
   ClientQueryBoundary,
@@ -66,8 +66,11 @@ function MealCardEmpty() {
 }
 
 const MealCard = () => {
-  const [offset, setOffset] = useState(0);
-  const [selectedTab, setSelectedTab] = useState<MealType>(getCurrentMealType);
+  const [initialMealSelection] = useState(getCurrentMealSelection);
+  const [offset, setOffset] = useState(initialMealSelection.dateOffset);
+  const [selectedTab, setSelectedTab] = useState<MealType>(
+    initialMealSelection.mealType,
+  );
 
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + offset);

@@ -11,7 +11,7 @@ import type {
   HomebaseApplyRequest,
   HomebaseReservation,
 } from "@/entities/homebase/model/homebase";
-import { createHomebasePermission } from "@/entities/user/lib/permission";
+import { createHomebasePermission } from "@/entities/homebase/lib/permission";
 import type { User } from "@/entities/user/model/user";
 import {
   createHomebaseApplyRequest,
@@ -59,8 +59,6 @@ export function useHomebaseReservationActions({
     reason,
     selectedTable: selectedTable ?? "",
   };
-  const reservationValidation =
-    homebaseReservationDraftSchema.safeParse(reservationDraft);
   const targetHomebaseId = selectedTable
     ? getHomebaseId(selectedFloor, selectedTable)
     : null;
@@ -106,17 +104,10 @@ export function useHomebaseReservationActions({
   const handleSubmit = () => {
     if (!homebasePermission.canReserve || applyMutation.isPending) return;
 
+    const reservationValidation =
+      homebaseReservationDraftSchema.safeParse(reservationDraft);
+
     if (!reservationValidation.success) {
-      if (!selectedTable) {
-        toast.warning("테이블을 선택해주세요");
-        return;
-      }
-
-      if (!reason.trim()) {
-        toast.warning("신청사유를 입력해주세요");
-        return;
-      }
-
       toast.warning(
         reservationValidation.error.issues[0]?.message ??
           "입력값을 확인해주세요",

@@ -35,12 +35,10 @@ export const PERIOD_TIMES: Record<number, [string, string]> = {
 export const MEAL_TYPES = ["조식", "중식", "석식"] as const;
 export type MealType = (typeof MEAL_TYPES)[number];
 
-export const MEAL_TYPE_BOUNDARY_MINUTES: Record<
-  Exclude<MealType, "석식">,
-  number
-> = {
+export const MEAL_TYPE_END_MINUTES: Record<MealType, number> = {
   조식: 8 * 60,
   중식: 13 * 60 + 30,
+  석식: 19 * 60,
 };
 
 export const MEAL_TYPE_MAP: Record<MealType, string> = {

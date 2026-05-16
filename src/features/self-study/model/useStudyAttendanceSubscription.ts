@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
-import { createStudyPermission } from "@/entities/user/lib/permission";
+import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import type { UserRole } from "@/entities/user/model/user";
 
 function collectCheckedUserIds(value: unknown): number[] {

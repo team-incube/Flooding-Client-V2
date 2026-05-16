@@ -12,7 +12,7 @@ import {
   usePatchClubApproval,
 } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { createClubPermission } from "@/entities/user/lib/permission";
+import { createClubPermission } from "@/entities/club/lib/permission";
 import type { ClubMember } from "@/entities/club/model/club";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
@@ -102,21 +102,17 @@ const ClubDetailSection = ({
 
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const baseClubPermission = createClubPermission({ role: user.role });
-  const canCheckOpeningStatus = baseClubPermission.canCheckOpeningStatus;
-  const { data: openingStatus } = useQuery({
-    ...clubQueries.openingStatus(),
-    enabled: canCheckOpeningStatus,
-    retry: false,
-  });
-
-  const isLeader = detail.isLeader;
   const clubPermission = createClubPermission({
     role: user.role,
     clubType: detail.club.type,
-    isLeader,
-    isOpeningApplicationOpen: openingStatus?.isOpened,
+    isLeader: detail.isLeader,
   });
+  const { data: openingStatus } = useQuery({
+    ...clubQueries.openingStatus(),
+    enabled: clubPermission.canCheckOpeningStatus,
+    retry: false,
+  });
+
   const hasClubApplication = user.hasClubApplication ?? false;
   const formQuery = clubQueries.form(id);
   const { data: form } = useQuery({
@@ -128,7 +124,7 @@ const ClubDetailSection = ({
   const trimmedSearch = memberSearch.trim();
   const { data: searchUsersPage } = useQuery({
     ...userQueries.list({ name: trimmedSearch || undefined }),
-    enabled: isLeader && trimmedSearch.length > 0,
+    enabled: detail.isLeader && trimmedSearch.length > 0,
   });
   const memberSearchResults = (searchUsersPage?.content ?? []).filter(
     (searchUser) => searchUser.id !== user.id,
@@ -188,7 +184,9 @@ const ClubDetailSection = ({
           <div className="flex w-full flex-col gap-4">
             <ClubDetail
               detail={detail}
-              canDelete={clubPermission.canDelete}
+              canDelete={
+                openingStatus?.isOpened === true && clubPermission.canDelete
+              }
               isApplyPending={autonomousApplyMutation.isPending}
               applyDisabledMessage={
                 hasClubApplication
