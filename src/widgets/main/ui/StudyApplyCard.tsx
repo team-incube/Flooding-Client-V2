@@ -4,17 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import BookIcon from "@/shared/asset/svg/ApplyStudy";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
-import { isStudyApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyStudy } from "@/features/self-study/model/useApplyStudy";
 import { useCancelStudy } from "@/features/self-study/model/useCancelStudy";
-import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import ApplyCard from "./ApplyCard";
 
 const STUDY_MAX = 50;
 
 export default function StudyApplyCard() {
-  const currentTime = useCurrentTime();
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
     useQuery(studyQuery);
@@ -27,7 +24,6 @@ export default function StudyApplyCard() {
   const hasAppliedStudy =
     user !== undefined &&
     students.some((student) => student.userId === user.id);
-  const isStudyApplyTime = isStudyApplicationTime(currentTime);
   const studyActionState = createApplicationActionState({
     hasApplied: hasAppliedStudy,
     isUserLoading,
@@ -35,7 +31,6 @@ export default function StudyApplyCard() {
     isBanned: isStudyBanned,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
-    isApplicationTime: isStudyApplyTime,
   });
 
   const handleApplyStudy = () => {
@@ -68,14 +63,13 @@ export default function StudyApplyCard() {
             ? "확인 중"
             : hasAppliedStudy
               ? "취소"
-              : isApplicationOpen || !isStudyApplyTime
+              : !isApplicationOpen
                 ? "신청 불가"
                 : "신청"
       }
       buttonVariant={isStudyBanned ? "negative" : "filled"}
       buttonSize={
-        isStudyBanned ||
-        (!hasAppliedStudy && (isApplicationOpen || !isStudyApplyTime))
+        isStudyBanned || (!hasAppliedStudy && !isApplicationOpen)
           ? "fit"
           : "small"
       }

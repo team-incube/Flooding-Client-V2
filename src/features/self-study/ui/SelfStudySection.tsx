@@ -8,10 +8,8 @@ import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
-import { isStudyApplicationTime } from "@/entities/dormitory/lib/applicationTime";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { useCurrentTime } from "@/shared/lib/useCurrentTime";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCancelStudy } from "../model/useCancelStudy";
@@ -23,7 +21,6 @@ const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
 export function SelfStudySection() {
-  const currentTime = useCurrentTime();
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
     useQuery(studyQuery);
@@ -39,7 +36,6 @@ export function SelfStudySection() {
   const hasAppliedStudy =
     user !== undefined &&
     students.some((student) => student.userId === user.id);
-  const isStudyApplyTime = isStudyApplicationTime(currentTime);
   const studyActionState = createApplicationActionState({
     hasApplied: hasAppliedStudy,
     isUserLoading,
@@ -47,7 +43,6 @@ export function SelfStudySection() {
     isBanned: isStudyBanned,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
-    isApplicationTime: isStudyApplyTime,
   });
   const studyApplyButtonVariant = isStudyBanned
     ? "negative"
@@ -60,7 +55,7 @@ export function SelfStudySection() {
       ? "확인 중"
       : hasAppliedStudy
         ? "취소하기"
-        : isApplicationOpen || !isStudyApplyTime
+        : !isApplicationOpen
           ? "신청 불가"
           : "신청하기";
   const studyPermission = createStudyPermission({ role: user?.role });
