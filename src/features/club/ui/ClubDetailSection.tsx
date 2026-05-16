@@ -115,7 +115,7 @@ const ClubDetailSection = ({
 
   const hasClubApplication = user.hasClubApplication ?? false;
   const formQuery = clubQueries.form(id);
-  const { data: form, error: formError } = useQuery({
+  const { data: form, isFetched: isFormFetched } = useQuery({
     ...formQuery,
     enabled: clubPermission.canCreateForm,
     retry: false,
@@ -171,11 +171,7 @@ const ClubDetailSection = ({
   };
 
   const hasForm = !!form;
-  const hasNoForm =
-    axios.isAxiosError(formError) &&
-    formError.response?.status === HttpStatusCode.NotFound;
-  const canShowFormAction =
-    clubPermission.canCreateForm && (hasForm || hasNoForm);
+  const canShowFormAction = clubPermission.canCreateForm && isFormFetched;
 
   return (
     <>
@@ -198,9 +194,7 @@ const ClubDetailSection = ({
                   : undefined
               }
               onApplyClick={
-                isPending || clubPermission.isManager || hasClubApplication
-                  ? undefined
-                  : handleApplyClick
+                isPending || hasClubApplication ? undefined : handleApplyClick
               }
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
               onViewApplicationsClick={

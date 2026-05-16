@@ -179,6 +179,7 @@ export function clubFormDraftReducer(
       };
     case "SET_FIELD_TYPE": {
       const shouldCreateOption = needsClubFormFieldOptions(action.fieldType);
+      let didCreateOption = false;
 
       return {
         ...state,
@@ -191,36 +192,52 @@ export function clubFormDraftReducer(
             return { ...field, fieldType: action.fieldType, options: [] };
           }
 
+          if (field.options.length > 0) {
+            return {
+              ...field,
+              fieldType: action.fieldType,
+              options: field.options,
+            };
+          }
+
+          didCreateOption = true;
+
           return {
             ...field,
             fieldType: action.fieldType,
-            options:
-              field.options.length > 0
-                ? field.options
-                : [createDefaultClubFormFieldOption(state.nextOptionId)],
+            options: [createDefaultClubFormFieldOption(state.nextOptionId)],
           };
         }),
-        nextOptionId: shouldCreateOption
+        nextOptionId: didCreateOption
           ? state.nextOptionId + 1
           : state.nextOptionId,
       };
     }
-    case "ADD_OPTION":
+    case "ADD_OPTION": {
+      let didAddOption = false;
+
       return {
         ...state,
-        fields: state.fields.map((field) =>
-          field.id === action.fieldId
-            ? {
-                ...field,
-                options: [
-                  ...field.options,
-                  createDefaultClubFormFieldOption(state.nextOptionId),
-                ],
-              }
-            : field,
-        ),
-        nextOptionId: state.nextOptionId + 1,
+        fields: state.fields.map((field) => {
+          if (field.id !== action.fieldId) {
+            return field;
+          }
+
+          didAddOption = true;
+
+          return {
+            ...field,
+            options: [
+              ...field.options,
+              createDefaultClubFormFieldOption(state.nextOptionId),
+            ],
+          };
+        }),
+        nextOptionId: didAddOption
+          ? state.nextOptionId + 1
+          : state.nextOptionId,
       };
+    }
     case "REMOVE_OPTION":
       return {
         ...state,
