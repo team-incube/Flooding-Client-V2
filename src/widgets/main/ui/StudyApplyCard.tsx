@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import BookIcon from "@/shared/asset/svg/ApplyStudy";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
-import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyStudy } from "@/features/self-study/model/useApplyStudy";
 import { useCancelStudy } from "@/features/self-study/model/useCancelStudy";
 import ApplyCard from "./ApplyCard";
@@ -17,16 +16,13 @@ export default function StudyApplyCard() {
     useQuery(studyQuery);
   const students = studyApplicants?.applicants ?? [];
   const isApplicationOpen = studyApplicants?.isApplicationOpen ?? false;
-  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const applyMutation = useApplyStudy();
   const cancelMutation = useCancelStudy();
-  const isStudyBanned = user?.isBanned === true;
-  const hasAppliedStudy =
-    user !== undefined &&
-    students.some((student) => student.userId === user.id);
+  const isStudyBanned = studyApplicants?.myApplicationStatus === "BANNED";
+  const hasAppliedStudy = studyApplicants?.myApplicationStatus === "APPROVED";
   const studyActionState = createApplicationActionState({
     hasApplied: hasAppliedStudy,
-    isUserLoading,
+    isUserLoading: false,
     isDataLoading: isStudyLoading,
     isBanned: isStudyBanned,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
@@ -59,7 +55,7 @@ export default function StudyApplyCard() {
       buttonText={
         isStudyBanned
           ? "자습 금지를 당했어요!"
-          : isUserLoading || isStudyLoading
+          : isStudyLoading
             ? "확인 중"
             : hasAppliedStudy
               ? "취소"

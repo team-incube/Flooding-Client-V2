@@ -6,7 +6,6 @@ import { createApplicationActionState } from "@/entities/dormitory/lib/applicati
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
-import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyMassage } from "../model/useApplyMassage";
 import { useCancelMassage } from "../model/useCancelMassage";
 
@@ -16,15 +15,13 @@ export function MassageChairSection() {
     useQuery(massageQuery);
   const applicants = massageApplicants?.applicants ?? [];
   const isApplicationOpen = massageApplicants?.isApplicationOpen ?? false;
-  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const applyMutation = useApplyMassage();
   const cancelMutation = useCancelMassage();
   const hasAppliedMassage =
-    user !== undefined &&
-    applicants.some((student) => student.studentNumber === user.studentNumber);
+    massageApplicants?.myApplicationStatus === "APPLIED";
   const massageActionState = createApplicationActionState({
     hasApplied: hasAppliedMassage,
-    isUserLoading,
+    isUserLoading: false,
     isDataLoading: isMassageLoading,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
@@ -83,7 +80,7 @@ export function MassageChairSection() {
               hasAppliedMassage ? handleCancelMassage : handleApplyMassage
             }
           >
-            {isUserLoading || isMassageLoading
+            {isMassageLoading
               ? "확인 중"
               : hasAppliedMassage
                 ? "취소하기"

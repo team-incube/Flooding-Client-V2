@@ -32,10 +32,8 @@ export function SelfStudySection() {
     state;
   const applyMutation = useApplyStudy();
   const cancelMutation = useCancelStudy();
-  const isStudyBanned = user?.isBanned === true;
-  const hasAppliedStudy =
-    user !== undefined &&
-    students.some((student) => student.userId === user.id);
+  const isStudyBanned = studyApplicants?.myApplicationStatus === "BANNED";
+  const hasAppliedStudy = studyApplicants?.myApplicationStatus === "APPROVED";
   const studyActionState = createApplicationActionState({
     hasApplied: hasAppliedStudy,
     isUserLoading,
@@ -44,20 +42,6 @@ export function SelfStudySection() {
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
   });
-  const studyApplyButtonVariant = isStudyBanned
-    ? "negative"
-    : studyActionState.isActionDisabled
-      ? "disabled"
-      : "filled";
-  const studyApplyButtonText = isStudyBanned
-    ? "자습 금지를 당했어요!"
-    : isUserLoading || isStudyLoading
-      ? "확인 중"
-      : hasAppliedStudy
-        ? "취소하기"
-        : !isApplicationOpen
-          ? "신청 불가"
-          : "신청하기";
   const studyPermission = createStudyPermission({ role: user?.role });
   const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
     user?.role,
@@ -218,12 +202,26 @@ export function SelfStudySection() {
           <div className="flex-1" />
 
           <TextButton
-            variant={studyApplyButtonVariant}
+            variant={
+              isStudyBanned
+                ? "negative"
+                : studyActionState.isActionDisabled
+                  ? "disabled"
+                  : "filled"
+            }
             size="wide"
             disabled={studyActionState.isActionDisabled}
             onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
           >
-            {studyApplyButtonText}
+            {isStudyBanned
+              ? "자습 금지를 당했어요!"
+              : isUserLoading || isStudyLoading
+                ? "확인 중"
+                : hasAppliedStudy
+                  ? "취소하기"
+                  : !isApplicationOpen
+                    ? "신청 불가"
+                    : "신청하기"}
           </TextButton>
 
           <p className="text-sub-2 text-caption-2">
