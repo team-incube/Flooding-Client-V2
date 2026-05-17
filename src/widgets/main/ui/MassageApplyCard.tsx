@@ -59,9 +59,7 @@ export default function MassageApplyCard() {
               ? "신청 불가"
               : "신청"
       }
-      buttonSize={
-        !hasAppliedMassage && !isApplicationOpen ? "fit" : "small"
-      }
+      buttonSize={!hasAppliedMassage && !isApplicationOpen ? "fit" : "small"}
       detailHref="/dormitory"
       femaleNotice
       disabled={massageActionState.isActionDisabled}
