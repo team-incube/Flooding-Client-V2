@@ -43,7 +43,7 @@ export function StudyApplicantCard({
         </button>
       )}
       {isChecked && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl">
+        <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center rounded-2xl">
           <CheckCircle />
         </div>
       )}
