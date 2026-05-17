@@ -1,6 +1,7 @@
 "use client";
 
 import type { StudyApplicant } from "@/entities/dormitory/model/dormitory";
+import CheckCircle from "@/shared/asset/svg/CheckCircle";
 import Checkbox from "@/shared/asset/svg/Checkbox";
 import Gender from "@/shared/asset/svg/Gender";
 import Profile from "@/shared/asset/svg/Profile";
@@ -36,10 +37,15 @@ export function StudyApplicantCard({
           aria-pressed={isChecked}
           disabled={isDisabled}
           onClick={() => onCheck(student.userId)}
-          className="enabled:hover:bg-background-surface absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg enabled:cursor-pointer disabled:cursor-default"
+          className="enabled:hover:bg-background-surface absolute top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-lg enabled:cursor-pointer disabled:cursor-default"
         >
           <Checkbox isActive={isChecked} />
         </button>
+      )}
+      {isChecked && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl">
+          <CheckCircle />
+        </div>
       )}
       <div className="flex h-full flex-col items-center justify-center gap-2">
         <div className="flex h-[64px] w-[64px] items-center justify-center">
