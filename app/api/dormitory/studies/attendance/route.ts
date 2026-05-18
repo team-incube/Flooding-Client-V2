@@ -137,12 +137,12 @@ export async function GET(request: NextRequest) {
     if (axios.isAxiosError(error) && error.response) {
       const { data, status } = error.response;
 
-      const body =
-        data instanceof Readable ? fallbackBody : (data ?? fallbackBody);
+      if (data instanceof Readable) {
+        data.destroy();
+        return NextResponse.json(fallbackBody, { status });
+      }
 
-      return NextResponse.json(body, {
-        status,
-      });
+      return NextResponse.json(data ?? fallbackBody, { status });
     }
 
     return NextResponse.json(
