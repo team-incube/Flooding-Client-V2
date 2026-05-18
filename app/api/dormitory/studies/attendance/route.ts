@@ -23,7 +23,10 @@ async function getRefreshedAccessToken(request: NextRequest) {
   }
 
   const reissueUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}/auth/reissue`;
-  const { data } = await serverInstance.post(reissueUrl, { refreshToken });
+
+  const { data } = await serverInstance.post(reissueUrl, {
+    refreshToken,
+  });
 
   return data.data?.accessToken ?? data.accessToken ?? null;
 }
@@ -31,18 +34,29 @@ async function getRefreshedAccessToken(request: NextRequest) {
 async function getAttendanceStream(accessToken: string, signal: AbortSignal) {
   const attendanceUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}/dormitory/studies/attendance`;
 
-  return serverInstance.get(attendanceUrl, {
+  const response = await serverInstance.get(attendanceUrl, {
     headers: {
       Accept: "text/event-stream",
       Authorization: `Bearer ${accessToken}`,
     },
     responseType: "stream",
+    timeout: 0,
     signal,
   });
+
+  const stream = response.data as Readable;
+
+  stream.on("error", (error) => {
+    console.error("[SSE] upstream stream error", error);
+  });
+
+  return response;
 }
 
 function createAttendanceStreamResponse(data: unknown) {
-  return new Response(Readable.toWeb(data as Readable) as ReadableStream, {
+  const stream = data as Readable;
+
+  return new Response(Readable.toWeb(stream) as ReadableStream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",
@@ -52,6 +66,10 @@ function createAttendanceStreamResponse(data: unknown) {
 }
 
 export async function GET(request: NextRequest) {
+  if (request.signal.aborted) {
+    return new Response(null, { status: HttpStatusCode.NoContent });
+  }
+
   try {
     const accessToken = await getAccessToken(request);
 
@@ -65,8 +83,16 @@ export async function GET(request: NextRequest) {
     try {
       const response = await getAttendanceStream(accessToken, request.signal);
 
-      return createAttendanceStreamResponse(response.data);
+      const upstreamStream = response.data as Readable;
+
+      request.signal.addEventListener("abort", () => {
+        upstreamStream.destroy();
+      });
+
+      return createAttendanceStreamResponse(upstreamStream);
     } catch (error) {
+      console.error("[SSE] 최초 SSE 연결 실패", error);
+
       if (
         !axios.isAxiosError(error) ||
         error.response?.status !== HttpStatusCode.Unauthorized
@@ -80,18 +106,37 @@ export async function GET(request: NextRequest) {
         throw error;
       }
 
+      if (request.signal.aborted) {
+        return new Response(null, { status: HttpStatusCode.NoContent });
+      }
+
       const response = await getAttendanceStream(
         refreshedAccessToken,
         request.signal,
       );
 
-      return createAttendanceStreamResponse(response.data);
+      const retryStream = response.data as Readable;
+
+      request.signal.addEventListener("abort", () => {
+        retryStream.destroy();
+      });
+
+      return createAttendanceStreamResponse(retryStream);
     }
   } catch (error) {
-    const fallbackBody = { error: "SSE 요청 실패" };
+    console.error("[SSE] 최종 에러", error);
+
+    if (axios.isAxiosError(error) && error.code === "ERR_CANCELED") {
+      return new Response(null, { status: HttpStatusCode.NoContent });
+    }
+
+    const fallbackBody = {
+      error: "SSE 요청 실패",
+    };
 
     if (axios.isAxiosError(error) && error.response) {
       const { data, status } = error.response;
+
       const body =
         data instanceof Readable ? fallbackBody : (data ?? fallbackBody);
 
@@ -102,7 +147,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: HttpStatusCode.InternalServerError },
+      {
+        status: HttpStatusCode.InternalServerError,
+      },
     );
   }
 }
