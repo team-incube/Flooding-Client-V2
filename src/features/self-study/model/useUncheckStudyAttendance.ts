@@ -8,22 +8,22 @@ import {
   dormitoryQueries,
 } from "@/entities/dormitory/api/dormitoryQueries";
 
-interface UseCheckStudyAttendanceParams {
-  onChecked?: (studentId: number) => void;
+interface UseUncheckStudyAttendanceParams {
+  onUnchecked?: (studentId: number) => void;
 }
 
-export function useCheckStudyAttendance({
-  onChecked,
-}: UseCheckStudyAttendanceParams = {}) {
+export function useUncheckStudyAttendance({
+  onUnchecked,
+}: UseUncheckStudyAttendanceParams = {}) {
   const queryClient = useQueryClient();
   const studyQuery = dormitoryQueries.study();
 
   return useMutation({
-    mutationFn: dormitoryMutations.checkStudyAttendance,
+    mutationFn: dormitoryMutations.uncheckStudyAttendance,
     onSuccess: (_data, studentId) => {
-      onChecked?.(studentId);
+      onUnchecked?.(studentId);
       queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
-      toast.success("출석 체크되었습니다.");
+      toast.success("출석 체크가 해제되었습니다.");
     },
     onError: (error, studentId) => {
       const status = axios.isAxiosError(error)
@@ -31,17 +31,13 @@ export function useCheckStudyAttendance({
         : undefined;
 
       if (status === HttpStatusCode.NotFound) {
-        toast.error("자습 신청 내역을 찾을 수 없습니다.");
+        onUnchecked?.(studentId);
+        queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
+        toast.error("체크인 기록을 찾을 수 없습니다.");
         return;
       }
 
-      if (status === HttpStatusCode.Conflict) {
-        onChecked?.(studentId);
-        toast.error("이미 출석 체크된 학생입니다.");
-        return;
-      }
-
-      toast.error("출석 체크에 실패했습니다.");
+      toast.error("체크인 해제에 실패했습니다.");
     },
   });
 }

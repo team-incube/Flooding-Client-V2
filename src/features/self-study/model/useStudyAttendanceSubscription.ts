@@ -49,6 +49,7 @@ function parseCheckedUserIds(eventData: string): number[] | null {
 export function useStudyAttendanceSubscription(role?: UserRole) {
   const queryClient = useQueryClient();
   const [checkedStudentIds, setCheckedStudentIds] = useState<number[]>([]);
+  const [uncheckedStudentIds, setUncheckedStudentIds] = useState<number[]>([]);
 
   useEffect(() => {
     const studyPermission = createStudyPermission({ role });
@@ -79,6 +80,9 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
       }
 
       setCheckedStudentIds((prev) => [...new Set([...prev, ...userIds])]);
+      setUncheckedStudentIds((prev) =>
+        prev.filter((studentId) => !userIds.includes(studentId)),
+      );
     };
 
     eventSource.addEventListener("init", updateCheckedIds);
@@ -93,7 +97,13 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
 
   const markChecked = (studentId: number) => {
     setCheckedStudentIds((prev) => [...new Set([...prev, studentId])]);
+    setUncheckedStudentIds((prev) => prev.filter((id) => id !== studentId));
   };
 
-  return { checkedStudentIds, markChecked };
+  const markUnchecked = (studentId: number) => {
+    setCheckedStudentIds((prev) => prev.filter((id) => id !== studentId));
+    setUncheckedStudentIds((prev) => [...new Set([...prev, studentId])]);
+  };
+
+  return { checkedStudentIds, uncheckedStudentIds, markChecked, markUnchecked };
 }

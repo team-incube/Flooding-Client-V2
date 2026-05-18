@@ -15,6 +15,7 @@ import { useApplyStudy } from "../model/useApplyStudy";
 import { useCancelStudy } from "../model/useCancelStudy";
 import { useCheckStudyAttendance } from "../model/useCheckStudyAttendance";
 import { useStudyAttendanceSubscription } from "../model/useStudyAttendanceSubscription";
+import { useUncheckStudyAttendance } from "../model/useUncheckStudyAttendance";
 import { StudyApplicantCard } from "./StudyApplicantCard";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
@@ -43,11 +44,17 @@ export function SelfStudySection() {
     isApplicationOpen,
   });
   const studyPermission = createStudyPermission({ role: user?.role });
-  const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
-    user?.role,
-  );
+  const {
+    checkedStudentIds,
+    uncheckedStudentIds,
+    markChecked,
+    markUnchecked,
+  } = useStudyAttendanceSubscription(user?.role);
   const checkAttendanceMutation = useCheckStudyAttendance({
     onChecked: markChecked,
+  });
+  const uncheckAttendanceMutation = useUncheckStudyAttendance({
+    onUnchecked: markUnchecked,
   });
 
   const handleResetFilters = () => dispatch({ type: "RESET" });
@@ -78,8 +85,13 @@ export function SelfStudySection() {
     cancelMutation.mutate();
   };
 
-  const handleCheckAttendance = (studentId: number) => {
+  const handleToggleAttendance = (studentId: number, isChecked: boolean) => {
     if (!studyPermission.canManage) {
+      return;
+    }
+
+    if (isChecked) {
+      uncheckAttendanceMutation.mutate(studentId);
       return;
     }
 
@@ -110,15 +122,19 @@ export function SelfStudySection() {
                 index={index + 1}
                 student={student}
                 isChecked={
-                  student.isChecked === true ||
-                  checkedStudentIds.includes(student.userId)
+                  uncheckedStudentIds.includes(student.userId)
+                    ? false
+                    : student.isChecked === true ||
+                      checkedStudentIds.includes(student.userId)
                 }
                 isPending={
-                  checkAttendanceMutation.isPending &&
-                  checkAttendanceMutation.variables === student.userId
+                  (checkAttendanceMutation.isPending &&
+                    checkAttendanceMutation.variables === student.userId) ||
+                  (uncheckAttendanceMutation.isPending &&
+                    uncheckAttendanceMutation.variables === student.userId)
                 }
                 canCheck={studyPermission.canManage}
-                onCheck={handleCheckAttendance}
+                onToggleCheck={handleToggleAttendance}
               />
             ))}
           </div>
