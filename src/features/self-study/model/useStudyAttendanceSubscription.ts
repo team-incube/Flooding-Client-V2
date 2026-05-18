@@ -69,7 +69,21 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
       `/api/dormitory/studies/attendance?${searchParams.toString()}`,
     );
 
-    const updateCheckedIds = (event: MessageEvent<string>) => {
+    const handleInitEvent = (event: MessageEvent<string>) => {
+      const userIds = parseCheckedUserIds(event.data);
+
+      if (!userIds) {
+        queryClient.invalidateQueries({
+          queryKey: dormitoryQueries.study().queryKey,
+        });
+        return;
+      }
+
+      setCheckedStudentIds(userIds);
+      setUncheckedStudentIds([]);
+    };
+
+    const handleMessageEvent = (event: MessageEvent<string>) => {
       const userIds = parseCheckedUserIds(event.data);
 
       if (!userIds) {
@@ -85,12 +99,12 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
       );
     };
 
-    eventSource.addEventListener("init", updateCheckedIds);
-    eventSource.addEventListener("message", updateCheckedIds);
+    eventSource.addEventListener("init", handleInitEvent);
+    eventSource.addEventListener("message", handleMessageEvent);
 
     return () => {
-      eventSource.removeEventListener("init", updateCheckedIds);
-      eventSource.removeEventListener("message", updateCheckedIds);
+      eventSource.removeEventListener("init", handleInitEvent);
+      eventSource.removeEventListener("message", handleMessageEvent);
       eventSource.close();
     };
   }, [queryClient, role]);
