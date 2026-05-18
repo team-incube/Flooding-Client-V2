@@ -44,12 +44,8 @@ export function SelfStudySection() {
     isApplicationOpen,
   });
   const studyPermission = createStudyPermission({ role: user?.role });
-  const {
-    checkedStudentIds,
-    uncheckedStudentIds,
-    markChecked,
-    markUnchecked,
-  } = useStudyAttendanceSubscription(user?.role);
+  const { checkedStudentIds, uncheckedStudentIds, markChecked, markUnchecked } =
+    useStudyAttendanceSubscription(user?.role);
   const checkAttendanceMutation = useCheckStudyAttendance({
     onChecked: markChecked,
   });
