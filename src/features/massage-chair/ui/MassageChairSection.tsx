@@ -19,10 +19,13 @@ export function MassageChairSection() {
   const cancelMutation = useCancelMassage();
   const hasAppliedMassage =
     massageApplicants?.myApplicationStatus === "APPLIED";
+  const isMassageCancelled =
+    massageApplicants?.myApplicationStatus === "CANCELLED";
   const massageActionState = createApplicationActionState({
     hasApplied: hasAppliedMassage,
     isUserLoading: false,
     isDataLoading: isMassageLoading,
+    isCancelled: isMassageCancelled,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
   });
@@ -84,7 +87,7 @@ export function MassageChairSection() {
               ? "확인 중"
               : hasAppliedMassage
                 ? "취소하기"
-                : !isApplicationOpen
+                : massageActionState.isApplyDisabled
                   ? "신청 불가"
                   : "신청하기"}
           </TextButton>

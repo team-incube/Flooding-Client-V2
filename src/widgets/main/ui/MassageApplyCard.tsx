@@ -20,10 +20,13 @@ export default function MassageApplyCard() {
   const cancelMutation = useCancelMassage();
   const hasAppliedMassage =
     massageApplicants?.myApplicationStatus === "APPLIED";
+  const isMassageCancelled =
+    massageApplicants?.myApplicationStatus === "CANCELLED";
   const massageActionState = createApplicationActionState({
     hasApplied: hasAppliedMassage,
     isUserLoading: false,
     isDataLoading: isMassageLoading,
+    isCancelled: isMassageCancelled,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
   });
@@ -55,11 +58,15 @@ export default function MassageApplyCard() {
           ? "확인 중"
           : hasAppliedMassage
             ? "취소"
-            : !isApplicationOpen
+            : massageActionState.isApplyDisabled
               ? "신청 불가"
               : "신청"
       }
-      buttonSize={!hasAppliedMassage && !isApplicationOpen ? "fit" : "small"}
+      buttonSize={
+        !hasAppliedMassage && !isMassageLoading && massageActionState.isApplyDisabled
+          ? "fit"
+          : "small"
+      }
       detailHref="/dormitory"
       femaleNotice
       disabled={massageActionState.isActionDisabled}
