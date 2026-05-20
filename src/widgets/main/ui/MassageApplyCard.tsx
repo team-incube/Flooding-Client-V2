@@ -63,7 +63,9 @@ export default function MassageApplyCard() {
               : "신청"
       }
       buttonSize={
-        !hasAppliedMassage && !isMassageLoading && massageActionState.isApplyDisabled
+        !hasAppliedMassage &&
+        !isMassageLoading &&
+        massageActionState.isApplyDisabled
           ? "fit"
           : "small"
       }

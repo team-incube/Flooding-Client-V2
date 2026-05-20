@@ -35,8 +35,7 @@ export function SelfStudySection() {
   const cancelMutation = useCancelStudy();
   const isStudyBanned = studyApplicants?.myApplicationStatus === "BANNED";
   const hasAppliedStudy = studyApplicants?.myApplicationStatus === "APPROVED";
-  const isStudyCancelled =
-    studyApplicants?.myApplicationStatus === "CANCELLED";
+  const isStudyCancelled = studyApplicants?.myApplicationStatus === "CANCELLED";
   const studyActionState = createApplicationActionState({
     hasApplied: hasAppliedStudy,
     isUserLoading,
