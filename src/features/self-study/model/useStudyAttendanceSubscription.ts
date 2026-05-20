@@ -4,46 +4,44 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
+import type {
+  StudyApplicant,
+  StudyApplicants,
+} from "@/entities/dormitory/model/dormitory";
 import type { UserRole } from "@/entities/user/model/user";
 
-function collectCheckedUserIds(value: unknown): number[] {
-  if (typeof value === "number") {
-    return [value];
-  }
+function resolveUserIds(
+  eventData: string,
+  applicants: StudyApplicant[],
+): number[] | null {
+  let parsed: unknown;
 
-  if (Array.isArray(value)) {
-    return value.flatMap(collectCheckedUserIds);
-  }
-
-  if (!value || typeof value !== "object") {
-    return [];
-  }
-
-  const record = value as Record<string, unknown>;
-  const id = record.userId ?? record.id ?? record.studentId;
-
-  if (typeof id === "number") {
-    return [id];
-  }
-
-  if (record.data !== undefined) {
-    return collectCheckedUserIds(record.data);
-  }
-
-  if (record.content !== undefined) {
-    return collectCheckedUserIds(record.content);
-  }
-
-  return [];
-}
-
-function parseCheckedUserIds(eventData: string): number[] | null {
   try {
-    return collectCheckedUserIds(JSON.parse(eventData));
+    parsed = JSON.parse(eventData);
   } catch {
-    const userId = Number(eventData);
-    return Number.isFinite(userId) ? [userId] : null;
+    const num = Number(eventData);
+    return Number.isFinite(num) ? [num] : null;
   }
+
+  const items = Array.isArray(parsed) ? parsed : [parsed];
+  const userIds: number[] = [];
+
+  for (const item of items) {
+    if (!item || typeof item !== "object") continue;
+
+    const record = item as Record<string, unknown>;
+
+    if (typeof record.userId === "number") {
+      userIds.push(record.userId);
+    } else if (typeof record.studentNumber === "number") {
+      const matched = applicants.find(
+        (a) => a.studentNumber === record.studentNumber,
+      );
+      if (matched) userIds.push(matched.userId);
+    }
+  }
+
+  return userIds.length > 0 ? userIds : null;
 }
 
 export function useStudyAttendanceSubscription(role?: UserRole) {
@@ -69,13 +67,21 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
       `/api/dormitory/studies/attendance?${searchParams.toString()}`,
     );
 
+    const getApplicants = () =>
+      queryClient.getQueryData<StudyApplicants>(
+        dormitoryQueries.study().queryKey,
+      )?.applicants ?? [];
+
+    const fallbackInvalidate = () =>
+      queryClient.invalidateQueries({
+        queryKey: dormitoryQueries.study().queryKey,
+      });
+
     const handleInitEvent = (event: MessageEvent<string>) => {
-      const userIds = parseCheckedUserIds(event.data);
+      const userIds = resolveUserIds(event.data, getApplicants());
 
       if (!userIds) {
-        queryClient.invalidateQueries({
-          queryKey: dormitoryQueries.study().queryKey,
-        });
+        fallbackInvalidate();
         return;
       }
 
@@ -83,28 +89,52 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
       setUncheckedStudentIds([]);
     };
 
-    const handleMessageEvent = (event: MessageEvent<string>) => {
-      const userIds = parseCheckedUserIds(event.data);
+    const handleAttendanceEvent = (event: MessageEvent<string>) => {
+      console.log("attendance", event);
+
+      const userIds = resolveUserIds(event.data, getApplicants());
 
       if (!userIds) {
-        queryClient.invalidateQueries({
-          queryKey: dormitoryQueries.study().queryKey,
-        });
+        fallbackInvalidate();
         return;
       }
 
       setCheckedStudentIds((prev) => [...new Set([...prev, ...userIds])]);
       setUncheckedStudentIds((prev) =>
-        prev.filter((studentId) => !userIds.includes(studentId)),
+        prev.filter((id) => !userIds.includes(id)),
       );
     };
 
+    const handleCancelAttendanceEvent = (event: MessageEvent<string>) => {
+      console.log("cancel-attendance", event);
+
+      const userIds = resolveUserIds(event.data, getApplicants());
+
+      if (!userIds) {
+        fallbackInvalidate();
+        return;
+      }
+
+      setCheckedStudentIds((prev) =>
+        prev.filter((id) => !userIds.includes(id)),
+      );
+      setUncheckedStudentIds((prev) => [...new Set([...prev, ...userIds])]);
+    };
+
     eventSource.addEventListener("init", handleInitEvent);
-    eventSource.addEventListener("message", handleMessageEvent);
+    eventSource.addEventListener("attendance", handleAttendanceEvent);
+    eventSource.addEventListener(
+      "cancel-attendance",
+      handleCancelAttendanceEvent,
+    );
 
     return () => {
       eventSource.removeEventListener("init", handleInitEvent);
-      eventSource.removeEventListener("message", handleMessageEvent);
+      eventSource.removeEventListener("attendance", handleAttendanceEvent);
+      eventSource.removeEventListener(
+        "cancel-attendance",
+        handleCancelAttendanceEvent,
+      );
       eventSource.close();
     };
   }, [queryClient, role]);

@@ -31,7 +31,7 @@ async function getRefreshedAccessToken(request: NextRequest) {
   return data.data?.accessToken ?? data.accessToken ?? null;
 }
 
-async function getAttendanceStream(accessToken: string, signal: AbortSignal) {
+async function getAttendanceStream(accessToken: string) {
   const attendanceUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}/dormitory/studies/attendance`;
 
   const response = await serverInstance.get(attendanceUrl, {
@@ -41,13 +41,12 @@ async function getAttendanceStream(accessToken: string, signal: AbortSignal) {
     },
     responseType: "stream",
     timeout: 0,
-    signal,
   });
 
   const stream = response.data as Readable;
 
-  stream.on("error", (error) => {
-    console.error("[SSE] upstream stream error", error);
+  stream.on("error", () => {
+    console.error("[SSE] upstream stream error");
   });
 
   return response;
@@ -81,17 +80,11 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      const response = await getAttendanceStream(accessToken, request.signal);
+      const response = await getAttendanceStream(accessToken);
 
-      const upstreamStream = response.data as Readable;
-
-      request.signal.addEventListener("abort", () => {
-        upstreamStream.destroy();
-      });
-
-      return createAttendanceStreamResponse(upstreamStream);
+      return createAttendanceStreamResponse(response.data);
     } catch (error) {
-      console.error("[SSE] 최초 SSE 연결 실패", error);
+      console.error("[SSE] 최초 SSE 연결 실패");
 
       if (
         !axios.isAxiosError(error) ||
@@ -110,21 +103,12 @@ export async function GET(request: NextRequest) {
         return new Response(null, { status: HttpStatusCode.NoContent });
       }
 
-      const response = await getAttendanceStream(
-        refreshedAccessToken,
-        request.signal,
-      );
+      const response = await getAttendanceStream(refreshedAccessToken);
 
-      const retryStream = response.data as Readable;
-
-      request.signal.addEventListener("abort", () => {
-        retryStream.destroy();
-      });
-
-      return createAttendanceStreamResponse(retryStream);
+      return createAttendanceStreamResponse(response.data);
     }
   } catch (error) {
-    console.error("[SSE] 최종 에러", error);
+    console.error("[SSE] 최종 에러");
 
     if (axios.isAxiosError(error) && error.code === "ERR_CANCELED") {
       return new Response(null, { status: HttpStatusCode.NoContent });
