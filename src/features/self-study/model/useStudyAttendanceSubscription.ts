@@ -1,10 +1,11 @@
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { attendanceResponseSchema } from "@/entities/dormitory/lib/dormitorySchemas";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import type {
-  AttendanceResponse,
   AttendanceStreamStatus,
   StudyApplicants,
 } from "@/entities/dormitory/model/dormitory";
+import { z } from "zod";
 import type { UserRole } from "@/entities/user/model/user";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -48,8 +49,9 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
     };
 
     const handleInitEvent = (event: MessageEvent<string>) => {
-      const responses: AttendanceResponse[] = JSON.parse(event.data);
-      const checkedIds = new Set(responses.map((r) => r.userId));
+      const result = z.array(attendanceResponseSchema).safeParse(JSON.parse(event.data));
+      if (!result.success) return;
+      const checkedIds = new Set(result.data.map((r) => r.userId));
       updateStudyCache((prev) => ({
         ...prev,
         applicants: prev.applicants.map((a) => ({
@@ -60,7 +62,9 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
     };
 
     const handleAttendanceEvent = (event: MessageEvent<string>) => {
-      const { userId }: AttendanceResponse = JSON.parse(event.data);
+      const result = attendanceResponseSchema.safeParse(JSON.parse(event.data));
+      if (!result.success) return;
+      const { userId } = result.data;
       updateStudyCache((prev) => ({
         ...prev,
         applicants: prev.applicants.map((a) =>
@@ -70,7 +74,9 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
     };
 
     const handleCancelAttendanceEvent = (event: MessageEvent<string>) => {
-      const { userId }: AttendanceResponse = JSON.parse(event.data);
+      const result = attendanceResponseSchema.safeParse(JSON.parse(event.data));
+      if (!result.success) return;
+      const { userId } = result.data;
       updateStudyCache((prev) => ({
         ...prev,
         applicants: prev.applicants.map((a) =>
