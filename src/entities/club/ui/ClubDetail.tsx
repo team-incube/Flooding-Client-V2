@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { ClubThumbnail } from "@/entities/club/ui/ClubThumbnail";
@@ -33,7 +33,6 @@ interface ClubDetailProps {
   onViewApplicationsClick?: () => void;
   onCreateFormClick?: () => void;
   onTransferClick?: (member: ClubMember) => void;
-  onEditClick?: () => void;
   memberSearchQuery?: string;
   memberSearchResults?: SearchUser[];
   onMemberSearchChange?: (query: string) => void;
@@ -49,7 +48,6 @@ export default function ClubDetail({
   onViewApplicationsClick,
   onCreateFormClick,
   onTransferClick,
-  onEditClick,
   memberSearchQuery = "",
   memberSearchResults = [],
   onMemberSearchChange,
@@ -57,10 +55,12 @@ export default function ClubDetail({
   canDelete = false,
 }: ClubDetailProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const { club, members, projects, isLeader } = detail;
 
-  const [isEdit, setIsEdit] = useState(false);
+  const isEdit = searchParams.has("edit");
   const [description, setDescription] = useState(club.description ?? "");
   const [previewUrl, setPreviewUrl] = useState(club.imageUrl ?? "");
   const [representativeImage, setRepresentativeImage] = useState<File | null>(
@@ -102,17 +102,16 @@ export default function ClubDetail({
     setRepresentativeImage(null);
     setPreviewUrl(club.imageUrl ?? "");
     setEditableMembers(members);
-    setIsEdit(true);
-    onEditClick?.();
+    router.replace(`${pathname}?edit`);
   };
 
   const handleCancel = () => {
-    setIsEdit(false);
     setDescription(club.description ?? "");
     setRepresentativeImage(null);
     setPreviewUrl(club.imageUrl ?? "");
     setEditableMembers(members);
     onMemberSearchChange?.("");
+    router.replace(pathname);
   };
 
   const handleMemberInvite = (user: SearchUser) => {
@@ -199,10 +198,10 @@ export default function ClubDetail({
     toast.promise(promise, {
       loading: "저장 중...",
       success: () => {
-        setIsEdit(false);
         setRepresentativeImage(null);
         setEditableMembers(members);
         onMemberSearchChange?.("");
+        router.replace(pathname);
         queryClient.invalidateQueries({ queryKey: ["club"] });
         queryClient.invalidateQueries({
           queryKey: ["club", "detail", club.id],
@@ -361,7 +360,6 @@ export default function ClubDetail({
             isEdit={isEdit}
             canDelete={canDelete}
             onSave={handleSave}
-            onCancel={handleCancel}
             onDelete={handleDelete}
           />
           {!isEdit && (
