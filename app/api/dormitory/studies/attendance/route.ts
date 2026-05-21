@@ -31,10 +31,16 @@ async function getRefreshedAccessToken(request: NextRequest) {
   return data.data?.accessToken ?? data.accessToken ?? null;
 }
 
+/**
+ * 자습 체크인 이벤트의 SSE 연결을 수립합니다.
+ * @param accessToken
+ * @returns AxiosResponse
+ */
 async function getAttendanceStream(accessToken: string) {
   const attendanceUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}/dormitory/studies/attendance`;
 
-  const response = await serverInstance.get(attendanceUrl, {
+  // SSE는 무제한 연결이므로 자동 연결 끊김 방지를 위해 timeout 0을 사용합니다.
+  return serverInstance.get(attendanceUrl, {
     headers: {
       Accept: "text/event-stream",
       Authorization: `Bearer ${accessToken}`,
@@ -42,24 +48,49 @@ async function getAttendanceStream(accessToken: string) {
     responseType: "stream",
     timeout: 0,
   });
-
-  const stream = response.data as Readable;
-
-  stream.on("error", () => {
-    console.error("[SSE] upstream stream error");
-  });
-
-  return response;
 }
 
-function createAttendanceStreamResponse(data: unknown) {
-  const stream = data as Readable;
+/**
+ * Node.js가 전송하는 데이터(청크 = 버퍼(타입: Uint8Array)를) 브라우저 표준 ReadableStream으로 변환합니다.
+ * @param upstream
+ * @param signal
+ * @returns ReadableStream
+ */
+function createAttendanceStreamResponse(
+  upstream: Readable,
+  signal: AbortSignal,
+) {
+  const stream = new ReadableStream<Uint8Array>({
+    // ReadableStream이 생성될 때 딱 한번 데이터 업데이트, 중단, 취소를 수행하는 함수를 등록합니다.
+    start(controller) {
+      upstream.on("data", (chunk: Buffer) => {
+        controller.enqueue(chunk);
+      });
+      upstream.on("end", () => {
+        controller.close();
+      });
+      upstream.on("error", (error: unknown) => {
+        try {
+          controller.error(error);
+        } catch (error) {
+          console.error("controller.error():", error);
+        }
+      });
 
-  return new Response(Readable.toWeb(stream) as ReadableStream, {
+      signal.addEventListener("abort", () => upstream.destroy());
+    },
+    // 사용자가 수동으로 스트림을 취소할 경우 스트림을 정리합니다.
+    cancel(reason) {
+      console.log("SSE 스트림 닫힘:", reason);
+      upstream.destroy();
+    },
+  });
+
+  return new Response(stream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",
-      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
     },
   });
 }
@@ -82,7 +113,7 @@ export async function GET(request: NextRequest) {
     try {
       const response = await getAttendanceStream(accessToken);
 
-      return createAttendanceStreamResponse(response.data);
+      return createAttendanceStreamResponse(response.data, request.signal);
     } catch (error) {
       console.error("[SSE] 최초 SSE 연결 실패");
 
@@ -105,7 +136,7 @@ export async function GET(request: NextRequest) {
 
       const response = await getAttendanceStream(refreshedAccessToken);
 
-      return createAttendanceStreamResponse(response.data);
+      return createAttendanceStreamResponse(response.data, request.signal);
     }
   } catch (error) {
     console.error("[SSE] 최종 에러");
