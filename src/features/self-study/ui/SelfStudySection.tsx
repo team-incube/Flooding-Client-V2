@@ -46,7 +46,7 @@ export function SelfStudySection() {
     isApplicationOpen,
   });
   const studyPermission = createStudyPermission({ role: user?.role });
-  const { checkedStudentIds, uncheckedStudentIds, markChecked, markUnchecked } =
+  const { markChecked, markUnchecked } =
     useStudyAttendanceSubscription(user?.role);
   const checkAttendanceMutation = useCheckStudyAttendance({
     onChecked: markChecked,
@@ -119,12 +119,7 @@ export function SelfStudySection() {
                 key={student.userId}
                 index={index + 1}
                 student={student}
-                isChecked={
-                  uncheckedStudentIds.includes(student.userId)
-                    ? false
-                    : student.isChecked === true ||
-                      checkedStudentIds.includes(student.userId)
-                }
+                isChecked={student.isChecked}
                 isPending={
                   (checkAttendanceMutation.isPending &&
                     checkAttendanceMutation.variables === student.userId) ||

@@ -1,153 +1,106 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import type {
-  StudyApplicant,
+  AttendanceResponse,
   StudyApplicants,
 } from "@/entities/dormitory/model/dormitory";
 import type { UserRole } from "@/entities/user/model/user";
-
-function resolveUserIds(
-  eventData: string,
-  applicants: StudyApplicant[],
-): number[] | null {
-  let parsed: unknown;
-
-  try {
-    parsed = JSON.parse(eventData);
-  } catch {
-    const num = Number(eventData);
-    return Number.isFinite(num) ? [num] : null;
-  }
-
-  const items = Array.isArray(parsed) ? parsed : [parsed];
-  const userIds: number[] = [];
-
-  for (const item of items) {
-    if (!item || typeof item !== "object") continue;
-
-    const record = item as Record<string, unknown>;
-
-    if (typeof record.userId === "number") {
-      userIds.push(record.userId);
-    } else if (typeof record.studentNumber === "number") {
-      const matched = applicants.find(
-        (a) => a.studentNumber === record.studentNumber,
-      );
-      if (matched) userIds.push(matched.userId);
-    }
-  }
-
-  return userIds.length > 0 ? userIds : null;
-}
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 export function useStudyAttendanceSubscription(role?: UserRole) {
   const queryClient = useQueryClient();
-  const [checkedStudentIds, setCheckedStudentIds] = useState<number[]>([]);
-  const [uncheckedStudentIds, setUncheckedStudentIds] = useState<number[]>([]);
 
   useEffect(() => {
     const studyPermission = createStudyPermission({ role });
-
-    if (!studyPermission.canCheckAttendance) {
-      return;
-    }
+    if (!studyPermission.canCheckAttendance) return;
 
     const accessToken = sessionStorage.getItem("access_token");
     const searchParams = new URLSearchParams();
-
-    if (accessToken) {
-      searchParams.set("accessToken", accessToken);
-    }
+    if (accessToken) searchParams.set("accessToken", accessToken);
 
     const eventSource = new EventSource(
       `/api/dormitory/studies/attendance?${searchParams.toString()}`,
     );
 
-    const getApplicants = () =>
-      queryClient.getQueryData<StudyApplicants>(
+    const updateStudyCache = (updater: (prev: StudyApplicants) => StudyApplicants) => {
+      queryClient.setQueryData<StudyApplicants>(
         dormitoryQueries.study().queryKey,
-      )?.applicants ?? [];
-
-    const fallbackInvalidate = () =>
-      queryClient.invalidateQueries({
-        queryKey: dormitoryQueries.study().queryKey,
-      });
+        (prev) => (prev ? updater(prev) : prev),
+      );
+    };
 
     const handleInitEvent = (event: MessageEvent<string>) => {
-      const userIds = resolveUserIds(event.data, getApplicants());
-
-      if (!userIds) {
-        fallbackInvalidate();
-        return;
-      }
-
-      setCheckedStudentIds(userIds);
-      setUncheckedStudentIds([]);
+      const checkedIds = new Set(
+        (JSON.parse(event.data) as AttendanceResponse[]).map((r) => r.userId),
+      );
+      updateStudyCache((prev) => ({
+        ...prev,
+        applicants: prev.applicants.map((a) => ({ ...a, isChecked: checkedIds.has(a.userId) })),
+      }));
     };
 
     const handleAttendanceEvent = (event: MessageEvent<string>) => {
-      console.log("attendance", event);
-
-      const userIds = resolveUserIds(event.data, getApplicants());
-
-      if (!userIds) {
-        fallbackInvalidate();
-        return;
-      }
-
-      setCheckedStudentIds((prev) => [...new Set([...prev, ...userIds])]);
-      setUncheckedStudentIds((prev) =>
-        prev.filter((id) => !userIds.includes(id)),
-      );
+      const { userId } = JSON.parse(event.data) as AttendanceResponse;
+      updateStudyCache((prev) => ({
+        ...prev,
+        applicants: prev.applicants.map((a) =>
+          a.userId === userId ? { ...a, isChecked: true } : a,
+        ),
+      }));
     };
 
     const handleCancelAttendanceEvent = (event: MessageEvent<string>) => {
-      console.log("cancel-attendance", event);
-
-      const userIds = resolveUserIds(event.data, getApplicants());
-
-      if (!userIds) {
-        fallbackInvalidate();
-        return;
-      }
-
-      setCheckedStudentIds((prev) =>
-        prev.filter((id) => !userIds.includes(id)),
-      );
-      setUncheckedStudentIds((prev) => [...new Set([...prev, ...userIds])]);
+      const { userId } = JSON.parse(event.data) as AttendanceResponse;
+      updateStudyCache((prev) => ({
+        ...prev,
+        applicants: prev.applicants.map((a) =>
+          a.userId === userId ? { ...a, isChecked: false } : a,
+        ),
+      }));
     };
 
     eventSource.addEventListener("init", handleInitEvent);
     eventSource.addEventListener("attendance", handleAttendanceEvent);
-    eventSource.addEventListener(
-      "cancel-attendance",
-      handleCancelAttendanceEvent,
-    );
+    eventSource.addEventListener("cancel-attendance", handleCancelAttendanceEvent);
 
     return () => {
       eventSource.removeEventListener("init", handleInitEvent);
       eventSource.removeEventListener("attendance", handleAttendanceEvent);
-      eventSource.removeEventListener(
-        "cancel-attendance",
-        handleCancelAttendanceEvent,
-      );
+      eventSource.removeEventListener("cancel-attendance", handleCancelAttendanceEvent);
       eventSource.close();
     };
   }, [queryClient, role]);
 
   const markChecked = (studentId: number) => {
-    setCheckedStudentIds((prev) => [...new Set([...prev, studentId])]);
-    setUncheckedStudentIds((prev) => prev.filter((id) => id !== studentId));
+    queryClient.setQueryData<StudyApplicants>(
+      dormitoryQueries.study().queryKey,
+      (prev) =>
+        prev
+          ? {
+              ...prev,
+              applicants: prev.applicants.map((a) =>
+                a.userId === studentId ? { ...a, isChecked: true } : a,
+              ),
+            }
+          : prev,
+    );
   };
 
   const markUnchecked = (studentId: number) => {
-    setCheckedStudentIds((prev) => prev.filter((id) => id !== studentId));
-    setUncheckedStudentIds((prev) => [...new Set([...prev, studentId])]);
+    queryClient.setQueryData<StudyApplicants>(
+      dormitoryQueries.study().queryKey,
+      (prev) =>
+        prev
+          ? {
+              ...prev,
+              applicants: prev.applicants.map((a) =>
+                a.userId === studentId ? { ...a, isChecked: false } : a,
+              ),
+            }
+          : prev,
+    );
   };
 
-  return { checkedStudentIds, uncheckedStudentIds, markChecked, markUnchecked };
+  return { markChecked, markUnchecked };
 }
