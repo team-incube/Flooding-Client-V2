@@ -46,14 +46,9 @@ export function SelfStudySection() {
     isApplicationOpen,
   });
   const studyPermission = createStudyPermission({ role: user?.role });
-  const { markChecked, markUnchecked } =
-    useStudyAttendanceSubscription(user?.role);
-  const checkAttendanceMutation = useCheckStudyAttendance({
-    onChecked: markChecked,
-  });
-  const uncheckAttendanceMutation = useUncheckStudyAttendance({
-    onUnchecked: markUnchecked,
-  });
+  useStudyAttendanceSubscription(user?.role);
+  const checkAttendanceMutation = useCheckStudyAttendance();
+  const uncheckAttendanceMutation = useUncheckStudyAttendance();
 
   const handleResetFilters = () => dispatch({ type: "RESET" });
   const handleSearchQueryChange = (value: string) =>
