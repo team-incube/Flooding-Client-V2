@@ -49,7 +49,9 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
     };
 
     const handleInitEvent = (event: MessageEvent<string>) => {
-      const result = z.array(attendanceResponseSchema).safeParse(JSON.parse(event.data));
+      const result = z
+        .array(attendanceResponseSchema)
+        .safeParse(JSON.parse(event.data));
       if (!result.success) return;
       const checkedIds = new Set(result.data.map((r) => r.userId));
       updateStudyCache((prev) => ({
