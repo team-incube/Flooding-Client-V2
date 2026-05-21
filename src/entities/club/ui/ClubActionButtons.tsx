@@ -5,7 +5,6 @@ interface ClubActionButtonsProps {
   isEdit: boolean;
   canDelete: boolean;
   onSave: () => void;
-  onCancel: () => void;
   onDelete: () => void;
 }
 
@@ -13,7 +12,6 @@ export function ClubActionButtons({
   isEdit,
   canDelete,
   onSave,
-  onCancel,
   onDelete,
 }: ClubActionButtonsProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -23,14 +21,6 @@ export function ClubActionButtons({
     return (
       <>
         <div className="flex gap-2">
-          <TextButton
-            size="fit"
-            variant="ghost"
-            className="min-w-[118px] flex-1"
-            onClick={onCancel}
-          >
-            돌아가기
-          </TextButton>
           {canDelete && (
             <TextButton
               size="fit"

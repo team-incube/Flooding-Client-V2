@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
-import { notFound, useRouter } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
@@ -93,6 +93,8 @@ const ClubDetailSection = ({
   }
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isEditing = searchParams.has("edit");
   const autonomousApplyMutation = useApplyAutonomousClub(id);
   const transferMutation = useTransferClubLeader(id);
   const { mutate: patchApproval, isPending: isApprovalPending } =
@@ -214,12 +216,11 @@ const ClubDetailSection = ({
                   ? handleTransferClick
                   : undefined
               }
-              onEditClick={clubPermission.canEditClub ? () => {} : undefined}
               memberSearchQuery={memberSearch}
               memberSearchResults={memberSearchResults}
               onMemberSearchChange={setMemberSearch}
             />
-            {clubPermission.isManager && isPending && (
+            {clubPermission.isManager && isPending && !isEditing && (
               <div className="flex justify-end">
                 <div className="flex w-[240px] gap-2">
                   <TextButton
