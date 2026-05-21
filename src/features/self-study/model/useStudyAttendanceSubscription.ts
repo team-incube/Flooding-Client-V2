@@ -1,99 +1,120 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { attendanceResponseSchema } from "@/entities/dormitory/lib/dormitorySchemas";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
+import type {
+  AttendanceStreamStatus,
+  StudyApplicants,
+} from "@/entities/dormitory/model/dormitory";
+import { z } from "zod";
 import type { UserRole } from "@/entities/user/model/user";
-
-function collectCheckedUserIds(value: unknown): number[] {
-  if (typeof value === "number") {
-    return [value];
-  }
-
-  if (Array.isArray(value)) {
-    return value.flatMap(collectCheckedUserIds);
-  }
-
-  if (!value || typeof value !== "object") {
-    return [];
-  }
-
-  const record = value as Record<string, unknown>;
-  const id = record.userId ?? record.id ?? record.studentId;
-
-  if (typeof id === "number") {
-    return [id];
-  }
-
-  if (record.data !== undefined) {
-    return collectCheckedUserIds(record.data);
-  }
-
-  if (record.content !== undefined) {
-    return collectCheckedUserIds(record.content);
-  }
-
-  return [];
-}
-
-function parseCheckedUserIds(eventData: string): number[] | null {
-  try {
-    return collectCheckedUserIds(JSON.parse(eventData));
-  } catch {
-    const userId = Number(eventData);
-    return Number.isFinite(userId) ? [userId] : null;
-  }
-}
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export function useStudyAttendanceSubscription(role?: UserRole) {
   const queryClient = useQueryClient();
-  const [checkedStudentIds, setCheckedStudentIds] = useState<number[]>([]);
 
   useEffect(() => {
     const studyPermission = createStudyPermission({ role });
-
-    if (!studyPermission.canCheckAttendance) {
-      return;
-    }
+    if (!studyPermission.canCheckAttendance) return;
 
     const accessToken = sessionStorage.getItem("access_token");
     const searchParams = new URLSearchParams();
+    if (accessToken) searchParams.set("accessToken", accessToken);
 
-    if (accessToken) {
-      searchParams.set("accessToken", accessToken);
-    }
+    const streamKey = dormitoryQueries.studyAttendanceStream().queryKey;
+
+    const setStreamStatus = (next: AttendanceStreamStatus) => {
+      const prev = queryClient.getQueryData<AttendanceStreamStatus>(streamKey);
+      if (prev === next) return;
+
+      queryClient.setQueryData<AttendanceStreamStatus>(streamKey, next);
+
+      // 재연결 시도 중 onerror가 반복 발생하므로 error 상태 첫 진입 시에만 알린다.
+      if (next === "error" && prev !== "error") {
+        toast.error("실시간 연결이 끊겼습니다. 자동으로 다시 연결합니다.");
+      }
+      if (next === "open" && prev === "error") {
+        toast.success("실시간 연결이 복구되었습니다.");
+      }
+    };
+
+    const updateStudyCache = (
+      updater: (prev: StudyApplicants) => StudyApplicants,
+    ) => {
+      queryClient.setQueryData<StudyApplicants>(
+        dormitoryQueries.study().queryKey,
+        (prev) => (prev ? updater(prev) : prev),
+      );
+    };
+
+    const handleInitEvent = (event: MessageEvent<string>) => {
+      const result = z
+        .array(attendanceResponseSchema)
+        .safeParse(JSON.parse(event.data));
+      if (!result.success) return;
+      const checkedIds = new Set(result.data.map((r) => r.userId));
+      updateStudyCache((prev) => ({
+        ...prev,
+        applicants: prev.applicants.map((a) => ({
+          ...a,
+          isChecked: checkedIds.has(a.userId),
+        })),
+      }));
+    };
+
+    const handleAttendanceEvent = (event: MessageEvent<string>) => {
+      const result = attendanceResponseSchema.safeParse(JSON.parse(event.data));
+      if (!result.success) return;
+      const { userId } = result.data;
+      updateStudyCache((prev) => ({
+        ...prev,
+        applicants: prev.applicants.map((a) =>
+          a.userId === userId ? { ...a, isChecked: true } : a,
+        ),
+      }));
+    };
+
+    const handleCancelAttendanceEvent = (event: MessageEvent<string>) => {
+      const result = attendanceResponseSchema.safeParse(JSON.parse(event.data));
+      if (!result.success) return;
+      const { userId } = result.data;
+      updateStudyCache((prev) => ({
+        ...prev,
+        applicants: prev.applicants.map((a) =>
+          a.userId === userId ? { ...a, isChecked: false } : a,
+        ),
+      }));
+    };
+
+    const handleOpen = () => setStreamStatus("open");
+    const handleError = () => setStreamStatus("error");
+
+    setStreamStatus("connecting");
 
     const eventSource = new EventSource(
       `/api/dormitory/studies/attendance?${searchParams.toString()}`,
     );
 
-    const updateCheckedIds = (event: MessageEvent<string>) => {
-      const userIds = parseCheckedUserIds(event.data);
-
-      if (!userIds) {
-        queryClient.invalidateQueries({
-          queryKey: dormitoryQueries.study().queryKey,
-        });
-        return;
-      }
-
-      setCheckedStudentIds((prev) => [...new Set([...prev, ...userIds])]);
-    };
-
-    eventSource.addEventListener("init", updateCheckedIds);
-    eventSource.addEventListener("message", updateCheckedIds);
+    eventSource.addEventListener("open", handleOpen);
+    eventSource.addEventListener("error", handleError);
+    eventSource.addEventListener("init", handleInitEvent);
+    eventSource.addEventListener("attendance", handleAttendanceEvent);
+    eventSource.addEventListener(
+      "cancel-attendance",
+      handleCancelAttendanceEvent,
+    );
 
     return () => {
-      eventSource.removeEventListener("init", updateCheckedIds);
-      eventSource.removeEventListener("message", updateCheckedIds);
+      eventSource.removeEventListener("open", handleOpen);
+      eventSource.removeEventListener("error", handleError);
+      eventSource.removeEventListener("init", handleInitEvent);
+      eventSource.removeEventListener("attendance", handleAttendanceEvent);
+      eventSource.removeEventListener(
+        "cancel-attendance",
+        handleCancelAttendanceEvent,
+      );
       eventSource.close();
     };
   }, [queryClient, role]);
-
-  const markChecked = (studentId: number) => {
-    setCheckedStudentIds((prev) => [...new Set([...prev, studentId])]);
-  };
-
-  return { checkedStudentIds, markChecked };
 }

@@ -9,12 +9,12 @@ import {
 } from "@/entities/dormitory/api/dormitoryQueries";
 import type { StudyApplicants } from "@/entities/dormitory/model/dormitory";
 
-export function useCheckStudyAttendance() {
+export function useUncheckStudyAttendance() {
   const queryClient = useQueryClient();
   const studyQuery = dormitoryQueries.study();
 
   return useMutation({
-    mutationFn: dormitoryMutations.checkStudyAttendance,
+    mutationFn: dormitoryMutations.uncheckStudyAttendance,
     onMutate: async (studentId) => {
       await queryClient.cancelQueries({ queryKey: studyQuery.queryKey });
       const previous = queryClient.getQueryData<StudyApplicants>(
@@ -25,7 +25,7 @@ export function useCheckStudyAttendance() {
           ? {
               ...prev,
               applicants: prev.applicants.map((a) =>
-                a.userId === studentId ? { ...a, isChecked: true } : a,
+                a.userId === studentId ? { ...a, isChecked: false } : a,
               ),
             }
           : prev,
@@ -33,29 +33,24 @@ export function useCheckStudyAttendance() {
       return { previous };
     },
     onSuccess: () => {
-      toast.success("출석 체크되었습니다.");
+      toast.success("출석 체크가 해제되었습니다.");
     },
     onError: (error, _studentId, context) => {
       const status = axios.isAxiosError(error)
         ? error.response?.status
         : undefined;
 
-      // 409는 이미 체크된 상태이므로 낙관적 결과(checked)를 유지한다.
-      if (status !== HttpStatusCode.Conflict && context?.previous) {
+      // 404는 체크 기록이 없는 상태이므로 낙관적 결과(unchecked)를 유지한다.
+      if (status !== HttpStatusCode.NotFound && context?.previous) {
         queryClient.setQueryData(studyQuery.queryKey, context.previous);
       }
 
       if (status === HttpStatusCode.NotFound) {
-        toast.error("자습 신청 내역을 찾을 수 없습니다.");
+        toast.error("체크인 기록을 찾을 수 없습니다.");
         return;
       }
 
-      if (status === HttpStatusCode.Conflict) {
-        toast.error("이미 출석 체크된 학생입니다.");
-        return;
-      }
-
-      toast.error("출석 체크에 실패했습니다.");
+      toast.error("체크인 해제에 실패했습니다.");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
