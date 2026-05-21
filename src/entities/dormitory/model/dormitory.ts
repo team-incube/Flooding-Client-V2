@@ -44,6 +44,8 @@ export interface AttendanceResponse {
   studentNumber: number;
 }
 
+export type AttendanceStreamStatus = "connecting" | "open" | "error";
+
 export interface MusicApplyRequest {
   musicUrl: string;
 }

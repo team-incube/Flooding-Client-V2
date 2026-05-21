@@ -13,6 +13,7 @@ import type {
   MusicApplyRequest,
   UpdatePenaltyRequest,
   CreateCleaningZoneRequest,
+  AttendanceStreamStatus,
 } from "@/entities/dormitory/model/dormitory";
 
 export const dormitoryQueries = {
@@ -36,6 +37,16 @@ export const dormitoryQueries = {
       queryFn: getSelfStudyApplicants,
       refetchOnMount: "always",
       refetchOnWindowFocus: "always",
+    }),
+
+  // 자습 체크인 SSE 연결 상태. study 키의 하위가 아닌 형제 키로 둬
+  // study invalidate 시 함께 무효화되지 않도록 한다.
+  studyAttendanceStream: () =>
+    queryOptions({
+      queryKey: ["dormitory", "study-attendance-stream"],
+      queryFn: (): AttendanceStreamStatus => "connecting",
+      staleTime: Infinity,
+      gcTime: Infinity,
     }),
 
   myPenalties: () =>
