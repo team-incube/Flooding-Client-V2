@@ -105,15 +105,6 @@ export default function ClubDetail({
     router.replace(`${pathname}?edit`);
   };
 
-  const handleCancel = () => {
-    setDescription(club.description ?? "");
-    setRepresentativeImage(null);
-    setPreviewUrl(club.imageUrl ?? "");
-    setEditableMembers(members);
-    onMemberSearchChange?.("");
-    router.replace(pathname);
-  };
-
   const handleMemberInvite = (user: SearchUser) => {
     setEditableMembers((currentMembers) => {
       if (currentMembers.some((member) => member.id === user.id)) {
