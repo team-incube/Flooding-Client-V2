@@ -61,6 +61,7 @@ export const dormitoryQueries = {
       queryKey: ["dormitory", "cleaning-zones", zoneId],
       queryFn: () => getCleaningZoneDetail(zoneId),
     }),
+
 } as const;
 
 export const dormitoryMutations = {

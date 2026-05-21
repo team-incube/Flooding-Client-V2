@@ -38,6 +38,12 @@ export type StudyApplicants = ApplicationStatus<
   StudyApplicationStatus
 >;
 
+export interface AttendanceResponse {
+  userId: number;
+  name: string;
+  studentNumber: number;
+}
+
 export interface MusicApplyRequest {
   musicUrl: string;
 }
