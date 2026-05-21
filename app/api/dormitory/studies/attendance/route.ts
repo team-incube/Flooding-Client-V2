@@ -34,9 +34,10 @@ async function getRefreshedAccessToken(request: NextRequest) {
 /**
  * 자습 체크인 이벤트의 SSE 연결을 수립합니다.
  * @param accessToken
+ * @param signal
  * @returns AxiosResponse
  */
-async function getAttendanceStream(accessToken: string) {
+async function getAttendanceStream(accessToken: string, signal?: AbortSignal) {
   const attendanceUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}/dormitory/studies/attendance`;
 
   // SSE는 무제한 연결이므로 자동 연결 끊김 방지를 위해 timeout 0을 사용합니다.
@@ -47,6 +48,7 @@ async function getAttendanceStream(accessToken: string) {
     },
     responseType: "stream",
     timeout: 0,
+    signal,
   });
 }
 
@@ -63,6 +65,10 @@ function createAttendanceStreamResponse(
   const stream = new ReadableStream<Uint8Array>({
     // ReadableStream이 생성될 때 딱 한번 데이터 업데이트, 중단, 취소를 수행하는 함수를 등록합니다.
     start(controller) {
+      if (signal.aborted) {
+        upstream.destroy();
+        return;
+      }
       upstream.on("data", (chunk: Buffer) => {
         controller.enqueue(chunk);
       });
@@ -111,7 +117,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      const response = await getAttendanceStream(accessToken);
+      const response = await getAttendanceStream(accessToken, request.signal);
 
       return createAttendanceStreamResponse(response.data, request.signal);
     } catch (error) {
@@ -134,7 +140,10 @@ export async function GET(request: NextRequest) {
         return new Response(null, { status: HttpStatusCode.NoContent });
       }
 
-      const response = await getAttendanceStream(refreshedAccessToken);
+      const response = await getAttendanceStream(
+        refreshedAccessToken,
+        request.signal,
+      );
 
       return createAttendanceStreamResponse(response.data, request.signal);
     }
