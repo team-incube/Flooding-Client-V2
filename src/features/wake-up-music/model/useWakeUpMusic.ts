@@ -5,8 +5,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import { toast } from "sonner";
 import type { Music } from "@/entities/music/model/music";
-import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
-import { youtubeQueries } from "@/entities/music/api/youtubeQueries";
 import {
   dormitoryQueries,
   dormitoryMutations,
@@ -22,13 +20,6 @@ export function useWakeUpMusic() {
   const musicQuery = dormitoryQueries.music(selectedDateString);
 
   const { data: songs = [] } = useQuery(musicQuery);
-
-  const youtubeVideoIds = songs
-    .map((music) => extractYoutubeVideoId(music.musicUrl))
-    .filter((id): id is string => Boolean(id));
-  const { data: youtubeVideos = {} } = useQuery(
-    youtubeQueries.videos(youtubeVideoIds),
-  );
 
   const applyMutation = useMutation({
     mutationFn: () => dormitoryMutations.applyMusic({ musicUrl: urlInput }),
@@ -133,7 +124,6 @@ export function useWakeUpMusic() {
     selectedDate,
     setSelectedDate,
     songs,
-    youtubeVideos,
     applyMutation,
     handleSubmitRecommendedMusic,
     likeMutation,

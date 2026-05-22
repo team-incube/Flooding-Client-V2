@@ -4,6 +4,12 @@ export interface Music {
   appliedAt: string;
   likeCount: number;
   isLiked: boolean;
+  title?: string | null;
+  artist?: string | null;
+  duration?: string | null;
+  durationText?: string | null;
+  thumbnailUrl?: string | null;
+  videoUrl?: string | null;
 }
 
 export interface RecommendedMusic extends Music {

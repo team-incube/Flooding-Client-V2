@@ -1,5 +1,4 @@
 import type { Music } from "@/entities/music/model/music";
-import type { YoutubeVideoMetadata } from "@/entities/music/api/youtubeQueries";
 import { getYoutubeThumbnailUrl } from "@/entities/music/lib/youtube";
 import Heart from "@/shared/asset/svg/Heart";
 import Delete from "@/shared/asset/svg/Delete";
@@ -7,7 +6,6 @@ import Image from "next/image";
 
 interface MusicListItemProps {
   music: Music;
-  youtubeMetadata?: YoutubeVideoMetadata;
   onToggleLike?: () => void;
   isLikePending?: boolean;
   onDelete?: () => void;
@@ -20,15 +18,14 @@ function formatAppliedDate(appliedAt: string) {
 
 export function MusicListItem({
   music,
-  youtubeMetadata,
   onToggleLike,
   isLikePending = false,
   onDelete,
   isDeletePending = false,
 }: MusicListItemProps) {
   const thumbnailUrl =
-    youtubeMetadata?.thumbnailUrl ?? getYoutubeThumbnailUrl(music.musicUrl);
-  const title = youtubeMetadata?.title ?? music.musicUrl;
+    music.thumbnailUrl ?? getYoutubeThumbnailUrl(music.musicUrl);
+  const title = music.title ?? music.musicUrl;
 
   return (
     <div className="border-sub-3 flex items-center justify-between gap-4 border-b py-3 pr-6 last:border-b-0">
@@ -42,9 +39,9 @@ export function MusicListItem({
               className="object-cover"
             />
           )}
-          {youtubeMetadata?.durationText && (
+          {music.durationText && (
             <span className="text-caption-3 absolute right-1.5 bottom-1.5 rounded bg-black/70 px-1.5 py-0.5 text-white">
-              {youtubeMetadata.durationText}
+              {music.durationText}
             </span>
           )}
         </div>
