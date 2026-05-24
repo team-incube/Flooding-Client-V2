@@ -25,7 +25,7 @@ import {
   filterClubs,
   type ClubTypeFilter,
 } from "@/features/club/lib/filterClubs";
-import { isManagementRole } from "@/entities/user/lib/userRole";
+import { createClubPermission } from "@/entities/club/lib/permission";
 
 function ClubCardSkeleton() {
   return (
@@ -56,7 +56,7 @@ function ClubSearchSkeleton() {
 
 function ClubHomeSectionLoading() {
   return (
-    <div className="flex min-h-0 w-full flex-1 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 pb-25 sm:px-8 lg:px-8 xl:px-10 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -89,7 +89,7 @@ function ClubHomeSectionLoading() {
 
 function ClubHomeSectionError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="flex min-h-0 w-full flex-1 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 pb-25 sm:px-8 lg:px-8 xl:px-10 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
         <Club isActive={false} size={32} />
         <p className="text-text-1 text-main-text">
@@ -114,19 +114,20 @@ function ClubHomeSection() {
 
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const canCheckOpeningStatus = isManagementRole(user.role);
+  const clubPermission = createClubPermission({
+    role: user.role,
+  });
   const { data: openingStatus } = useQuery({
     ...clubQueries.openingStatus(),
-    enabled: canCheckOpeningStatus,
+    enabled: clubPermission.canCheckOpeningStatus,
     retry: false,
   });
-  const isClubManager =
-    user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
-  const isAdmin = user.role === "ADMIN";
+  const canRegisterClub =
+    openingStatus?.isOpened === true && clubPermission.canRegisterClub;
   const { data: openingRequests, isLoading: isOpeningRequestsLoading } =
     useQuery({
       ...clubQueries.openingRequests(),
-      enabled: isClubManager && viewMode === "form",
+      enabled: clubPermission.canViewOpeningRequests && viewMode === "form",
     });
 
   const filteredClubs = filterClubs({
@@ -151,8 +152,6 @@ function ClubHomeSection() {
   };
 
   const handleSearch = () => setSearchValue(query);
-  const canRegisterClub =
-    canCheckOpeningStatus && openingStatus?.isOpened === true;
   const clubModeToggle = (
     <div className="flex w-full gap-1">
       <TextButton
@@ -184,7 +183,7 @@ function ClubHomeSection() {
   );
 
   return (
-    <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
+    <div className="flex min-h-0 w-full flex-1 overflow-y-auto pb-25 sm:px-8 lg:px-8 xl:px-10 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -209,11 +208,13 @@ function ClubHomeSection() {
                 onClubClick={(clubId) => router.push(`/club/${clubId}`)}
               />
             ) : (
-              isClubManager && <ClubOpeningRequestSection />
+              clubPermission.canViewOpeningRequests && (
+                <ClubOpeningRequestSection />
+              )
             )}
           </div>
-          <div className="order-1 flex flex-col items-center justify-center lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
-            <div className="mb-auto flex w-full flex-col gap-4">
+          <div className="order-1 flex flex-col lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
+            <div className="flex w-full flex-col gap-4">
               {clubModeToggle}
 
               {viewMode === "form" && canRegisterClub ? (
@@ -230,8 +231,12 @@ function ClubHomeSection() {
                   onTypeChange={setSelectedType}
                 />
               )}
-              {isAdmin && <ClubExportButton />}
             </div>
+            {clubPermission.canExport && viewMode === "list" && (
+              <div className="flex flex-1 items-center justify-center py-12">
+                <ClubExportButton />
+              </div>
+            )}
           </div>
         </div>
       </div>

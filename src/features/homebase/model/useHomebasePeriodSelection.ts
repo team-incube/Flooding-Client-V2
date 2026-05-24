@@ -13,7 +13,13 @@ function getInitialPeriod(): string {
   return PERIODS.find((period) => !isPeriodStarted(period)) ?? PERIODS.at(-1)!;
 }
 
-export function useHomebasePeriodSelection() {
+interface UseHomebasePeriodSelectionParams {
+  canSelectMultiplePeriods: boolean;
+}
+
+export function useHomebasePeriodSelection({
+  canSelectMultiplePeriods,
+}: UseHomebasePeriodSelectionParams) {
   const [selectedStartPeriod, setSelectedStartPeriod] =
     useState(getInitialPeriod);
   const [selectedEndPeriod, setSelectedEndPeriod] = useState(getInitialPeriod);
@@ -29,6 +35,7 @@ export function useHomebasePeriodSelection() {
       selectedStartPeriod,
       selectedEndPeriod,
       periods: PERIODS,
+      canSelectMultiplePeriods,
     });
 
     setSelectedStartPeriod(nextRange.startPeriod);

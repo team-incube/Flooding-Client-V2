@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import BookIcon from "@/shared/asset/svg/ApplyStudy";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
-import { userQueries } from "@/entities/user/api/userQueries";
+import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { useApplyStudy } from "@/features/self-study/model/useApplyStudy";
 import { useCancelStudy } from "@/features/self-study/model/useCancelStudy";
 import ApplyCard from "./ApplyCard";
@@ -16,29 +16,23 @@ export default function StudyApplyCard() {
     useQuery(studyQuery);
   const students = studyApplicants?.applicants ?? [];
   const isApplicationOpen = studyApplicants?.isApplicationOpen ?? false;
-  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const applyMutation = useApplyStudy();
   const cancelMutation = useCancelStudy();
-  const isStudyBanned = user?.isBanned === true;
-  const hasAppliedStudy =
-    user !== undefined &&
-    students.some((student) => student.userId === user.id);
-  const isStudyActionPending =
-    applyMutation.isPending || cancelMutation.isPending;
-  const isStudyApplyDisabled =
-    isUserLoading ||
-    isStudyLoading ||
-    isStudyBanned ||
-    isStudyActionPending ||
-    isApplicationOpen;
-  const isStudyCancelDisabled =
-    isUserLoading || isStudyLoading || isStudyBanned || isStudyActionPending;
-  const isStudyActionDisabled = hasAppliedStudy
-    ? isStudyCancelDisabled
-    : isStudyApplyDisabled;
+  const isStudyBanned = studyApplicants?.myApplicationStatus === "BANNED";
+  const hasAppliedStudy = studyApplicants?.myApplicationStatus === "APPROVED";
+  const isStudyCancelled = studyApplicants?.myApplicationStatus === "CANCELLED";
+  const studyActionState = createApplicationActionState({
+    hasApplied: hasAppliedStudy,
+    isUserLoading: false,
+    isDataLoading: isStudyLoading,
+    isBanned: isStudyBanned,
+    isCancelled: isStudyCancelled,
+    isActionPending: applyMutation.isPending || cancelMutation.isPending,
+    isApplicationOpen,
+  });
 
   const handleApplyStudy = () => {
-    if (isStudyApplyDisabled || hasAppliedStudy) {
+    if (!studyActionState.canApply) {
       return;
     }
 
@@ -46,7 +40,7 @@ export default function StudyApplyCard() {
   };
 
   const handleCancelStudy = () => {
-    if (isStudyCancelDisabled || !hasAppliedStudy) {
+    if (!studyActionState.canCancel) {
       return;
     }
 
@@ -63,22 +57,25 @@ export default function StudyApplyCard() {
       buttonText={
         isStudyBanned
           ? "자습 금지를 당했어요!"
-          : isUserLoading || isStudyLoading
+          : isStudyLoading
             ? "확인 중"
             : hasAppliedStudy
               ? "취소"
-              : isApplicationOpen
+              : studyActionState.isApplyDisabled
                 ? "신청 불가"
                 : "신청"
       }
       buttonVariant={isStudyBanned ? "negative" : "filled"}
       buttonSize={
-        isStudyBanned || (!hasAppliedStudy && isApplicationOpen)
+        isStudyBanned ||
+        (!hasAppliedStudy &&
+          !isStudyLoading &&
+          studyActionState.isApplyDisabled)
           ? "fit"
           : "small"
       }
       detailHref="/dormitory"
-      disabled={isStudyActionDisabled}
+      disabled={studyActionState.isActionDisabled}
       onApply={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
     />
   );

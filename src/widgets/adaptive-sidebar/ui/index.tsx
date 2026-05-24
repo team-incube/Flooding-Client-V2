@@ -13,7 +13,7 @@ import Signout from "@/shared/asset/svg/Signout";
 import Link from "next/link";
 import { ROUTES } from "@/shared/config/routes";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { isManagementRole } from "@/entities/user/lib/userRole";
+import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import type { ReactNode } from "react";
 
 const ICONS: Record<string, (active: boolean) => ReactNode> = {
@@ -34,8 +34,9 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { data: user } = useQuery(userQueries.me());
+  const studyPermission = createStudyPermission({ role: user?.role });
   const menuItems = MENU_ITEMS.filter(
-    ({ href }) => href !== "/students" || isManagementRole(user?.role),
+    ({ href }) => href !== "/students" || studyPermission.canManage,
   );
   const isRouteActive = (href: string) =>
     href === "/" ? pathname === href : pathname.startsWith(href);

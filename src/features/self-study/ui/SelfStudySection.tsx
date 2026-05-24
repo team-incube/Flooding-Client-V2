@@ -7,13 +7,15 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
+import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { isManagementRole } from "@/entities/user/lib/userRole";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCancelStudy } from "../model/useCancelStudy";
 import { useCheckStudyAttendance } from "../model/useCheckStudyAttendance";
 import { useStudyAttendanceSubscription } from "../model/useStudyAttendanceSubscription";
+import { useUncheckStudyAttendance } from "../model/useUncheckStudyAttendance";
 import { StudyApplicantCard } from "./StudyApplicantCard";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
@@ -31,30 +33,22 @@ export function SelfStudySection() {
     state;
   const applyMutation = useApplyStudy();
   const cancelMutation = useCancelStudy();
-  const isStudyBanned = user?.isBanned === true;
-  const hasAppliedStudy =
-    user !== undefined &&
-    students.some((student) => student.userId === user.id);
-  const isStudyActionPending =
-    applyMutation.isPending || cancelMutation.isPending;
-  const isStudyApplyDisabled =
-    isUserLoading ||
-    isStudyLoading ||
-    isStudyBanned ||
-    isStudyActionPending ||
-    isApplicationOpen;
-  const isStudyCancelDisabled =
-    isUserLoading || isStudyLoading || isStudyBanned || isStudyActionPending;
-  const isStudyActionDisabled = hasAppliedStudy
-    ? isStudyCancelDisabled
-    : isStudyApplyDisabled;
-  const canManageStudy = isManagementRole(user?.role);
-  const { checkedStudentIds, markChecked } = useStudyAttendanceSubscription(
-    user?.role,
-  );
-  const checkAttendanceMutation = useCheckStudyAttendance({
-    onChecked: markChecked,
+  const isStudyBanned = studyApplicants?.myApplicationStatus === "BANNED";
+  const hasAppliedStudy = studyApplicants?.myApplicationStatus === "APPROVED";
+  const isStudyCancelled = studyApplicants?.myApplicationStatus === "CANCELLED";
+  const studyActionState = createApplicationActionState({
+    hasApplied: hasAppliedStudy,
+    isUserLoading,
+    isDataLoading: isStudyLoading,
+    isBanned: isStudyBanned,
+    isCancelled: isStudyCancelled,
+    isActionPending: applyMutation.isPending || cancelMutation.isPending,
+    isApplicationOpen,
   });
+  const studyPermission = createStudyPermission({ role: user?.role });
+  useStudyAttendanceSubscription(user?.role);
+  const checkAttendanceMutation = useCheckStudyAttendance();
+  const uncheckAttendanceMutation = useUncheckStudyAttendance();
 
   const handleResetFilters = () => dispatch({ type: "RESET" });
   const handleSearchQueryChange = (value: string) =>
@@ -69,7 +63,7 @@ export function SelfStudySection() {
       payload: selectedGender === gender ? null : gender,
     });
   const handleApplyStudy = () => {
-    if (isStudyApplyDisabled || hasAppliedStudy) {
+    if (!studyActionState.canApply) {
       return;
     }
 
@@ -77,15 +71,20 @@ export function SelfStudySection() {
   };
 
   const handleCancelStudy = () => {
-    if (isStudyCancelDisabled || !hasAppliedStudy) {
+    if (!studyActionState.canCancel) {
       return;
     }
 
     cancelMutation.mutate();
   };
 
-  const handleCheckAttendance = (studentId: number) => {
-    if (!canManageStudy) {
+  const handleToggleAttendance = (studentId: number, isChecked: boolean) => {
+    if (!studyPermission.canManage) {
+      return;
+    }
+
+    if (isChecked) {
+      uncheckAttendanceMutation.mutate(studentId);
       return;
     }
 
@@ -115,16 +114,15 @@ export function SelfStudySection() {
                 key={student.userId}
                 index={index + 1}
                 student={student}
-                isChecked={
-                  student.isChecked === true ||
-                  checkedStudentIds.includes(student.userId)
-                }
+                isChecked={student.isChecked}
                 isPending={
-                  checkAttendanceMutation.isPending &&
-                  checkAttendanceMutation.variables === student.userId
+                  (checkAttendanceMutation.isPending &&
+                    checkAttendanceMutation.variables === student.userId) ||
+                  (uncheckAttendanceMutation.isPending &&
+                    uncheckAttendanceMutation.variables === student.userId)
                 }
-                canCheck={canManageStudy}
-                onCheck={handleCheckAttendance}
+                canCheck={studyPermission.canManage}
+                onToggleCheck={handleToggleAttendance}
               />
             ))}
           </div>
@@ -211,12 +209,12 @@ export function SelfStudySection() {
             variant={
               isStudyBanned
                 ? "negative"
-                : isStudyActionDisabled
+                : studyActionState.isActionDisabled
                   ? "disabled"
                   : "filled"
             }
             size="wide"
-            disabled={isStudyActionDisabled}
+            disabled={studyActionState.isActionDisabled}
             onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
           >
             {isStudyBanned
@@ -225,7 +223,7 @@ export function SelfStudySection() {
                 ? "확인 중"
                 : hasAppliedStudy
                   ? "취소하기"
-                  : isApplicationOpen
+                  : studyActionState.isApplyDisabled
                     ? "신청 불가"
                     : "신청하기"}
           </TextButton>

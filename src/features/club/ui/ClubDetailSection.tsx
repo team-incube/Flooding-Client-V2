@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
-import { notFound, useRouter } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
@@ -12,7 +12,7 @@ import {
   usePatchClubApproval,
 } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { isManagementRole } from "@/entities/user/lib/userRole";
+import { createClubPermission } from "@/entities/club/lib/permission";
 import type { ClubMember } from "@/entities/club/model/club";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
@@ -93,6 +93,8 @@ const ClubDetailSection = ({
   }
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isEditing = searchParams.has("edit");
   const autonomousApplyMutation = useApplyAutonomousClub(id);
   const transferMutation = useTransferClubLeader(id);
   const { mutate: patchApproval, isPending: isApprovalPending } =
@@ -102,32 +104,29 @@ const ClubDetailSection = ({
 
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const canCheckOpeningStatus = isManagementRole(user.role);
+  const clubPermission = createClubPermission({
+    role: user.role,
+    clubType: detail.club.type,
+    isLeader: detail.isLeader,
+  });
   const { data: openingStatus } = useQuery({
     ...clubQueries.openingStatus(),
-    enabled: canCheckOpeningStatus,
+    enabled: clubPermission.canCheckOpeningStatus,
     retry: false,
   });
 
-  const isLeader = detail.isLeader;
-  const isClubManager =
-    user.role === "ADMIN" || user.role === "STUDENT_COUNCIL";
   const hasClubApplication = user.hasClubApplication ?? false;
-  const canDeleteClub =
-    (isLeader || user.role === "ADMIN") && openingStatus?.isOpened === true;
-  const canCreateForm = detail.club.type === "MAJOR_CLUB" && isLeader;
-  const canViewApplications = isLeader || isClubManager;
   const formQuery = clubQueries.form(id);
-  const { data: form, error: formError } = useQuery({
+  const { data: form, isFetched: isFormFetched } = useQuery({
     ...formQuery,
-    enabled: canCreateForm,
+    enabled: clubPermission.canCreateForm,
     retry: false,
   });
 
   const trimmedSearch = memberSearch.trim();
   const { data: searchUsersPage } = useQuery({
     ...userQueries.list({ name: trimmedSearch || undefined }),
-    enabled: isLeader && trimmedSearch.length > 0,
+    enabled: detail.isLeader && trimmedSearch.length > 0,
   });
   const memberSearchResults = (searchUsersPage?.content ?? []).filter(
     (searchUser) => searchUser.id !== user.id,
@@ -174,10 +173,7 @@ const ClubDetailSection = ({
   };
 
   const hasForm = !!form;
-  const hasNoForm =
-    axios.isAxiosError(formError) &&
-    formError.response?.status === HttpStatusCode.NotFound;
-  const canShowFormAction = canCreateForm && (hasForm || hasNoForm);
+  const canShowFormAction = clubPermission.canCreateForm && isFormFetched;
 
   return (
     <>
@@ -190,7 +186,9 @@ const ClubDetailSection = ({
           <div className="flex w-full flex-col gap-4">
             <ClubDetail
               detail={detail}
-              canDelete={canDeleteClub}
+              canDelete={
+                openingStatus?.isOpened === true && clubPermission.canDelete
+              }
               isApplyPending={autonomousApplyMutation.isPending}
               applyDisabledMessage={
                 hasClubApplication
@@ -198,13 +196,11 @@ const ClubDetailSection = ({
                   : undefined
               }
               onApplyClick={
-                isPending || isClubManager || hasClubApplication
-                  ? undefined
-                  : handleApplyClick
+                isPending || hasClubApplication ? undefined : handleApplyClick
               }
               formActionLabel={hasForm ? "폼 수정하기" : "폼 만들기"}
               onViewApplicationsClick={
-                !isPending && canViewApplications
+                !isPending && clubPermission.canViewApplications
                   ? handleApplicationsClick
                   : undefined
               }
@@ -215,13 +211,16 @@ const ClubDetailSection = ({
                     : handleCreateFormClick
                   : undefined
               }
-              onTransferClick={isLeader ? handleTransferClick : undefined}
-              onEditClick={isLeader ? () => {} : undefined}
+              onTransferClick={
+                clubPermission.canTransferLeader
+                  ? handleTransferClick
+                  : undefined
+              }
               memberSearchQuery={memberSearch}
               memberSearchResults={memberSearchResults}
               onMemberSearchChange={setMemberSearch}
             />
-            {isClubManager && isPending && (
+            {clubPermission.isManager && isPending && !isEditing && (
               <div className="flex justify-end">
                 <div className="flex w-[240px] gap-2">
                   <TextButton

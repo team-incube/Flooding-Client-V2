@@ -1,4 +1,6 @@
 import TextField from "@/shared/ui/textField";
+import TextArea from "@/shared/ui/textArea";
+import Select from "@/shared/ui/select";
 import type { ClubFormField } from "@/entities/club/model/club";
 import type { ClubApplicationFieldValue } from "../lib/clubApplicationForm";
 
@@ -16,8 +18,6 @@ const optionStyles = {
 const fieldContainerStyles = "flex flex-col gap-2";
 const fieldLabelStyles = "text-text-3 text-main-text";
 const fieldDescriptionStyles = "text-caption-1 text-sub-1";
-const fieldBoxStyles =
-  "w-full rounded-lg border border-sub-2 bg-background-surface px-4 py-3 text-main-text outline-none placeholder:text-sub-2 focus:border-sub-1 caret-p-1";
 
 export function ClubApplicationField({
   field,
@@ -57,11 +57,11 @@ export function ClubApplicationField({
       )}
 
       {field.fieldType === "TEXTAREA" && (
-        <textarea
+        <TextArea
           id={fieldInputId}
           value={textValue}
           onChange={(e) => onChange(e.target.value)}
-          className={`${fieldBoxStyles} min-h-[120px] resize-y`}
+          className="min-h-[120px]"
         />
       )}
 
@@ -117,11 +117,10 @@ export function ClubApplicationField({
       )}
 
       {field.fieldType === "DROPDOWN" && (
-        <select
+        <Select
           id={fieldInputId}
           value={textValue}
           onChange={(e) => onChange(e.target.value)}
-          className={`${fieldBoxStyles} h-[52px]`}
         >
           <option value="">선택해주세요</option>
           {field.options.map((option) => (
@@ -129,7 +128,7 @@ export function ClubApplicationField({
               {option.label}
             </option>
           ))}
-        </select>
+        </Select>
       )}
     </div>
   );

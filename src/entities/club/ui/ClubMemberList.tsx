@@ -1,3 +1,4 @@
+import { formatSpecialty } from "@/entities/user/lib/formatSpecialty";
 import type { ClubMember } from "../model/club";
 import { groupMembersByGrade } from "../lib/groupMembersByGrade";
 import { getSortedGrades } from "../lib/getSortedGrades";
@@ -50,7 +51,10 @@ export default function ClubMemberList({
                     >
                       {m.name}
                       {m.specialty && (
-                        <span className="text-sub-1"> ({m.specialty})</span>
+                        <span className="text-sub-1">
+                          {" "}
+                          ({formatSpecialty(m.specialty)})
+                        </span>
                       )}
                     </span>
                     {i < gradeMembers.length - 1 && (

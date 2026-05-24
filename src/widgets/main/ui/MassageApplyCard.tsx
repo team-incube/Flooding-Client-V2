@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import ChairIcon from "@/shared/asset/svg/Chair";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
-import { userQueries } from "@/entities/user/api/userQueries";
+import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { useApplyMassage } from "@/features/massage-chair/model/useApplyMassage";
 import { useCancelMassage } from "@/features/massage-chair/model/useCancelMassage";
 import ApplyCard from "./ApplyCard";
@@ -16,27 +16,22 @@ export default function MassageApplyCard() {
     useQuery(massageQuery);
   const applicants = massageApplicants?.applicants ?? [];
   const isApplicationOpen = massageApplicants?.isApplicationOpen ?? false;
-  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const applyMutation = useApplyMassage();
   const cancelMutation = useCancelMassage();
   const hasAppliedMassage =
-    user !== undefined &&
-    applicants.some((student) => student.studentNumber === user.studentNumber);
-  const isMassageActionPending =
-    applyMutation.isPending || cancelMutation.isPending;
-  const isMassageApplyDisabled =
-    isUserLoading ||
-    isMassageLoading ||
-    isMassageActionPending ||
-    isApplicationOpen;
-  const isMassageCancelDisabled =
-    isUserLoading || isMassageLoading || isMassageActionPending;
-  const isMassageActionDisabled = hasAppliedMassage
-    ? isMassageCancelDisabled
-    : isMassageApplyDisabled;
-
+    massageApplicants?.myApplicationStatus === "APPLIED";
+  const isMassageCancelled =
+    massageApplicants?.myApplicationStatus === "CANCELLED";
+  const massageActionState = createApplicationActionState({
+    hasApplied: hasAppliedMassage,
+    isUserLoading: false,
+    isDataLoading: isMassageLoading,
+    isCancelled: isMassageCancelled,
+    isActionPending: applyMutation.isPending || cancelMutation.isPending,
+    isApplicationOpen,
+  });
   const handleApplyMassage = () => {
-    if (isMassageApplyDisabled || hasAppliedMassage) {
+    if (!massageActionState.canApply) {
       return;
     }
 
@@ -44,7 +39,7 @@ export default function MassageApplyCard() {
   };
 
   const handleCancelMassage = () => {
-    if (isMassageCancelDisabled || !hasAppliedMassage) {
+    if (!massageActionState.canCancel) {
       return;
     }
 
@@ -59,18 +54,24 @@ export default function MassageApplyCard() {
       total={MASSAGE_MAX}
       timeText="안마 의자 신청 시간은 20:20 ~ 21:00에 신청이 가능해요"
       buttonText={
-        isUserLoading || isMassageLoading
+        isMassageLoading
           ? "확인 중"
           : hasAppliedMassage
             ? "취소"
-            : isApplicationOpen
+            : massageActionState.isApplyDisabled
               ? "신청 불가"
               : "신청"
       }
-      buttonSize={!hasAppliedMassage && isApplicationOpen ? "fit" : "small"}
+      buttonSize={
+        !hasAppliedMassage &&
+        !isMassageLoading &&
+        massageActionState.isApplyDisabled
+          ? "fit"
+          : "small"
+      }
       detailHref="/dormitory"
       femaleNotice
-      disabled={isMassageActionDisabled}
+      disabled={massageActionState.isActionDisabled}
       onApply={hasAppliedMassage ? handleCancelMassage : handleApplyMassage}
     />
   );

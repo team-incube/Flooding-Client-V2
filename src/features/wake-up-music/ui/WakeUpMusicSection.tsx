@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -25,7 +24,6 @@ export function WakeUpMusicSection({
     selectedDate,
     setSelectedDate,
     songs,
-    youtubeVideos,
     applyMutation,
     handleSubmitRecommendedMusic,
     likeMutation,
@@ -59,9 +57,6 @@ export function WakeUpMusicSection({
               <MusicListItem
                 key={music.id}
                 music={music}
-                youtubeMetadata={
-                  youtubeVideos[extractYoutubeVideoId(music.musicUrl) ?? ""]
-                }
                 isLikePending={
                   likeMutation.isPending &&
                   likeMutation.variables?.id === music.id

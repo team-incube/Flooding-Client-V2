@@ -2,10 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
+import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
-import { userQueries } from "@/entities/user/api/userQueries";
 import { useApplyMassage } from "../model/useApplyMassage";
 import { useCancelMassage } from "../model/useCancelMassage";
 
@@ -15,27 +15,23 @@ export function MassageChairSection() {
     useQuery(massageQuery);
   const applicants = massageApplicants?.applicants ?? [];
   const isApplicationOpen = massageApplicants?.isApplicationOpen ?? false;
-  const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const applyMutation = useApplyMassage();
   const cancelMutation = useCancelMassage();
   const hasAppliedMassage =
-    user !== undefined &&
-    applicants.some((student) => student.studentNumber === user.studentNumber);
-  const isMassageActionPending =
-    applyMutation.isPending || cancelMutation.isPending;
-  const isMassageApplyDisabled =
-    isUserLoading ||
-    isMassageLoading ||
-    isMassageActionPending ||
-    isApplicationOpen;
-  const isMassageCancelDisabled =
-    isUserLoading || isMassageLoading || isMassageActionPending;
-  const isMassageActionDisabled = hasAppliedMassage
-    ? isMassageCancelDisabled
-    : isMassageApplyDisabled;
+    massageApplicants?.myApplicationStatus === "APPLIED";
+  const isMassageCancelled =
+    massageApplicants?.myApplicationStatus === "CANCELLED";
+  const massageActionState = createApplicationActionState({
+    hasApplied: hasAppliedMassage,
+    isUserLoading: false,
+    isDataLoading: isMassageLoading,
+    isCancelled: isMassageCancelled,
+    isActionPending: applyMutation.isPending || cancelMutation.isPending,
+    isApplicationOpen,
+  });
 
   const handleApplyMassage = () => {
-    if (isMassageApplyDisabled || hasAppliedMassage) {
+    if (!massageActionState.canApply) {
       return;
     }
 
@@ -43,7 +39,7 @@ export function MassageChairSection() {
   };
 
   const handleCancelMassage = () => {
-    if (isMassageCancelDisabled || !hasAppliedMassage) {
+    if (!massageActionState.canCancel) {
       return;
     }
 
@@ -78,18 +74,20 @@ export function MassageChairSection() {
 
         <div className="flex w-[330px] shrink-0 flex-col justify-end gap-3">
           <TextButton
-            variant={isMassageActionDisabled ? "disabled" : "filled"}
+            variant={
+              massageActionState.isActionDisabled ? "disabled" : "filled"
+            }
             size="wide"
-            disabled={isMassageActionDisabled}
+            disabled={massageActionState.isActionDisabled}
             onClick={
               hasAppliedMassage ? handleCancelMassage : handleApplyMassage
             }
           >
-            {isUserLoading || isMassageLoading
+            {isMassageLoading
               ? "확인 중"
               : hasAppliedMassage
                 ? "취소하기"
-                : isApplicationOpen
+                : massageActionState.isApplyDisabled
                   ? "신청 불가"
                   : "신청하기"}
           </TextButton>

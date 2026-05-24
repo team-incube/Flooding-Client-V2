@@ -79,6 +79,7 @@ const ClubOpeningRequestSection = () => {
           <ClubCard
             key={club.id}
             club={club}
+            showMemberCount={false}
             onClick={() => router.push(`/club/${club.id}?pending=true`)}
           />
         ))}

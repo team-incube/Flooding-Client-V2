@@ -2,9 +2,11 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
+import { useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
+import { createClubPermission } from "@/entities/club/lib/permission";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { formatDateParam } from "@/shared/lib/date";
 import {
@@ -19,7 +21,7 @@ interface ClubApplicationListSectionProps {
   id: number;
 }
 
-function formatSubmittedAt(value: string) {
+function formatSubmittedAt(value: string): string {
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
@@ -36,7 +38,7 @@ function getErrorMessage(error: unknown) {
   const status = axios.isAxiosError(error) ? error.response?.status : undefined;
 
   if (status === HttpStatusCode.BadRequest) {
-    return "정규 동아리만 신청자 목록을 조회할 수 있어요.";
+    return "전공 동아리만 신청자 목록을 조회할 수 있어요.";
   }
   if (status === HttpStatusCode.Forbidden) {
     return "신청자 목록을 조회할 권한이 없어요.";
@@ -73,6 +75,8 @@ function ClubApplicationListSectionError({
   error,
   resetErrorBoundary,
 }: QueryErrorFallbackProps) {
+  const router = useRouter();
+
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
@@ -81,6 +85,13 @@ function ClubApplicationListSectionError({
           {getErrorMessage(error)}
         </p>
         <div className="flex gap-3">
+          <TextButton
+            variant="outlined"
+            size="fit"
+            onClick={() => router.back()}
+          >
+            뒤로가기
+          </TextButton>
           <TextButton
             variant="outlined"
             size="fit"
@@ -106,23 +117,23 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
   const approveMutation = useApproveClubApplication(id);
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const isLeader = !!user && user.name === detail?.club.leader;
-  const canApproveApplications = isLeader || user?.role === "ADMIN";
-  const canViewApplications =
-    !!detail &&
-    (isLeader || user?.role === "ADMIN" || user?.role === "STUDENT_COUNCIL");
+  const clubPermission = createClubPermission({
+    role: user?.role,
+    clubType: detail?.club.type,
+    isLeader: detail?.isLeader,
+  });
   const applicationListQuery = clubQueries.applicationList(id);
   const { data: applicationList } = useSuspenseQuery({
     ...applicationListQuery,
-    queryKey: canViewApplications
+    queryKey: clubPermission.canViewApplications
       ? applicationListQuery.queryKey
       : ["club", "applications", "permission-denied", id],
-    queryFn: canViewApplications
+    queryFn: clubPermission.canViewApplications
       ? applicationListQuery.queryFn
       : () => Promise.resolve({ applications: [] }),
   });
 
-  if (!canViewApplications) {
+  if (!clubPermission.canViewApplications) {
     return (
       <div className="flex min-h-0 w-full flex-1 overflow-y-auto sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
         <div className="bg-background-surface flex h-[520px] min-h-0 w-full flex-col items-center justify-center gap-3 rounded-2xl p-6">
@@ -181,7 +192,7 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
                     <span className="text-caption-1 text-sub-1">
                       {formatSubmittedAt(application.submittedAt)}
                     </span>
-                    {canApproveApplications && (
+                    {clubPermission.canApprove && (
                       <TextButton
                         variant={
                           approveMutation.isPending ? "disabled" : "filled"

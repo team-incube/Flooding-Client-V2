@@ -2,10 +2,9 @@ import type {
   ClubApplicationRequest,
   ClubFormField,
 } from "@/entities/club/model/club";
-
 export type ClubApplicationFieldValue = string | string[];
 export type ClubApplicationFormValues = Record<
-  number,
+  string,
   ClubApplicationFieldValue
 >;
 
@@ -13,16 +12,6 @@ export function getSortedClubFormFields(
   fields: ClubFormField[],
 ): ClubFormField[] {
   return [...fields].sort((a, b) => a.order - b.order);
-}
-
-export function hasClubApplicationFieldValue(
-  value: ClubApplicationFieldValue | undefined,
-) {
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  return !!value?.trim();
 }
 
 export function normalizeClubApplicationAnswerValue(
@@ -42,24 +31,7 @@ export function createClubApplicationRequest(
   return {
     answers: fields.map((field) => ({
       fieldId: field.fieldId,
-      value: normalizeClubApplicationAnswerValue(values[field.fieldId]),
+      value: normalizeClubApplicationAnswerValue(values[String(field.fieldId)]),
     })),
   };
-}
-
-export function canSubmitClubApplication({
-  fields,
-  values,
-  isPending,
-}: {
-  fields: ClubFormField[];
-  values: ClubApplicationFormValues;
-  isPending: boolean;
-}) {
-  return (
-    fields.every(
-      (field) =>
-        !field.required || hasClubApplicationFieldValue(values[field.fieldId]),
-    ) && !isPending
-  );
 }

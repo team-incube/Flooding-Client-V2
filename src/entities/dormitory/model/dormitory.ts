@@ -19,13 +19,32 @@ export interface StudyApplicant {
   isChecked: boolean;
 }
 
-export interface ApplicationStatus<TApplicant> {
+export type MassageApplicationStatus = "APPLIED" | "CANCELLED";
+
+export type StudyApplicationStatus = "APPROVED" | "CANCELLED" | "BANNED";
+
+export interface ApplicationStatus<TApplicant, TApplicationStatus> {
   isApplicationOpen: boolean;
+  myApplicationStatus: TApplicationStatus | null;
   applicants: TApplicant[];
 }
 
-export type MassageApplicants = ApplicationStatus<DormitoryStudent>;
-export type StudyApplicants = ApplicationStatus<StudyApplicant>;
+export type MassageApplicants = ApplicationStatus<
+  DormitoryStudent,
+  MassageApplicationStatus
+>;
+export type StudyApplicants = ApplicationStatus<
+  StudyApplicant,
+  StudyApplicationStatus
+>;
+
+export interface AttendanceResponse {
+  userId: number;
+  name: string;
+  studentNumber: number;
+}
+
+export type AttendanceStreamStatus = "connecting" | "open" | "error";
 
 export interface MusicApplyRequest {
   musicUrl: string;
