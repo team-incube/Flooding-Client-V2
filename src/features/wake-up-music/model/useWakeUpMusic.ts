@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
+import * as Sentry from "@sentry/nextjs";
 import { toast } from "sonner";
 import type { Music } from "@/entities/music/model/music";
 import {
@@ -10,6 +11,16 @@ import {
   dormitoryMutations,
 } from "@/entities/dormitory/api/dormitoryQueries";
 import { formatDateParam } from "@/shared/lib/date";
+import {
+  captureFeatureAnomaly,
+  captureFeatureError,
+} from "@/shared/lib/sentry";
+
+const FEATURE = "wake-up-music";
+
+function isEmptyApplyBody(body: unknown) {
+  return body === null || body === undefined;
+}
 
 export function useWakeUpMusic() {
   const queryClient = useQueryClient();
@@ -21,11 +32,54 @@ export function useWakeUpMusic() {
 
   const { data: songs = [] } = useQuery(musicQuery);
 
+  const verifyApplyResult = async (submittedUrl: string) => {
+    await queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
+    const refreshed =
+      queryClient.getQueryData<Music[]>(musicQuery.queryKey) ?? [];
+    const found = refreshed.some((music) => music.musicUrl === submittedUrl);
+
+    if (!found) {
+      captureFeatureAnomaly({
+        feature: FEATURE,
+        action: "apply",
+        anomaly: "post-apply-missing",
+        message: "기상음악 신청: 200 응답 후 목록에 신청곡이 없음",
+        extras: {
+          submittedUrl,
+          listSizeAfter: refreshed.length,
+          date: selectedDateString,
+        },
+      });
+    }
+  };
+
   const applyMutation = useMutation({
     mutationFn: () => dormitoryMutations.applyMusic({ musicUrl: urlInput }),
-    onSuccess: () => {
+    onMutate: () => {
+      Sentry.addBreadcrumb({
+        category: FEATURE,
+        message: "apply",
+        level: "info",
+        data: { musicUrl: urlInput },
+      });
+    },
+    onSuccess: async (response) => {
+      const submittedUrl = urlInput;
+      const body = response?.data;
+
+      if (isEmptyApplyBody(body)) {
+        captureFeatureAnomaly({
+          feature: FEATURE,
+          action: "apply",
+          anomaly: "empty-200-response",
+          message: "기상음악 신청: 200 응답이지만 본문이 비어있음",
+          api: { status: response.status, body },
+          extras: { musicUrl: submittedUrl },
+        });
+      }
+
       setUrlInput("");
-      queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
+      await verifyApplyResult(submittedUrl);
     },
     onError: (error) => {
       const status = axios.isAxiosError(error)
@@ -37,15 +91,42 @@ export function useWakeUpMusic() {
         return;
       }
 
+      captureFeatureError(error, {
+        feature: FEATURE,
+        action: "apply",
+        extras: { musicUrl: urlInput },
+      });
       toast.error("기상음악 신청에 실패했습니다.");
     },
   });
 
   const handleSubmitRecommendedMusic = async (selectedUrl: string) => {
-    try {
-      await dormitoryMutations.applyMusic({ musicUrl: selectedUrl });
+    Sentry.addBreadcrumb({
+      category: FEATURE,
+      message: "apply-recommended",
+      level: "info",
+      data: { musicUrl: selectedUrl },
+    });
 
-      await queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
+    try {
+      const response = await dormitoryMutations.applyMusic({
+        musicUrl: selectedUrl,
+      });
+
+      const body = response?.data;
+
+      if (isEmptyApplyBody(body)) {
+        captureFeatureAnomaly({
+          feature: FEATURE,
+          action: "apply-recommended",
+          anomaly: "empty-200-response",
+          message: "기상음악 추천 신청: 200 응답이지만 본문이 비어있음",
+          api: { status: response.status, body },
+          extras: { musicUrl: selectedUrl },
+        });
+      }
+
+      await verifyApplyResult(selectedUrl);
     } catch (error) {
       const status = axios.isAxiosError(error)
         ? error.response?.status
@@ -56,6 +137,11 @@ export function useWakeUpMusic() {
         throw error;
       }
 
+      captureFeatureError(error, {
+        feature: FEATURE,
+        action: "apply-recommended",
+        extras: { musicUrl: selectedUrl },
+      });
       toast.error("기상음악 신청에 실패했습니다.");
       throw error;
     }
@@ -67,6 +153,12 @@ export function useWakeUpMusic() {
         ? dormitoryMutations.cancelLikeMusic(music.id)
         : dormitoryMutations.likeMusic(music.id),
     onMutate: async (music) => {
+      Sentry.addBreadcrumb({
+        category: FEATURE,
+        message: music.isLiked ? "cancel-like" : "like",
+        level: "info",
+        data: { musicId: music.id },
+      });
       await queryClient.cancelQueries({ queryKey: musicQuery.queryKey });
       const previousSongs = queryClient.getQueryData<Music[]>(
         musicQuery.queryKey,
@@ -83,10 +175,15 @@ export function useWakeUpMusic() {
       );
       return { previousSongs };
     },
-    onError: (_error, _music, context) => {
+    onError: (error, music, context) => {
       if (context?.previousSongs) {
         queryClient.setQueryData(musicQuery.queryKey, context.previousSongs);
       }
+      captureFeatureError(error, {
+        feature: FEATURE,
+        action: "like-toggle",
+        extras: { musicId: music.id, wasLiked: music.isLiked },
+      });
       toast.error("좋아요 처리에 실패했습니다.");
     },
     onSettled: () => {
@@ -97,6 +194,12 @@ export function useWakeUpMusic() {
   const cancelMutation = useMutation({
     mutationFn: (musicId: number) => dormitoryMutations.deleteMusic(musicId),
     onMutate: async (musicId) => {
+      Sentry.addBreadcrumb({
+        category: FEATURE,
+        message: "cancel",
+        level: "info",
+        data: { musicId },
+      });
       await queryClient.cancelQueries({ queryKey: musicQuery.queryKey });
       const previousSongs = queryClient.getQueryData<Music[]>(
         musicQuery.queryKey,
@@ -107,10 +210,15 @@ export function useWakeUpMusic() {
       );
       return { previousSongs };
     },
-    onError: (_error, _musicId, context) => {
+    onError: (error, musicId, context) => {
       if (context?.previousSongs) {
         queryClient.setQueryData(musicQuery.queryKey, context.previousSongs);
       }
+      captureFeatureError(error, {
+        feature: FEATURE,
+        action: "cancel",
+        extras: { musicId },
+      });
       toast.error("기상음악 취소에 실패했습니다.");
     },
     onSettled: () => {
