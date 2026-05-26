@@ -1,4 +1,5 @@
 import axios, { HttpStatusCode } from "axios";
+import { captureFeatureError } from "@/shared/lib/sentry";
 
 export const DEFAULT_API_TIMEOUT_MS = 10 * 1000;
 export const LONG_API_TIMEOUT_MS = 30 * 1000;
@@ -83,6 +84,10 @@ instance.interceptors.response.use(
         config.headers.Authorization = `Bearer ${accessToken}`;
         return instance(config);
       } catch (refreshError) {
+        captureFeatureError(refreshError, {
+          feature: "auth",
+          action: "refresh",
+        });
         sessionStorage.removeItem("access_token");
         redirectToSignin();
         return Promise.reject(refreshError);
