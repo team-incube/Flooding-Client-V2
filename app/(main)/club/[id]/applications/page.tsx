@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ClubApplicationListSectionBoundary } from "@/features/club/ui/ClubApplicationListSection";
+import { ClubApplicationListSectionBoundary } from "@/features/club-application/ui/ClubApplicationListSection";
 
 interface ClubApplicationsPageProps {
   params: Promise<{
