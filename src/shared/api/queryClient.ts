@@ -56,7 +56,7 @@ export const queryClient = new QueryClient({
       if (
         responseData.data !== null &&
         responseData.data !== undefined &&
-        responseData.data !== ""
+        (typeof responseData.data !== "string" || responseData.data.trim() !== "")
       )
         return;
 
