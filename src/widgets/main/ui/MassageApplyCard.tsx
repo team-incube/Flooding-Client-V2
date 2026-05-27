@@ -52,7 +52,7 @@ export default function MassageApplyCard() {
       icon={<ChairIcon />}
       current={applicants.length}
       total={MASSAGE_MAX}
-      timeText="안마 의자 신청 시간은 20:20 ~ 21:00에 신청이 가능해요"
+      timeText="※ 안마의자 신청 시간은 20:20 ~ 21:00에 신청이 가능해요"
       buttonText={
         isMassageLoading
           ? "확인 중"

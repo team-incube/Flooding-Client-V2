@@ -25,7 +25,7 @@ export function StudyBanActionPanel({
   if (!selectedStudyBanFilter) {
     return (
       <p className="text-caption-3 text-sub-1 font-medium">
-        자습 허용/금지 중 하나를 선택해야 자습 금지/해제가 가능해요.
+        ※ 자습 허용/금지 중 하나를 선택해야 자습 금지/해제가 가능해요.
       </p>
     );
   }

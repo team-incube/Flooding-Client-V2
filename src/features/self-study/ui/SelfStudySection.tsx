@@ -229,7 +229,7 @@ export function SelfStudySection() {
           </TextButton>
 
           <p className="text-sub-2 text-caption-2">
-            자습 신청 시간은 20:00 ~ 21:00 입니다
+            ※ 자습 신청 시간은 20:00 ~ 21:00 입니다
           </p>
         </div>
       </div>
