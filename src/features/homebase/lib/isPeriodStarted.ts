@@ -10,7 +10,6 @@ export function isPeriodStarted(period: string): boolean {
   return now >= periodTime;
 }
 
-
 export function isAllPeriodsStarted(): boolean {
   return PERIODS.every(isPeriodStarted);
 }
