@@ -52,7 +52,7 @@ function StudentsPageContent() {
           <div className="flex flex-col gap-1">
             <h2 className="text-title-3 text-main-text">접근 권한이 없어요</h2>
             <p className="text-text-3 text-sub-1">
-              학생관리는 관리자, 기자위, 학생회 계정에서만 사용할 수 있어요.
+              학생관리는 관리자, 기자위 계정에서만 사용할 수 있어요.
             </p>
           </div>
           <TextButton
