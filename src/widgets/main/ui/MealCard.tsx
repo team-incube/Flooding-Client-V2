@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Bowl from "@/shared/asset/svg/Bowl";
 import Back from "@/shared/asset/svg/Back";
@@ -18,6 +18,7 @@ import {
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { formatDateParam, formatDisplayDate } from "@/shared/lib/date";
+import { useDebouncedValue } from "@/shared/lib/useDebouncedValue";
 
 function MealCardLoading() {
   return (
@@ -65,6 +66,51 @@ function MealCardEmpty() {
   );
 }
 
+function MealContentLoading() {
+  return (
+    <div className="flex flex-1 flex-col overflow-y-auto">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-3 lg:flex lg:flex-col lg:gap-3">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <Skeleton key={index} className="h-6 w-full" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface MealCardContentProps {
+  dateStr: string;
+  selectedTab: MealType;
+}
+
+function MealCardContent({ dateStr, selectedTab }: MealCardContentProps) {
+  const { data: meals } = useSuspenseQuery(neisQueries.meals(dateStr));
+
+  const selectedMeal = meals?.find(
+    (m) => m.mealType === MEAL_TYPE_MAP[selectedTab],
+  );
+  const menuItems = selectedMeal?.menus ?? [];
+
+  return (
+    <div className="flex flex-1 flex-col overflow-y-auto">
+      {menuItems.length > 0 ? (
+        <ul className="grid grid-cols-2 gap-x-6 gap-y-3 lg:flex lg:flex-col lg:gap-3">
+          {menuItems.map((item, index) => (
+            <li
+              key={`${item}-${index}`}
+              className="text-text-1 text-sub-1 font-semibold"
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <MealCard.Empty />
+      )}
+    </div>
+  );
+}
+
 const MealCard = () => {
   const [initialMealSelection] = useState(getCurrentMealSelection);
   const [offset, setOffset] = useState(initialMealSelection.dateOffset);
@@ -74,14 +120,11 @@ const MealCard = () => {
 
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + offset);
-  const dateStr = formatDateParam(currentDate);
 
-  const { data: meals } = useSuspenseQuery(neisQueries.meals(dateStr));
-
-  const selectedMeal = meals?.find(
-    (m) => m.mealType === MEAL_TYPE_MAP[selectedTab],
-  );
-  const menuItems = selectedMeal?.menus ?? [];
+  const debouncedOffset = useDebouncedValue(offset, 300);
+  const debouncedDate = new Date();
+  debouncedDate.setDate(debouncedDate.getDate() + debouncedOffset);
+  const dateStr = formatDateParam(debouncedDate);
 
   return (
     <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-6 lg:h-[498px]">
@@ -128,22 +171,9 @@ const MealCard = () => {
         ))}
       </div>
 
-      <div className="flex flex-1 flex-col overflow-y-auto">
-        {menuItems.length > 0 ? (
-          <ul className="grid grid-cols-2 gap-x-6 gap-y-3 lg:flex lg:flex-col lg:gap-3">
-            {menuItems.map((item, index) => (
-              <li
-                key={`${item}-${index}`}
-                className="text-text-1 text-sub-1 font-semibold"
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <MealCard.Empty />
-        )}
-      </div>
+      <Suspense fallback={<MealContentLoading />}>
+        <MealCardContent dateStr={dateStr} selectedTab={selectedTab} />
+      </Suspense>
     </div>
   );
 };
