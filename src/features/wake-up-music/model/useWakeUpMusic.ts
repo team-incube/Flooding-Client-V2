@@ -8,10 +8,9 @@ import type { Music } from "@/entities/music/model/music";
 import {
   dormitoryQueries,
   dormitoryMutations,
+  dormitoryRequests,
 } from "@/entities/dormitory/api/dormitoryQueries";
 import { formatDateParam } from "@/shared/lib/date";
-
-const FEATURE = "wake-up-music";
 
 export function useWakeUpMusic() {
   const queryClient = useQueryClient();
@@ -24,8 +23,8 @@ export function useWakeUpMusic() {
   const { data: songs = [] } = useQuery(musicQuery);
 
   const applyMutation = useMutation({
-    mutationKey: [FEATURE, "apply"],
-    mutationFn: () => dormitoryMutations.applyMusic({ musicUrl: urlInput }),
+    mutationKey: dormitoryMutations.applyMusic().mutationKey,
+    mutationFn: () => dormitoryRequests.applyMusic({ musicUrl: urlInput }),
     meta: {
       getExtras: () => ({ musicUrl: urlInput }),
     },
@@ -47,11 +46,10 @@ export function useWakeUpMusic() {
   });
 
   const applyRecommendedMutation = useMutation({
-    mutationKey: [FEATURE, "apply-recommended"],
-    mutationFn: (selectedUrl: string) =>
-      dormitoryMutations.applyMusic({ musicUrl: selectedUrl }),
+    ...dormitoryMutations.applyMusic(),
+    mutationKey: ["dormitory", "music-apply-recommended"],
     meta: {
-      getExtras: (musicUrl: string) => ({ musicUrl }),
+      getExtras: (body: { musicUrl: string }) => ({ musicUrl: body.musicUrl }),
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
@@ -70,15 +68,15 @@ export function useWakeUpMusic() {
   });
 
   const handleSubmitRecommendedMusic = async (selectedUrl: string) => {
-    await applyRecommendedMutation.mutateAsync(selectedUrl);
+    await applyRecommendedMutation.mutateAsync({ musicUrl: selectedUrl });
   };
 
   const likeMutation = useMutation({
-    mutationKey: [FEATURE, "like-toggle"],
+    mutationKey: ["dormitory", "music-like-toggle"],
     mutationFn: (music: Music) =>
       music.isLiked
-        ? dormitoryMutations.cancelLikeMusic(music.id)
-        : dormitoryMutations.likeMusic(music.id),
+        ? dormitoryRequests.cancelLikeMusic(music.id)
+        : dormitoryRequests.likeMusic(music.id),
     meta: {
       getExtras: (music: Music) => ({
         musicId: music.id,
@@ -114,8 +112,7 @@ export function useWakeUpMusic() {
   });
 
   const cancelMutation = useMutation({
-    mutationKey: [FEATURE, "cancel"],
-    mutationFn: (musicId: number) => dormitoryMutations.deleteMusic(musicId),
+    ...dormitoryMutations.deleteMusic(),
     meta: {
       getExtras: (musicId: number) => ({ musicId }),
     },

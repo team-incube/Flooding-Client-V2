@@ -1,3 +1,4 @@
+import { mutationOptions } from "@tanstack/react-query";
 import { instance, LONG_API_TIMEOUT_MS } from "@/shared/api/instance";
 import type {
   RecommendAiSongResponse,
@@ -12,7 +13,7 @@ interface CommonResponse<T> {
   data?: T;
 }
 
-export const aiMutations = {
+const requests = {
   recommendSong: () =>
     instance.post<CommonResponse<RecommendAiSongResponse>>(
       "/ai/song",
@@ -27,3 +28,19 @@ export const aiMutations = {
       timeout: LONG_API_TIMEOUT_MS,
     }),
 };
+
+export const aiMutations = {
+  recommendSong: () =>
+    mutationOptions({
+      mutationKey: ["ai", "song-recommend"],
+      mutationFn: requests.recommendSong,
+    }),
+
+  sendChat: () =>
+    mutationOptions({
+      mutationKey: ["ai", "chat-send"],
+      mutationFn: requests.sendChat,
+    }),
+};
+
+export { requests as aiRequests };

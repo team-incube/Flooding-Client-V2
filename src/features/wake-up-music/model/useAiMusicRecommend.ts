@@ -20,8 +20,7 @@ export function useAiMusicRecommend(enabled: boolean) {
   );
 
   const { mutate: recommendMusic, isPending } = useMutation({
-    mutationKey: ["wake-up-music", "ai-recommend"],
-    mutationFn: () => aiMutations.recommendSong(),
+    ...aiMutations.recommendSong(),
     onMutate: () => {
       setYoutubeLinks([]);
       setSelectedUrl(null);

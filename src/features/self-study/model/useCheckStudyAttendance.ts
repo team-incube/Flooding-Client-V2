@@ -14,7 +14,7 @@ export function useCheckStudyAttendance() {
   const studyQuery = dormitoryQueries.study();
 
   return useMutation({
-    mutationFn: dormitoryMutations.checkStudyAttendance,
+    ...dormitoryMutations.checkStudyAttendance(),
     onMutate: async (studentId) => {
       await queryClient.cancelQueries({ queryKey: studyQuery.queryKey });
       const previous = queryClient.getQueryData<StudyApplicants>(

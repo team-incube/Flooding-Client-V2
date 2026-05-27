@@ -13,7 +13,7 @@ export function useCancelMassage() {
   const massageQuery = dormitoryQueries.massage();
 
   return useMutation({
-    mutationFn: dormitoryMutations.cancelMassage,
+    ...dormitoryMutations.cancelMassage(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: massageQuery.queryKey });
       toast.success("안마의자 신청이 취소되었습니다.");
