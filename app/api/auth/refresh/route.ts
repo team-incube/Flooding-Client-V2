@@ -45,7 +45,13 @@ export async function POST(request: NextRequest) {
         status === HttpStatusCode.Unauthorized
       ) {
         const res = NextResponse.json(body, { status });
-        res.cookies.delete("refresh_token");
+        res.cookies.set("refresh_token", "", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 0,
+        });
         return res;
       }
 

@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { mutationOptions, queryOptions } from "@tanstack/react-query";
 import { instance } from "@/shared/api/instance";
 import {
   getDormitoryMusic,
@@ -74,7 +74,7 @@ export const dormitoryQueries = {
     }),
 } as const;
 
-export const dormitoryMutations = {
+const requests = {
   applyMusic: (body: MusicApplyRequest) =>
     instance.post("/dormitory/music", body),
 
@@ -116,3 +116,98 @@ export const dormitoryMutations = {
   createCleaningZone: (body: CreateCleaningZoneRequest) =>
     instance.post("/dormitory/cleaning-zones", body),
 };
+
+export const dormitoryMutations = {
+  applyMusic: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "music-apply"],
+      mutationFn: requests.applyMusic,
+    }),
+
+  likeMusic: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "music-like"],
+      mutationFn: requests.likeMusic,
+    }),
+
+  cancelLikeMusic: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "music-unlike"],
+      mutationFn: requests.cancelLikeMusic,
+    }),
+
+  deleteMusic: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "music-delete"],
+      mutationFn: requests.deleteMusic,
+    }),
+
+  applyMassage: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "massage-apply"],
+      mutationFn: requests.applyMassage,
+    }),
+
+  cancelMassage: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "massage-cancel"],
+      mutationFn: requests.cancelMassage,
+    }),
+
+  applyStudy: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "study-apply"],
+      mutationFn: requests.applyStudy,
+    }),
+
+  cancelStudy: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "study-cancel"],
+      mutationFn: requests.cancelStudy,
+    }),
+
+  submitInquiry: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "inquiry-submit"],
+      mutationFn: requests.submitInquiry,
+    }),
+
+  banStudy: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "study-ban"],
+      mutationFn: requests.banStudy,
+    }),
+
+  unbanStudy: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "study-unban"],
+      mutationFn: requests.unbanStudy,
+    }),
+
+  checkStudyAttendance: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "study-attendance-check"],
+      mutationFn: requests.checkStudyAttendance,
+    }),
+
+  uncheckStudyAttendance: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "study-attendance-uncheck"],
+      mutationFn: requests.uncheckStudyAttendance,
+    }),
+
+  updatePenalties: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "penalties-update"],
+      mutationFn: (args: { userId: number; body: UpdatePenaltyRequest }) =>
+        requests.updatePenalties(args.userId, args.body),
+    }),
+
+  createCleaningZone: () =>
+    mutationOptions({
+      mutationKey: ["dormitory", "cleaning-zone-create"],
+      mutationFn: requests.createCleaningZone,
+    }),
+} as const;
+
+export { requests as dormitoryRequests };

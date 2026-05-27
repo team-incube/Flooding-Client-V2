@@ -13,7 +13,7 @@ export function useCancelStudy() {
   const studyQuery = dormitoryQueries.study();
 
   return useMutation({
-    mutationFn: dormitoryMutations.cancelStudy,
+    ...dormitoryMutations.cancelStudy(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
       toast.success("자습 신청이 취소되었습니다.");

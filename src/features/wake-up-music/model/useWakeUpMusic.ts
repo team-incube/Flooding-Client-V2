@@ -8,6 +8,7 @@ import type { Music } from "@/entities/music/model/music";
 import {
   dormitoryQueries,
   dormitoryMutations,
+  dormitoryRequests,
 } from "@/entities/dormitory/api/dormitoryQueries";
 import { formatDateParam } from "@/shared/lib/date";
 
@@ -22,7 +23,11 @@ export function useWakeUpMusic() {
   const { data: songs = [] } = useQuery(musicQuery);
 
   const applyMutation = useMutation({
-    mutationFn: () => dormitoryMutations.applyMusic({ musicUrl: urlInput }),
+    mutationKey: dormitoryMutations.applyMusic().mutationKey,
+    mutationFn: () => dormitoryRequests.applyMusic({ musicUrl: urlInput }),
+    meta: {
+      getExtras: () => ({ musicUrl: urlInput }),
+    },
     onSuccess: () => {
       setUrlInput("");
       queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
@@ -36,36 +41,48 @@ export function useWakeUpMusic() {
         toast.error("이미 기상음악을 신청했습니다.");
         return;
       }
-
       toast.error("기상음악 신청에 실패했습니다.");
     },
   });
 
-  const handleSubmitRecommendedMusic = async (selectedUrl: string) => {
-    try {
-      await dormitoryMutations.applyMusic({ musicUrl: selectedUrl });
-
-      await queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
-    } catch (error) {
+  const applyRecommendedMutation = useMutation({
+    ...dormitoryMutations.applyMusic(),
+    mutationKey: ["dormitory", "music-apply-recommended"],
+    meta: {
+      getExtras: (body: { musicUrl: string }) => ({ musicUrl: body.musicUrl }),
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
+    },
+    onError: (error) => {
       const status = axios.isAxiosError(error)
         ? error.response?.status
         : undefined;
 
       if (status === HttpStatusCode.Conflict) {
         toast.error("이미 기상음악을 신청했습니다.");
-        throw error;
+        return;
       }
-
       toast.error("기상음악 신청에 실패했습니다.");
-      throw error;
-    }
+    },
+  });
+
+  const handleSubmitRecommendedMusic = async (selectedUrl: string) => {
+    await applyRecommendedMutation.mutateAsync({ musicUrl: selectedUrl });
   };
 
   const likeMutation = useMutation({
+    mutationKey: ["dormitory", "music-like-toggle"],
     mutationFn: (music: Music) =>
       music.isLiked
-        ? dormitoryMutations.cancelLikeMusic(music.id)
-        : dormitoryMutations.likeMusic(music.id),
+        ? dormitoryRequests.cancelLikeMusic(music.id)
+        : dormitoryRequests.likeMusic(music.id),
+    meta: {
+      getExtras: (music: Music) => ({
+        musicId: music.id,
+        wasLiked: music.isLiked,
+      }),
+    },
     onMutate: async (music) => {
       await queryClient.cancelQueries({ queryKey: musicQuery.queryKey });
       const previousSongs = queryClient.getQueryData<Music[]>(
@@ -95,7 +112,10 @@ export function useWakeUpMusic() {
   });
 
   const cancelMutation = useMutation({
-    mutationFn: (musicId: number) => dormitoryMutations.deleteMusic(musicId),
+    ...dormitoryMutations.deleteMusic(),
+    meta: {
+      getExtras: (musicId: number) => ({ musicId }),
+    },
     onMutate: async (musicId) => {
       await queryClient.cancelQueries({ queryKey: musicQuery.queryKey });
       const previousSongs = queryClient.getQueryData<Music[]>(
