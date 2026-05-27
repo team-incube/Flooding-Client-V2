@@ -169,9 +169,7 @@ export default function HomebaseCard({
                   테이블을 선택하면 여러 교시를 선택할 수 있어요
                 </NoteText>
               )}
-              <NoteText>
-                홈베이스 신청은 13:30 이후부터 해당 교시 시작 전 신청이 가능해요
-              </NoteText>
+              <NoteText>13:30부터 해당 교시 시작 전까지 신청 가능해요</NoteText>
             </div>
           </div>
 
