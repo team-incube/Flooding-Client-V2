@@ -76,9 +76,17 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
         >
           <Back />
         </button>
-        <span className="text-main-text text-text-4">
+        <button
+          type="button"
+          onClick={() => {
+            const today = new Date();
+            setViewDate(today);
+            onDateSelect?.(today);
+          }}
+          className="text-main-text text-text-4 cursor-pointer"
+        >
           {formatHeader(new Date())}
-        </span>
+        </button>
         <button
           type="button"
           onClick={nextMonth}
