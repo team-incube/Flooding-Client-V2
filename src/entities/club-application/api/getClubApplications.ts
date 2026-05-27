@@ -1,5 +1,5 @@
 import { instance } from "@/shared/api/instance";
-import type { ClubApplicationListResponse } from "../model/club";
+import type { ClubApplicationListResponse } from "../model/application";
 
 export async function getClubApplications(
   clubId: number,

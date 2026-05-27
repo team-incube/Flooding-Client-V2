@@ -6,7 +6,7 @@ import {
   MOCK_CLUB_FORMS,
 } from "../model/mock";
 import { MOCK_STUDENTS } from "@/entities/user/model/mock";
-import type { CreateClubFormRequest } from "../model/club";
+import type { CreateClubFormRequest } from "@/entities/club-form/model/form";
 
 const MAJOR_CLUBS = MOCK_CLUBS.filter((c) => c.type === "MAJOR_CLUB");
 const AUTONOMOUS_CLUBS = MOCK_CLUBS.filter((c) => c.type === "AUTONOMOUS_CLUB");

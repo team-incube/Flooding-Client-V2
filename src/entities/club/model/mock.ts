@@ -1,11 +1,11 @@
 import {
-  ClubApplicationListResponse,
   Club,
   ClubDetailResponse,
-  ClubForm,
   ClubMember,
   ProjectParticipant,
 } from "./club";
+import { ClubApplicationListResponse } from "@/entities/club-application/model/application";
+import { ClubForm } from "@/entities/club-form/model/form";
 
 export const MOCK_CLUBS: Club[] = [
   {

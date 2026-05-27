@@ -16,11 +16,11 @@ import ProjectCard from "./ProjectCard";
 import type { ClubMember, ClubDetailResponse, Project } from "../model/club";
 import type { SearchUser } from "@/entities/user/model/user";
 import {
-  clubMutations,
   usePutClub,
   useDeleteClub,
   useUploadClubRepresentativeImage,
 } from "../api/clubQueries";
+import { clubMemberMutations } from "@/entities/club-member/api/clubMemberMutations";
 import FileOff from "@/shared/asset/svg/FileOff";
 
 const SEARCH_RESULT_LIMIT = 5;
@@ -178,10 +178,10 @@ export default function ClubDetail({
 
       await Promise.all([
         ...invitedMemberIds.map((memberId) =>
-          clubMutations.inviteMember(club.id, memberId),
+          clubMemberMutations.invite(club.id, memberId),
         ),
         ...exiledMemberIds.map((memberId) =>
-          clubMutations.exileMember(club.id, memberId),
+          clubMemberMutations.exile(club.id, memberId),
         ),
       ]);
     })();

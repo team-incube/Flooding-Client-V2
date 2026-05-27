@@ -1,6 +1,6 @@
 import axios, { HttpStatusCode } from "axios";
 import { instance } from "@/shared/api/instance";
-import type { ClubForm } from "../model/club";
+import type { ClubForm } from "../model/form";
 
 export async function getClubForm(clubId: number): Promise<ClubForm | null> {
   try {
