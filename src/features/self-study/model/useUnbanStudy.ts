@@ -4,8 +4,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import { toast } from "sonner";
 import {
-  dormitoryMutations,
   dormitoryQueries,
+  dormitoryRequests,
 } from "@/entities/dormitory/api/dormitoryQueries";
 import type { SearchUsersPage } from "@/entities/user/model/user";
 import { userQueries } from "@/entities/user/api/userQueries";
@@ -22,7 +22,7 @@ export function useUnbanStudy() {
   return useMutation({
     mutationFn: async (studentIds: number[]): Promise<UnbanStudyResult> => {
       const results = await Promise.allSettled(
-        studentIds.map(dormitoryMutations.unbanStudy),
+        studentIds.map(dormitoryRequests.unbanStudy),
       );
       const successfulStudentIds = studentIds.filter(
         (_, index) => results[index].status === "fulfilled",

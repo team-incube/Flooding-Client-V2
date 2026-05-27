@@ -13,7 +13,7 @@ export function useApplyStudy() {
   const studyQuery = dormitoryQueries.study();
 
   return useMutation({
-    mutationFn: dormitoryMutations.applyStudy,
+    ...dormitoryMutations.applyStudy(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: studyQuery.queryKey });
       toast.success("자습 신청이 완료되었습니다.");

@@ -36,9 +36,12 @@ export function useAiChat() {
   const [input, setInput] = useState("");
 
   const sendMutation = useMutation({
-    mutationFn: (text: string) => aiMutations.sendChat({ user_input: text }),
-    onMutate: (text) => {
-      setMessages((prev) => [...prev, { role: "user", content: text }]);
+    ...aiMutations.sendChat(),
+    onMutate: (body) => {
+      setMessages((prev) => [
+        ...prev,
+        { role: "user", content: body.user_input },
+      ]);
     },
     onSuccess: ({ data }) => {
       const response = data.data?.response?.trim();
@@ -64,7 +67,7 @@ export function useAiChat() {
   const handleSend = () => {
     const trimmed = input.trim();
     if (!trimmed || sendMutation.isPending) return;
-    sendMutation.mutate(trimmed);
+    sendMutation.mutate({ user_input: trimmed });
     setInput("");
   };
 

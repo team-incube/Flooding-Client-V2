@@ -20,7 +20,7 @@ export function useAiMusicRecommend(enabled: boolean) {
   );
 
   const { mutate: recommendMusic, isPending } = useMutation({
-    mutationFn: () => aiMutations.recommendSong(),
+    ...aiMutations.recommendSong(),
     onMutate: () => {
       setYoutubeLinks([]);
       setSelectedUrl(null);
