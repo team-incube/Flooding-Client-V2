@@ -3,7 +3,10 @@
 import { useReducer, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { ClubForm, ClubFormFieldType } from "@/entities/club-form/model/form";
+import type {
+  ClubForm,
+  ClubFormFieldType,
+} from "@/entities/club-form/model/form";
 import {
   clubFormDraftReducer,
   createClubFormDraftState,
