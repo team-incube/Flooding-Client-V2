@@ -6,6 +6,8 @@ export const FLOORS = [
 
 export const PERIODS = ["8교시", "9교시", "10교시", "11교시"];
 
+export const RESERVATION_OPEN_TIME = "13:30";
+
 export const PERIODS_TIME: Record<string, string> = {
   "8교시": "16:40",
   "9교시": "17:40",
