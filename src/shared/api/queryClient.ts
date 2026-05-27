@@ -16,7 +16,11 @@ const MINUTE = 60 * 1000;
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error, query) => {
-      if (!axios.isAxiosError(error) || !error.response || error.response.status >= 500) {
+      if (
+        !axios.isAxiosError(error) ||
+        !error.response ||
+        error.response.status >= 500
+      ) {
         captureFeatureError(error, {
           feature: "react-query",
           action: "query",
@@ -30,7 +34,9 @@ export const queryClient = new QueryClient({
       const context = getMutationContext(mutation.options.mutationKey);
       if (!context) return;
 
-      const parsedMeta = mutationMonitorMetaSchema.safeParse(mutation.options.meta);
+      const parsedMeta = mutationMonitorMetaSchema.safeParse(
+        mutation.options.meta,
+      );
       const meta = parsedMeta.success ? parsedMeta.data : undefined;
 
       Sentry.addBreadcrumb({
@@ -50,7 +56,9 @@ export const queryClient = new QueryClient({
       if (responseData.data !== null && responseData.data !== undefined) return;
 
       const context = getMutationContext(mutation.options.mutationKey);
-      const parsedMeta = mutationMonitorMetaSchema.safeParse(mutation.options.meta);
+      const parsedMeta = mutationMonitorMetaSchema.safeParse(
+        mutation.options.meta,
+      );
       const meta = parsedMeta.success ? parsedMeta.data : undefined;
 
       captureFeatureAnomaly({
@@ -75,7 +83,9 @@ export const queryClient = new QueryClient({
         return;
       }
 
-      const parsedMeta = mutationMonitorMetaSchema.safeParse(mutation.options.meta);
+      const parsedMeta = mutationMonitorMetaSchema.safeParse(
+        mutation.options.meta,
+      );
       const meta = parsedMeta.success ? parsedMeta.data : undefined;
       const context = getMutationContext(mutation.options.mutationKey);
 

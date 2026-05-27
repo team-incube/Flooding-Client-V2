@@ -26,7 +26,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                 예상치 못한 오류가 발생했어요
               </h1>
               <p className="text-text-3 text-sub-1">
-                잠시 후 다시 시도해주세요. 문제가 계속되면 관리자에게 문의해주세요.
+                잠시 후 다시 시도해주세요. 문제가 계속되면 관리자에게
+                문의해주세요.
               </p>
             </div>
             <button
