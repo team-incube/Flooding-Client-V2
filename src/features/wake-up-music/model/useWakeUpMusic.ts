@@ -10,13 +10,13 @@ import {
   dormitoryMutations,
   dormitoryRequests,
 } from "@/entities/dormitory/api/dormitoryQueries";
-import { formatDateParam } from "@/shared/lib/date";
+import { formatDateParam, getInitialMusicDate } from "@/shared/lib/date";
 import { musicUrlSchema } from "@/features/wake-up-music/lib/wakeUpMusicSchema";
 
 export function useWakeUpMusic() {
   const queryClient = useQueryClient();
   const [urlInput, setUrlInput] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(getInitialMusicDate);
 
   const canApply = musicUrlSchema.safeParse(urlInput).success;
 
