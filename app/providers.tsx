@@ -12,25 +12,34 @@ import { MSWProvider } from "./msw-provider";
 
 function SentryUserBridge() {
   useEffect(() => {
+    const { queryKey } = userQueries.me();
+
     const sync = () => {
-      const user = queryClient.getQueryData<User>(userQueries.me().queryKey);
+      const user = queryClient.getQueryData<User>(queryKey);
       if (!user?.id) {
         Sentry.setUser(null);
         return;
+      } else {
+        Sentry.setUser({
+          id: String(user.id),
+          username: user.name,
+        });
       }
-      Sentry.setUser({
-        id: String(user.id),
-        username: user.name,
-      });
     };
 
+    const targetHash = queryClient
+      .getQueryCache()
+      .find({ queryKey })?.queryHash;
+
     sync();
+
     return queryClient.getQueryCache().subscribe((event) => {
-      if (event.query.queryKey[0] === "user" && event.query.queryKey[1] === "me") {
-        sync();
-      }
+      if (event.type !== "updated") return;
+      if (event.query.queryHash !== targetHash) return;
+      sync();
     });
   }, []);
+
   return null;
 }
 
