@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -8,6 +9,7 @@ import TextField from "@/shared/ui/textField";
 import Music from "@/shared/asset/svg/Music";
 import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendModal";
 import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
+import { userQueries } from "@/entities/user/api/userQueries";
 
 interface WakeUpMusicSectionProps {
   icon?: ReactNode;
@@ -33,6 +35,8 @@ export function WakeUpMusicSection({
     cancelMutation,
   } = useWakeUpMusic();
 
+  const { data: me } = useQuery(userQueries.me());
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -56,22 +60,28 @@ export function WakeUpMusicSection({
       <div className="flex flex-1 gap-6 overflow-hidden">
         <div className="min-w-0 flex-1 overflow-y-auto pr-2">
           <div className="flex flex-col">
-            {songs.map((music) => (
-              <MusicListItem
-                key={music.id}
-                music={music}
-                isLikePending={
-                  likeMutation.isPending &&
-                  likeMutation.variables?.id === music.id
-                }
-                onToggleLike={() => likeMutation.mutate(music)}
-                onDelete={() => cancelMutation.mutate(music.id)}
-                isDeletePending={
-                  cancelMutation.isPending &&
-                  cancelMutation.variables === music.id
-                }
-              />
-            ))}
+            {songs.map((music) => {
+              return (
+                <MusicListItem
+                  key={music.id}
+                  music={music}
+                  isLikePending={
+                    likeMutation.isPending &&
+                    likeMutation.variables?.id === music.id
+                  }
+                  onToggleLike={() => likeMutation.mutate(music)}
+                  onDelete={
+                    me?.id === music.userId
+                      ? () => cancelMutation.mutate(music.id)
+                      : undefined
+                  }
+                  isDeletePending={
+                    cancelMutation.isPending &&
+                    cancelMutation.variables === music.id
+                  }
+                />
+              );
+            })}
           </div>
         </div>
 
