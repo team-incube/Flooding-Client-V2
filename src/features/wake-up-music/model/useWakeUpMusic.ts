@@ -10,7 +10,8 @@ import {
   dormitoryMutations,
   dormitoryRequests,
 } from "@/entities/dormitory/api/dormitoryQueries";
-import { formatDateParam, getInitialMusicDate } from "@/shared/lib/date";
+import { formatDateParam } from "@/shared/lib/date";
+import { getInitialMusicDate } from "@/features/wake-up-music/lib/date";
 import { musicUrlSchema } from "@/features/wake-up-music/lib/wakeUpMusicSchema";
 
 export function useWakeUpMusic() {
