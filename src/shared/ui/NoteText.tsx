@@ -13,7 +13,9 @@ const sizeStyles = {
 
 export function NoteText({ size = "sm", children, className }: NoteTextProps) {
   return (
-    <p className={`text-sub-2 ${sizeStyles[size]}${className ? ` ${className}` : ""}`}>
+    <p
+      className={`text-sub-2 ${sizeStyles[size]}${className ? ` ${className}` : ""}`}
+    >
       ※ {children}
     </p>
   );

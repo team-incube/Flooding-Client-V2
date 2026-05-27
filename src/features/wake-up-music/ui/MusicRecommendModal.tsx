@@ -99,7 +99,9 @@ export function MusicRecommendModal({
               <Cancel />
             </button>
           </div>
-          <NoteText>노래 추천은 이전에 신청한 곡을 기반으로 노래를 추천해요</NoteText>
+          <NoteText>
+            노래 추천은 이전에 신청한 곡을 기반으로 노래를 추천해요
+          </NoteText>
         </div>
 
         <div className="flex min-h-[230px] gap-3 overflow-x-auto">

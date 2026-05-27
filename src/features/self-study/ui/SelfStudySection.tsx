@@ -231,7 +231,9 @@ export function SelfStudySection() {
 
           <NoteText>자습 신청 시간은 20:00 ~ 21:00 입니다</NoteText>
           {studyPermission.canCheckAttendance && (
-            <NoteText>학생 카드의 체크박스를 눌러 출석 체크가 가능해요</NoteText>
+            <NoteText>
+              학생 카드의 체크박스를 눌러 출석 체크가 가능해요
+            </NoteText>
           )}
         </div>
       </div>
