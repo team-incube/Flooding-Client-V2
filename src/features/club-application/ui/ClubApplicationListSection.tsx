@@ -5,6 +5,7 @@ import axios, { HttpStatusCode } from "axios";
 import { useRouter } from "next/navigation";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { clubApplicationQueries } from "@/entities/club-application/api/clubApplicationQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createClubPermission } from "@/entities/club/lib/permission";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -15,7 +16,7 @@ import {
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useApproveClubApplication } from "../model/useApproveClubApplication";
-import { ClubBackButton } from "./ClubBackButton";
+import { ClubBackButton } from "@/features/club/ui/ClubBackButton";
 
 interface ClubApplicationListSectionProps {
   id: number;
@@ -122,12 +123,12 @@ function ClubApplicationListContent({ id }: ClubApplicationListSectionProps) {
     clubType: detail?.club.type,
     isLeader: detail?.isLeader,
   });
-  const applicationListQuery = clubQueries.applicationList(id);
+  const applicationListQuery = clubApplicationQueries.list(id);
   const { data: applicationList } = useSuspenseQuery({
     ...applicationListQuery,
     queryKey: clubPermission.canViewApplications
       ? applicationListQuery.queryKey
-      : ["club", "applications", "permission-denied", id],
+      : ["club-application", "list", "permission-denied", id],
     queryFn: clubPermission.canViewApplications
       ? applicationListQuery.queryFn
       : () => Promise.resolve({ applications: [] }),

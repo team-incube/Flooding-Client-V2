@@ -2,7 +2,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { clubMutations, clubQueries } from "@/entities/club/api/clubQueries";
+import { clubQueries } from "@/entities/club/api/clubQueries";
+import { clubMemberMutations } from "@/entities/club-member/api/clubMemberMutations";
 
 export function useTransferClubLeader(clubId: number) {
   const queryClient = useQueryClient();
@@ -10,7 +11,7 @@ export function useTransferClubLeader(clubId: number) {
 
   return useMutation({
     mutationFn: (targetUserId: number) =>
-      clubMutations.transferLeader(clubId, targetUserId),
+      clubMemberMutations.transferLeader(clubId, targetUserId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: detailQuery.queryKey });
       toast.success("소유권을 위임했습니다.");

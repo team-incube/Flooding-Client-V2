@@ -1,7 +1,5 @@
-import type {
-  ClubApplicationRequest,
-  ClubFormField,
-} from "@/entities/club/model/club";
+import type { ClubApplicationRequest } from "@/entities/club-application/model/application";
+import type { ClubFormField } from "@/entities/club-form/model/form";
 export type ClubApplicationFieldValue = string | string[];
 export type ClubApplicationFormValues = Record<
   string,

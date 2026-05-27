@@ -2,7 +2,11 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { clubMutations, clubQueries } from "@/entities/club/api/clubQueries";
+import { clubQueries } from "@/entities/club/api/clubQueries";
+import {
+  clubApplicationMutations,
+  clubApplicationQueries,
+} from "@/entities/club-application/api/clubApplicationQueries";
 
 interface ApproveClubApplicationVariables {
   userId: number;
@@ -10,13 +14,13 @@ interface ApproveClubApplicationVariables {
 
 export function useApproveClubApplication(clubId: number) {
   const queryClient = useQueryClient();
-  const applicationListQuery = clubQueries.applicationList(clubId);
+  const applicationListQuery = clubApplicationQueries.list(clubId);
   const detailQuery = clubQueries.detail(clubId);
   const listQuery = clubQueries.list();
 
   return useMutation({
     mutationFn: ({ userId }: ApproveClubApplicationVariables) =>
-      clubMutations.approveApplication(clubId, userId),
+      clubApplicationMutations.approve(clubId, userId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: applicationListQuery.queryKey,

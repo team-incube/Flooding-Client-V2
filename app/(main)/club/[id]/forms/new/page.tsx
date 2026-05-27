@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ClubFormCreateSectionBoundary } from "@/features/club/ui/ClubFormCreateSection";
+import { ClubFormCreateSectionBoundary } from "@/features/club-form/ui/ClubFormCreateSection";
 
 interface ClubFormCreatePageProps {
   params: Promise<{

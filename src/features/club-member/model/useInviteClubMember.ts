@@ -2,13 +2,13 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { clubMutations } from "@/entities/club/api/clubQueries";
+import { clubMemberMutations } from "@/entities/club-member/api/clubMemberMutations";
 
 export function useInviteClubMember(clubId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (userId: number) => clubMutations.inviteMember(clubId, userId),
+    mutationFn: (userId: number) => clubMemberMutations.invite(clubId, userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["club", "detail", clubId] });
       toast.success("멤버를 초대했습니다.");

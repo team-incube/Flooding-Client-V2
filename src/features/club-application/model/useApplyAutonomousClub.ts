@@ -3,7 +3,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import { toast } from "sonner";
-import { clubMutations, clubQueries } from "@/entities/club/api/clubQueries";
+import { clubQueries } from "@/entities/club/api/clubQueries";
+import { clubApplicationMutations } from "@/entities/club-application/api/clubApplicationQueries";
 
 export function useApplyAutonomousClub(clubId: number) {
   const queryClient = useQueryClient();
@@ -11,7 +12,7 @@ export function useApplyAutonomousClub(clubId: number) {
   const listQuery = clubQueries.list();
 
   return useMutation({
-    mutationFn: () => clubMutations.applyAutonomousClub(clubId),
+    mutationFn: () => clubApplicationMutations.applyAutonomous(clubId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: detailQuery.queryKey });
       queryClient.invalidateQueries({ queryKey: listQuery.queryKey });

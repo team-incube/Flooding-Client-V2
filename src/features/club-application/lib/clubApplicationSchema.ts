@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { ClubFormField } from "@/entities/club/model/club";
+import type { ClubFormField } from "@/entities/club-form/model/form";
 
 const clubApplicationFieldValueSchema = z.union([
   z.string(),

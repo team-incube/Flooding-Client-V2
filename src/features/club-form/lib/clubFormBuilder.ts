@@ -2,7 +2,7 @@ import type {
   ClubForm,
   ClubFormFieldType,
   CreateClubFormRequest,
-} from "@/entities/club/model/club";
+} from "@/entities/club-form/model/form";
 
 export interface ClubFormFieldOptionDraft {
   id: number;

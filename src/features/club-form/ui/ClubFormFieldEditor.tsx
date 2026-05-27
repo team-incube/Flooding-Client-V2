@@ -1,7 +1,7 @@
 import TextField from "@/shared/ui/textField";
 import Select from "@/shared/ui/select";
 import { TextButton } from "@/shared/ui/Button/TextButton";
-import type { ClubFormFieldType } from "@/entities/club/model/club";
+import type { ClubFormFieldType } from "@/entities/club-form/model/form";
 import {
   clubFormFieldTypeOptions,
   isClubFormFieldOptionValueValid,

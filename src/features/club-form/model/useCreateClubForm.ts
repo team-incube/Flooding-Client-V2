@@ -3,16 +3,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import { toast } from "sonner";
-import { clubMutations, clubQueries } from "@/entities/club/api/clubQueries";
-import type { CreateClubFormRequest } from "@/entities/club/model/club";
+import {
+  clubFormMutations,
+  clubFormQueries,
+} from "@/entities/club-form/api/clubFormQueries";
+import type { CreateClubFormRequest } from "@/entities/club-form/model/form";
 
 export function useCreateClubForm(clubId: number) {
   const queryClient = useQueryClient();
-  const formQuery = clubQueries.form(clubId);
+  const formQuery = clubFormQueries.detail(clubId);
 
   return useMutation({
     mutationFn: (body: CreateClubFormRequest) =>
-      clubMutations.createForm(clubId, body),
+      clubFormMutations.create(clubId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: formQuery.queryKey });
       toast.success("동아리 신청 폼이 생성되었습니다.");

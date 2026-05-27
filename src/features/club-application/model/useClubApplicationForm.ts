@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { ClubFormField } from "@/entities/club/model/club";
+import type { ClubFormField } from "@/entities/club-form/model/form";
 import {
   createClubApplicationRequest,
   getSortedClubFormFields,

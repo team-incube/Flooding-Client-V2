@@ -14,7 +14,7 @@ import {
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useClubFormBuilder } from "../model/useClubFormBuilder";
-import { ClubBackButton } from "./ClubBackButton";
+import { ClubBackButton } from "@/features/club/ui/ClubBackButton";
 import { ClubFormFieldEditor } from "./ClubFormFieldEditor";
 
 interface ClubFormCreateSectionProps {

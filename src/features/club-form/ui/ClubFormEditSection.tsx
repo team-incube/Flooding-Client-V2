@@ -6,16 +6,17 @@ import TextField from "@/shared/ui/textField";
 import TextArea from "@/shared/ui/textArea";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { clubFormQueries } from "@/entities/club-form/api/clubFormQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createClubPermission } from "@/entities/club/lib/permission";
-import type { ClubForm } from "@/entities/club/model/club";
+import type { ClubForm } from "@/entities/club-form/model/form";
 import {
   ClientQueryBoundary,
   type QueryErrorFallbackProps,
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useClubFormBuilder } from "../model/useClubFormBuilder";
-import { ClubBackButton } from "./ClubBackButton";
+import { ClubBackButton } from "@/features/club/ui/ClubBackButton";
 import { ClubFormFieldEditor } from "./ClubFormFieldEditor";
 
 interface ClubFormEditSectionProps {
@@ -183,7 +184,7 @@ function ClubFormEditSectionEmpty() {
 const ClubFormEditSection = ({ id }: ClubFormEditSectionProps) => {
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: form } = useSuspenseQuery({
-    ...clubQueries.form(id),
+    ...clubFormQueries.detail(id),
     retry: false,
   });
   const { data: user } = useSuspenseQuery(userQueries.me());

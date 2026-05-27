@@ -11,6 +11,7 @@ import {
   clubQueries,
   usePatchClubApproval,
 } from "@/entities/club/api/clubQueries";
+import { clubFormQueries } from "@/entities/club-form/api/clubFormQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createClubPermission } from "@/entities/club/lib/permission";
 import type { ClubMember } from "@/entities/club/model/club";
@@ -20,10 +21,10 @@ import {
   type QueryErrorFallbackProps,
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { useApplyAutonomousClub } from "../model/useApplyAutonomousClub";
-import { useTransferClubLeader } from "../model/useTransferClubLeader";
+import { useApplyAutonomousClub } from "@/features/club-application/model/useApplyAutonomousClub";
+import { useTransferClubLeader } from "@/features/club-member/model/useTransferClubLeader";
 import { ClubBackButton } from "./ClubBackButton";
-import { ClubTransferModal } from "./ClubTransferModal";
+import { ClubTransferModal } from "@/features/club-member/ui/ClubTransferModal";
 
 interface ClubDetailSectionProps {
   id: number;
@@ -116,7 +117,7 @@ const ClubDetailSection = ({
   });
 
   const hasClubApplication = user.hasClubApplication ?? false;
-  const formQuery = clubQueries.form(id);
+  const formQuery = clubFormQueries.detail(id);
   const { data: form, isFetched: isFormFetched } = useQuery({
     ...formQuery,
     enabled: clubPermission.canCreateForm,

@@ -3,7 +3,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import { TextButton } from "@/shared/ui/Button/TextButton";
-import { clubQueries } from "@/entities/club/api/clubQueries";
+import { clubFormQueries } from "@/entities/club-form/api/clubFormQueries";
 import {
   ClientQueryBoundary,
   type QueryErrorFallbackProps,
@@ -11,7 +11,7 @@ import {
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useClubApplicationForm } from "../model/useClubApplicationForm";
 import { ClubApplicationField } from "./ClubApplicationField";
-import { ClubBackButton } from "./ClubBackButton";
+import { ClubBackButton } from "@/features/club/ui/ClubBackButton";
 
 interface ClubApplicationSectionProps {
   id: number;
@@ -69,7 +69,7 @@ function ClubApplicationSectionEmpty() {
 }
 
 const ClubApplicationSection = ({ id }: ClubApplicationSectionProps) => {
-  const { data: form } = useSuspenseQuery(clubQueries.form(id));
+  const { data: form } = useSuspenseQuery(clubFormQueries.detail(id));
   const { fields, values, canSubmit, handleFieldChange, handleSubmit } =
     useClubApplicationForm({
       clubId: id,

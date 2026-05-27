@@ -1,7 +1,7 @@
 import TextField from "@/shared/ui/textField";
 import TextArea from "@/shared/ui/textArea";
 import Select from "@/shared/ui/select";
-import type { ClubFormField } from "@/entities/club/model/club";
+import type { ClubFormField } from "@/entities/club-form/model/form";
 import type { ClubApplicationFieldValue } from "../lib/clubApplicationForm";
 
 interface ClubApplicationFieldProps {
