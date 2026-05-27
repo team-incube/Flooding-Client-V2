@@ -99,7 +99,10 @@ export function useHomebaseReservationActions({
     },
     onError: () => toast.error("취소에 실패했습니다. 다시 시도해주세요"),
   });
-  const canSubmit = homebasePermission.canReserve && !applyMutation.isPending;
+  const canSubmit =
+    homebasePermission.canReserve &&
+    !applyMutation.isPending &&
+    !isPeriodStarted(selectedStartPeriod);
 
   const handleSubmit = () => {
     if (!homebasePermission.canReserve || applyMutation.isPending) return;
@@ -116,7 +119,7 @@ export function useHomebaseReservationActions({
     }
 
     if (isPeriodStarted(selectedStartPeriod)) {
-      toast.warning("이미 지난 교시는 신청할 수 없습니다");
+      toast.warning("지금은 신청할 수 없는 시간대입니다");
       return;
     }
 

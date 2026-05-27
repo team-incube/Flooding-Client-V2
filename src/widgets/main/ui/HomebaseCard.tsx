@@ -11,6 +11,7 @@ import { ThirdFloor } from "@/features/homebase/ui/ThirdFloor";
 import HomeBase from "@/shared/asset/svg/HomeBase";
 import Search from "@/shared/asset/svg/Search";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import { NoteText } from "@/shared/ui/NoteText";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import TextField from "@/shared/ui/textField";
 
@@ -39,6 +40,7 @@ export default function HomebaseCard({
     myReservationIds,
     isLoading,
     isError,
+    isApplicationClosed,
     canSubmit,
     selectedStudents,
     handleFloorChange,
@@ -80,7 +82,13 @@ export default function HomebaseCard({
           {FLOORS.map(({ value, label }) => (
             <TextButton
               key={value}
-              variant={selectedFloor === value ? "filled" : "outlined"}
+              variant={
+                isApplicationClosed
+                  ? "disabled"
+                  : selectedFloor === value
+                    ? "filled"
+                    : "outlined"
+              }
               className="w-fit! min-w-[68px]! px-4 sm:min-w-[91px]!"
               onClick={() => handleFloorChange(value)}
             >
@@ -152,15 +160,16 @@ export default function HomebaseCard({
               >
                 신청하기
               </TextButton>
-              <span
-                className={
-                  triedToOverfill && isFull ? "text-negative" : "text-sub-2"
-                }
-              >
-                {triedToOverfill && isFull
-                  ? `※ 테이블 ${selectedTable}번의 최대인원은 ${maxPersonnel}명입니다`
-                  : "※ 테이블을 선택하면 여러 교시를 선택할 수 있어요"}
-              </span>
+              {triedToOverfill && isFull ? (
+                <NoteText tone="negative">
+                  테이블 {selectedTable}번의 최대인원은 {maxPersonnel}명입니다
+                </NoteText>
+              ) : (
+                <NoteText>
+                  테이블을 선택하면 여러 교시를 선택할 수 있어요
+                </NoteText>
+              )}
+              <NoteText>13:30부터 해당 교시 시작 전까지 신청 가능해요</NoteText>
             </div>
           </div>
 
