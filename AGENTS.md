@@ -30,7 +30,7 @@ Use `AGENTS.md` as the shared source of truth for Codex, Claude Code, Gemini CLI
 - Follow `.agents/pr-format.md` for every PR body, including both general PRs and release PRs.
 - Use `.agents/scripts/pr-context.sh` before drafting a PR title or body.
 - For release PRs, use `.agents/scripts/previous-release-pr.sh` to read the latest merged `develop` → `main` release PR before drafting the new body.
-- Release PR labels are owned by GitHub Actions labeler. Do not add release labels from PR creation scripts or skills.
+- When creating a release PR, add the `🪽 Type: Release` label via `--label "🪽 Type: Release"` in the `gh pr create` command.
 - Do not leave template examples, HTML comments, empty optional sections, or reviewer/label/Discord automation notes in the final PR body.
 
 ### PR Branch Rules

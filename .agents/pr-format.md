@@ -46,3 +46,4 @@ Use this section order:
 - Base release contents on merged PRs and commits in the `main..develop` range.
 - Prefer bullets that reference issue or PR numbers when the context is clear.
 - Do not mention package version changes unless the release actually changes package metadata for a non-release-ID reason.
+- Always add the `🪽 Type: Release` label: pass `--label "🪽 Type: Release"` to `gh pr create`.
