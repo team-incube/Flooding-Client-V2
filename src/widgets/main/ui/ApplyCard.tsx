@@ -2,6 +2,7 @@ import Link from "next/link";
 import ChevronRight from "@/shared/asset/svg/Back";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import type { TextButtonVariant } from "@/shared/ui/Button/TextButton";
+import { NoteText } from "@/shared/ui/NoteText";
 
 type ApplyCardButtonSize = "small" | "fit";
 
@@ -78,9 +79,9 @@ export default function ApplyCard({
             {timeText}
           </p>
           {femaleNotice && (
-            <p className="text-caption-3 text-p-1 mt-0.5 line-clamp-1 font-medium">
-              ※ 여학생의 경우 여자 사감선생님께 별도로 신청해주시기 바랍니다.
-            </p>
+            <NoteText tone="primary" className="mt-0.5 line-clamp-1">
+              여학생의 경우 여자 사감선생님께 별도로 신청해주시기 바랍니다.
+            </NoteText>
           )}
         </div>
         <TextButton
