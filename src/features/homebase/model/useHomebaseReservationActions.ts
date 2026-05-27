@@ -99,7 +99,10 @@ export function useHomebaseReservationActions({
     },
     onError: () => toast.error("취소에 실패했습니다. 다시 시도해주세요"),
   });
-  const canSubmit = homebasePermission.canReserve && !applyMutation.isPending;
+  const canSubmit =
+    homebasePermission.canReserve &&
+    !applyMutation.isPending &&
+    !isPeriodStarted(selectedStartPeriod);
 
   const handleSubmit = () => {
     if (!homebasePermission.canReserve || applyMutation.isPending) return;
