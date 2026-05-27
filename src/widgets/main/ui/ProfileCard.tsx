@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import ProfileSvg from "@/shared/asset/svg/Profile";
-import More from "@/shared/asset/svg/MoreVertical";
+// import More from "@/shared/asset/svg/MoreVertical";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { getRoleLabel } from "@/entities/user/lib/userRole";
 
@@ -33,9 +33,9 @@ export default function ProfileCard() {
           )}
         </div>
       </div>
-      <div className="ml-auto">
+      {/* <div className="ml-auto">
         <More />
-      </div>
+      </div> */}
     </div>
   );
 }

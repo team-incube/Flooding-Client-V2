@@ -16,6 +16,7 @@ import { useCancelStudy } from "../model/useCancelStudy";
 import { useCheckStudyAttendance } from "../model/useCheckStudyAttendance";
 import { useStudyAttendanceSubscription } from "../model/useStudyAttendanceSubscription";
 import { useUncheckStudyAttendance } from "../model/useUncheckStudyAttendance";
+import { NoteText } from "@/shared/ui/NoteText";
 import { StudyApplicantCard } from "./StudyApplicantCard";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
@@ -228,9 +229,12 @@ export function SelfStudySection() {
                     : "신청하기"}
           </TextButton>
 
-          <p className="text-sub-2 text-caption-2">
-            자습 신청 시간은 20:00 ~ 21:00 입니다
-          </p>
+          <NoteText>자습 신청 시간은 20:00 ~ 21:00 입니다</NoteText>
+          {studyPermission.canCheckAttendance && (
+            <NoteText>
+              학생 카드의 체크박스를 눌러 출석 체크가 가능해요
+            </NoteText>
+          )}
         </div>
       </div>
     </section>

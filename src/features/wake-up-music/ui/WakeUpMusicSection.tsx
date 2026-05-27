@@ -21,10 +21,13 @@ export function WakeUpMusicSection({
   const {
     urlInput,
     setUrlInput,
+    canApply,
+    isToday,
     selectedDate,
     setSelectedDate,
     songs,
     applyMutation,
+    handleApplyMusic,
     handleSubmitRecommendedMusic,
     likeMutation,
     cancelMutation,
@@ -81,14 +84,14 @@ export function WakeUpMusicSection({
               onChange={(e) => setUrlInput(e.target.value)}
             />
             <TextButton
-              variant={applyMutation.isPending ? "disabled" : "filled"}
+              variant={
+                !canApply || applyMutation.isPending || !isToday
+                  ? "disabled"
+                  : "filled"
+              }
               size="wide"
               className="w-full"
-              onClick={() => {
-                if (!applyMutation.isPending) {
-                  applyMutation.mutate();
-                }
-              }}
+              onClick={handleApplyMusic}
             >
               신청하기
             </TextButton>
