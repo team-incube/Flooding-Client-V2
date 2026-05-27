@@ -53,7 +53,12 @@ export const queryClient = new QueryClient({
 
       if (responseData.status === HttpStatusCode.NoContent) return;
       if (responseData.status < 200 || responseData.status >= 300) return;
-      if (responseData.data !== null && responseData.data !== undefined) return;
+      if (
+        responseData.data !== null &&
+        responseData.data !== undefined &&
+        responseData.data !== ""
+      )
+        return;
 
       const context = getMutationContext(mutation.options.mutationKey);
       const parsedMeta = mutationMonitorMetaSchema.safeParse(
