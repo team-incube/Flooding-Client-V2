@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { aiMutations } from "@/entities/ai/api/aiMutations";
 import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
 import { youtubeQueries } from "@/entities/music/api/youtubeQueries";
-import { captureFeatureError } from "@/shared/lib/sentry";
 
 const MAX_RETRY = 3;
 type RecommendEmptyReason = "NO_HISTORY" | "NO_RECOMMENDATIONS";
@@ -21,6 +20,7 @@ export function useAiMusicRecommend(enabled: boolean) {
   );
 
   const { mutate: recommendMusic, isPending } = useMutation({
+    mutationKey: ["wake-up-music", "ai-recommend"],
     mutationFn: () => aiMutations.recommendSong(),
     onMutate: () => {
       setYoutubeLinks([]);
@@ -64,18 +64,10 @@ export function useAiMusicRecommend(enabled: boolean) {
       }
 
       if (status === HttpStatusCode.BadGateway) {
-        captureFeatureError(error, {
-          feature: "wake-up-music",
-          action: "ai-recommend",
-        });
         toast.error("AI 노래 추천 서버 응답에 실패했습니다.");
         return;
       }
 
-      captureFeatureError(error, {
-        feature: "wake-up-music",
-        action: "ai-recommend",
-      });
       toast.error("AI 노래 추천에 실패했습니다.");
     },
   });
