@@ -46,7 +46,8 @@ export function useHomebaseReservationActions({
   onApplySuccess,
 }: UseHomebaseReservationActionsParams) {
   const queryClient = useQueryClient();
-  const canSubmit = selectedTable !== null;
+  const canSubmit =
+    selectedTable !== null && !isPeriodStarted(selectedStartPeriod);
   const targetHomebaseId = selectedTable
     ? getHomebaseId(selectedFloor, selectedTable)
     : null;

@@ -7,6 +7,7 @@ import { useHomebasePeriodSelection } from "@/features/homebase/model/useHomebas
 import { useHomebaseReservationActions } from "@/features/homebase/model/useHomebaseReservationActions";
 import { useHomebaseReservationData } from "@/features/homebase/model/useHomebaseReservationData";
 import { useHomebaseStudentSelection } from "@/features/homebase/model/useHomebaseStudentSelection";
+import { areAllPeriodsStarted } from "@/features/homebase/lib/isPeriodStarted";
 import { formatDateParam } from "@/shared/lib/date";
 
 export function useHomebaseReservation() {
@@ -104,6 +105,8 @@ export function useHomebaseReservation() {
     setSelectedTable(null);
   };
 
+  const isAllPeriodsStarted = areAllPeriodsStarted();
+
   const { canSubmit, handleSubmit, handleDeleteReservation } =
     useHomebaseReservationActions({
       selectedFloor,
@@ -135,6 +138,7 @@ export function useHomebaseReservation() {
     myReservationIds,
     isLoading,
     isError,
+    isAllPeriodsStarted,
     canSubmit,
     selectedStudents,
     handleFloorChange,

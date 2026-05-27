@@ -1,4 +1,4 @@
-import { PERIODS_TIME } from "../model/constants";
+import { PERIODS, PERIODS_TIME } from "../model/constants";
 
 export function isPeriodStarted(period: string): boolean {
   const timeStr = PERIODS_TIME[period];
@@ -8,4 +8,8 @@ export function isPeriodStarted(period: string): boolean {
   const periodTime = new Date();
   periodTime.setHours(hour, minute, 0, 0);
   return now >= periodTime;
+}
+
+export function areAllPeriodsStarted(): boolean {
+  return PERIODS.every(isPeriodStarted);
 }
