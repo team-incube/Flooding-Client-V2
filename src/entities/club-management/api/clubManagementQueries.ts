@@ -34,7 +34,7 @@ export const usePatchClubApproval = () => {
       body: { approved: boolean };
     }) => patchClubApproval(clubId, body),
     onSuccess: (_, { clubId }) => {
-      queryClient.invalidateQueries({ queryKey: ["club"] });
+      queryClient.invalidateQueries({ queryKey: ["club", "list"] });
       queryClient.invalidateQueries({
         queryKey: clubManagementQueries.openingRequests().queryKey,
       });
