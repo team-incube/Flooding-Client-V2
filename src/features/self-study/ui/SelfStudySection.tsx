@@ -231,6 +231,11 @@ export function SelfStudySection() {
           <p className="text-sub-2 text-caption-2">
             ※ 자습 신청 시간은 20:00 ~ 21:00 입니다
           </p>
+          {studyPermission.canCheckAttendance && (
+            <p className="text-sub-2 text-caption-2">
+              ※ 학생 카드의 체크박스를 눌러 출석 체크가 가능해요
+            </p>
+          )}
         </div>
       </div>
     </section>
