@@ -6,6 +6,7 @@ import { createApplicationActionState } from "@/entities/dormitory/lib/applicati
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
+import { NoteText } from "@/shared/ui/NoteText";
 import { useApplyMassage } from "../model/useApplyMassage";
 import { useCancelMassage } from "../model/useCancelMassage";
 
@@ -91,12 +92,8 @@ export function MassageChairSection() {
                   ? "신청 불가"
                   : "신청하기"}
           </TextButton>
-          <p className="text-sub-2 text-caption-2">
-            ※ 안마의자 신청시간은 20:20 ~ 21:00 입니다
-          </p>
-          <p className="text-sub-2 text-caption-2">
-            ※ 여학생은 여기숙사 별도 신청 바랍니다
-          </p>
+          <NoteText>안마의자 신청시간은 20:20 ~ 21:00 입니다</NoteText>
+          <NoteText>여학생은 여기숙사 별도 신청 바랍니다</NoteText>
         </div>
       </div>
     </section>

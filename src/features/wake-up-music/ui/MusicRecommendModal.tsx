@@ -6,6 +6,7 @@ import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
 import { useAiMusicRecommend } from "@/features/wake-up-music/model/useAiMusicRecommend";
+import { NoteText } from "@/shared/ui/NoteText";
 import { Skeleton } from "@/shared/ui/Skeleton";
 
 interface MusicRecommendModalProps {
@@ -98,9 +99,7 @@ export function MusicRecommendModal({
               <Cancel />
             </button>
           </div>
-          <span className="text-sub-2">
-            ※ 노래 추천은 이전에 신청한 곡을 기반으로 노래를 추천해요
-          </span>
+          <NoteText>노래 추천은 이전에 신청한 곡을 기반으로 노래를 추천해요</NoteText>
         </div>
 
         <div className="flex min-h-[230px] gap-3 overflow-x-auto">
