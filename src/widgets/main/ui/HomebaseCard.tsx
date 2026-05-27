@@ -39,6 +39,7 @@ export default function HomebaseCard({
     myReservationIds,
     isLoading,
     isError,
+    isApplicationClosed,
     canSubmit,
     selectedStudents,
     handleFloorChange,
@@ -105,7 +106,13 @@ export default function HomebaseCard({
           {FLOORS.map(({ value, label }) => (
             <TextButton
               key={value}
-              variant={selectedFloor === value ? "filled" : "outlined"}
+              variant={
+                isApplicationClosed
+                  ? "disabled"
+                  : selectedFloor === value
+                    ? "filled"
+                    : "outlined"
+              }
               className="w-fit! min-w-[68px]! px-4 sm:min-w-[91px]!"
               onClick={() => handleFloorChange(value)}
             >
