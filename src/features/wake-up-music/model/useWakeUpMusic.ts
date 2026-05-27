@@ -11,11 +11,14 @@ import {
   dormitoryRequests,
 } from "@/entities/dormitory/api/dormitoryQueries";
 import { formatDateParam } from "@/shared/lib/date";
+import { musicUrlSchema } from "@/features/wake-up-music/lib/wakeUpMusicSchema";
 
 export function useWakeUpMusic() {
   const queryClient = useQueryClient();
   const [urlInput, setUrlInput] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  const canApply = musicUrlSchema.safeParse(urlInput).success;
 
   const selectedDateString = formatDateParam(selectedDate);
   const musicQuery = dormitoryQueries.music(selectedDateString);
@@ -66,6 +69,11 @@ export function useWakeUpMusic() {
       toast.error("기상음악 신청에 실패했습니다.");
     },
   });
+
+  const handleApplyMusic = () => {
+    if (!canApply || applyMutation.isPending) return;
+    applyMutation.mutate();
+  };
 
   const handleSubmitRecommendedMusic = async (selectedUrl: string) => {
     await applyRecommendedMutation.mutateAsync({ musicUrl: selectedUrl });
@@ -127,6 +135,9 @@ export function useWakeUpMusic() {
       );
       return { previousSongs };
     },
+    onSuccess: () => {
+      toast.success("기상음악 신청이 취소되었습니다.");
+    },
     onError: (_error, _musicId, context) => {
       if (context?.previousSongs) {
         queryClient.setQueryData(musicQuery.queryKey, context.previousSongs);
@@ -141,10 +152,12 @@ export function useWakeUpMusic() {
   return {
     urlInput,
     setUrlInput,
+    canApply,
     selectedDate,
     setSelectedDate,
     songs,
     applyMutation,
+    handleApplyMusic,
     handleSubmitRecommendedMusic,
     likeMutation,
     cancelMutation,
