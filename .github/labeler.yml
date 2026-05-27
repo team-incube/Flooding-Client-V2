@@ -16,7 +16,5 @@
   - head-branch: ["^docs/.+"]
 
 "🪽 Type: Release":
-  - all:
-      base-branch: ["^main$"]
-      head-branch: ["^develop$"]
-  - head-branch: ["^release/.+"]
+  - base-branch: ["^main$"]
+  - head-branch: ["^develop/.+"]
