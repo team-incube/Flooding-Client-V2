@@ -22,6 +22,7 @@ export function WakeUpMusicSection({
     urlInput,
     setUrlInput,
     canApply,
+    isToday,
     selectedDate,
     setSelectedDate,
     songs,
@@ -84,7 +85,9 @@ export function WakeUpMusicSection({
             />
             <TextButton
               variant={
-                !canApply || applyMutation.isPending ? "disabled" : "filled"
+                !canApply || applyMutation.isPending || !isToday
+                  ? "disabled"
+                  : "filled"
               }
               size="wide"
               className="w-full"

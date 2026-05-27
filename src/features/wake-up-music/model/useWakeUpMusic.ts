@@ -21,6 +21,7 @@ export function useWakeUpMusic() {
   const canApply = musicUrlSchema.safeParse(urlInput).success;
 
   const selectedDateString = formatDateParam(selectedDate);
+  const isToday = selectedDateString === formatDateParam(new Date());
   const musicQuery = dormitoryQueries.music(selectedDateString);
 
   const { data: songs = [] } = useQuery(musicQuery);
@@ -153,6 +154,7 @@ export function useWakeUpMusic() {
     urlInput,
     setUrlInput,
     canApply,
+    isToday,
     selectedDate,
     setSelectedDate,
     songs,
