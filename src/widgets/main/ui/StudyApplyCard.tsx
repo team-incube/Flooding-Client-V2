@@ -53,7 +53,7 @@ export default function StudyApplyCard() {
       icon={<BookIcon />}
       current={students.length}
       total={STUDY_MAX}
-      timeText="자습 신청 시간은 20:00 ~ 21:00에 신청이 가능해요"
+      timeText="※ 자습 신청 시간은 20:00 ~ 21:00에 신청이 가능해요"
       buttonText={
         isStudyBanned
           ? "자습 금지를 당했어요!"

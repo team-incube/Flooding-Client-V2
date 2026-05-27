@@ -30,7 +30,12 @@ export function MusicListItem({
   return (
     <div className="border-sub-3 flex items-center justify-between gap-4 border-b py-3 pr-6 last:border-b-0">
       <div className="flex min-w-0 flex-1 items-center gap-4">
-        <div className="bg-sub-4 relative h-17 w-30 shrink-0 overflow-hidden rounded-lg 2xl:h-22 2xl:w-39">
+        <a
+          href={music.videoUrl ?? music.musicUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-sub-4 relative h-17 w-30 shrink-0 overflow-hidden rounded-lg 2xl:h-22 2xl:w-39"
+        >
           {thumbnailUrl && (
             <Image
               src={thumbnailUrl}
@@ -44,7 +49,7 @@ export function MusicListItem({
               {music.durationText}
             </span>
           )}
-        </div>
+        </a>
 
         <div className="flex min-w-0 flex-1 flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:gap-6">
           <p className="text-text-1 text-main-text line-clamp-2 font-semibold break-all 2xl:min-w-0 2xl:flex-1">

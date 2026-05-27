@@ -1,6 +1,7 @@
 "use client";
 
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import { NoteText } from "@/shared/ui/NoteText";
 import type { StudyBanFilter } from "@/features/self-study/lib/filterManagedStudents";
 
 interface StudyBanActionPanelProps {
@@ -24,9 +25,9 @@ export function StudyBanActionPanel({
 }: StudyBanActionPanelProps) {
   if (!selectedStudyBanFilter) {
     return (
-      <p className="text-caption-3 text-sub-1 font-medium">
+      <NoteText>
         자습 허용/금지 중 하나를 선택해야 자습 금지/해제가 가능해요.
-      </p>
+      </NoteText>
     );
   }
 

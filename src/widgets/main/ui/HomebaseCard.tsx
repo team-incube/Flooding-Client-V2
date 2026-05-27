@@ -59,35 +59,10 @@ export default function HomebaseCard({
       ? filteredReservations.filter((item) => !myReservationIds.has(item.id))
       : filteredReservations;
 
-  const renderFloor = () => {
-    switch (selectedFloor) {
-      case "2F":
-        return (
-          <SecondFloor
-            selectedTable={selectedTable}
-            onTableSelect={handleTableSelect}
-            reservedTables={reservedTables}
-          />
-        );
-      case "3F":
-        return (
-          <ThirdFloor
-            selectedTable={selectedTable}
-            onTableSelect={handleTableSelect}
-            reservedTables={reservedTables}
-          />
-        );
-      case "4F":
-        return (
-          <FourthFloor
-            selectedTable={selectedTable}
-            onTableSelect={handleTableSelect}
-            reservedTables={reservedTables}
-          />
-        );
-      default:
-        return null;
-    }
+  const floorProps = {
+    selectedTable,
+    onTableSelect: handleTableSelect,
+    reservedTables,
   };
 
   return (
@@ -131,7 +106,9 @@ export default function HomebaseCard({
 
       <div className="mt-3 flex flex-col items-start gap-6 lg:flex-row 2xl:justify-between">
         <div className="flex w-full min-w-0 flex-col gap-4 lg:flex-1">
-          {renderFloor()}
+          {selectedFloor === "2F" && <SecondFloor {...floorProps} />}
+          {selectedFloor === "3F" && <ThirdFloor {...floorProps} />}
+          {selectedFloor === "4F" && <FourthFloor {...floorProps} />}
         </div>
 
         <div className="flex w-full min-w-0 flex-col gap-6 lg:w-82.5 lg:shrink-0 lg:gap-4">
@@ -182,7 +159,7 @@ export default function HomebaseCard({
               >
                 {triedToOverfill && isFull
                   ? `※ 테이블 ${selectedTable}번의 최대인원은 ${maxPersonnel}명입니다`
-                  : "※ 홈베이스 신청시 연속 신청이 가능해요"}
+                  : "※ 테이블을 선택하면 여러 교시를 선택할 수 있어요"}
               </span>
             </div>
           </div>
