@@ -5,18 +5,8 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { instance } from "@/shared/api/instance";
 import { getClubs } from "./getClubs";
 import { getClubDetail } from "./getClub";
-import { getClubForm } from "./getClubForm";
-import { getClubApplications } from "./getClubApplications";
-import { getClubOpeningRequests } from "./getClubOpeningRequests";
-import { getClubOpeningStatus } from "./getClubOpeningStatus";
-import type {
-  ClubApplicationRequest,
-  CreateClubFormRequest,
-} from "../model/club";
-import { patchClubApproval } from "./patchClubApproval";
 import { postClub } from "./postClub";
 import { deleteClub } from "./deleteClub";
 import { putClub } from "./putClub";
@@ -34,74 +24,7 @@ export const clubQueries = {
       queryKey: ["club", "detail", id],
       queryFn: () => getClubDetail(id),
     }),
-
-  form: (clubId: number) =>
-    queryOptions({
-      queryKey: ["club", "form", clubId],
-      queryFn: () => getClubForm(clubId),
-    }),
-
-  applicationList: (clubId: number) =>
-    queryOptions({
-      queryKey: ["club", "applications", clubId],
-      queryFn: () => getClubApplications(clubId),
-    }),
-
-  openingRequests: () =>
-    queryOptions({
-      queryKey: ["club", "opening-requests"],
-      queryFn: getClubOpeningRequests,
-    }),
-
-  openingStatus: () =>
-    queryOptions({
-      queryKey: ["club", "opening-status"],
-      queryFn: getClubOpeningStatus,
-    }),
 } as const;
-
-export const clubMutations = {
-  createForm: (clubId: number, body: CreateClubFormRequest) =>
-    instance.post(`/clubs/${clubId}/forms`, body),
-
-  updateForm: (clubId: number, body: CreateClubFormRequest) =>
-    instance.put(`/clubs/${clubId}/forms`, body),
-
-  applyClub: (clubId: number, body: ClubApplicationRequest) =>
-    instance.post(`/clubs/${clubId}/applications`, body),
-
-  applyAutonomousClub: (clubId: number) =>
-    instance.post(`/clubs/${clubId}/autonomous/applications`),
-
-  approveApplication: (clubId: number, userId: number) =>
-    instance.patch(`/clubs/${clubId}/applications/${userId}`),
-
-  transferLeader: (clubId: number, targetUserId: number) =>
-    instance.patch(`/clubs/${clubId}/transfer/${targetUserId}`),
-
-  inviteMember: (clubId: number, userId: number) =>
-    instance.post(`/clubs/${clubId}/member/${userId}`),
-
-  exileMember: (clubId: number, userId: number) =>
-    instance.delete(`/clubs/${clubId}/member/exile/${userId}`),
-} as const;
-
-export const usePatchClubApproval = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({
-      clubId,
-      body,
-    }: {
-      clubId: number;
-      body: { approved: boolean };
-    }) => patchClubApproval(clubId, body),
-    onSuccess: (_, { clubId }) => {
-      queryClient.invalidateQueries({ queryKey: ["club"] });
-      queryClient.invalidateQueries({ queryKey: ["club", "detail", clubId] });
-    },
-  });
-};
 
 export const useDeleteClub = () => {
   const queryClient = useQueryClient();
