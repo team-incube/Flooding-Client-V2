@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -9,7 +8,6 @@ import TextField from "@/shared/ui/textField";
 import Music from "@/shared/asset/svg/Music";
 import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendModal";
 import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
-import { userQueries } from "@/entities/user/api/userQueries";
 
 interface WakeUpMusicSectionProps {
   icon?: ReactNode;
@@ -28,14 +26,13 @@ export function WakeUpMusicSection({
     selectedDate,
     setSelectedDate,
     songs,
+    me,
     applyMutation,
     handleApplyMusic,
     handleSubmitRecommendedMusic,
     likeMutation,
     cancelMutation,
   } = useWakeUpMusic();
-
-  const { data: me } = useQuery(userQueries.me());
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -71,7 +68,7 @@ export function WakeUpMusicSection({
                   }
                   onToggleLike={() => likeMutation.mutate(music)}
                   onDelete={
-                    me?.id === music.userId
+                    me?.id && me.id === music.userId
                       ? () => cancelMutation.mutate(music.id)
                       : undefined
                   }
