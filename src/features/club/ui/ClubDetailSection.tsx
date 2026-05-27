@@ -7,10 +7,11 @@ import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import Club from "@/shared/asset/svg/Club";
 import ClubDetail from "@/entities/club/ui/ClubDetail";
+import { clubQueries } from "@/entities/club/api/clubQueries";
 import {
-  clubQueries,
+  clubManagementQueries,
   usePatchClubApproval,
-} from "@/entities/club/api/clubQueries";
+} from "@/entities/club-management/api/clubManagementQueries";
 import { clubFormQueries } from "@/entities/club-form/api/clubFormQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createClubPermission } from "@/entities/club/lib/permission";
@@ -111,7 +112,7 @@ const ClubDetailSection = ({
     isLeader: detail.isLeader,
   });
   const { data: openingStatus } = useQuery({
-    ...clubQueries.openingStatus(),
+    ...clubManagementQueries.openingStatus(),
     enabled: clubPermission.canCheckOpeningStatus,
     retry: false,
   });

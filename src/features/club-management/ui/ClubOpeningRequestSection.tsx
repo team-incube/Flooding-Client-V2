@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { clubQueries } from "@/entities/club/api/clubQueries";
+import { clubManagementQueries } from "@/entities/club-management/api/clubManagementQueries";
 import ClubCard from "@/entities/club/ui/ClubCard";
 import Club from "@/shared/asset/svg/Club";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -60,7 +60,7 @@ function ClubOpeningRequestSectionError({ onRetry }: { onRetry: () => void }) {
 const ClubOpeningRequestSection = () => {
   const router = useRouter();
   const { data, isError, isLoading, refetch } = useQuery(
-    clubQueries.openingRequests(),
+    clubManagementQueries.openingRequests(),
   );
   const clubs = data?.clubs ?? [];
 

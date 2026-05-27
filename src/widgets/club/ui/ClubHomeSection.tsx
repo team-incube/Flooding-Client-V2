@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import Club from "@/shared/asset/svg/Club";
 import { clubQueries } from "@/entities/club/api/clubQueries";
+import { clubManagementQueries } from "@/entities/club-management/api/clubManagementQueries";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import {
@@ -19,8 +20,8 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { ClubSection } from "@/features/club/ui/ClubSection";
 import ClubSearch from "@/features/club/ui/ClubSearch";
 import ClubRegistrationSection from "@/features/club/ui/ClubRegistrationSection";
-import { ClubOpeningRequestSection } from "@/features/club/ui/ClubOpeningRequestSection";
-import ClubExportButton from "@/features/club/ui/ClubExportButton";
+import { ClubOpeningRequestSection } from "@/features/club-management/ui/ClubOpeningRequestSection";
+import ClubExportButton from "@/features/club-management/ui/ClubExportButton";
 import {
   filterClubs,
   type ClubTypeFilter,
@@ -118,7 +119,7 @@ function ClubHomeSection() {
     role: user.role,
   });
   const { data: openingStatus } = useQuery({
-    ...clubQueries.openingStatus(),
+    ...clubManagementQueries.openingStatus(),
     enabled: clubPermission.canCheckOpeningStatus,
     retry: false,
   });
@@ -126,7 +127,7 @@ function ClubHomeSection() {
     openingStatus?.isOpened === true && clubPermission.canRegisterClub;
   const { data: openingRequests, isLoading: isOpeningRequestsLoading } =
     useQuery({
-      ...clubQueries.openingRequests(),
+      ...clubManagementQueries.openingRequests(),
       enabled: clubPermission.canViewOpeningRequests && viewMode === "form",
     });
 
