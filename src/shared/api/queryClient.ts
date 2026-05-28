@@ -9,7 +9,7 @@ import {
   axiosResponseSchema,
   getMutationContext,
   mutationMonitorMetaSchema,
-} from "./axiosLogSchema";
+} from "../model/axiosLogSchema";
 
 const MINUTE = 60 * 1000;
 
