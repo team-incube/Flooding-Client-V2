@@ -31,6 +31,9 @@ export default function ClubCard({
             <DefaultClubThumbnail />
           </div>
         )}
+        <span className="bg-p-1 text-caption-2 absolute left-2 top-2 rounded-md px-2 py-0.5 text-white">
+          {club.type === "MAJOR_CLUB" ? "전공" : "자율"}
+        </span>
       </div>
       <div className="flex flex-col items-start gap-1">
         <span className="text-text-2 text-main-text">{club.name}</span>

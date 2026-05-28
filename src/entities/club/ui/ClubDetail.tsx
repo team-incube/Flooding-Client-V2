@@ -226,9 +226,14 @@ export default function ClubDetail({
         />
 
         <div className="flex flex-col gap-4">
-          <span className="2xl:text-title-1 lg:text-title-2 text-main-text font-bold">
-            {club.name}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="2xl:text-title-1 lg:text-title-2 text-main-text font-bold">
+              {club.name}
+            </span>
+            <span className="bg-p-1 text-caption-1 shrink-0 rounded-md px-2 py-0.5 text-white">
+              {club.type === "MAJOR_CLUB" ? "전공" : "자율"}
+            </span>
+          </div>
           <div className="flex flex-col gap-1.5">
             <span className="2xl:text-title-4 lg:text-text-1 text-main-text font-semibold">
               동아리 소개
