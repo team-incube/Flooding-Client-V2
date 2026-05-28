@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import { useSignOut } from "@/features/sign-out/lib/useSignOut";
-import Logo from "@/shared/asset/svg/Logo";
 import Signout from "@/shared/asset/svg/Signout";
 import { DarkModeToggle } from "@/shared/ui/Toggle/DarkModeToggle";
 import { MENU_ITEMS } from "../config/menuItems";
