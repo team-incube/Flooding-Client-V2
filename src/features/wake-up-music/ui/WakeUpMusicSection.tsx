@@ -26,6 +26,7 @@ export function WakeUpMusicSection({
     selectedDate,
     setSelectedDate,
     songs,
+    me,
     applyMutation,
     handleApplyMusic,
     handleSubmitRecommendedMusic,
@@ -56,22 +57,28 @@ export function WakeUpMusicSection({
       <div className="flex flex-1 gap-6 overflow-hidden">
         <div className="min-w-0 flex-1 overflow-y-auto pr-2">
           <div className="flex flex-col">
-            {songs.map((music) => (
-              <MusicListItem
-                key={music.id}
-                music={music}
-                isLikePending={
-                  likeMutation.isPending &&
-                  likeMutation.variables?.id === music.id
-                }
-                onToggleLike={() => likeMutation.mutate(music)}
-                onDelete={() => cancelMutation.mutate(music.id)}
-                isDeletePending={
-                  cancelMutation.isPending &&
-                  cancelMutation.variables === music.id
-                }
-              />
-            ))}
+            {songs.map((music) => {
+              return (
+                <MusicListItem
+                  key={music.id}
+                  music={music}
+                  isLikePending={
+                    likeMutation.isPending &&
+                    likeMutation.variables?.id === music.id
+                  }
+                  onToggleLike={() => likeMutation.mutate(music)}
+                  onDelete={
+                    me?.id && me.id === music.userId
+                      ? () => cancelMutation.mutate(music.id)
+                      : undefined
+                  }
+                  isDeletePending={
+                    cancelMutation.isPending &&
+                    cancelMutation.variables === music.id
+                  }
+                />
+              );
+            })}
           </div>
         </div>
 
