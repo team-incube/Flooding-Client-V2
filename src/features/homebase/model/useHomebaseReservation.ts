@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { getMaxPersonnel } from "@/features/homebase/lib/getMaxPersonnel";
+import { isAllPeriodsStarted } from "@/features/homebase/lib/isPeriodStarted";
 import { useHomebasePeriodSelection } from "@/features/homebase/model/useHomebasePeriodSelection";
 import { useHomebaseReservationActions } from "@/features/homebase/model/useHomebaseReservationActions";
 import { useHomebaseReservationData } from "@/features/homebase/model/useHomebaseReservationData";
@@ -106,6 +107,8 @@ export function useHomebaseReservation() {
     setSelectedTable(null);
   };
 
+  const isApplicationClosed = isAllPeriodsStarted();
+
   const { canSubmit, handleSubmit, handleDeleteReservation } =
     useHomebaseReservationActions({
       selectedFloor,
@@ -137,6 +140,7 @@ export function useHomebaseReservation() {
     myReservationIds,
     isLoading,
     isError,
+    isApplicationClosed,
     canSubmit,
     selectedStudents,
     handleFloorChange,

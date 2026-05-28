@@ -4,10 +4,10 @@ import { WakeUpMusicSection } from "@/features/wake-up-music/ui/WakeUpMusicSecti
 
 export default function DormitoryPage() {
   return (
-    <main className="flex flex-1 flex-col gap-6 overflow-y-auto px-8 pb-25 lg:px-10 2xl:px-18">
+    <main className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 pb-25 sm:gap-6 sm:px-8 lg:px-10 2xl:px-18">
       <SelfStudySection />
       <MassageChairSection />
-      <WakeUpMusicSection className="!h-auto flex-1" />
+      <WakeUpMusicSection className="h-auto! flex-1" />
     </main>
   );
 }

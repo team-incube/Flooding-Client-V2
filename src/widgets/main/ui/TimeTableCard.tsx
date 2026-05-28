@@ -24,17 +24,16 @@ import { useDebouncedValue } from "@/shared/lib/useDebouncedValue";
 
 function TimeTableCardLoading() {
   return (
-    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-6 2xl:block 2xl:h-[354px]">
+    <div className="bg-background-surface flex h-[354px] w-full flex-col rounded-2xl p-5 sm:p-6">
       <div className="mb-4 flex items-center justify-between">
         <Skeleton className="h-6 w-20" />
         <Skeleton className="h-5 w-28" />
       </div>
-      <div className="flex flex-1 flex-col gap-3 overflow-hidden 2xl:h-[262px]">
-        <Skeleton className="h-[58px] w-full shrink-0 rounded-lg" />
-        {Array.from({ length: 3 }).map((_, index) => (
+      <div className="flex h-[262px] flex-col gap-3 overflow-hidden">
+        {Array.from({ length: 4 }).map((_, index) => (
           <Skeleton
             key={index}
-            className="hidden h-[58px] w-full shrink-0 rounded-lg 2xl:block"
+            className="h-[58px] w-full shrink-0 rounded-lg"
           />
         ))}
       </div>
@@ -44,7 +43,7 @@ function TimeTableCardLoading() {
 
 function TimeTableCardError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="bg-background-surface flex h-[140px] w-full flex-col overflow-hidden rounded-2xl p-6 2xl:h-[354px]">
+    <div className="bg-background-surface flex h-[354px] w-full flex-col overflow-hidden rounded-2xl p-5 sm:p-6">
       <div className="mb-2 flex items-center gap-1">
         <Calendar />
         <span className="text-text-1 text-main-text font-semibold">시간표</span>
@@ -73,13 +72,9 @@ function TimeTableCardEmpty() {
 
 function TimeTableContentLoading() {
   return (
-    <div className="flex h-auto flex-1 flex-col gap-3 overflow-auto 2xl:h-[262px] 2xl:flex-none">
-      <Skeleton className="h-[58px] w-full shrink-0 rounded-lg" />
-      {Array.from({ length: 3 }).map((_, index) => (
-        <Skeleton
-          key={index}
-          className="hidden h-[58px] w-full shrink-0 rounded-lg 2xl:block"
-        />
+    <div className="flex h-[262px] flex-col gap-3 overflow-hidden">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <Skeleton key={index} className="h-[58px] w-full shrink-0 rounded-lg" />
       ))}
     </div>
   );
@@ -119,7 +114,7 @@ function TimeTableCardContent({
   }, [currentPeriod, timetables]);
 
   return (
-    <div className="flex h-auto flex-1 flex-col gap-3 overflow-auto 2xl:h-[262px] 2xl:flex-none">
+    <div className="flex h-[262px] flex-col gap-3 overflow-auto">
       {!canFetchTimetable ? (
         <TimeTableCard.Empty />
       ) : timetables.length > 0 ? (
@@ -184,7 +179,7 @@ const TimeTableCard = () => {
   };
 
   return (
-    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-6 2xl:block 2xl:h-[354px]">
+    <div className="bg-background-surface flex h-[354px] w-full flex-col rounded-2xl p-5 sm:p-6">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Calendar />

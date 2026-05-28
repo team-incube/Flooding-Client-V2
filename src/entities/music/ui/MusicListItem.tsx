@@ -55,9 +55,12 @@ export function MusicListItem({
           <p className="text-text-1 text-main-text line-clamp-2 font-semibold break-all 2xl:min-w-0 2xl:flex-1">
             {title}
           </p>
-          <div className="flex shrink-0 items-center justify-between 2xl:justify-start 2xl:gap-6">
+          <div className="flex shrink-0 items-center justify-between gap-3 2xl:justify-start 2xl:gap-6">
             <span className="text-caption-2 text-sub-2 shrink-0">
               {formatAppliedDate(music.appliedAt)}
+            </span>
+            <span className="text-caption-2 text-sub-1 shrink-0">
+              {music.studentNumber} {music.name}
             </span>
           </div>
         </div>

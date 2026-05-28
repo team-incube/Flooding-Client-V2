@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 interface NoteTextProps {
   size?: "sm" | "md";
+  tone?: "default" | "negative" | "primary";
   children: ReactNode;
   className?: string;
 }
@@ -11,10 +12,21 @@ const sizeStyles = {
   md: "text-[15px] font-medium",
 };
 
-export function NoteText({ size = "sm", children, className }: NoteTextProps) {
+const toneStyles = {
+  default: "text-sub-2",
+  negative: "text-negative",
+  primary: "text-p-1",
+};
+
+export function NoteText({
+  size = "sm",
+  tone = "default",
+  children,
+  className,
+}: NoteTextProps) {
   return (
     <p
-      className={`text-sub-2 ${sizeStyles[size]}${className ? ` ${className}` : ""}`}
+      className={`${toneStyles[tone]} ${sizeStyles[size]}${className ? ` ${className}` : ""}`}
     >
       ※ {children}
     </p>

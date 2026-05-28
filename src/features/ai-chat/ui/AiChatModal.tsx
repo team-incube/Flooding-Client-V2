@@ -121,7 +121,7 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="border-sub-4 flex items-end justify-center gap-2 border-t px-4 py-3">
+        <div className="border-sub-4 flex items-center justify-center gap-2 border-t px-4 py-3">
           <textarea
             ref={textareaRef}
             className="border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 text-caption-1 caret-p-1 flex-1 resize-none rounded-[8px] border px-4 py-3 outline-none"

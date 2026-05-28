@@ -5,10 +5,7 @@ interface CreateStudyPermissionParams {
 }
 
 export function createStudyPermission({ role }: CreateStudyPermissionParams) {
-  const isManager =
-    role === "ADMIN" ||
-    role === "DORMITORY_MANAGER" ||
-    role === "STUDENT_COUNCIL";
+  const isManager = role === "ADMIN" || role === "DORMITORY_MANAGER";
 
   return {
     isManager,

@@ -10,13 +10,15 @@ import {
   dormitoryMutations,
   dormitoryRequests,
 } from "@/entities/dormitory/api/dormitoryQueries";
+import { userQueries } from "@/entities/user/api/userQueries";
 import { formatDateParam } from "@/shared/lib/date";
+import { getInitialMusicDate } from "@/features/wake-up-music/lib/date";
 import { musicUrlSchema } from "@/features/wake-up-music/lib/wakeUpMusicSchema";
 
 export function useWakeUpMusic() {
   const queryClient = useQueryClient();
   const [urlInput, setUrlInput] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(getInitialMusicDate);
 
   const canApply = musicUrlSchema.safeParse(urlInput).success;
 
@@ -25,6 +27,7 @@ export function useWakeUpMusic() {
   const musicQuery = dormitoryQueries.music(selectedDateString);
 
   const { data: songs = [] } = useQuery(musicQuery);
+  const { data: me } = useQuery(userQueries.me());
 
   const applyMutation = useMutation({
     mutationKey: dormitoryMutations.applyMusic().mutationKey,
@@ -158,6 +161,7 @@ export function useWakeUpMusic() {
     selectedDate,
     setSelectedDate,
     songs,
+    me,
     applyMutation,
     handleApplyMusic,
     handleSubmitRecommendedMusic,

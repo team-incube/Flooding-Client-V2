@@ -15,7 +15,7 @@ function StudentsPageError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   const router = useRouter();
 
   return (
-    <main className="flex flex-1 flex-col overflow-y-auto px-8 pb-25 lg:px-10 2xl:px-18">
+    <main className="flex flex-1 flex-col overflow-y-auto px-5 pb-25 sm:px-8 lg:px-10 2xl:px-18">
       <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6">
         <div className="flex flex-col gap-1">
           <h2 className="text-title-3 text-main-text">
@@ -47,12 +47,12 @@ function StudentsPageContent() {
 
   if (!studyPermission.canManage) {
     return (
-      <main className="flex flex-1 flex-col overflow-y-auto px-8 pb-25 lg:px-10 2xl:px-18">
+      <main className="flex flex-1 flex-col overflow-y-auto px-5 pb-25 sm:px-8 lg:px-10 2xl:px-18">
         <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6">
           <div className="flex flex-col gap-1">
             <h2 className="text-title-3 text-main-text">접근 권한이 없어요</h2>
             <p className="text-text-3 text-sub-1">
-              학생관리는 관리자, 기자위, 학생회 계정에서만 사용할 수 있어요.
+              학생관리는 관리자, 기자위 계정에서만 사용할 수 있어요.
             </p>
           </div>
           <TextButton
@@ -68,7 +68,7 @@ function StudentsPageContent() {
   }
 
   return (
-    <main className="flex flex-1 flex-col overflow-y-auto px-8 pb-25 lg:px-10 2xl:px-18">
+    <main className="flex flex-1 flex-col overflow-y-auto px-5 pb-25 sm:px-8 lg:px-10 2xl:px-18">
       <ClientQueryBoundary
         loadingFallback={<StudentManagementSection.Loading />}
         errorFallback={StudentManagementSection.Error}
@@ -83,7 +83,7 @@ export default function StudentsPage() {
   return (
     <ClientQueryBoundary
       loadingFallback={
-        <main className="flex flex-1 flex-col overflow-y-auto px-8 pb-25 lg:px-10 2xl:px-18">
+        <main className="flex flex-1 flex-col overflow-y-auto px-5 pb-25 sm:px-8 lg:px-10 2xl:px-18">
           <StudentManagementSection.Loading />
         </main>
       }
