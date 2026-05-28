@@ -64,6 +64,9 @@ export const usePostClub = () => {
     mutationFn: postClub,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["club"] });
+      queryClient.invalidateQueries({
+        queryKey: ["club-management", "opening-requests"],
+      });
     },
   });
 };

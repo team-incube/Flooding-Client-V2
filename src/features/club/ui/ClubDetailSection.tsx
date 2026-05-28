@@ -17,6 +17,7 @@ import { userQueries } from "@/entities/user/api/userQueries";
 import { createClubPermission } from "@/entities/club/lib/permission";
 import type { ClubMember } from "@/entities/club/model/club";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import { ConfirmModal } from "@/shared/ui/ConfirmModal";
 import {
   ClientQueryBoundary,
   type QueryErrorFallbackProps,
@@ -103,6 +104,8 @@ const ClubDetailSection = ({
     usePatchClubApproval();
   const [transferTarget, setTransferTarget] = useState<ClubMember | null>(null);
   const [memberSearch, setMemberSearch] = useState("");
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
+  const [isRejectionModalOpen, setIsRejectionModalOpen] = useState(false);
 
   const { data: detail } = useSuspenseQuery(clubQueries.detail(id));
   const { data: user } = useSuspenseQuery(userQueries.me());
@@ -229,18 +232,7 @@ const ClubDetailSection = ({
                     size="fit"
                     className="flex-1"
                     variant="negative"
-                    onClick={() =>
-                      patchApproval(
-                        { clubId: id, body: { approved: false } },
-                        {
-                          onSuccess: () => {
-                            toast.success("동아리 개설을 거부했습니다.");
-                            router.push("/club");
-                          },
-                          onError: () => toast.error("처리에 실패했습니다."),
-                        },
-                      )
-                    }
+                    onClick={() => setIsRejectionModalOpen(true)}
                     disabled={isApprovalPending}
                   >
                     개설 거부
@@ -249,16 +241,7 @@ const ClubDetailSection = ({
                     size="fit"
                     className="flex-1"
                     variant="filled"
-                    onClick={() =>
-                      patchApproval(
-                        { clubId: id, body: { approved: true } },
-                        {
-                          onSuccess: () =>
-                            toast.success("동아리 개설을 승인했습니다."),
-                          onError: () => toast.error("처리에 실패했습니다."),
-                        },
-                      )
-                    }
+                    onClick={() => setIsApprovalModalOpen(true)}
                     disabled={isApprovalPending}
                   >
                     개설 승인
@@ -266,6 +249,49 @@ const ClubDetailSection = ({
                 </div>
               </div>
             )}
+            <ConfirmModal
+              open={isApprovalModalOpen}
+              title="동아리 개설 승인"
+              titleVariant="primary"
+              description="동아리 개설을 승인하시겠습니까?"
+              confirmLabel="승인하기"
+              isPending={isApprovalPending}
+              onClose={() => setIsApprovalModalOpen(false)}
+              onConfirm={() =>
+                patchApproval(
+                  { clubId: id, body: { approved: true } },
+                  {
+                    onSuccess: () => {
+                      toast.success("동아리 개설을 승인했습니다.");
+                      router.push("/club?view=form");
+                    },
+                    onError: () => toast.error("처리에 실패했습니다."),
+                  },
+                )
+              }
+            />
+            <ConfirmModal
+              open={isRejectionModalOpen}
+              title="동아리 개설 거절"
+              titleVariant="negative"
+              description="동아리 개설을 거절하시겠습니까?"
+              confirmLabel="거절하기"
+              confirmVariant="negative"
+              isPending={isApprovalPending}
+              onClose={() => setIsRejectionModalOpen(false)}
+              onConfirm={() =>
+                patchApproval(
+                  { clubId: id, body: { approved: false } },
+                  {
+                    onSuccess: () => {
+                      toast.success("동아리 개설을 거절했습니다.");
+                      router.push("/club?view=form");
+                    },
+                    onError: () => toast.error("처리에 실패했습니다."),
+                  },
+                )
+              }
+            />
           </div>
         </div>
       </div>
