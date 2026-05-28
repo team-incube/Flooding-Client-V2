@@ -82,12 +82,11 @@ const StudentManagementSection = () => {
   const [selectedClasses, setSelectedClasses] = useState<number[]>([]);
   const [selectedGender, setSelectedGender] = useState<Sex | null>(null);
   const [selectedStudyBanFilter, setSelectedStudyBanFilter] =
-    useState<StudyBanFilter>(null);
-  const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
-  const students = studentPage?.content ?? [];
-  const bannedStudentIdSet = new Set(
-    students.filter(({ isBanned }) => isBanned).map(({ id }) => id),
+    useState<StudyBanFilter>("ALLOWED");
+  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(
+    null,
   );
+  const students = studentPage?.content ?? [];
 
   const filteredStudents = filterManagedStudents({
     students,
@@ -103,7 +102,7 @@ const StudentManagementSection = () => {
     setSelectedGrades([]);
     setSelectedClasses([]);
     setSelectedGender(null);
-    setSelectedStudyBanFilter(null);
+    setSelectedStudyBanFilter("ALLOWED");
   };
 
   const toggleNumberFilter = (
@@ -130,55 +129,28 @@ const StudentManagementSection = () => {
     setSelectedGender((prev) => (prev === gender ? null : gender));
   };
 
-  const handleToggleStudyBanFilter = (
-    filter: Exclude<StudyBanFilter, null>,
-  ) => {
-    setSelectedStudyBanFilter((prev) => (prev === filter ? null : filter));
-    setSelectedStudentIds([]);
+  const handleToggleStudyBanFilter = (filter: StudyBanFilter) => {
+    if (filter === selectedStudyBanFilter) return;
+    setSelectedStudyBanFilter(filter);
+    setSelectedStudentId(null);
   };
 
   const handleToggleStudentSelect = (studentId: number) => {
-    setSelectedStudentIds((prev) =>
-      prev.includes(studentId)
-        ? prev.filter((selectedStudentId) => selectedStudentId !== studentId)
-        : [...prev, studentId],
-    );
+    setSelectedStudentId((prev) => (prev === studentId ? null : studentId));
   };
 
-  const isStudyBanned = (studentId: number) =>
-    bannedStudentIdSet.has(studentId);
-
-  const getSelectedBanTargetIds = () =>
-    selectedStudentIds.filter((studentId) => !isStudyBanned(studentId));
-
-  const getSelectedUnbanTargetIds = () =>
-    selectedStudentIds.filter(isStudyBanned);
-
-  const handleBanSelectedStudent = () => {
-    const targetStudentIds = getSelectedBanTargetIds();
-
-    if (targetStudentIds.length === 0) {
-      return;
-    }
-
-    setSelectedStudentIds([]);
-    banStudyMutation.mutate(targetStudentIds);
+  const handleBanStudent = () => {
+    if (selectedStudentId === null) return;
+    setSelectedStudentId(null);
+    banStudyMutation.mutate([selectedStudentId]);
   };
 
-  const handleUnbanSelectedStudent = () => {
-    const targetStudentIds = getSelectedUnbanTargetIds();
-
-    if (targetStudentIds.length === 0) {
-      return;
-    }
-
-    setSelectedStudentIds([]);
-    unbanStudyMutation.mutate(targetStudentIds);
+  const handleUnbanStudent = () => {
+    if (selectedStudentId === null) return;
+    setSelectedStudentId(null);
+    unbanStudyMutation.mutate([selectedStudentId]);
   };
 
-  const selectedBanTargetCount = getSelectedBanTargetIds().length;
-  const selectedUnbanTargetCount =
-    selectedStudentIds.length - selectedBanTargetCount;
   const isStudyBanActionPending =
     banStudyMutation.isPending || unbanStudyMutation.isPending;
 
@@ -208,7 +180,7 @@ const StudentManagementSection = () => {
                   key={student.id}
                   index={index + 1}
                   student={student}
-                  isSelected={selectedStudentIds.includes(student.id)}
+                  isSelected={selectedStudentId === student.id}
                   onToggleSelect={handleToggleStudentSelect}
                 />
               ))
@@ -233,12 +205,10 @@ const StudentManagementSection = () => {
 
           <StudyBanActionPanel
             selectedStudyBanFilter={selectedStudyBanFilter}
-            selectedBanTargetCount={selectedBanTargetCount}
-            selectedUnbanTargetCount={selectedUnbanTargetCount}
+            hasSelectedStudent={selectedStudentId !== null}
             isPending={isStudyBanActionPending}
-            onClearSelection={() => setSelectedStudentIds([])}
-            onBanSelectedStudent={handleBanSelectedStudent}
-            onUnbanSelectedStudent={handleUnbanSelectedStudent}
+            onBanStudent={handleBanStudent}
+            onUnbanStudent={handleUnbanStudent}
           />
         </aside>
       </div>

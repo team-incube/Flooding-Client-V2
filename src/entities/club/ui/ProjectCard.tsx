@@ -4,7 +4,7 @@ import { Project } from "../model/club";
 
 interface ProjectCardProps {
   project: Project;
-  leader?: string;
+  leader: string;
 }
 
 export default function ProjectCard({ project, leader }: ProjectCardProps) {

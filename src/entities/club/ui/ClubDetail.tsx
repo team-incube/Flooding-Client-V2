@@ -68,16 +68,35 @@ export default function ClubDetail({
   );
   const [editableMembers, setEditableMembers] = useState<ClubMember[]>(members);
 
+  const originalMemberIds = new Set(members.map((m) => m.id));
+  const nextMemberIds = new Set(editableMembers.map((m) => m.id));
+  const invitedMembers = editableMembers.filter(
+    (m) => !originalMemberIds.has(m.id),
+  );
+  const exiledMembers = members.filter(
+    (m) => !nextMemberIds.has(m.id) && m.id !== club.leaderId,
+  );
+
+  const changeSummary: string[] = [];
+  if (description !== (club.description ?? "")) changeSummary.push("소개 수정");
+  if (representativeImage !== null) changeSummary.push("대표 이미지 변경");
+  if (invitedMembers.length > 0)
+    changeSummary.push(
+      `멤버 ${invitedMembers.length}명 추가 (${invitedMembers.map((m) => m.name).join(", ")})`,
+    );
+  if (exiledMembers.length > 0)
+    changeSummary.push(
+      `멤버 ${exiledMembers.length}명 제외 (${exiledMembers.map((m) => m.name).join(", ")})`,
+    );
+
   const applyVariant =
     isApplyPending || !onApplyClick || applyDisabledMessage
       ? "disabled"
       : "filled";
   const shouldShowApplyButton =
     !isLeader && (!!onApplyClick || !!applyDisabledMessage);
-  const nonLeaderMembers = editableMembers.filter((m) =>
-    club.leaderId !== undefined
-      ? m.id !== club.leaderId
-      : m.name !== club.leader,
+  const nonLeaderMembers = editableMembers.filter(
+    (m) => m.id !== club.leaderId,
   );
   const editableMemberIds = new Set(editableMembers.map((member) => member.id));
   const filteredMemberSearchResults = memberSearchResults
@@ -126,13 +145,7 @@ export default function ClubDetail({
   };
 
   const handleMemberExile = (memberId: number) => {
-    const isCurrentLeader =
-      club.leaderId !== undefined
-        ? memberId === club.leaderId
-        : editableMembers.find((member) => member.id === memberId)?.name ===
-          club.leader;
-
-    if (isCurrentLeader) {
+    if (memberId === club.leaderId) {
       return;
     }
 
@@ -161,28 +174,9 @@ export default function ClubDetail({
         },
       });
 
-      const originalMemberIds = new Set(members.map((member) => member.id));
-      const nextMemberIds = new Set(editableMembers.map((member) => member.id));
-      const invitedMemberIds = editableMembers
-        .map((member) => member.id)
-        .filter((memberId) => !originalMemberIds.has(memberId));
-      const exiledMemberIds = members
-        .map((member) => member.id)
-        .filter((memberId) => !nextMemberIds.has(memberId))
-        .filter((memberId) =>
-          club.leaderId !== undefined
-            ? memberId !== club.leaderId
-            : members.find((member) => member.id === memberId)?.name !==
-              club.leader,
-        );
-
       await Promise.all([
-        ...invitedMemberIds.map((memberId) =>
-          clubMemberMutations.invite(club.id, memberId),
-        ),
-        ...exiledMemberIds.map((memberId) =>
-          clubMemberMutations.exile(club.id, memberId),
-        ),
+        ...invitedMembers.map((m) => clubMemberMutations.invite(club.id, m.id)),
+        ...exiledMembers.map((m) => clubMemberMutations.exile(club.id, m.id)),
       ]);
     })();
 
@@ -212,7 +206,7 @@ export default function ClubDetail({
 
   return (
     <div className="flex w-full flex-col gap-6 xl:flex-row">
-      <div className="flex w-full flex-col gap-6 lg:w-100 2xl:w-121">
+      <div className="flex w-full flex-col gap-6 xl:flex-1">
         <ClubThumbnail
           imageUrl={isEdit ? previewUrl : club.imageUrl}
           isEdit={isEdit}
@@ -226,9 +220,14 @@ export default function ClubDetail({
         />
 
         <div className="flex flex-col gap-4">
-          <span className="2xl:text-title-1 lg:text-title-2 text-main-text font-bold">
-            {club.name}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="2xl:text-title-1 lg:text-title-2 text-main-text font-bold">
+              {club.name}
+            </span>
+            <span className="bg-p-1 text-caption-1 shrink-0 rounded-md px-2 py-0.5 text-white">
+              {club.type === "MAJOR_CLUB" ? "전공" : "자율"}
+            </span>
+          </div>
           <div className="flex flex-col gap-1.5">
             <span className="2xl:text-title-4 lg:text-text-1 text-main-text font-semibold">
               동아리 소개
@@ -253,7 +252,7 @@ export default function ClubDetail({
           {!isEdit ? (
             <ClubMemberList
               members={members}
-              leader={club.leader}
+              leaderId={club.leaderId}
               isLeader={isLeader}
               onMemberClick={onTransferClick}
             />
@@ -261,7 +260,7 @@ export default function ClubDetail({
             <div className="flex flex-col gap-4">
               <ClubMemberList
                 members={editableMembers}
-                leader={club.leader}
+                leaderId={club.leaderId}
                 showDescription={false}
               />
               <div className="flex flex-col gap-2">
@@ -352,6 +351,7 @@ export default function ClubDetail({
             canDelete={canDelete}
             onSave={handleSave}
             onDelete={handleDelete}
+            changeSummary={changeSummary}
           />
           {!isEdit && (
             <>

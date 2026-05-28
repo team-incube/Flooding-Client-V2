@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { clubManagementQueries } from "@/entities/club-management/api/clubManagementQueries";
 import ClubCard from "@/entities/club/ui/ClubCard";
 import Club from "@/shared/asset/svg/Club";
+import FileOff from "@/shared/asset/svg/FileOff";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { Skeleton } from "@/shared/ui/Skeleton";
 
@@ -33,10 +34,9 @@ function ClubOpeningRequestSectionLoading() {
 
 function ClubOpeningRequestSectionEmpty() {
   return (
-    <div className="flex flex-col gap-3">
-      <div className="border-sub-3 bg-background flex h-[320px] items-center justify-center rounded-2xl border border-dashed">
-        <p className="text-text-2 text-sub-1">아직 개설 신청이 없어요.</p>
-      </div>
+    <div className="flex h-full min-h-60 flex-1 flex-col items-center justify-center gap-2">
+      <FileOff />
+      <p className="text-text-3 text-sub-2">아직 개설 신청이 없어요.</p>
     </div>
   );
 }

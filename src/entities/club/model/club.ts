@@ -8,7 +8,7 @@ export interface Club {
   id: number;
   name: string;
   type: ClubType;
-  leader?: string;
+  leader: string;
   description: string;
   imageUrl?: string;
   totalMember: number;
@@ -23,11 +23,11 @@ export interface ClubDetail {
   id: number;
   name: string;
   type: ClubType;
-  leader?: string;
-  leaderId?: number;
+  leader: string;
+  leaderId: number;
   description: string;
   imageUrl?: string;
-  maxMember?: number;
+  maxMember: number;
 }
 
 export interface ClubMember {
