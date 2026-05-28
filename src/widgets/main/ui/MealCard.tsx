@@ -22,13 +22,13 @@ import { useDebouncedValue } from "@/shared/lib/useDebouncedValue";
 
 function MealCardLoading() {
   return (
-    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-6 lg:h-[498px]">
+    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-5 sm:p-6 lg:h-[498px]">
       <div className="mb-4 flex items-center justify-between">
         <Skeleton className="h-6 w-20" />
         <Skeleton className="h-5 w-28" />
       </div>
       <Skeleton className="mb-4 h-[60px] w-full rounded-lg" />
-      <div className="grid grid-cols-2 gap-x-6 gap-y-3 lg:flex lg:flex-col lg:gap-3">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:flex lg:flex-col lg:gap-3">
         {Array.from({ length: 8 }).map((_, index) => (
           <Skeleton key={index} className="h-6 w-full" />
         ))}
@@ -39,7 +39,7 @@ function MealCardLoading() {
 
 function MealCardError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-6 lg:h-[498px]">
+    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-5 sm:p-6 lg:h-[498px]">
       <div className="mb-4 flex items-center gap-1">
         <Bowl />
         <span className="text-text-1 text-main-text font-semibold">급식표</span>
@@ -69,7 +69,7 @@ function MealCardEmpty() {
 function MealContentLoading() {
   return (
     <div className="flex flex-1 flex-col overflow-y-auto">
-      <div className="grid grid-cols-2 gap-x-6 gap-y-3 lg:flex lg:flex-col lg:gap-3">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:flex lg:flex-col lg:gap-3">
         {Array.from({ length: 8 }).map((_, index) => (
           <Skeleton key={index} className="h-6 w-full" />
         ))}
@@ -94,7 +94,7 @@ function MealCardContent({ dateStr, selectedTab }: MealCardContentProps) {
   return (
     <div className="flex flex-1 flex-col overflow-y-auto">
       {menuItems.length > 0 ? (
-        <ul className="grid grid-cols-2 gap-x-6 gap-y-3 lg:flex lg:flex-col lg:gap-3">
+        <ul className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:flex lg:flex-col lg:gap-3">
           {menuItems.map((item, index) => (
             <li
               key={`${item}-${index}`}
@@ -127,7 +127,7 @@ const MealCard = () => {
   const dateStr = formatDateParam(debouncedDate);
 
   return (
-    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-6 lg:h-[498px]">
+    <div className="bg-background-surface flex h-[300px] w-full flex-col rounded-2xl p-5 sm:p-6 lg:h-[498px]">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Bowl />

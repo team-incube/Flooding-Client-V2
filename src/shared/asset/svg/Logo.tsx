@@ -9,13 +9,11 @@ export default function Logo({
   width,
   height = 52,
 }: LogoProps) {
-  const defaultWidth = iconOnly ? 52 : 191;
-
   return (
     <svg
-      width={width ?? defaultWidth}
+      width={width}
       height={height}
-      viewBox={iconOnly ? "128 0 64 52" : "0 0 191 52"}
+      viewBox={iconOnly ? "128 0 64 52" : "1.2 0 189.5 52"}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
