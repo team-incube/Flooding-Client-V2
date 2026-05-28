@@ -2,6 +2,7 @@
 
 import type { StudyBanFilter } from "@/features/self-study/lib/filterManagedStudents";
 import type { Sex } from "@/entities/user/model/user";
+
 import Search from "@/shared/asset/svg/Search";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -26,7 +27,7 @@ interface StudentManagementFilterPanelProps {
   onToggleGrade: (grade: number) => void;
   onToggleClass: (classNumber: number) => void;
   onToggleGender: (gender: Sex) => void;
-  onToggleStudyBanFilter: (filter: Exclude<StudyBanFilter, null>) => void;
+  onToggleStudyBanFilter: (filter: StudyBanFilter) => void;
 }
 
 export function StudentManagementFilterPanel({
@@ -128,9 +129,7 @@ export function StudentManagementFilterPanel({
               }
               size="small"
               className="h-[34px]! w-14!"
-              onClick={() =>
-                onToggleStudyBanFilter(filter as Exclude<StudyBanFilter, null>)
-              }
+              onClick={() => onToggleStudyBanFilter(filter as StudyBanFilter)}
             >
               {label}
             </TextButton>
