@@ -48,7 +48,7 @@ export function MassageChairSection() {
   };
 
   return (
-    <section className="bg-background-surface flex flex-col gap-6 rounded-2xl p-6">
+    <section className="bg-background-surface flex flex-col gap-6 rounded-2xl p-5 sm:p-6">
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-2">
           <Chair />
@@ -60,7 +60,7 @@ export function MassageChairSection() {
         </div>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col-reverse gap-6 sm:flex-row">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap gap-4">
             {applicants.map((student) => (
@@ -73,12 +73,13 @@ export function MassageChairSection() {
           </div>
         </div>
 
-        <div className="flex w-[330px] shrink-0 flex-col justify-end gap-3">
+        <div className="flex w-full flex-col justify-end gap-3 sm:w-[330px] sm:shrink-0">
           <TextButton
             variant={
               massageActionState.isActionDisabled ? "disabled" : "filled"
             }
             size="wide"
+            className="w-full"
             disabled={massageActionState.isActionDisabled}
             onClick={
               hasAppliedMassage ? handleCancelMassage : handleApplyMassage

@@ -23,7 +23,7 @@ const SEARCH_DEBOUNCE_DELAY = 300;
 
 function StudentManagementSectionLoading() {
   return (
-    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
+    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-5 shadow-[0_0_12px_rgba(0,0,0,0.04)] sm:p-6">
       <div className="flex items-end gap-3">
         <Skeleton className="h-7 w-28" />
         <Skeleton className="h-5 w-20" />
@@ -49,7 +49,7 @@ function StudentManagementSectionError({
   resetErrorBoundary,
 }: QueryErrorFallbackProps) {
   return (
-    <section className="bg-background-surface flex h-[520px] flex-col items-center justify-center gap-3 rounded-2xl p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
+    <section className="bg-background-surface flex h-[520px] flex-col items-center justify-center gap-3 rounded-2xl p-5 shadow-[0_0_12px_rgba(0,0,0,0.04)] sm:p-6">
       <Student isActive />
       <p className="text-text-1 text-main-text">
         학생 목록을 불러오지 못했습니다.
@@ -183,7 +183,7 @@ const StudentManagementSection = () => {
     banStudyMutation.isPending || unbanStudyMutation.isPending;
 
   return (
-    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6 shadow-[0_0_12px_rgba(0,0,0,0.04)]">
+    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-5 shadow-[0_0_12px_rgba(0,0,0,0.04)] sm:p-6">
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-1">
           <Student isActive />
@@ -197,7 +197,7 @@ const StudentManagementSection = () => {
         </div>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col gap-6 sm:flex-row">
         <div className="min-w-0 flex-1">
           <div className="flex max-h-[773px] flex-wrap gap-4 overflow-y-auto pr-2">
             {filteredStudents.length === 0 ? (
@@ -216,7 +216,7 @@ const StudentManagementSection = () => {
           </div>
         </div>
 
-        <aside className="flex w-[330px] shrink-0 flex-col gap-[60px]">
+        <aside className="flex w-full flex-col gap-[60px] sm:w-[330px] sm:shrink-0">
           <StudentManagementFilterPanel
             searchQuery={searchQuery}
             selectedGrades={selectedGrades}

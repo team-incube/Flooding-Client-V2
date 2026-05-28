@@ -24,7 +24,7 @@ import { useDebouncedValue } from "@/shared/lib/useDebouncedValue";
 
 function TimeTableCardLoading() {
   return (
-    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-6 2xl:block 2xl:h-[354px]">
+    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-5 sm:p-6 2xl:block 2xl:h-[354px]">
       <div className="mb-4 flex items-center justify-between">
         <Skeleton className="h-6 w-20" />
         <Skeleton className="h-5 w-28" />
@@ -44,7 +44,7 @@ function TimeTableCardLoading() {
 
 function TimeTableCardError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <div className="bg-background-surface flex h-[140px] w-full flex-col overflow-hidden rounded-2xl p-6 2xl:h-[354px]">
+    <div className="bg-background-surface flex h-[140px] w-full flex-col overflow-hidden rounded-2xl p-5 sm:p-6 2xl:h-[354px]">
       <div className="mb-2 flex items-center gap-1">
         <Calendar />
         <span className="text-text-1 text-main-text font-semibold">시간표</span>
@@ -184,7 +184,7 @@ const TimeTableCard = () => {
   };
 
   return (
-    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-6 2xl:block 2xl:h-[354px]">
+    <div className="bg-background-surface flex h-[140px] w-full flex-col rounded-2xl p-5 sm:p-6 2xl:block 2xl:h-[354px]">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Calendar />

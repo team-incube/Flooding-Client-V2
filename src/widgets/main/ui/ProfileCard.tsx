@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import ProfileSvg from "@/shared/asset/svg/Profile";
+import Profile from "@/shared/asset/svg/Profile";
 // import More from "@/shared/asset/svg/MoreVertical";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { getRoleLabel } from "@/entities/user/lib/userRole";
@@ -11,9 +11,9 @@ export default function ProfileCard() {
   const roleLabel = getRoleLabel(user?.role);
 
   return (
-    <div className="bg-background-surface flex h-35 w-full items-center gap-6 rounded-2xl p-6 2xl:h-30">
-      <div className="flex w-18 items-center justify-center">
-        <ProfileSvg />
+    <div className="bg-background-surface flex h-24 w-full items-center gap-4 rounded-2xl p-6 sm:h-35 sm:gap-6 sm:p-6 2xl:h-30">
+      <div className="flex w-14 items-center justify-center sm:w-18">
+        <Profile />
       </div>
       <div className="flex flex-col">
         <span className="text-title-4 font-medium">

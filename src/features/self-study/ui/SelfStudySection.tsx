@@ -93,7 +93,7 @@ export function SelfStudySection() {
   };
 
   return (
-    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-6">
+    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-5 sm:p-6">
       <div className="flex items-end gap-3">
         <div className="flex items-center gap-1">
           <ApplyStudy />
@@ -107,7 +107,7 @@ export function SelfStudySection() {
         </div>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col-reverse gap-6 sm:flex-row">
         <div className="min-w-0 flex-1">
           <div className="flex max-h-125 flex-wrap gap-4 overflow-y-auto">
             {filteredStudents.map((student, index) => (
@@ -129,7 +129,7 @@ export function SelfStudySection() {
           </div>
         </div>
 
-        <div className="flex w-[330px] shrink-0 flex-col gap-4">
+        <div className="flex w-full flex-col gap-4 sm:w-[330px] sm:shrink-0">
           <div className="flex items-center justify-between">
             <span className="text-main-text text-text-2">필터</span>
             <button
@@ -215,6 +215,7 @@ export function SelfStudySection() {
                   : "filled"
             }
             size="wide"
+            className="w-full"
             disabled={studyActionState.isActionDisabled}
             onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
           >

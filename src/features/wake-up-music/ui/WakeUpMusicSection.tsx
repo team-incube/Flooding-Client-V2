@@ -39,7 +39,7 @@ export function WakeUpMusicSection({
 
   return (
     <section
-      className={`bg-background-surface relative flex h-[424px] flex-col gap-6 rounded-2xl p-6 2xl:h-[520px] ${className ?? ""}`}
+      className={`bg-background-surface relative flex h-auto flex-col gap-6 rounded-2xl p-5 sm:h-[424px] sm:p-6 2xl:h-[520px] ${className ?? ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -54,8 +54,8 @@ export function WakeUpMusicSection({
         </div>
       </div>
 
-      <div className="flex flex-1 gap-6 overflow-hidden">
-        <div className="min-w-0 flex-1 overflow-y-auto pr-2">
+      <div className="flex flex-1 flex-col-reverse gap-6 overflow-hidden sm:flex-row">
+        <div className="min-w-0 flex-1 overflow-y-auto sm:pr-2">
           <div className="flex flex-col">
             {songs.map((music) => {
               return (
@@ -82,7 +82,7 @@ export function WakeUpMusicSection({
           </div>
         </div>
 
-        <div className="flex w-[240px] shrink-0 flex-col gap-20 lg:w-[330px]">
+        <div className="flex w-full flex-col gap-6 sm:w-[240px] sm:shrink-0 sm:gap-20 lg:w-[330px]">
           <div className="flex flex-col gap-3">
             <span className="text-main-text text-text-2">음악 신청</span>
             <TextField

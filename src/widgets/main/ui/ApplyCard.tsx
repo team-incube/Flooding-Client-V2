@@ -40,7 +40,7 @@ export default function ApplyCard({
     disabled && buttonVariant === "filled" ? "disabled" : buttonVariant;
 
   return (
-    <div className="bg-background-surface w-full rounded-2xl p-6">
+    <div className="bg-background-surface w-full rounded-2xl p-5 sm:p-6">
       <div className="mb-3 flex items-start justify-between">
         <div className="flex items-center gap-1">
           <div>{icon}</div>
@@ -61,10 +61,10 @@ export default function ApplyCard({
       </div>
 
       <div className="pb-3">
-        <p className="text-main-text mb-3 h-[54px] text-center text-4xl font-bold">
+        <p className="text-main-text mb-2 h-[44px] text-center text-3xl font-bold sm:mb-3 sm:h-[54px] sm:text-4xl">
           {current}/{total}
         </p>
-        <div className="flex h-8 w-full gap-1">
+        <div className="flex h-6 w-full gap-1 sm:h-8">
           <div
             className="bg-p-1 h-full shrink-0 rounded-lg"
             style={{ width: `${total > 0 ? (current / total) * 100 : 0}%` }}
