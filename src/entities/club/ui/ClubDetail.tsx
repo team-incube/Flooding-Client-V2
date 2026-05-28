@@ -74,11 +74,7 @@ export default function ClubDetail({
     (m) => !originalMemberIds.has(m.id),
   );
   const exiledMembers = members.filter(
-    (m) =>
-      !nextMemberIds.has(m.id) &&
-      (club.leaderId !== undefined
-        ? m.id !== club.leaderId
-        : m.name !== club.leader),
+    (m) => !nextMemberIds.has(m.id) && m.id !== club.leaderId,
   );
 
   const changeSummary: string[] = [];
@@ -99,10 +95,8 @@ export default function ClubDetail({
       : "filled";
   const shouldShowApplyButton =
     !isLeader && (!!onApplyClick || !!applyDisabledMessage);
-  const nonLeaderMembers = editableMembers.filter((m) =>
-    club.leaderId !== undefined
-      ? m.id !== club.leaderId
-      : m.name !== club.leader,
+  const nonLeaderMembers = editableMembers.filter(
+    (m) => m.id !== club.leaderId,
   );
   const editableMemberIds = new Set(editableMembers.map((member) => member.id));
   const filteredMemberSearchResults = memberSearchResults
@@ -151,13 +145,7 @@ export default function ClubDetail({
   };
 
   const handleMemberExile = (memberId: number) => {
-    const isCurrentLeader =
-      club.leaderId !== undefined
-        ? memberId === club.leaderId
-        : editableMembers.find((member) => member.id === memberId)?.name ===
-          club.leader;
-
-    if (isCurrentLeader) {
+    if (memberId === club.leaderId) {
       return;
     }
 
@@ -264,7 +252,7 @@ export default function ClubDetail({
           {!isEdit ? (
             <ClubMemberList
               members={members}
-              leader={club.leader}
+              leaderId={club.leaderId}
               isLeader={isLeader}
               onMemberClick={onTransferClick}
             />
@@ -272,7 +260,7 @@ export default function ClubDetail({
             <div className="flex flex-col gap-4">
               <ClubMemberList
                 members={editableMembers}
-                leader={club.leader}
+                leaderId={club.leaderId}
                 showDescription={false}
               />
               <div className="flex flex-col gap-2">
