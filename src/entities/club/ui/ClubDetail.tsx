@@ -206,7 +206,7 @@ export default function ClubDetail({
 
   return (
     <div className="flex w-full flex-col gap-6 xl:flex-row">
-      <div className="flex w-full flex-col gap-6 lg:w-100 2xl:w-121">
+      <div className="flex w-full flex-col gap-6 xl:flex-1">
         <ClubThumbnail
           imageUrl={isEdit ? previewUrl : club.imageUrl}
           isEdit={isEdit}
