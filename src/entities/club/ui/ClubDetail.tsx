@@ -68,6 +68,31 @@ export default function ClubDetail({
   );
   const [editableMembers, setEditableMembers] = useState<ClubMember[]>(members);
 
+  const originalMemberIds = new Set(members.map((m) => m.id));
+  const nextMemberIds = new Set(editableMembers.map((m) => m.id));
+  const invitedMembers = editableMembers.filter(
+    (m) => !originalMemberIds.has(m.id),
+  );
+  const exiledMembers = members.filter(
+    (m) =>
+      !nextMemberIds.has(m.id) &&
+      (club.leaderId !== undefined
+        ? m.id !== club.leaderId
+        : m.name !== club.leader),
+  );
+
+  const changeSummary: string[] = [];
+  if (description !== (club.description ?? "")) changeSummary.push("소개 수정");
+  if (representativeImage !== null) changeSummary.push("대표 이미지 변경");
+  if (invitedMembers.length > 0)
+    changeSummary.push(
+      `멤버 ${invitedMembers.length}명 추가 (${invitedMembers.map((m) => m.name).join(", ")})`,
+    );
+  if (exiledMembers.length > 0)
+    changeSummary.push(
+      `멤버 ${exiledMembers.length}명 제외 (${exiledMembers.map((m) => m.name).join(", ")})`,
+    );
+
   const applyVariant =
     isApplyPending || !onApplyClick || applyDisabledMessage
       ? "disabled"
@@ -161,28 +186,9 @@ export default function ClubDetail({
         },
       });
 
-      const originalMemberIds = new Set(members.map((member) => member.id));
-      const nextMemberIds = new Set(editableMembers.map((member) => member.id));
-      const invitedMemberIds = editableMembers
-        .map((member) => member.id)
-        .filter((memberId) => !originalMemberIds.has(memberId));
-      const exiledMemberIds = members
-        .map((member) => member.id)
-        .filter((memberId) => !nextMemberIds.has(memberId))
-        .filter((memberId) =>
-          club.leaderId !== undefined
-            ? memberId !== club.leaderId
-            : members.find((member) => member.id === memberId)?.name !==
-              club.leader,
-        );
-
       await Promise.all([
-        ...invitedMemberIds.map((memberId) =>
-          clubMemberMutations.invite(club.id, memberId),
-        ),
-        ...exiledMemberIds.map((memberId) =>
-          clubMemberMutations.exile(club.id, memberId),
-        ),
+        ...invitedMembers.map((m) => clubMemberMutations.invite(club.id, m.id)),
+        ...exiledMembers.map((m) => clubMemberMutations.exile(club.id, m.id)),
       ]);
     })();
 
@@ -357,6 +363,7 @@ export default function ClubDetail({
             canDelete={canDelete}
             onSave={handleSave}
             onDelete={handleDelete}
+            changeSummary={changeSummary}
           />
           {!isEdit && (
             <>

@@ -7,6 +7,7 @@ interface ClubActionButtonsProps {
   canDelete: boolean;
   onSave: () => void;
   onDelete: () => void;
+  changeSummary?: string[];
 }
 
 export function ClubActionButtons({
@@ -14,6 +15,7 @@ export function ClubActionButtons({
   canDelete,
   onSave,
   onDelete,
+  changeSummary,
 }: ClubActionButtonsProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -45,7 +47,20 @@ export function ClubActionButtons({
         <ConfirmModal
           open={isSaveModalOpen}
           title="동아리 수정"
-          description="변경사항을 저장하시겠습니까?"
+          description={
+            changeSummary && changeSummary.length > 0 ? (
+              <div className="flex flex-col gap-1">
+                <span>다음 내용이 변경됩니다:</span>
+                <ul className="flex flex-col gap-0.5 pl-1">
+                  {changeSummary.map((item) => (
+                    <li key={item}>• {item}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              "변경사항을 저장하시겠습니까?"
+            )
+          }
           confirmLabel="저장하기"
           onClose={() => setIsSaveModalOpen(false)}
           onConfirm={() => {

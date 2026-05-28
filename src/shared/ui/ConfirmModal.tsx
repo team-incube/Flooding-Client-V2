@@ -40,7 +40,7 @@ export function ConfirmModal({
         <span className={`font-bold ${titleVariantStyles[titleVariant]}`}>
           {title}
         </span>
-        <span className="text-main-text">{description}</span>
+        <div className="text-main-text">{description}</div>
         <div className="flex gap-2">
           <TextButton
             size="fit"
