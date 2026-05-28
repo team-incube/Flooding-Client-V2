@@ -1,4 +1,4 @@
-import Sidebar from "@/widgets/adaptive-sidebar/ui";
+import Sidebar from "@/widgets/sidebar/ui/sidebar";
 import { Header } from "@/widgets/header/ui/header";
 import { AiChatButton } from "@/features/ai-chat/ui/AiChatButton";
 
