@@ -20,7 +20,7 @@ export function filterClubs({
     const matchesSearch =
       !normalizedSearchValue ||
       club.name.toLowerCase().includes(normalizedSearchValue) ||
-      club.leader?.toLowerCase().includes(normalizedSearchValue);
+      club.leader.toLowerCase().includes(normalizedSearchValue);
 
     return matchesType && matchesSearch;
   });

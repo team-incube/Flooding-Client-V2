@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   useQuery,
   useQueryClient,
@@ -106,9 +106,19 @@ function ClubHomeSectionError({ resetErrorBoundary }: QueryErrorFallbackProps) {
 
 function ClubHomeSection() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
-  const [viewMode, setViewMode] = useState<"form" | "list">("list");
+  const rawView = searchParams.get("view");
+  const viewMode: "form" | "list" =
+    rawView === "form" || rawView === "list" ? rawView : "list";
+
+  const setViewMode = (mode: "form" | "list") => {
+    if (mode === "list") router.replace(pathname);
+    else router.replace(`${pathname}?view=${mode}`);
+  };
+
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [selectedType, setSelectedType] = useState<ClubTypeFilter>("ALL");
@@ -118,6 +128,13 @@ function ClubHomeSection() {
   const clubPermission = createClubPermission({
     role: user.role,
   });
+
+  useEffect(() => {
+    if (viewMode === "form" && !clubPermission.canViewOpeningRequests) {
+      router.replace(pathname);
+    }
+  }, [viewMode, clubPermission.canViewOpeningRequests, router, pathname]);
+
   const { data: openingStatus } = useQuery({
     ...clubManagementQueries.openingStatus(),
     enabled: clubPermission.canCheckOpeningStatus,
@@ -153,39 +170,10 @@ function ClubHomeSection() {
   };
 
   const handleSearch = () => setSearchValue(query);
-  const clubModeToggle = (
-    <div className="flex w-full gap-1">
-      <TextButton
-        variant={viewMode === "list" ? "filled" : "outlined"}
-        size="fit"
-        className="flex-1"
-        onClick={() => setViewMode("list")}
-      >
-        동아리 검색
-      </TextButton>
-      <TextButton
-        variant={
-          viewMode === "form" && canRegisterClub
-            ? "filled"
-            : canRegisterClub
-              ? "outlined"
-              : "disabled"
-        }
-        size="fit"
-        className="flex-1"
-        disabled={!canRegisterClub}
-        onClick={() => {
-          if (canRegisterClub) setViewMode("form");
-        }}
-      >
-        개설 신청
-      </TextButton>
-    </div>
-  );
 
   return (
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto pb-25 sm:px-8 lg:px-8 xl:px-10 2xl:px-18">
-      <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
+      <div className="bg-background-surface flex min-h-full w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Club isActive={false} size={20} />
@@ -202,7 +190,7 @@ function ClubHomeSection() {
         </div>
 
         <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
-          <div className="order-2 min-h-0 flex-1 lg:order-1 lg:h-full lg:pr-2">
+          <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:pr-2">
             {viewMode === "list" ? (
               <ClubSection
                 clubs={filteredClubs}
@@ -215,8 +203,34 @@ function ClubHomeSection() {
             )}
           </div>
           <div className="order-1 flex flex-col lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
-            <div className="flex w-full flex-col gap-4">
-              {clubModeToggle}
+            <div className="flex w-full flex-col gap-4 overflow-y-auto">
+              <div className="flex w-full gap-1">
+                <TextButton
+                  variant={viewMode === "list" ? "filled" : "outlined"}
+                  size="fit"
+                  className="flex-1"
+                  onClick={() => setViewMode("list")}
+                >
+                  동아리 검색
+                </TextButton>
+                <TextButton
+                  variant={
+                    viewMode === "form" && canRegisterClub
+                      ? "filled"
+                      : canRegisterClub
+                        ? "outlined"
+                        : "disabled"
+                  }
+                  size="fit"
+                  className="flex-1"
+                  disabled={!canRegisterClub}
+                  onClick={() => {
+                    if (canRegisterClub) setViewMode("form");
+                  }}
+                >
+                  개설 신청
+                </TextButton>
+              </div>
 
               {viewMode === "form" && canRegisterClub ? (
                 <ClubRegistrationSection

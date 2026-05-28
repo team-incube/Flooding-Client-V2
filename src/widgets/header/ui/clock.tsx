@@ -27,7 +27,7 @@ export function Clock() {
   }, []);
 
   return (
-    <div className="bg-background-surface flex items-end gap-2 rounded-lg px-5 py-2">
+    <div className="bg-background-surface flex items-baseline gap-2 rounded-lg px-5 py-2">
       <span className="text-title-2 text-main-text tabular-nums">{time}</span>
       <span className="text-text-4 text-sub-1">{date}</span>
     </div>
