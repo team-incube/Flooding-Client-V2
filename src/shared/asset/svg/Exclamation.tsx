@@ -3,7 +3,6 @@ import type { SvgProps } from "@/shared/model/svg";
 export default function Exclamation({ size = 10 }: SvgProps) {
   return (
     <svg
-      width={size * 0.2}
       height={size}
       viewBox="0 0 2 10"
       fill="none"
