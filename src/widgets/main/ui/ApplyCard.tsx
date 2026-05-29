@@ -49,13 +49,6 @@ export default function ApplyCard({
 
   return (
     <div className="bg-background-surface w-full rounded-2xl p-5 sm:p-6">
-      {isTooltipOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setIsTooltipOpen(false)}
-        />
-      )}
-
       <div className="mb-3 flex items-start justify-between">
         <div className="flex items-center gap-1.5">
           <div>{icon}</div>
@@ -72,12 +65,18 @@ export default function ApplyCard({
               <Exclamation size={10} />
             </button>
             {isTooltipOpen && (
-              <div className="bg-main-text absolute bottom-full left-1/2 z-50 mb-2.5 flex h-8.5 w-max -translate-x-1/2 items-center justify-center rounded-xl px-4">
-                <p className="text-sub-4 text-[13px] font-medium whitespace-nowrap">
-                  {tooltipText}
-                </p>
-                <div className="bg-main-text absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45" />
-              </div>
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setIsTooltipOpen(false)}
+                />
+                <div className="bg-main-text absolute bottom-full left-1/2 z-50 mb-2.5 flex h-8.5 w-max -translate-x-1/2 items-center justify-center rounded-xl px-4">
+                  <p className="text-sub-4 text-[13px] font-medium whitespace-nowrap">
+                    {tooltipText}
+                  </p>
+                  <div className="bg-main-text absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45" />
+                </div>
+              </>
             )}
           </div>
         </div>
