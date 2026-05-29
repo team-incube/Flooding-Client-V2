@@ -1,7 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
+import Back from "@/shared/asset/svg/Back";
+import Filter from "@/shared/asset/svg/Filter";
 import Search from "@/shared/asset/svg/Search";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
@@ -18,11 +22,14 @@ import { useStudyAttendanceSubscription } from "../model/useStudyAttendanceSubsc
 import { useUncheckStudyAttendance } from "../model/useUncheckStudyAttendance";
 import { NoteText } from "@/shared/ui/NoteText";
 import { StudyApplicantCard } from "./StudyApplicantCard";
+import { StudyFilterModal } from "./StudyFilterModal";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
 export function SelfStudySection() {
+  const router = useRouter();
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
     useQuery(studyQuery);
@@ -94,7 +101,31 @@ export function SelfStudySection() {
 
   return (
     <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-5 sm:p-6">
-      <div className="flex items-end gap-3">
+      {/* 모바일 헤더 */}
+      <div className="flex items-center justify-between sm:hidden">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex h-9 w-9 cursor-pointer items-center justify-center"
+            aria-label="뒤로가기"
+          >
+            <Back direction="left" size={20} />
+          </button>
+          <span className="text-main-text text-text-1">자습신청</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsFilterOpen((prev) => !prev)}
+          className="flex h-9 w-9 cursor-pointer items-center justify-center"
+          aria-label="필터"
+        >
+          <Filter size={24} />
+        </button>
+      </div>
+
+      {/* 데스크탑 헤더 */}
+      <div className="hidden items-end gap-3 sm:flex">
         <div className="flex items-center gap-1">
           <ApplyStudy />
           <span className="text-main-text text-text-1">자습신청</span>
@@ -129,7 +160,8 @@ export function SelfStudySection() {
           </div>
         </div>
 
-        <div className="flex w-full flex-col gap-4 sm:w-[330px] sm:shrink-0">
+        {/* 필터 패널: 데스크탑에서만 표시 */}
+        <div className="hidden w-full flex-col gap-4 sm:flex sm:w-82.5 sm:shrink-0">
           <div className="flex items-center justify-between">
             <span className="text-main-text text-text-2">필터</span>
             <button
@@ -238,6 +270,18 @@ export function SelfStudySection() {
           )}
         </div>
       </div>
+
+      <StudyFilterModal
+        isOpen={isFilterOpen}
+        selectedGrades={selectedGrades}
+        selectedClasses={selectedClasses}
+        selectedGender={selectedGender}
+        onClose={() => setIsFilterOpen(false)}
+        onReset={handleResetFilters}
+        onToggleGrade={handleToggleGrade}
+        onToggleClass={handleToggleClass}
+        onToggleGender={handleToggleGender}
+      />
     </section>
   );
 }
