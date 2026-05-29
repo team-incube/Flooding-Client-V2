@@ -19,7 +19,7 @@ export default function MusicRecommendCard({
   return (
     <div
       onClick={onChange}
-      className="w-[80vw] max-w-90 shrink-0 cursor-pointer sm:w-90"
+      className="w-full shrink-0 cursor-pointer sm:w-[calc((100%-0.75rem)/2)] lg:w-[calc((100%-1.5rem)/3)]"
     >
       <div className="bg-sub-4 relative h-[203px] w-full rounded-xl">
         {thumbnailUrl && (
