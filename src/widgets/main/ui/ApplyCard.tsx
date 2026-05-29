@@ -48,20 +48,12 @@ export default function ApplyCard({
   const handleToggleTooltip = () => setIsTooltipOpen((prev) => !prev);
 
   return (
-    <div className="bg-background-surface relative w-full rounded-2xl p-5 sm:p-6">
+    <div className="bg-background-surface w-full rounded-2xl p-5 sm:p-6">
       {isTooltipOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setIsTooltipOpen(false)}
-          />
-          <div className="bg-main-text absolute bottom-full left-0 z-50 flex h-8.5 w-max items-center justify-center rounded-xl px-4 sm:hidden">
-            <p className="text-sub-4 text-[13px] font-medium whitespace-nowrap">
-              {tooltipText}
-            </p>
-            <div className="bg-main-text absolute -bottom-1.5 left-31.5 h-3 w-3 -translate-x-1/2 rotate-45" />
-          </div>
-        </>
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setIsTooltipOpen(false)}
+        />
       )}
 
       <div className="mb-3 flex items-start justify-between">
@@ -70,14 +62,24 @@ export default function ApplyCard({
           <span className="text-text-1 text-main-text font-semibold">
             {title}
           </span>
-          <button
-            type="button"
-            onClick={handleToggleTooltip}
-            className="bg-sub-3 flex h-4.5 w-4.5 shrink-0 cursor-pointer items-center justify-center rounded-full sm:hidden"
-            aria-label="신청 시간 안내"
-          >
-            <Exclamation size={10} />
-          </button>
+          <div className="relative sm:hidden">
+            <button
+              type="button"
+              onClick={handleToggleTooltip}
+              className="bg-sub-3 flex h-4.5 w-4.5 shrink-0 cursor-pointer items-center justify-center rounded-full"
+              aria-label="신청 시간 안내"
+            >
+              <Exclamation size={10} />
+            </button>
+            {isTooltipOpen && (
+              <div className="bg-main-text absolute bottom-full left-1/2 z-50 mb-2.5 flex h-8.5 w-max -translate-x-1/2 items-center justify-center rounded-xl px-4">
+                <p className="text-sub-4 text-[13px] font-medium whitespace-nowrap">
+                  {tooltipText}
+                </p>
+                <div className="bg-main-text absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45" />
+              </div>
+            )}
+          </div>
         </div>
 
         {detailHref && (
