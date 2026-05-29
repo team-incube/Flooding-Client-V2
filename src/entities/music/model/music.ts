@@ -1,7 +1,7 @@
 export interface Music {
   id: number;
   userId: number;
-  name: string;
+  userName: string;
   studentNumber: number;
   musicUrl: string;
   appliedAt: string;
