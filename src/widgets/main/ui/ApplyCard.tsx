@@ -49,10 +49,13 @@ export default function ApplyCard({
 
   const handleToggleTooltip = () => {
     if (!isTooltipOpen && buttonRef.current) {
-      const card = buttonRef.current.closest("[data-tooltip-card]") as HTMLElement | null;
+      const card = buttonRef.current.closest(
+        "[data-tooltip-card]",
+      ) as HTMLElement | null;
       if (card) {
         const { left: cardLeft } = card.getBoundingClientRect();
-        const { left: btnLeft, width: btnWidth } = buttonRef.current.getBoundingClientRect();
+        const { left: btnLeft, width: btnWidth } =
+          buttonRef.current.getBoundingClientRect();
         setArrowOffset(btnLeft - cardLeft + btnWidth / 2);
       }
     }
