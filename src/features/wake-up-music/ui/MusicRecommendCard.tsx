@@ -17,8 +17,11 @@ export default function MusicRecommendCard({
   onChange,
 }: MusicRecommendCardProps) {
   return (
-    <div onClick={onChange} className="cursor-pointer">
-      <div className="bg-sub-4 relative h-[203px] w-90 shrink-0 rounded-xl">
+    <div
+      onClick={onChange}
+      className="w-[80vw] max-w-90 shrink-0 cursor-pointer sm:w-90"
+    >
+      <div className="bg-sub-4 relative h-[203px] w-full rounded-xl">
         {thumbnailUrl && (
           <Image
             src={thumbnailUrl}
@@ -33,7 +36,7 @@ export default function MusicRecommendCard({
         </div>
       </div>
 
-      <div>{title}</div>
+      <div className="text-text-3 text-main-text mt-2 truncate">{title}</div>
     </div>
   );
 }

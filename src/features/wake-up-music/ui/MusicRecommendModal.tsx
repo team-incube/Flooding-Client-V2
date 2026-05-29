@@ -17,7 +17,7 @@ interface MusicRecommendModalProps {
 
 function MusicRecommendCardSkeleton() {
   return (
-    <div className="w-90 shrink-0">
+    <div className="w-[80vw] max-w-90 shrink-0 sm:w-90">
       <Skeleton className="h-[203px] w-full rounded-xl" />
       <Skeleton className="mt-2 h-5 w-4/5" />
     </div>
@@ -104,7 +104,7 @@ export function MusicRecommendModal({
           </NoteText>
         </div>
 
-        <div className="flex min-h-[230px] gap-3 overflow-x-auto">
+        <div className="flex min-h-[230px] gap-3 overflow-x-auto [mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)]">
           {isPending ? (
             Array.from({ length: 3 }).map((_, i) => (
               <MusicRecommendCardSkeleton key={i} />
