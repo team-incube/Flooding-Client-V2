@@ -159,10 +159,11 @@ function TimeTableCardContent({
 const TimeTableCard = () => {
   const [offset, setOffset] = useState(0);
 
-  const currentDate = todayKst().add({ days: offset });
+  const today = todayKst();
+  const currentDate = today.add({ days: offset });
 
   const debouncedOffset = useDebouncedValue(offset, 300);
-  const debouncedDate = todayKst().add({ days: debouncedOffset });
+  const debouncedDate = today.add({ days: debouncedOffset });
   const dateStr = formatDateParam(debouncedDate);
 
   const currentPeriod = debouncedOffset === 0 ? getCurrentPeriod() : null;
