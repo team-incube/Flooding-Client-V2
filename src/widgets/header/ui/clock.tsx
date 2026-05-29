@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { nowKst } from "@/shared/lib/kst";
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -13,14 +14,10 @@ export function Clock() {
 
   useEffect(() => {
     const tick = () => {
-      const now = new Date();
-      setTime(
-        `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`,
-      );
-      setDate(
-        `${String(now.getFullYear()).slice(2)}.${pad(now.getMonth() + 1)}.${pad(now.getDate())}`,
-      );
-      timerRef.current = setTimeout(tick, 1000 - now.getMilliseconds());
+      const now = nowKst();
+      setTime(`${pad(now.hour)}:${pad(now.minute)}:${pad(now.second)}`);
+      setDate(`${String(now.year).slice(2)}.${pad(now.month)}.${pad(now.day)}`);
+      timerRef.current = setTimeout(tick, 1000 - now.millisecond);
     };
     tick();
     return () => clearTimeout(timerRef.current);

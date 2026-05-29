@@ -18,6 +18,7 @@ import {
 } from "@/shared/ui/QueryErrorBoundary";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { formatDateParam, formatDisplayDate } from "@/shared/lib/date";
+import { todayKst } from "@/shared/lib/kst";
 import { useDebouncedValue } from "@/shared/lib/useDebouncedValue";
 
 function MealCardLoading() {
@@ -118,12 +119,10 @@ const MealCard = () => {
     initialMealSelection.mealType,
   );
 
-  const currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() + offset);
+  const currentDate = todayKst().add({ days: offset });
 
   const debouncedOffset = useDebouncedValue(offset, 300);
-  const debouncedDate = new Date();
-  debouncedDate.setDate(debouncedDate.getDate() + debouncedOffset);
+  const debouncedDate = todayKst().add({ days: debouncedOffset });
   const dateStr = formatDateParam(debouncedDate);
 
   return (

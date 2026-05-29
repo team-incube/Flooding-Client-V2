@@ -1,3 +1,5 @@
+import { minutesOfDay } from "@/shared/lib/kst";
+
 export interface TimeOfDay {
   hour: number;
   minute: number;
@@ -12,11 +14,11 @@ export function isTimeInWindow({
   start,
   end,
 }: {
-  date: Date;
+  date: Temporal.PlainDateTime;
   start: TimeOfDay;
   end: TimeOfDay;
 }): boolean {
-  const currentMinutes = date.getHours() * 60 + date.getMinutes();
+  const currentMinutes = minutesOfDay(date);
 
   return currentMinutes >= toMinutes(start) && currentMinutes < toMinutes(end);
 }

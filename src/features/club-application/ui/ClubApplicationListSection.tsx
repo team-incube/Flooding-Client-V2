@@ -10,6 +10,7 @@ import { userQueries } from "@/entities/user/api/userQueries";
 import { createClubPermission } from "@/entities/club/lib/permission";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { formatDateParam } from "@/shared/lib/date";
+import { parseKstWallClock } from "@/shared/lib/kst";
 import {
   ClientQueryBoundary,
   type QueryErrorFallbackProps,
@@ -23,9 +24,9 @@ interface ClubApplicationListSectionProps {
 }
 
 function formatSubmittedAt(value: string): string {
-  const date = new Date(value);
+  const date = parseKstWallClock(value);
 
-  if (Number.isNaN(date.getTime())) {
+  if (!date) {
     return value;
   }
 
