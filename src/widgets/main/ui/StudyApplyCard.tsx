@@ -74,7 +74,7 @@ export default function StudyApplyCard() {
           ? "fit"
           : "small"
       }
-      detailHref="/dormitory"
+      detailHref="/dormitory#self-study"
       disabled={studyActionState.isActionDisabled}
       onApply={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
     />
