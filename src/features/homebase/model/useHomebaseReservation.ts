@@ -9,12 +9,13 @@ import { useHomebaseReservationActions } from "@/features/homebase/model/useHome
 import { useHomebaseReservationData } from "@/features/homebase/model/useHomebaseReservationData";
 import { useHomebaseStudentSelection } from "@/features/homebase/model/useHomebaseStudentSelection";
 import { formatDateParam } from "@/shared/lib/date";
+import { todayKst } from "@/shared/lib/kst";
 
 export function useHomebaseReservation() {
   const [selectedFloor, setSelectedFloor] = useState("2F");
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [reason, setReason] = useState("");
-  const [reservationDate] = useState(() => formatDateParam(new Date()));
+  const [reservationDate] = useState(() => formatDateParam(todayKst()));
   const {
     selectedStartPeriod,
     selectedStartNum,

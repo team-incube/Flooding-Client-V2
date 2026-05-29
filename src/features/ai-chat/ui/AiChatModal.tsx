@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Back from "@/shared/asset/svg/Back";
 import Cancel from "@/shared/asset/svg/Cancel";
 import SendArrow from "@/shared/asset/svg/SendArrow";
 import SmallStar from "@/shared/asset/svg/SmallStar";
@@ -65,19 +66,33 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-end p-6"
+      className="absolute inset-0 z-50 sm:fixed sm:flex sm:items-end sm:justify-end sm:p-6"
       onClick={onClose}
     >
       <div
-        className="bg-background-surface flex h-[560px] w-[400px] flex-col rounded-2xl shadow-[0_0_24px_rgba(0,0,0,0.12)]"
+        className="bg-background-surface flex h-full w-full flex-col sm:h-[560px] sm:w-[400px] sm:rounded-2xl sm:shadow-[0_0_24px_rgba(0,0,0,0.12)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="border-sub-4 flex items-center justify-between border-b px-5 py-4">
+        <div className="border-sub-4 flex items-center gap-1 px-5 py-4 sm:justify-between sm:border-b">
+          <button
+            type="button"
+            onClick={onClose}
+            className="cursor-pointer sm:hidden"
+            aria-label="닫기"
+          >
+            <Back direction="left" />
+          </button>
           <div className="flex items-center gap-1">
-            <SmallStar />
+            <span className="hidden sm:flex">
+              <SmallStar />
+            </span>
             <span className="text-main-text text-text-2">AI 챗봇</span>
           </div>
-          <button onClick={onClose} className="cursor-pointer">
+          <button
+            onClick={onClose}
+            className="hidden cursor-pointer sm:block"
+            aria-label="닫기"
+          >
             <Cancel />
           </button>
         </div>
@@ -121,7 +136,7 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="border-sub-4 flex items-center justify-center gap-2 border-t px-4 py-3">
+        <div className="border-sub-4 flex items-center justify-center gap-2 px-4 py-3 sm:border-t">
           <textarea
             ref={textareaRef}
             className="border-sub-2 bg-background-surface text-main-text placeholder:text-sub-2 focus:border-sub-1 text-caption-1 caret-p-1 flex-1 resize-none rounded-[8px] border px-4 py-3 outline-none"

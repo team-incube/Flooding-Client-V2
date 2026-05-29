@@ -2,6 +2,7 @@ import {
   MEAL_TYPE_END_MINUTES,
   type MealType,
 } from "@/entities/neis/model/neis";
+import { minutesOfDay, nowKst } from "@/shared/lib/kst";
 
 interface CurrentMealSelection {
   mealType: MealType;
@@ -9,9 +10,9 @@ interface CurrentMealSelection {
 }
 
 export function getCurrentMealSelection(
-  now = new Date(),
+  now: Temporal.PlainDateTime = nowKst(),
 ): CurrentMealSelection {
-  const totalMinutes = now.getHours() * 60 + now.getMinutes();
+  const totalMinutes = minutesOfDay(now);
 
   if (totalMinutes <= MEAL_TYPE_END_MINUTES.조식) {
     return { mealType: "조식", dateOffset: 0 };

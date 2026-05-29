@@ -17,7 +17,7 @@ interface MusicRecommendModalProps {
 
 function MusicRecommendCardSkeleton() {
   return (
-    <div className="w-90 shrink-0">
+    <div className="w-full shrink-0 sm:w-[calc((100%-0.75rem)/2)] lg:w-[calc((100%-1.5rem)/3)]">
       <Skeleton className="h-[203px] w-full rounded-xl" />
       <Skeleton className="mt-2 h-5 w-4/5" />
     </div>
@@ -39,7 +39,7 @@ function MusicRecommendEmpty({ reason }: MusicRecommendEmptyProps) {
       : "다시 시도 버튼으로 새 추천을 요청해주세요.";
 
   return (
-    <div className="border-sub-3 bg-background flex min-h-[230px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed">
+    <div className="border-sub-3 bg-background flex min-h-[230px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed p-4">
       <SmallStar />
       <p className="text-text-2 text-main-text">{message}</p>
       <p className="text-text-3 text-sub-1">{description}</p>
@@ -104,7 +104,7 @@ export function MusicRecommendModal({
           </NoteText>
         </div>
 
-        <div className="flex min-h-[230px] gap-3 overflow-x-auto">
+        <div className="flex min-h-[230px] gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {isPending ? (
             Array.from({ length: 3 }).map((_, i) => (
               <MusicRecommendCardSkeleton key={i} />

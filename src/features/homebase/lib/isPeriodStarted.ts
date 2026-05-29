@@ -1,11 +1,9 @@
+import { minutesOfDay, nowKst } from "@/shared/lib/kst";
 import { HOMEBASE_SCHEDULE, PERIODS } from "../model/constants";
 
 function isPastTime(timeStr: string): boolean {
   const [hour, minute] = timeStr.split(":").map(Number);
-  const now = new Date();
-  const target = new Date();
-  target.setHours(hour, minute, 0, 0);
-  return now >= target;
+  return minutesOfDay(nowKst()) >= hour * 60 + minute;
 }
 
 export function isPeriodStarted(period: string): boolean {
