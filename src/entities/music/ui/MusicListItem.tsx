@@ -60,7 +60,7 @@ export function MusicListItem({
               {formatAppliedDate(music.appliedAt)}
             </span>
             <span className="text-caption-2 text-sub-1 shrink-0">
-              {music.studentNumber} {music.name}
+              {music.studentNumber} {music.userName}
             </span>
           </div>
         </div>
