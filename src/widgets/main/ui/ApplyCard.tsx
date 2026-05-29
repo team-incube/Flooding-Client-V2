@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import ChevronRight from "@/shared/asset/svg/Back";
 import Exclamation from "@/shared/asset/svg/Exclamation";
@@ -40,15 +40,42 @@ export default function ApplyCard({
   onApply,
 }: ApplyCardProps) {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const [arrowOffset, setArrowOffset] = useState(0);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const isApplyEnabled = !disabled;
   const visualButtonVariant =
     disabled && buttonVariant === "filled" ? "disabled" : buttonVariant;
   const tooltipText = timeText.replace(/^※ /, "");
 
-  const handleToggleTooltip = () => setIsTooltipOpen((prev) => !prev);
+  const handleToggleTooltip = () => {
+    if (!isTooltipOpen && buttonRef.current) {
+      const card = buttonRef.current.closest("[data-tooltip-card]") as HTMLElement | null;
+      if (card) {
+        const { left: cardLeft } = card.getBoundingClientRect();
+        const { left: btnLeft, width: btnWidth } = buttonRef.current.getBoundingClientRect();
+        setArrowOffset(btnLeft - cardLeft + btnWidth / 2);
+      }
+    }
+    setIsTooltipOpen((prev) => !prev);
+  };
 
   return (
-    <div className="bg-background-surface w-full rounded-2xl p-5 sm:p-6">
+    <div
+      className="bg-background-surface relative w-full rounded-2xl p-5 sm:p-6"
+      data-tooltip-card
+    >
+      {isTooltipOpen && (
+        <div className="bg-main-text absolute bottom-full left-0 z-50 mb-2.5 flex h-8.5 w-max items-center justify-center rounded-xl px-4 sm:hidden">
+          <p className="text-sub-4 text-[13px] font-medium whitespace-nowrap">
+            {tooltipText}
+          </p>
+          <div
+            className="bg-main-text absolute -bottom-1.5 h-3 w-3 -translate-x-1/2 rotate-45"
+            style={{ left: arrowOffset }}
+          />
+        </div>
+      )}
+
       <div className="mb-3 flex items-start justify-between">
         <div className="flex items-center gap-1.5">
           <div>{icon}</div>
@@ -57,6 +84,7 @@ export default function ApplyCard({
           </span>
           <div className="relative sm:hidden">
             <button
+              ref={buttonRef}
               type="button"
               onClick={handleToggleTooltip}
               className="bg-sub-3 flex h-4.5 w-4.5 shrink-0 cursor-pointer items-center justify-center rounded-full"
@@ -65,18 +93,10 @@ export default function ApplyCard({
               <Exclamation size={10} />
             </button>
             {isTooltipOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setIsTooltipOpen(false)}
-                />
-                <div className="bg-main-text absolute bottom-full left-1/2 z-50 mb-2.5 flex h-8.5 w-max -translate-x-1/2 items-center justify-center rounded-xl px-4">
-                  <p className="text-sub-4 text-[13px] font-medium whitespace-nowrap">
-                    {tooltipText}
-                  </p>
-                  <div className="bg-main-text absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45" />
-                </div>
-              </>
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setIsTooltipOpen(false)}
+              />
             )}
           </div>
         </div>
