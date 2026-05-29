@@ -126,11 +126,11 @@ function TimeTableCardContent({
             <div
               key={it.period}
               ref={active ? activeRef : undefined}
-              className={`bg-sub-4 flex items-center justify-between rounded-lg px-6 py-4 ${
+              className={`bg-sub-4 flex items-center gap-3 rounded-lg px-6 py-4 ${
                 active ? "border-p-1 border" : ""
               }`}
             >
-              <div className="flex items-center gap-1">
+              <div className="flex shrink-0 items-center gap-1">
                 <span className="text-sub-1 text-text-3 font-medium">
                   {it.period} 교시
                 </span>
@@ -140,9 +140,11 @@ function TimeTableCardContent({
                   </span>
                 )}
               </div>
-              <div className="text-sub-1 text-text-4 flex items-center gap-1 font-medium">
-                <span>{it.subject}</span>
-                <span className="text-caption-1 text-sub-2 font-medium">
+              <div className="text-sub-1 text-text-4 flex min-w-0 flex-1 items-center gap-1 font-medium">
+                <span className="min-w-0 flex-1 overflow-x-auto [mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] whitespace-nowrap [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {it.subject}
+                </span>
+                <span className="text-caption-1 text-sub-2 max-w-24 shrink-0 truncate font-medium">
                   {it.teacher}
                 </span>
               </div>

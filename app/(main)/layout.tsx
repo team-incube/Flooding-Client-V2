@@ -5,6 +5,8 @@ import { SidebarDrawer } from "@/widgets/sidebar/ui/sidebarDrawer";
 import { useSidebarDrawer } from "@/widgets/sidebar/model/useSidebarDrawer";
 import { Header } from "@/widgets/header/ui/header";
 import { AiChatButton } from "@/features/ai-chat/ui/AiChatButton";
+import { AiChatModal } from "@/features/ai-chat/ui/AiChatModal";
+import { useAiChatPanel } from "@/features/ai-chat/model/useAiChatPanel";
 
 export default function MainLayout({
   children,
@@ -12,6 +14,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   const { isOpen, open, close } = useSidebarDrawer();
+  const chat = useAiChatPanel();
 
   return (
     <div className="bg-background flex h-dvh overflow-hidden">
@@ -20,10 +23,13 @@ export default function MainLayout({
       </div>
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header onMenuClick={open} />
-        {children}
+        <div className="relative flex flex-1 flex-col overflow-hidden">
+          {children}
+          <AiChatModal open={chat.isOpen} onClose={chat.close} />
+        </div>
       </div>
       <SidebarDrawer isOpen={isOpen} onClose={close} />
-      <AiChatButton />
+      {!chat.isOpen && <AiChatButton onClick={chat.open} />}
     </div>
   );
 }

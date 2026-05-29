@@ -69,7 +69,7 @@ export default function MassageApplyCard() {
           ? "fit"
           : "small"
       }
-      detailHref="/dormitory"
+      detailHref="/dormitory#massage"
       femaleNotice
       disabled={massageActionState.isActionDisabled}
       onApply={hasAppliedMassage ? handleCancelMassage : handleApplyMassage}
