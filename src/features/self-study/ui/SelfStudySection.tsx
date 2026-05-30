@@ -271,6 +271,33 @@ export function SelfStudySection() {
         </div>
       </div>
 
+      {/* 모바일 신청 버튼 */}
+      <div className="sm:hidden">
+        <TextButton
+          variant={
+            isStudyBanned
+              ? "negative"
+              : studyActionState.isActionDisabled
+                ? "disabled"
+                : "filled"
+          }
+          size="wide"
+          className="w-full"
+          disabled={studyActionState.isActionDisabled}
+          onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
+        >
+          {isStudyBanned
+            ? "자습 금지를 당했어요!"
+            : isUserLoading || isStudyLoading
+              ? "확인 중"
+              : hasAppliedStudy
+                ? "취소하기"
+                : studyActionState.isApplyDisabled
+                  ? "신청 불가"
+                  : "신청하기"}
+        </TextButton>
+      </div>
+
       <StudyFilterModal
         isOpen={isFilterOpen}
         selectedGrades={selectedGrades}
