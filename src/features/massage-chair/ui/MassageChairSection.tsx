@@ -70,20 +70,22 @@ export function MassageChairSection() {
         </div>
       </div>
 
-      <div className="flex flex-col-reverse gap-6 sm:flex-row">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap gap-4">
-            {applicants.map((student) => (
-              <ProfileCard
-                key={student.studentNumber}
-                index={student.order}
-                student={student}
-              />
-            ))}
+      <div className="flex flex-col gap-6 lg:flex-row lg:justify-end">
+        {applicants.length > 0 && (
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap gap-4">
+              {applicants.map((student) => (
+                <ProfileCard
+                  key={student.studentNumber}
+                  index={student.order}
+                  student={student}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="flex w-full flex-col justify-end gap-3 sm:w-[330px] sm:shrink-0">
+        <div className="flex w-full flex-col justify-end gap-3 lg:w-[330px] lg:shrink-0">
           <TextButton
             variant={
               massageActionState.isActionDisabled ? "disabled" : "filled"
@@ -103,7 +105,7 @@ export function MassageChairSection() {
                   ? "신청 불가"
                   : "신청하기"}
           </TextButton>
-          <div className="hidden min-w-0 flex-col gap-0.5 sm:flex">
+          <div className="hidden min-w-0 flex-col gap-0.5 lg:flex">
             <NoteText>※ 안마의자 신청시간은 20:20 ~ 21:00 입니다</NoteText>
             <NoteText>※ 여학생은 여기숙사 별도 신청 바랍니다</NoteText>
           </div>

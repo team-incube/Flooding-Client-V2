@@ -106,7 +106,7 @@ export function SelfStudySection() {
       data-tooltip-card
     >
       {/* 모바일 헤더 */}
-      <div className="flex items-center justify-between sm:hidden">
+      <div className="flex items-center justify-between lg:hidden">
         <div className="flex items-end gap-3">
           <div className="flex items-center gap-2">
             <ApplyStudy />
@@ -131,7 +131,7 @@ export function SelfStudySection() {
       </div>
 
       {/* 데스크탑 헤더 */}
-      <div className="hidden items-end gap-3 sm:flex">
+      <div className="hidden items-end gap-3 lg:flex">
         <div className="flex items-center gap-1">
           <ApplyStudy />
           <span className="text-main-text text-text-1">자습신청</span>
@@ -144,9 +144,11 @@ export function SelfStudySection() {
         </div>
       </div>
 
-      <div className="flex flex-col-reverse gap-6 sm:flex-row sm:items-stretch">
-        <div className="relative min-w-0 flex-1 sm:min-h-0 sm:overflow-hidden">
-          <div className="scrollbar-hide flex max-h-125 flex-wrap gap-4 overflow-y-auto sm:absolute sm:inset-0 sm:max-h-none sm:content-start sm:pr-1">
+      <div
+        className={`flex flex-col-reverse gap-6 lg:flex-row lg:items-stretch${filteredStudents.length === 0 ? " max-lg:hidden" : ""}`}
+      >
+        <div className="relative min-w-0 flex-1 lg:min-h-0 lg:overflow-hidden">
+          <div className="scrollbar-hide flex max-h-125 flex-wrap gap-4 overflow-y-auto lg:absolute lg:inset-0 lg:max-h-none lg:content-start lg:pr-1">
             {filteredStudents.map((student, index) => (
               <StudyApplicantCard
                 key={student.userId}
@@ -167,7 +169,7 @@ export function SelfStudySection() {
         </div>
 
         {/* 필터 패널: 데스크탑에서만 표시 */}
-        <div className="hidden w-full flex-col gap-4 sm:flex sm:w-82.5 sm:shrink-0">
+        <div className="hidden w-full flex-col gap-4 lg:flex lg:w-82.5 lg:shrink-0">
           <div className="flex items-center justify-between">
             <span className="text-main-text text-text-2">필터</span>
             <button
@@ -280,7 +282,7 @@ export function SelfStudySection() {
       </div>
 
       {/* 모바일 신청 버튼 */}
-      <div className="sm:hidden">
+      <div className="lg:hidden">
         <TextButton
           variant={
             isStudyBanned
