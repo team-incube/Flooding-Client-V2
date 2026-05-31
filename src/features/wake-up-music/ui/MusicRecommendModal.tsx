@@ -104,7 +104,7 @@ export function MusicRecommendModal({
           </NoteText>
         </div>
 
-        <div className="flex min-h-[230px] gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="scrollbar-hide flex min-h-[230px] gap-3 overflow-x-auto">
           {isPending ? (
             Array.from({ length: 3 }).map((_, i) => (
               <MusicRecommendCardSkeleton key={i} />

@@ -27,7 +27,7 @@ export default function ClubCard({
             className="object-cover"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center">
+          <div className="flex size-full items-center justify-center">
             <DefaultClubThumbnail />
           </div>
         )}

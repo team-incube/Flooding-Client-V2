@@ -63,7 +63,7 @@ export function NoteTooltip({
         ref={buttonRef}
         type="button"
         onClick={handleToggle}
-        className="bg-sub-3 flex h-4.5 w-4.5 cursor-pointer items-center justify-center rounded-full"
+        className="bg-sub-3 flex size-4.5 cursor-pointer items-center justify-center rounded-full"
         aria-label={ariaLabel}
         aria-expanded={isOpen}
       >
@@ -82,7 +82,7 @@ export function NoteTooltip({
                 </p>
               ))}
               <div
-                className={`bg-main-text absolute h-3 w-3 -translate-x-1/2 rotate-45 ${arrowPlacementStyles[placement]}`}
+                className={`bg-main-text absolute size-3 -translate-x-1/2 rotate-45 ${arrowPlacementStyles[placement]}`}
                 style={{ left: arrowLeft }}
               />
             </div>

@@ -141,7 +141,7 @@ function TimeTableCardContent({
                 )}
               </div>
               <div className="text-sub-1 text-text-4 flex min-w-0 flex-1 items-center gap-1 font-medium">
-                <span className="min-w-0 flex-1 overflow-x-auto [mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] whitespace-nowrap [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <span className="scrollbar-hide min-w-0 flex-1 overflow-x-auto [mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] whitespace-nowrap [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)]">
                   {it.subject}
                 </span>
                 <span className="text-caption-1 text-sub-2 max-w-24 shrink-0 truncate font-medium">

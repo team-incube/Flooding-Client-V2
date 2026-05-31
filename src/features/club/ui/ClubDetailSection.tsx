@@ -38,7 +38,7 @@ function ClubDetailSectionLoading() {
     <div className="flex min-h-0 w-full flex-1 overflow-y-auto pb-25 sm:px-8 lg:px-8 xl:px-10 xl:pb-6 2xl:px-18">
       <div className="bg-background-surface flex h-fit min-h-0 w-full flex-col gap-4 rounded-2xl p-6">
         <div className="flex items-center gap-2">
-          <Skeleton className="h-5 w-5" />
+          <Skeleton className="size-5" />
           <Skeleton className="h-5 w-16" />
         </div>
         <Skeleton className="h-40 w-full rounded-xl" />

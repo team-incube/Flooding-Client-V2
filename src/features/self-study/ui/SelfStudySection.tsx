@@ -123,7 +123,7 @@ export function SelfStudySection() {
         <button
           type="button"
           onClick={() => setIsFilterOpen((prev) => !prev)}
-          className="flex h-9 w-9 cursor-pointer items-center justify-center"
+          className="flex size-9 cursor-pointer items-center justify-center"
           aria-label="필터"
         >
           <Filter size={24} />
@@ -146,7 +146,7 @@ export function SelfStudySection() {
 
       <div className="flex flex-col-reverse gap-6 sm:flex-row sm:items-stretch">
         <div className="relative min-w-0 flex-1 sm:min-h-0 sm:overflow-hidden">
-          <div className="flex max-h-125 flex-wrap gap-4 overflow-y-auto [scrollbar-width:none] sm:absolute sm:inset-0 sm:max-h-none sm:content-start sm:pr-1 [&::-webkit-scrollbar]:hidden">
+          <div className="scrollbar-hide flex max-h-125 flex-wrap gap-4 overflow-y-auto sm:absolute sm:inset-0 sm:max-h-none sm:content-start sm:pr-1">
             {filteredStudents.map((student, index) => (
               <StudyApplicantCard
                 key={student.userId}

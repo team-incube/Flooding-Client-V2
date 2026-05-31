@@ -176,7 +176,15 @@ body {
   font-family: "SUIT Variable", sans-serif;
 }
 
-/* 6. 스크롤바 스타일 */
+/* 6. 스크롤바 유틸리티 */
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* 7. 스크롤바 스타일 */
 html {
   scrollbar-width: thin;
   scrollbar-color: var(--color-sub-2) var(--background);

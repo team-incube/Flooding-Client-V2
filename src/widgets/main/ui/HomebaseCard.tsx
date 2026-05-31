@@ -133,7 +133,7 @@ export default function HomebaseCard({
                 onKeyDown={handleNameKeyDown}
                 rightIcon={<Search />}
               />
-              <div className="absolute top-full right-0 left-0 z-10 mt-1">
+              <div className="absolute inset-x-0 top-full z-10 mt-1">
                 <StudentSearch
                   filteredStudents={filteredStudents}
                   isFull={isStudentFull}
