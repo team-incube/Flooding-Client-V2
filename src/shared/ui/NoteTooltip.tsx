@@ -73,7 +73,7 @@ export function NoteTooltip({
         createPortal(
           <>
             <div
-              className="bg-main-text fixed z-[200] flex w-max max-w-[calc(100vw-40px)] flex-col gap-0.5 rounded-xl px-4 py-2"
+              className="bg-main-text fixed z-200 flex w-max max-w-[calc(100vw-40px)] flex-col gap-0.5 rounded-xl px-4 py-2"
               style={tooltipStyle}
             >
               {notes.map((note) => (
@@ -87,7 +87,7 @@ export function NoteTooltip({
               />
             </div>
             <div
-              className="fixed inset-0 z-[199]"
+              className="fixed inset-0 z-199"
               onClick={() => setIsOpen(false)}
             />
           </>,
