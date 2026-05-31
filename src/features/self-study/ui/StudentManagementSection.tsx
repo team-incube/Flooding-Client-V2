@@ -171,7 +171,7 @@ const StudentManagementSection = () => {
 
       <div className="flex flex-col gap-6 sm:flex-row">
         <div className="min-w-0 flex-1">
-          <div className="flex max-h-[773px] flex-wrap gap-4 overflow-y-auto pr-2">
+          <div className="flex max-h-[773px] flex-wrap gap-4 overflow-y-auto pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {filteredStudents.length === 0 ? (
               <StudentManagementSection.Empty />
             ) : (
