@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
-import Back from "@/shared/asset/svg/Back";
 import Filter from "@/shared/asset/svg/Filter";
 import Search from "@/shared/asset/svg/Search";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
+import { NoteTooltip } from "@/shared/ui/NoteTooltip";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
@@ -27,8 +26,9 @@ import { StudyFilterModal } from "./StudyFilterModal";
 const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
+const STUDY_NOTES = ["※ 자습 신청 시간은 20:00 ~ 21:00 입니다"];
+
 export function SelfStudySection() {
-  const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
@@ -54,6 +54,7 @@ export function SelfStudySection() {
     isApplicationOpen,
   });
   const studyPermission = createStudyPermission({ role: user?.role });
+
   useStudyAttendanceSubscription(user?.role);
   const checkAttendanceMutation = useCheckStudyAttendance();
   const uncheckAttendanceMutation = useUncheckStudyAttendance();
@@ -100,19 +101,24 @@ export function SelfStudySection() {
   };
 
   return (
-    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-5 sm:p-6">
+    <section
+      className="bg-background-surface relative flex flex-col gap-4 rounded-2xl p-5 sm:p-6"
+      data-tooltip-card
+    >
       {/* 모바일 헤더 */}
       <div className="flex items-center justify-between sm:hidden">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center"
-            aria-label="뒤로가기"
-          >
-            <Back direction="left" size={20} />
-          </button>
-          <span className="text-main-text text-text-1">자습신청</span>
+        <div className="flex items-end gap-3">
+          <div className="flex items-center gap-2">
+            <ApplyStudy />
+            <span className="text-main-text text-text-1">자습신청</span>
+            <NoteTooltip notes={STUDY_NOTES} ariaLabel="자습신청 안내 보기" />
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-sub-1 text-caption-1">신청인</span>
+            <span className="text-p-1 text-caption-1">
+              {filteredStudents.length}명
+            </span>
+          </div>
         </div>
         <button
           type="button"
@@ -138,9 +144,9 @@ export function SelfStudySection() {
         </div>
       </div>
 
-      <div className="flex flex-col-reverse gap-6 sm:flex-row">
-        <div className="min-w-0 flex-1">
-          <div className="flex max-h-125 flex-wrap gap-4 overflow-y-auto">
+      <div className="flex flex-col-reverse gap-6 sm:flex-row sm:items-stretch">
+        <div className="relative min-w-0 flex-1 sm:min-h-0 sm:overflow-hidden">
+          <div className="flex max-h-125 flex-wrap gap-4 overflow-y-auto [scrollbar-width:none] sm:absolute sm:inset-0 sm:max-h-none sm:content-start sm:pr-1 [&::-webkit-scrollbar]:hidden">
             {filteredStudents.map((student, index) => (
               <StudyApplicantCard
                 key={student.userId}
@@ -262,12 +268,14 @@ export function SelfStudySection() {
                     : "신청하기"}
           </TextButton>
 
-          <NoteText>자습 신청 시간은 20:00 ~ 21:00 입니다</NoteText>
-          {studyPermission.canCheckAttendance && (
-            <NoteText>
-              학생 카드의 체크박스를 눌러 출석 체크가 가능해요
-            </NoteText>
-          )}
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <NoteText>※ 자습 신청 시간은 20:00 ~ 21:00 입니다</NoteText>
+            {studyPermission.canCheckAttendance && (
+              <NoteText>
+                ※ 학생 카드의 체크박스를 눌러 출석 체크가 가능해요
+              </NoteText>
+            )}
+          </div>
         </div>
       </div>
 
