@@ -70,7 +70,7 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-background-surface flex h-full w-full flex-col sm:h-[560px] sm:w-[400px] sm:rounded-2xl sm:shadow-[0_0_24px_rgba(0,0,0,0.12)]"
+        className="bg-background-surface flex size-full flex-col sm:h-[560px] sm:w-[400px] sm:rounded-2xl sm:shadow-[0_0_24px_rgba(0,0,0,0.12)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="border-sub-4 flex items-center gap-1 px-5 py-4 sm:justify-between sm:border-b">
@@ -97,7 +97,7 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
           </button>
         </div>
 
-        <div className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-4">
+        <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
           {messages.length === 0 && (
             <div className="flex h-full flex-col items-center justify-center gap-2">
               <SmallStar />
@@ -126,9 +126,9 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
             <div className="flex justify-start">
               <div className="bg-sub-4 rounded-2xl rounded-bl-sm px-4 py-3">
                 <div className="flex items-center gap-1">
-                  <span className="bg-sub-2 h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:0ms]" />
-                  <span className="bg-sub-2 h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:150ms]" />
-                  <span className="bg-sub-2 h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:300ms]" />
+                  <span className="bg-sub-2 size-1.5 animate-bounce rounded-full [animation-delay:0ms]" />
+                  <span className="bg-sub-2 size-1.5 animate-bounce rounded-full [animation-delay:150ms]" />
+                  <span className="bg-sub-2 size-1.5 animate-bounce rounded-full [animation-delay:300ms]" />
                 </div>
               </div>
             </div>
@@ -150,7 +150,7 @@ export function AiChatModal({ open, onClose }: AiChatModalProps) {
           <button
             onClick={handleSend}
             disabled={!input.trim() || isPending}
-            className="bg-p-1 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+            className="bg-p-1 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
           >
             <SendArrow />
           </button>

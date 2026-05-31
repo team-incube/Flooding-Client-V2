@@ -10,7 +10,7 @@ import Star from "@/shared/asset/svg/Star";
 export default function MainPage() {
   return (
     <main className="flex-1 overflow-auto px-5 pb-25 sm:px-8 lg:px-10 2xl:px-18">
-      <div className="mb-4 grid grid-cols-1 gap-x-4 gap-y-4 lg:mb-5 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-5 2xl:mb-6 2xl:grid-cols-[562fr_426fr_480fr]">
+      <div className="mb-4 grid grid-cols-1 gap-4 lg:mb-5 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-5 2xl:mb-6 2xl:grid-cols-[562fr_426fr_480fr]">
         <div className="order-1 max-sm:hidden lg:col-span-2 2xl:col-span-1 2xl:col-start-3 2xl:row-start-1">
           <ProfileCard />
         </div>

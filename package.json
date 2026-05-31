@@ -47,6 +47,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "eslint-plugin-tailwindcss": "^4.0.0-alpha.3",
     "lint-staged": "^17.0.5",
     "msw": "^2.13.2",
     "prettier": "^3.6.2",

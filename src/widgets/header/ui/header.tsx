@@ -26,7 +26,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           <button
             type="button"
             onClick={onMenuClick}
-            className="flex h-11 w-11 cursor-pointer items-center justify-center"
+            className="flex size-11 cursor-pointer items-center justify-center"
             aria-label="메뉴 열기"
           >
             <Menu size={28} />

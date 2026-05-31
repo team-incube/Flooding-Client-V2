@@ -10,7 +10,7 @@ export function ClubBackButton() {
     <button
       type="button"
       onClick={() => router.back()}
-      className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center"
+      className="flex size-8 shrink-0 cursor-pointer items-center justify-center"
       aria-label="뒤로가기"
     >
       <Back direction="left" size={32} />

@@ -21,7 +21,7 @@ export function SidebarDrawerMenu({
         className={`group flex h-14 w-full cursor-pointer items-center rounded-2xl px-4 py-3 ${isActive ? "bg-p-2" : "hover:bg-p-2 bg-transparent"} `}
       >
         <div className="grid w-full grid-cols-[32px_minmax(0,1fr)] items-center gap-6">
-          <div className="relative flex h-8 w-8 shrink-0 items-center justify-center">
+          <div className="relative flex size-8 shrink-0 items-center justify-center">
             {isActive ? (
               icon(true)
             ) : (

@@ -26,8 +26,8 @@ export function ClubThumbnail({
           className="object-cover"
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center">
-          <DefaultClubThumbnail className="h-full w-full" />
+        <div className="flex size-full items-center justify-center">
+          <DefaultClubThumbnail className="size-full" />
         </div>
       )}
 

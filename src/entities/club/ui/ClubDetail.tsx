@@ -304,7 +304,7 @@ export default function ClubDetail({
                       <button
                         type="button"
                         onClick={() => handleMemberExile(member.id)}
-                        className="text-sub-2 hover:text-negative flex shrink-0 items-center [&>svg]:h-3 [&>svg]:w-3 2xl:[&>svg]:h-3.5 2xl:[&>svg]:w-3.5"
+                        className="text-sub-2 hover:text-negative flex shrink-0 items-center [&>svg]:size-3 2xl:[&>svg]:size-3.5"
                         aria-label={`${member.name} 추방`}
                       >
                         <Cancel />

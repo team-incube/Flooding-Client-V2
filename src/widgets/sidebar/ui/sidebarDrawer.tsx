@@ -39,7 +39,7 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
         }`}
       />
       <aside
-        className={`bg-background-surface fixed top-0 right-0 z-60 flex h-dvh min-w-75 flex-col justify-between rounded-tl-3xl rounded-bl-3xl px-6 py-10 transition-transform duration-300 ease-out ${
+        className={`bg-background-surface fixed top-0 right-0 z-60 flex h-dvh min-w-75 flex-col justify-between rounded-l-3xl px-6 py-10 transition-transform duration-300 ease-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

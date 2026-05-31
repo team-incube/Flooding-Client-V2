@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import ChevronRight from "@/shared/asset/svg/Back";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import type { TextButtonVariant } from "@/shared/ui/Button/TextButton";
 import { NoteText } from "@/shared/ui/NoteText";
+import { NoteTooltip } from "@/shared/ui/NoteTooltip";
 
 type ApplyCardButtonSize = "small" | "fit";
 
@@ -40,13 +43,17 @@ export default function ApplyCard({
     disabled && buttonVariant === "filled" ? "disabled" : buttonVariant;
 
   return (
-    <div className="bg-background-surface w-full rounded-2xl p-5 sm:p-6">
+    <div
+      className="bg-background-surface relative w-full rounded-2xl p-5 sm:p-6"
+      data-tooltip-card
+    >
       <div className="mb-3 flex items-start justify-between">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <div>{icon}</div>
           <span className="text-text-1 text-main-text font-semibold">
             {title}
           </span>
+          <NoteTooltip notes={[timeText]} ariaLabel="신청 시간 안내" />
         </div>
 
         {detailHref && (
@@ -61,7 +68,7 @@ export default function ApplyCard({
       </div>
 
       <div className="pb-3">
-        <p className="text-main-text mb-2 h-[44px] text-center text-3xl font-bold sm:mb-3 sm:h-[54px] sm:text-4xl">
+        <p className="text-main-text mb-2 h-11 text-center text-3xl font-bold sm:mb-3 sm:h-13.5 sm:text-4xl">
           {current}/{total}
         </p>
         <div className="flex h-6 w-full gap-1 sm:h-8">
@@ -74,16 +81,15 @@ export default function ApplyCard({
       </div>
 
       <div className="flex items-end justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-caption-3 text-sub-1 line-clamp-1 font-medium">
-            {timeText}
-          </p>
+        <div className="hidden min-w-0 flex-col gap-0.5 sm:flex">
+          <NoteText>{timeText}</NoteText>
           {femaleNotice && (
-            <NoteText tone="primary" className="mt-0.5 line-clamp-1">
-              여학생의 경우 여자 사감선생님께 별도로 신청해주시기 바랍니다.
+            <NoteText tone="primary">
+              ※ 여학생의 경우 여자 사감선생님께 별도로 신청해주시기 바랍니다.
             </NoteText>
           )}
         </div>
+        <div className="sm:hidden" />
         <TextButton
           variant={visualButtonVariant}
           size={buttonSize}
