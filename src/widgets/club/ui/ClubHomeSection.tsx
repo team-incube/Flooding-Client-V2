@@ -190,7 +190,7 @@ function ClubHomeSection() {
         </div>
 
         <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
-          <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:pr-2">
+          <div className="scrollbar-hide order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:pr-2">
             {viewMode === "list" ? (
               <ClubSection
                 clubs={filteredClubs}
@@ -203,7 +203,7 @@ function ClubHomeSection() {
             )}
           </div>
           <div className="order-1 flex flex-col lg:order-2 lg:w-[330px] lg:shrink-0 lg:self-stretch">
-            <div className="flex w-full flex-col gap-4 overflow-y-auto">
+            <div className="scrollbar-hide flex w-full flex-col gap-4 overflow-y-auto">
               <div className="flex w-full gap-1">
                 <TextButton
                   variant={viewMode === "list" ? "filled" : "outlined"}

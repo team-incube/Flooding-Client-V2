@@ -32,7 +32,7 @@ export function DarkModeToggle() {
       }`}
     >
       <span
-        className={`flex h-[31px] w-[31px] items-center justify-center rounded-full transition-transform duration-300 ${
+        className={`flex size-[31px] items-center justify-center rounded-full transition-transform duration-300 ${
           isDark ? "bg-sub-1 translate-x-[30px]" : "translate-x-0"
         }`}
       >

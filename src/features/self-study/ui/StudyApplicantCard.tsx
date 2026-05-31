@@ -35,7 +35,7 @@ export function StudyApplicantCard({
           aria-pressed={isChecked}
           disabled={isPending}
           onClick={() => onToggleCheck(student.userId, isChecked)}
-          className="enabled:hover:bg-background-surface absolute top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-lg enabled:cursor-pointer disabled:cursor-default"
+          className="enabled:hover:bg-background-surface absolute top-3 right-3 z-20 flex size-8 items-center justify-center rounded-lg enabled:cursor-pointer disabled:cursor-default"
         >
           <Checkbox isActive={isChecked} />
         </button>
@@ -46,7 +46,7 @@ export function StudyApplicantCard({
         </div>
       )}
       <div className="flex h-full flex-col items-center justify-center gap-2">
-        <div className="flex h-[64px] w-[64px] items-center justify-center">
+        <div className="flex size-[64px] items-center justify-center">
           <Profile />
         </div>
         <div className="flex items-center">

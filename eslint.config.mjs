@@ -1,10 +1,22 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import tailwind from "eslint-plugin-tailwindcss";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    plugins: { tailwindcss: tailwind },
+    settings: {
+      tailwindcss: {
+        config: "app/globals.css",
+      },
+    },
+    rules: {
+      "tailwindcss/enforces-shorthand": "warn",
+    },
+  },
   {
     files: ["src/shared/**/*.{ts,tsx}"],
     rules: {

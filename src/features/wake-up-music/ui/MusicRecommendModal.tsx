@@ -100,11 +100,11 @@ export function MusicRecommendModal({
             </button>
           </div>
           <NoteText>
-            노래 추천은 이전에 신청한 곡을 기반으로 노래를 추천해요
+            ※ 노래 추천은 이전에 신청한 곡을 기반으로 노래를 추천해요
           </NoteText>
         </div>
 
-        <div className="flex min-h-[230px] gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="scrollbar-hide flex min-h-[230px] gap-3 overflow-x-auto">
           {isPending ? (
             Array.from({ length: 3 }).map((_, i) => (
               <MusicRecommendCardSkeleton key={i} />

@@ -133,7 +133,7 @@ export default function HomebaseCard({
                 onKeyDown={handleNameKeyDown}
                 rightIcon={<Search />}
               />
-              <div className="absolute top-full right-0 left-0 z-10 mt-1">
+              <div className="absolute inset-x-0 top-full z-10 mt-1">
                 <StudentSearch
                   filteredStudents={filteredStudents}
                   isFull={isStudentFull}
@@ -164,16 +164,21 @@ export default function HomebaseCard({
               >
                 신청하기
               </TextButton>
-              {triedToOverfill && isFull ? (
-                <NoteText tone="negative">
-                  테이블 {selectedTable}번의 최대인원은 {maxPersonnel}명입니다
-                </NoteText>
-              ) : (
+              <div className="flex min-w-0 flex-col gap-0.5">
+                {triedToOverfill && isFull ? (
+                  <NoteText tone="negative">
+                    ※ 테이블 {selectedTable}번의 최대인원은 {maxPersonnel}
+                    명입니다
+                  </NoteText>
+                ) : (
+                  <NoteText>
+                    ※ 테이블을 선택하면 여러 교시를 선택할 수 있어요
+                  </NoteText>
+                )}
                 <NoteText>
-                  테이블을 선택하면 여러 교시를 선택할 수 있어요
+                  ※ 13:30부터 해당 교시 시작 전까지 신청 가능해요
                 </NoteText>
-              )}
-              <NoteText>13:30부터 해당 교시 시작 전까지 신청 가능해요</NoteText>
+              </div>
             </div>
           </div>
 

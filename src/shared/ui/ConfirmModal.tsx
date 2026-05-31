@@ -35,7 +35,7 @@ export function ConfirmModal({
   if (!open) return null;
 
   return (
-    <div className="bg-background/50 fixed inset-0 z-[100] flex items-center justify-center">
+    <div className="bg-background/50 fixed inset-0 z-100 flex items-center justify-center">
       <div className="bg-background-surface flex w-[90%] max-w-[448px] flex-col gap-3 rounded-2xl p-6">
         <span className={`font-bold ${titleVariantStyles[titleVariant]}`}>
           {title}
