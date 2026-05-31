@@ -1,5 +1,7 @@
 import { http, HttpResponse } from "msw";
 import {
+  MOCK_MASSAGE_APPLICANTS,
+  MOCK_STUDY_APPLICANTS,
   MOCK_MY_PENALTY,
   MOCK_ALL_PENALTIES,
   MOCK_CLEANING_ZONES,
@@ -8,6 +10,22 @@ import {
 
 export const dormitoryHandlers = [
   // GET — 목록 조회
+  http.get("*/dormitory/massages", () =>
+    HttpResponse.json({
+      status: "OK",
+      code: 200,
+      message: "안마의자 신청자 목록 조회 성공",
+      data: MOCK_MASSAGE_APPLICANTS,
+    }),
+  ),
+  http.get("*/dormitory/studies", () =>
+    HttpResponse.json({
+      status: "OK",
+      code: 200,
+      message: "자습 신청자 목록 조회 성공",
+      data: MOCK_STUDY_APPLICANTS,
+    }),
+  ),
   http.get("*/dormitory/penalties/me", () =>
     HttpResponse.json(MOCK_MY_PENALTY),
   ),
