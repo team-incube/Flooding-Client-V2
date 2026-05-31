@@ -1,12 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
 import Link from "next/link";
 import ChevronRight from "@/shared/asset/svg/Back";
-import Exclamation from "@/shared/asset/svg/Exclamation";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import type { TextButtonVariant } from "@/shared/ui/Button/TextButton";
 import { NoteText } from "@/shared/ui/NoteText";
+import { NoteTooltip } from "@/shared/ui/NoteTooltip";
 
 type ApplyCardButtonSize = "small" | "fit";
 
@@ -39,69 +38,22 @@ export default function ApplyCard({
   femaleNotice = false,
   onApply,
 }: ApplyCardProps) {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-  const [arrowOffset, setArrowOffset] = useState(0);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const isApplyEnabled = !disabled;
   const visualButtonVariant =
     disabled && buttonVariant === "filled" ? "disabled" : buttonVariant;
-  const tooltipText = timeText.replace(/^※ /, "");
-
-  const handleToggleTooltip = () => {
-    if (!isTooltipOpen && buttonRef.current) {
-      const card = buttonRef.current.closest(
-        "[data-tooltip-card]",
-      ) as HTMLElement | null;
-      if (card) {
-        const { left: cardLeft } = card.getBoundingClientRect();
-        const { left: btnLeft, width: btnWidth } =
-          buttonRef.current.getBoundingClientRect();
-        setArrowOffset(btnLeft - cardLeft + btnWidth / 2);
-      }
-    }
-    setIsTooltipOpen((prev) => !prev);
-  };
 
   return (
     <div
       className="bg-background-surface relative w-full rounded-2xl p-5 sm:p-6"
       data-tooltip-card
     >
-      {isTooltipOpen && (
-        <div className="bg-main-text absolute bottom-full left-0 z-50 mb-2.5 flex h-8.5 w-max items-center justify-center rounded-xl px-4 sm:hidden">
-          <p className="text-sub-4 text-[13px] font-medium whitespace-nowrap">
-            {tooltipText}
-          </p>
-          <div
-            className="bg-main-text absolute -bottom-1.5 h-3 w-3 -translate-x-1/2 rotate-45"
-            style={{ left: arrowOffset }}
-          />
-        </div>
-      )}
-
       <div className="mb-3 flex items-start justify-between">
         <div className="flex items-center gap-1.5">
           <div>{icon}</div>
           <span className="text-text-1 text-main-text font-semibold">
             {title}
           </span>
-          <div className="relative sm:hidden">
-            <button
-              ref={buttonRef}
-              type="button"
-              onClick={handleToggleTooltip}
-              className="bg-sub-3 flex h-4.5 w-4.5 shrink-0 cursor-pointer items-center justify-center rounded-full"
-              aria-label="신청 시간 안내"
-            >
-              <Exclamation size={10} />
-            </button>
-            {isTooltipOpen && (
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setIsTooltipOpen(false)}
-              />
-            )}
-          </div>
+          <NoteTooltip notes={[timeText]} ariaLabel="신청 시간 안내" />
         </div>
 
         {detailHref && (
@@ -129,15 +81,15 @@ export default function ApplyCard({
       </div>
 
       <div className="flex items-end justify-between gap-3">
-        {femaleNotice ? (
-          <div className="min-w-0">
-            <NoteText tone="primary" className="line-clamp-1">
-              여학생의 경우 여자 사감선생님께 별도로 신청해주시기 바랍니다.
+        <div className="hidden min-w-0 flex-col gap-0.5 sm:flex">
+          <NoteText>{timeText}</NoteText>
+          {femaleNotice && (
+            <NoteText tone="primary">
+              ※ 여학생의 경우 여자 사감선생님께 별도로 신청해주시기 바랍니다.
             </NoteText>
-          </div>
-        ) : (
-          <div />
-        )}
+          )}
+        </div>
+        <div className="sm:hidden" />
         <TextButton
           variant={visualButtonVariant}
           size={buttonSize}
