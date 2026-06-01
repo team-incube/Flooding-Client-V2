@@ -1,6 +1,18 @@
 import Image from "next/image";
 import DefaultClubThumbnail from "@/shared/asset/svg/DefaultThumbnail";
-import { Club } from "../model/club";
+import type { Club, ClubApprovalStatus } from "../model/club";
+
+const approvalStatusStyles: Record<ClubApprovalStatus, string> = {
+  PENDING: "bg-amber-500",
+  APPROVED: "bg-emerald-500",
+  REJECTED: "bg-negative",
+};
+
+const approvalStatusLabels: Record<ClubApprovalStatus, string> = {
+  PENDING: "대기중",
+  APPROVED: "승인됨",
+  REJECTED: "반려됨",
+};
 
 interface ClubCardProps {
   club: Club;
@@ -34,6 +46,13 @@ export default function ClubCard({
         <span className="bg-p-1 text-caption-2 absolute top-2 left-2 rounded-md px-2 py-0.5 text-white">
           {club.type === "MAJOR_CLUB" ? "전공" : "자율"}
         </span>
+        {club.approvalStatus && (
+          <span
+            className={`text-caption-2 absolute top-2 right-2 rounded-md px-2 py-0.5 text-white ${approvalStatusStyles[club.approvalStatus]}`}
+          >
+            {approvalStatusLabels[club.approvalStatus]}
+          </span>
+        )}
       </div>
       <div className="flex flex-col items-start gap-1">
         <span className="text-text-2 text-main-text">{club.name}</span>
