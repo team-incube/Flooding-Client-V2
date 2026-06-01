@@ -28,7 +28,7 @@ export default function Signin() {
 
   return (
     <main className="bg-background flex min-h-screen items-center justify-center overflow-hidden px-5 py-10">
-      <section className="bg-background-surface flex h-fit w-fit flex-col items-center gap-6 rounded-2xl px-15 py-15">
+      <section className="bg-background-surface flex size-fit flex-col items-center gap-6 rounded-2xl p-15">
         <div className="flex flex-col items-center gap-2">
           <Logo />
           <p className="text-text-3 text-sub-1">

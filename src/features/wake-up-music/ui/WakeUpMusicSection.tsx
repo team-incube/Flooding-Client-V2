@@ -115,7 +115,7 @@ export function WakeUpMusicSection({
 
       {icon && (
         <button
-          className="bg-p-2 absolute right-6 bottom-6 flex h-13 w-13 cursor-pointer items-center justify-center rounded-full"
+          className="bg-p-2 absolute right-6 bottom-6 flex size-13 cursor-pointer items-center justify-center rounded-full"
           onClick={() => setIsModalOpen(true)}
         >
           {isHovered && (
@@ -123,7 +123,7 @@ export function WakeUpMusicSection({
               <div className="bg-surface text-sub-1 relative rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap shadow-[0_0_24px_rgba(0,0,0,0.1)]">
                 오늘의 노래를 <span className="text-p-1">AI</span>한테 추천
                 받아봐요!
-                <div className="bg-background-surface absolute right-[22px] -bottom-1.5 h-3 w-3 rotate-45"></div>
+                <div className="bg-background-surface absolute right-[22px] -bottom-1.5 size-3 rotate-45"></div>
               </div>
             </div>
           )}

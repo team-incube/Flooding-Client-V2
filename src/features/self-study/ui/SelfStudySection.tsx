@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ApplyStudy from "@/shared/asset/svg/ApplyStudy";
+import Filter from "@/shared/asset/svg/Filter";
 import Search from "@/shared/asset/svg/Search";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NumberButton } from "@/shared/ui/Button/NumberButton";
 import TextField from "@/shared/ui/textField";
+import { NoteTooltip } from "@/shared/ui/NoteTooltip";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
@@ -18,11 +21,15 @@ import { useStudyAttendanceSubscription } from "../model/useStudyAttendanceSubsc
 import { useUncheckStudyAttendance } from "../model/useUncheckStudyAttendance";
 import { NoteText } from "@/shared/ui/NoteText";
 import { StudyApplicantCard } from "./StudyApplicantCard";
+import { StudyFilterModal } from "./StudyFilterModal";
 
 const GRADE_OPTIONS = [1, 2, 3] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
+const STUDY_NOTES = ["※ 자습 신청 시간은 20:00 ~ 21:00 입니다"];
+
 export function SelfStudySection() {
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
     useQuery(studyQuery);
@@ -47,6 +54,7 @@ export function SelfStudySection() {
     isApplicationOpen,
   });
   const studyPermission = createStudyPermission({ role: user?.role });
+
   useStudyAttendanceSubscription(user?.role);
   const checkAttendanceMutation = useCheckStudyAttendance();
   const uncheckAttendanceMutation = useUncheckStudyAttendance();
@@ -93,8 +101,41 @@ export function SelfStudySection() {
   };
 
   return (
-    <section className="bg-background-surface flex flex-col gap-4 rounded-2xl p-5 sm:p-6">
-      <div className="flex items-end gap-3">
+    <section
+      className="bg-background-surface relative flex flex-col gap-4 rounded-2xl p-5 sm:p-6"
+      data-tooltip-card
+    >
+      {/* 모바일 헤더 */}
+      <div className="flex items-center justify-between lg:hidden">
+        <div className="flex items-end gap-3">
+          <div className="flex items-center gap-2">
+            <ApplyStudy />
+            <span className="text-main-text text-text-1">자습신청</span>
+            <NoteTooltip
+              notes={STUDY_NOTES}
+              ariaLabel="자습신청 안내 보기"
+              className="lg:hidden"
+            />
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-sub-1 text-caption-1">신청인</span>
+            <span className="text-p-1 text-caption-1">
+              {filteredStudents.length}명
+            </span>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsFilterOpen((prev) => !prev)}
+          className="flex size-9 cursor-pointer items-center justify-center"
+          aria-label="필터"
+        >
+          <Filter size={24} />
+        </button>
+      </div>
+
+      {/* 데스크탑 헤더 */}
+      <div className="hidden items-end gap-3 lg:flex">
         <div className="flex items-center gap-1">
           <ApplyStudy />
           <span className="text-main-text text-text-1">자습신청</span>
@@ -107,9 +148,11 @@ export function SelfStudySection() {
         </div>
       </div>
 
-      <div className="flex flex-col-reverse gap-6 sm:flex-row">
-        <div className="min-w-0 flex-1">
-          <div className="flex max-h-125 flex-wrap gap-4 overflow-y-auto">
+      <div
+        className={`flex flex-col-reverse gap-6 lg:flex-row lg:items-stretch ${filteredStudents.length === 0 ? "max-lg:hidden" : ""}`}
+      >
+        <div className="relative min-w-0 flex-1 lg:min-h-0 lg:overflow-hidden">
+          <div className="scrollbar-hide flex max-h-125 flex-wrap gap-4 overflow-y-auto lg:absolute lg:inset-0 lg:max-h-none lg:content-start lg:pr-1">
             {filteredStudents.map((student, index) => (
               <StudyApplicantCard
                 key={student.userId}
@@ -129,7 +172,8 @@ export function SelfStudySection() {
           </div>
         </div>
 
-        <div className="flex w-full flex-col gap-4 sm:w-[330px] sm:shrink-0">
+        {/* 필터 패널: 데스크탑에서만 표시 */}
+        <div className="hidden w-full flex-col gap-4 lg:flex lg:w-82.5 lg:shrink-0">
           <div className="flex items-center justify-between">
             <span className="text-main-text text-text-2">필터</span>
             <button
@@ -230,14 +274,55 @@ export function SelfStudySection() {
                     : "신청하기"}
           </TextButton>
 
-          <NoteText>자습 신청 시간은 20:00 ~ 21:00 입니다</NoteText>
-          {studyPermission.canCheckAttendance && (
-            <NoteText>
-              학생 카드의 체크박스를 눌러 출석 체크가 가능해요
-            </NoteText>
-          )}
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <NoteText>※ 자습 신청 시간은 20:00 ~ 21:00 입니다</NoteText>
+            {studyPermission.canCheckAttendance && (
+              <NoteText>
+                ※ 학생 카드의 체크박스를 눌러 출석 체크가 가능해요
+              </NoteText>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* 모바일 신청 버튼 */}
+      <div className="lg:hidden">
+        <TextButton
+          variant={
+            isStudyBanned
+              ? "negative"
+              : studyActionState.isActionDisabled
+                ? "disabled"
+                : "filled"
+          }
+          size="wide"
+          className="w-full"
+          disabled={studyActionState.isActionDisabled}
+          onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
+        >
+          {isStudyBanned
+            ? "자습 금지를 당했어요!"
+            : isUserLoading || isStudyLoading
+              ? "확인 중"
+              : hasAppliedStudy
+                ? "취소하기"
+                : studyActionState.isApplyDisabled
+                  ? "신청 불가"
+                  : "신청하기"}
+        </TextButton>
+      </div>
+
+      <StudyFilterModal
+        isOpen={isFilterOpen}
+        selectedGrades={selectedGrades}
+        selectedClasses={selectedClasses}
+        selectedGender={selectedGender}
+        onClose={() => setIsFilterOpen(false)}
+        onReset={handleResetFilters}
+        onToggleGrade={handleToggleGrade}
+        onToggleClass={handleToggleClass}
+        onToggleGender={handleToggleGender}
+      />
     </section>
   );
 }

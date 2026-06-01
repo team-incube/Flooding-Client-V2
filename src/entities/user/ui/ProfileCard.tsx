@@ -16,7 +16,7 @@ export function ProfileCard({ index, student }: ProfileCardProps) {
         {index}
       </span>
       <div className="flex flex-col items-center justify-center gap-2 py-6">
-        <div className="flex h-[64px] w-[64px] items-center justify-center">
+        <div className="flex size-[64px] items-center justify-center">
           <Profile />
         </div>
         <div className="flex items-center">

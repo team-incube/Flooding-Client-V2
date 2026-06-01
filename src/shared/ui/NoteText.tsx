@@ -8,8 +8,8 @@ interface NoteTextProps {
 }
 
 const sizeStyles = {
-  sm: "text-caption-2",
-  md: "text-[15px] font-medium",
+  sm: "text-caption-2 min-w-0 truncate",
+  md: "min-w-0 truncate text-[15px] font-medium",
 };
 
 const toneStyles = {
@@ -28,7 +28,7 @@ export function NoteText({
     <p
       className={`${toneStyles[tone]} ${sizeStyles[size]}${className ? ` ${className}` : ""}`}
     >
-      ※ {children}
+      {children}
     </p>
   );
 }

@@ -50,7 +50,7 @@ export function ManagedStudentCard({
         </span>
       )}
       <div className="flex h-full flex-col items-center justify-center gap-2">
-        <div className="flex h-[64px] w-[64px] items-center justify-center">
+        <div className="flex size-[64px] items-center justify-center">
           <Profile />
         </div>
         <div className="flex items-center">
