@@ -111,7 +111,11 @@ export function SelfStudySection() {
           <div className="flex items-center gap-2">
             <ApplyStudy />
             <span className="text-main-text text-text-1">자습신청</span>
-            <NoteTooltip notes={STUDY_NOTES} ariaLabel="자습신청 안내 보기" className="lg:hidden" />
+            <NoteTooltip
+              notes={STUDY_NOTES}
+              ariaLabel="자습신청 안내 보기"
+              className="lg:hidden"
+            />
           </div>
           <div className="flex items-center gap-1">
             <span className="text-sub-1 text-caption-1">신청인</span>

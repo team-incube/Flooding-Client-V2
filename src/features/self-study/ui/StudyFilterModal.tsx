@@ -33,7 +33,7 @@ export function StudyFilterModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 px-5"
+      className="bg-background/50 fixed inset-0 z-50 flex items-center justify-center px-5"
       onClick={onClose}
     >
       <div
