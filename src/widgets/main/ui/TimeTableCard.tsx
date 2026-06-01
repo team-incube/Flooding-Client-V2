@@ -115,7 +115,7 @@ function TimeTableCardContent({
   }, [currentPeriod, timetables]);
 
   return (
-    <div className="flex h-[262px] flex-col gap-3 overflow-auto">
+    <div className="scrollbar-hide flex h-[262px] flex-col gap-3 overflow-auto">
       {!canFetchTimetable ? (
         <TimeTableCard.Empty />
       ) : timetables.length > 0 ? (
@@ -126,7 +126,7 @@ function TimeTableCardContent({
             <div
               key={it.period}
               ref={active ? activeRef : undefined}
-              className={`bg-sub-4 flex items-center gap-3 rounded-lg px-6 py-4 ${
+              className={`bg-sub-4 flex min-w-0 items-center gap-3 rounded-lg px-6 py-4 ${
                 active ? "border-p-1 border" : ""
               }`}
             >
@@ -181,7 +181,7 @@ const TimeTableCard = () => {
   };
 
   return (
-    <div className="bg-background-surface flex h-[354px] w-full flex-col rounded-2xl p-5 sm:p-6">
+    <div className="bg-background-surface flex h-[354px] w-full min-w-0 flex-col rounded-2xl p-5 sm:p-6">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Calendar />
