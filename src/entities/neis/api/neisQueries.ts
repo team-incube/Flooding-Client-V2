@@ -6,7 +6,8 @@ export const neisQueries = {
   timetables: (params: TimetableParams) =>
     queryOptions({
       queryKey: ["neis", "timetables", params],
-      queryFn: () => getTimetables(params),
+      queryFn: async () =>
+        params.grade && params.classNumber ? getTimetables(params) : [],
     }),
 
   meals: (date: string) =>

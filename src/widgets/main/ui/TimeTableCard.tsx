@@ -4,7 +4,6 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Back from "@/shared/asset/svg/Back";
 import Calendar from "@/shared/asset/svg/Calender";
-import { getTimetables } from "@/entities/neis/api/getNeis";
 import { neisQueries } from "@/entities/neis/api/neisQueries";
 import {
   NEIS_OFFICE_CODE,
@@ -82,7 +81,6 @@ function TimeTableContentLoading() {
 }
 
 interface TimeTableCardContentProps {
-  canFetchTimetable: boolean;
   timetableParams: {
     officeCode: string;
     schoolCode: string;
@@ -94,21 +92,14 @@ interface TimeTableCardContentProps {
 }
 
 function TimeTableCardContent({
-  canFetchTimetable,
   timetableParams,
   currentPeriod,
 }: TimeTableCardContentProps) {
   const activeRef = useRef<HTMLDivElement>(null);
 
-  const timetableQuery = neisQueries.timetables(timetableParams);
-  const { data: timetables } = useSuspenseQuery({
-    ...timetableQuery,
-    queryKey: canFetchTimetable
-      ? timetableQuery.queryKey
-      : ["neis", "timetables", "empty", timetableParams.date],
-    queryFn: () =>
-      canFetchTimetable ? getTimetables(timetableParams) : Promise.resolve([]),
-  });
+  const { data: timetables } = useSuspenseQuery(
+    neisQueries.timetables(timetableParams),
+  );
 
   useEffect(() => {
     activeRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -116,9 +107,7 @@ function TimeTableCardContent({
 
   return (
     <div className="scrollbar-hide flex h-[262px] flex-col gap-3 overflow-auto">
-      {!canFetchTimetable ? (
-        <TimeTableCard.Empty />
-      ) : timetables.length > 0 ? (
+      {timetables.length > 0 ? (
         timetables.map((it) => {
           const active = it.period === currentPeriod;
           const times = PERIOD_TIMES[it.period];
@@ -171,7 +160,6 @@ const TimeTableCard = () => {
   const currentPeriod = debouncedOffset === 0 ? getCurrentPeriod() : null;
 
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const canFetchTimetable = !!user.grade && !!user.classNumber;
   const timetableParams = {
     officeCode: NEIS_OFFICE_CODE,
     schoolCode: NEIS_SCHOOL_CODE,
@@ -211,7 +199,6 @@ const TimeTableCard = () => {
 
       <Suspense fallback={<TimeTableContentLoading />}>
         <TimeTableCardContent
-          canFetchTimetable={canFetchTimetable}
           timetableParams={timetableParams}
           currentPeriod={currentPeriod}
         />
