@@ -62,7 +62,11 @@ export function MassageChairSection() {
         <div className="flex items-center gap-2">
           <Chair />
           <span className="text-main-text text-text-1">안마의자</span>
-          <NoteTooltip notes={MASSAGE_NOTES} ariaLabel="안마의자 안내 보기" />
+          <NoteTooltip
+            notes={MASSAGE_NOTES}
+            ariaLabel="안마의자 안내 보기"
+            className="lg:hidden"
+          />
         </div>
         <div className="flex items-center gap-1">
           <span className="text-sub-1 text-caption-1">신청인</span>

@@ -111,7 +111,11 @@ export function SelfStudySection() {
           <div className="flex items-center gap-2">
             <ApplyStudy />
             <span className="text-main-text text-text-1">자습신청</span>
-            <NoteTooltip notes={STUDY_NOTES} ariaLabel="자습신청 안내 보기" />
+            <NoteTooltip
+              notes={STUDY_NOTES}
+              ariaLabel="자습신청 안내 보기"
+              className="lg:hidden"
+            />
           </div>
           <div className="flex items-center gap-1">
             <span className="text-sub-1 text-caption-1">신청인</span>
@@ -145,7 +149,7 @@ export function SelfStudySection() {
       </div>
 
       <div
-        className={`flex flex-col-reverse gap-6 lg:flex-row lg:items-stretch${filteredStudents.length === 0 ? "max-lg:hidden" : ""}`}
+        className={`flex flex-col-reverse gap-6 lg:flex-row lg:items-stretch ${filteredStudents.length === 0 ? "max-lg:hidden" : ""}`}
       >
         <div className="relative min-w-0 flex-1 lg:min-h-0 lg:overflow-hidden">
           <div className="scrollbar-hide flex max-h-125 flex-wrap gap-4 overflow-y-auto lg:absolute lg:inset-0 lg:max-h-none lg:content-start lg:pr-1">

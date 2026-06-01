@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import Exclamation from "@/shared/asset/svg/Exclamation";
 
@@ -10,6 +10,7 @@ type TooltipPlacement = "top" | "bottom";
 interface NoteTooltipProps {
   notes: string[];
   ariaLabel?: string;
+  className?: string;
 }
 
 const arrowPlacementStyles = {
@@ -22,12 +23,27 @@ const TOOLTIP_GAP = 10;
 export function NoteTooltip({
   notes,
   ariaLabel = "안내 보기",
+  className = "sm:hidden",
 }: NoteTooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [placement, setPlacement] = useState<TooltipPlacement>("top");
   const [tooltipStyle, setTooltipStyle] = useState<CSSProperties>({});
   const [arrowLeft, setArrowLeft] = useState(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClose = () => setIsOpen(false);
+    window.addEventListener("scroll", handleClose, {
+      capture: true,
+      passive: true,
+    });
+    window.addEventListener("resize", handleClose);
+    return () => {
+      window.removeEventListener("scroll", handleClose, { capture: true });
+      window.removeEventListener("resize", handleClose);
+    };
+  }, [isOpen]);
 
   const handleToggle = () => {
     if (!isOpen && buttonRef.current) {
@@ -58,7 +74,7 @@ export function NoteTooltip({
   };
 
   return (
-    <div className="inline-flex shrink-0 sm:hidden">
+    <div className={`inline-flex shrink-0 ${className}`}>
       <button
         ref={buttonRef}
         type="button"
