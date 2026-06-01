@@ -8,12 +8,14 @@ import {
 import { getClubOpeningRequests } from "@/entities/club/api/getClubOpeningRequests";
 import { getClubOpeningStatus } from "@/entities/club/api/getClubOpeningStatus";
 import { patchClubApproval } from "@/entities/club/api/patchClubApproval";
+import type { Club, ClubApprovalStatus } from "@/entities/club/model/club";
 
 export const clubManagementQueries = {
   openingRequests: () =>
     queryOptions({
       queryKey: ["club-management", "opening-requests"],
       queryFn: getClubOpeningRequests,
+      staleTime: Infinity,
     }),
 
   openingStatus: () =>
@@ -33,11 +35,23 @@ export const usePatchClubApproval = () => {
       clubId: number;
       body: { approved: boolean };
     }) => patchClubApproval(clubId, body),
-    onSuccess: (_, { clubId }) => {
+    onSuccess: (_, { clubId, body }) => {
+      const newStatus: ClubApprovalStatus = body.approved ? "APPROVED" : "REJECTED";
+
+      queryClient.setQueryData(
+        clubManagementQueries.openingRequests().queryKey,
+        (old: { clubs: Club[] } | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            clubs: old.clubs.map((club) =>
+              club.id === clubId ? { ...club, approvalStatus: newStatus } : club,
+            ),
+          };
+        },
+      );
+
       queryClient.invalidateQueries({ queryKey: ["club", "list"] });
-      queryClient.invalidateQueries({
-        queryKey: clubManagementQueries.openingRequests().queryKey,
-      });
       queryClient.invalidateQueries({ queryKey: ["club", "detail", clubId] });
     },
   });
