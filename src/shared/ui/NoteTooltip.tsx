@@ -34,7 +34,10 @@ export function NoteTooltip({
   useEffect(() => {
     if (!isOpen) return;
     const handleClose = () => setIsOpen(false);
-    window.addEventListener("scroll", handleClose, { capture: true, passive: true });
+    window.addEventListener("scroll", handleClose, {
+      capture: true,
+      passive: true,
+    });
     window.addEventListener("resize", handleClose);
     return () => {
       window.removeEventListener("scroll", handleClose, { capture: true });
