@@ -15,7 +15,6 @@ export const clubManagementQueries = {
     queryOptions({
       queryKey: ["club-management", "opening-requests"],
       queryFn: getClubOpeningRequests,
-      staleTime: Infinity,
     }),
 
   openingStatus: () =>
