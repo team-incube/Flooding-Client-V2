@@ -3,8 +3,8 @@ import DefaultClubThumbnail from "@/shared/asset/svg/DefaultThumbnail";
 import type { Club, ClubApprovalStatus } from "../model/club";
 
 const approvalStatusStyles: Record<ClubApprovalStatus, string> = {
-  PENDING: "bg-amber-500",
-  APPROVED: "bg-emerald-500",
+  PENDING: "bg-warning",
+  APPROVED: "bg-positive",
   REJECTED: "bg-negative",
 };
 
