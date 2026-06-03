@@ -13,7 +13,8 @@ interface MusicListItemProps {
 }
 
 function formatAppliedDate(appliedAt: string) {
-  return appliedAt.split("T")[0] || appliedAt;
+  const timePart = appliedAt.split("T")[1];
+  return timePart?.slice(0, 5) ?? appliedAt;
 }
 
 export function MusicListItem({
@@ -28,13 +29,13 @@ export function MusicListItem({
   const title = music.title ?? music.musicUrl;
 
   return (
-    <div className="border-sub-3 flex items-center justify-between gap-4 border-b py-3 pr-6 last:border-b-0">
-      <div className="flex min-w-0 flex-1 items-center gap-4">
+    <div className="border-sub-3 flex min-w-0 items-center justify-between gap-2 overflow-hidden border-b py-3 pr-2 last:border-b-0 sm:gap-4 sm:pr-6">
+      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
         <a
           href={music.videoUrl ?? music.musicUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-sub-4 relative h-17 w-30 shrink-0 overflow-hidden rounded-lg 2xl:h-22 2xl:w-39"
+          className="bg-sub-4 relative h-14 w-24 shrink-0 overflow-hidden rounded-lg sm:h-17 sm:w-30 2xl:h-22 2xl:w-39"
         >
           {thumbnailUrl && (
             <Image
@@ -55,11 +56,11 @@ export function MusicListItem({
           <p className="text-text-1 text-main-text line-clamp-2 font-semibold break-all 2xl:min-w-0 2xl:flex-1">
             {title}
           </p>
-          <div className="flex shrink-0 items-center justify-between gap-3 2xl:justify-start 2xl:gap-6">
-            <span className="text-caption-2 text-sub-2 shrink-0">
+          <div className="flex flex-wrap gap-x-3 gap-y-1 2xl:flex-nowrap 2xl:gap-6">
+            <span className="text-caption-2 text-sub-2">
               {formatAppliedDate(music.appliedAt)}
             </span>
-            <span className="text-caption-2 text-sub-1 shrink-0">
+            <span className="text-caption-2 text-sub-1">
               {music.studentNumber} {music.userName}
             </span>
           </div>
