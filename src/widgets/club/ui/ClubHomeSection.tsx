@@ -212,9 +212,7 @@ function ClubHomeSection() {
               </div>
 
               {viewMode === "form" && canRegisterClub ? (
-                <ClubRegistrationSection
-                  onGoBackToList={handleGoBackToList}
-                />
+                <ClubRegistrationSection onGoBackToList={handleGoBackToList} />
               ) : (
                 <ClubSearch
                   query={query}

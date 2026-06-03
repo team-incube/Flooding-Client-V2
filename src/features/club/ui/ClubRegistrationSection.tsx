@@ -54,7 +54,14 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
         ? (await uploadRepresentativeImageAsync(representativeImage)).imageUrl
         : "";
 
-      return postClubAsync({ name, type, status: formData.status, description, imageUrl, maxMember });
+      return postClubAsync({
+        name,
+        type,
+        status: formData.status,
+        description,
+        imageUrl,
+        maxMember,
+      });
     })();
 
     toast.promise(promise, {
