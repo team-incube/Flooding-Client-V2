@@ -26,8 +26,8 @@ export async function getDormitoryMusic(
     "/dormitory/music",
     {
       params: {
-        ...(date ? { date } : {}),
-        ...(queryParams ? queryParams : {}),
+        date,
+        ...queryParams,
       },
     },
   );
