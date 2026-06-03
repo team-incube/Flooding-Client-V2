@@ -48,7 +48,7 @@ export function MusicListModal({
             <span className="text-main-text text-text-1 font-semibold">
               기상음악 신청 목록
             </span>
-            <div className="text-sub-1 text-caption-1 text-sub-1 mt-1">
+            <div className="text-sub-1 text-caption-1 mt-1">
               현재 {songs.length}개의 신청 곡을 한꺼번에 확인할 수 있습니다.
             </div>
           </div>
