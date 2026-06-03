@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Profile from "@/shared/asset/svg/Profile";
 // import More from "@/shared/asset/svg/MoreVertical";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { getRoleLabel } from "@/entities/user/lib/userRole";
+import { getGreetingName, getRoleLabel } from "@/entities/user/lib/userRole";
 
 export default function ProfileCard() {
   const { data: user } = useQuery(userQueries.me());
@@ -18,7 +18,7 @@ export default function ProfileCard() {
       <div className="flex flex-col">
         <span className="text-title-4 font-medium">
           <span className="hidden 2xl:inline">
-            안녕하세요! {user ? `${user.name.slice(1)}님` : ""}
+            안녕하세요! {getGreetingName(user)}
           </span>
           <span className="2xl:hidden">{user?.name ?? ""}</span>
         </span>
