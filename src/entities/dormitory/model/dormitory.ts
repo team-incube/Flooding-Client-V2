@@ -55,6 +55,12 @@ export interface UpdatePenaltyRequest {
   reason: string;
 }
 
+export interface DormitoryMusicQueryParams {
+  sort?: "time" | "name";
+  order?: "asc" | "desc";
+  grade?: number;
+}
+
 export interface CreateCleaningZoneRequest {
   name: string;
   description: string;

@@ -10,6 +10,7 @@ import {
   getCleaningZoneDetail,
 } from "@/entities/dormitory/api/getDormitory";
 import type {
+  DormitoryMusicQueryParams,
   MusicApplyRequest,
   UpdatePenaltyRequest,
   CreateCleaningZoneRequest,
@@ -17,10 +18,17 @@ import type {
 } from "@/entities/dormitory/model/dormitory";
 
 export const dormitoryQueries = {
-  music: (date?: string) =>
+  music: (date?: string, queryParams?: DormitoryMusicQueryParams) =>
     queryOptions({
-      queryKey: ["dormitory", "music", date],
-      queryFn: () => getDormitoryMusic(date),
+      queryKey: [
+        "dormitory",
+        "music",
+        date,
+        queryParams?.sort,
+        queryParams?.order,
+        queryParams?.grade,
+      ],
+      queryFn: () => getDormitoryMusic(date, queryParams),
     }),
 
   massage: () =>
