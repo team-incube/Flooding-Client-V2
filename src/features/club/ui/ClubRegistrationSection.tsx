@@ -36,7 +36,7 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
     mutateAsync: uploadRepresentativeImageAsync,
     isPending: isUploading,
   } = useUploadClubRepresentativeImage();
-  const { name, type, description, maxMember } = formData;
+  const { name, type, status, description, maxMember } = formData;
 
   const handleChange = <K extends keyof RegistrationData>(
     key: K,
@@ -57,7 +57,7 @@ export default function ClubRegistrationSection({ onGoBackToList }: Props) {
       return postClubAsync({
         name,
         type,
-        status: formData.status,
+        status,
         description,
         imageUrl,
         maxMember,
