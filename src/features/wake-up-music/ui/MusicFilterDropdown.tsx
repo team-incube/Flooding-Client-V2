@@ -67,7 +67,7 @@ export function MusicFilterDropdown({
         className={`text-caption-1 flex cursor-pointer items-center gap-1 rounded px-2 py-1 transition-colors ${
           currentFilter === "none"
             ? "text-sub-2 hover:bg-surface"
-            : "text-white"
+            : "text-sub-4"
         }`}
       >
         <span>{currentFilter === "none" ? "필터링" : currentFilterLabel}</span>
