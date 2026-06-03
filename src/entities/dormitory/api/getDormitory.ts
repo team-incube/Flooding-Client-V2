@@ -13,10 +13,8 @@ import type {
 type DormitoryMusicResponseItem = Omit<DormitoryMusic, "isLiked"> & {
   isLiked?: boolean;
 };
-type DormitoryMusicResponse =
-  | DormitoryMusicResponseItem[]
-  | { data?: DormitoryMusicResponseItem[] }
-  | { data?: { data?: DormitoryMusicResponseItem[] } };
+
+type DormitoryMusicResponse = ApiResponse<DormitoryMusicResponseItem[]>;
 
 export async function getDormitoryMusic(
   date?: string,
@@ -32,15 +30,7 @@ export async function getDormitoryMusic(
     },
   );
 
-  const musicList = Array.isArray(data)
-    ? data
-    : Array.isArray(data.data)
-      ? data.data
-      : Array.isArray(data.data?.data)
-        ? data.data.data
-        : [];
-
-  return musicList.map((music) => ({
+  return data.data.map((music) => ({
     ...music,
     isLiked: music.isLiked ?? false,
   }));
