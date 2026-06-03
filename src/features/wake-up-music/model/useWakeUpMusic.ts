@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { DormitoryMusicQueryParams } from "@/entities/dormitory/model/dormitory";
 import axios, { HttpStatusCode } from "axios";
 import { toast } from "sonner";
 import type { Music } from "@/entities/music/model/music";
@@ -16,7 +17,7 @@ import { todayKst } from "@/shared/lib/kst";
 import { getInitialMusicDate } from "@/features/wake-up-music/lib/date";
 import { musicUrlSchema } from "@/features/wake-up-music/lib/wakeUpMusicSchema";
 
-export function useWakeUpMusic() {
+export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
   const queryClient = useQueryClient();
   const [urlInput, setUrlInput] = useState("");
   const [selectedDate, setSelectedDate] =
@@ -26,7 +27,7 @@ export function useWakeUpMusic() {
 
   const selectedDateString = formatDateParam(selectedDate);
   const isToday = selectedDateString === formatDateParam(todayKst());
-  const musicQuery = dormitoryQueries.music(selectedDateString);
+  const musicQuery = dormitoryQueries.music(selectedDateString, filterParams);
 
   const { data: songs = [] } = useQuery(musicQuery);
   const { data: me } = useQuery(userQueries.me());
