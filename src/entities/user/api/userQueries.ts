@@ -8,6 +8,7 @@ export const userQueries = {
     queryOptions({
       queryKey: ["user", "me"],
       queryFn: getMe,
+      staleTime: Infinity,
     }),
   list: (params: SearchUsersParams = {}) =>
     queryOptions({
