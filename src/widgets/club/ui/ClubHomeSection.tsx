@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import {
   useQuery,
   useQueryClient,
@@ -105,59 +104,39 @@ function ClubHomeSectionError({ resetErrorBoundary }: QueryErrorFallbackProps) {
 }
 
 function ClubHomeSection() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
-  const rawView = searchParams.get("view");
-  const viewMode: "form" | "list" =
-    rawView === "form" || rawView === "list" ? rawView : "list";
-
-  const setViewMode = (mode: "form" | "list") => {
-    if (mode === "list") router.replace(pathname);
-    else router.replace(`${pathname}?view=${mode}`);
-  };
-
+  const [viewMode, setViewMode] = useState<"form" | "list">("list");
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [selectedType, setSelectedType] = useState<ClubTypeFilter>("ALL");
 
   const { data } = useSuspenseQuery(clubQueries.list());
   const { data: user } = useSuspenseQuery(userQueries.me());
+
   const clubPermission = createClubPermission({
     role: user.role,
   });
-
-  useEffect(() => {
-    if (viewMode === "form" && !clubPermission.canViewOpeningRequests) {
-      router.replace(pathname);
-    }
-  }, [viewMode, clubPermission.canViewOpeningRequests, router, pathname]);
 
   const { data: openingStatus } = useQuery({
     ...clubManagementQueries.openingStatus(),
     enabled: clubPermission.canCheckOpeningStatus,
     retry: false,
   });
+
   const canRegisterClub =
     openingStatus?.isOpened === true && clubPermission.canRegisterClub;
-  const { data: openingRequests, isLoading: isOpeningRequestsLoading } =
-    useQuery({
-      ...clubManagementQueries.openingRequests(),
-      enabled: clubPermission.canViewOpeningRequests && viewMode === "form",
-    });
+
+  const { data: openingRequests } = useQuery({
+    ...clubManagementQueries.openingRequests(),
+    enabled: clubPermission.canViewOpeningRequests && viewMode === "form",
+  });
 
   const filteredClubs = filterClubs({
     clubs: data.clubs,
     searchValue,
     type: selectedType,
   });
-  const sectionTitle = viewMode === "form" ? "개설 신청" : "동아리";
-  const count =
-    viewMode === "form"
-      ? (openingRequests?.clubs.length ?? 0)
-      : filteredClubs.length;
 
   const handleGoBackToList = () => {
     setViewMode("list");
@@ -177,14 +156,17 @@ function ClubHomeSection() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Club isActive={false} size={20} />
-            <span className="text-text-1 text-main-text">{sectionTitle}</span>
+            <span className="text-text-1 text-main-text">
+              {viewMode === "form" ? "개설 신청" : "동아리"}
+            </span>
             <div>
               <span className="text-caption-1 text-sub-1">동아리 수 </span>
-              {viewMode === "form" && isOpeningRequestsLoading ? (
-                <Skeleton className="ml-1 inline-block h-3 w-6 align-middle" />
-              ) : (
-                <span className="text-caption-1 text-p-1">{count}개</span>
-              )}
+              <span className="text-caption-1 text-p-1">
+                {viewMode === "form"
+                  ? (openingRequests?.clubs.length ?? 0)
+                  : filteredClubs.length}
+                개
+              </span>
             </div>
           </div>
         </div>
@@ -192,10 +174,7 @@ function ClubHomeSection() {
         <div className="flex h-full min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch">
           <div className="scrollbar-hide order-2 min-h-0 flex-1 overflow-y-auto lg:order-1 lg:h-full lg:pr-2">
             {viewMode === "list" ? (
-              <ClubSection
-                clubs={filteredClubs}
-                onClubClick={(clubId) => router.push(`/club/${clubId}`)}
-              />
+              <ClubSection clubs={filteredClubs} />
             ) : (
               clubPermission.canViewOpeningRequests && (
                 <ClubOpeningRequestSection />
@@ -234,7 +213,6 @@ function ClubHomeSection() {
 
               {viewMode === "form" && canRegisterClub ? (
                 <ClubRegistrationSection
-                  compact
                   onGoBackToList={handleGoBackToList}
                 />
               ) : (
