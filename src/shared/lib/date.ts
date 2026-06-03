@@ -42,3 +42,11 @@ export function formatDisplayDate(date: DateLike): string {
   const day = DAYS[date.dayOfWeek % 7];
   return `${yy}.${mm}.${dd} (${day})`;
 }
+
+export const formatTime = (dateString: string) => {
+  return new Date(dateString).toLocaleTimeString("ko-KR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+};

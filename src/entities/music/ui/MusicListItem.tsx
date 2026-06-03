@@ -3,6 +3,7 @@ import { getYoutubeThumbnailUrl } from "@/entities/music/lib/youtube";
 import Heart from "@/shared/asset/svg/Heart";
 import Delete from "@/shared/asset/svg/Delete";
 import Image from "next/image";
+import { formatTime } from "@/shared/lib/date";
 
 interface MusicListItemProps {
   music: Music;
@@ -13,8 +14,7 @@ interface MusicListItemProps {
 }
 
 function formatAppliedDate(appliedAt: string) {
-  const timePart = appliedAt.split("T")[1];
-  return timePart?.slice(0, 5) ?? appliedAt;
+  return formatTime(appliedAt);
 }
 
 export function MusicListItem({
