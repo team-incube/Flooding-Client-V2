@@ -63,8 +63,8 @@ function ClubHomeSectionLoading() {
             <Club isActive={false} size={20} />
             <span className="text-text-1 text-main-text">동아리</span>
             <div>
-              <span className="text-caption-1 text-sub-1">동아리 수</span>
-              <Skeleton className="ml-1 inline-block h-3 w-6 align-middle" />
+              <span className="text-caption-1 text-sub-1">동아리 수 </span>
+              <span className="text-caption-1 text-p-1">0개</span>
             </div>
           </div>
         </div>
