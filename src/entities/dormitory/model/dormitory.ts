@@ -11,6 +11,7 @@ export interface DormitoryStudent {
 }
 
 export interface StudyApplicant {
+  order: number;
   userId: number;
   name: string;
   studentNumber: number;

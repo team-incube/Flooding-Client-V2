@@ -11,6 +11,7 @@ import TextField from "@/shared/ui/textField";
 import { NoteTooltip } from "@/shared/ui/NoteTooltip";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
+import { sortByOrder } from "@/entities/dormitory/lib/sortByOrder";
 import { STUDY_CAPACITY } from "@/entities/dormitory/model/constants";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import { ConfirmModal } from "@/shared/ui/ConfirmModal";
@@ -36,7 +37,7 @@ export function SelfStudySection() {
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
     useQuery(studyQuery);
-  const students = studyApplicants?.applicants ?? [];
+  const students = sortByOrder(studyApplicants?.applicants ?? []);
   const isApplicationOpen = studyApplicants?.isApplicationOpen ?? false;
   const { data: user, isLoading: isUserLoading } = useQuery(userQueries.me());
   const { state, filteredStudents, dispatch } = useStudyFilter(students);
@@ -169,10 +170,10 @@ export function SelfStudySection() {
       >
         <div className="relative min-w-0 flex-1 lg:min-h-0 lg:overflow-hidden">
           <div className="scrollbar-hide flex max-h-125 flex-wrap gap-4 overflow-y-auto lg:absolute lg:inset-0 lg:max-h-none lg:content-start lg:pr-1">
-            {filteredStudents.map((student, index) => (
+            {filteredStudents.map((student) => (
               <StudyApplicantCard
                 key={student.userId}
-                index={index + 1}
+                index={student.order}
                 student={student}
                 isChecked={student.isChecked}
                 isPending={
