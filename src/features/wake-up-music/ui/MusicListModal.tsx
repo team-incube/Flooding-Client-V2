@@ -3,12 +3,18 @@
 
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import type { DormitoryMusic } from "@/entities/dormitory/model/dormitory";
+import { MusicFilterDropdown } from "@/features/wake-up-music/ui/MusicFilterDropdown";
+import type { WakeUpMusicSort } from "@/features/wake-up-music/model/useMusicFilter";
 
 interface MusicListModalProps {
   isOpen: boolean;
   songs: DormitoryMusic[];
   meId?: number | null;
   canDeleteAnyMusic?: boolean;
+  sort: WakeUpMusicSort;
+  onSortChange: (sort: WakeUpMusicSort) => void;
+  filterButtonLabel: string;
+  hasFilter: boolean;
   onClose: () => void;
   onToggleLike: (music: DormitoryMusic) => void;
   onDelete: (musicId: number) => void;
@@ -27,6 +33,10 @@ export function MusicListModal({
   songs,
   meId,
   canDeleteAnyMusic = false,
+  sort,
+  onSortChange,
+  filterButtonLabel,
+  hasFilter,
   onClose,
   onToggleLike,
   onDelete,
@@ -55,13 +65,21 @@ export function MusicListModal({
               현재 {songs.length}개의 신청 곡을 한꺼번에 확인할 수 있습니다.
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-sub-1 text-caption-2 hover:text-p-1 cursor-pointer transition-colors"
-          >
-            닫기
-          </button>
+          <div className="flex items-center gap-3">
+            <MusicFilterDropdown
+              sort={sort}
+              onSortChange={onSortChange}
+              currentFilterLabel={filterButtonLabel}
+              hasFilter={hasFilter}
+            />
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-sub-1 text-caption-2 hover:text-p-1 cursor-pointer transition-colors"
+            >
+              닫기
+            </button>
+          </div>
         </div>
 
         <div className="border-sub-4 bg-background flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border p-6 shadow-inner">
