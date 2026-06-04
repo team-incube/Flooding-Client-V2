@@ -5,7 +5,6 @@ import ProfileCard from "@/widgets/main/ui/ProfileCard";
 import { TimeTableCardBoundary } from "@/widgets/main/ui/TimeTableCard";
 import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
 import { WakeUpMusicSection } from "@/features/wake-up-music/ui/WakeUpMusicSection";
-import Star from "@/shared/asset/svg/Star";
 
 export default function MainPage() {
   return (
@@ -26,7 +25,7 @@ export default function MainPage() {
         </div>
       </div>
       <div className="flex flex-col gap-4 lg:gap-5 2xl:gap-6">
-        <WakeUpMusicSection icon={<Star />} />
+        <WakeUpMusicSection compact />
         <HomebaseCard showMyReservationStatus />
       </div>
     </main>
