@@ -64,8 +64,11 @@ export function MassageChairSection() {
       return;
     }
 
-    cancelMutation.mutate();
-    setIsCancelConfirmOpen(false);
+    cancelMutation.mutate(undefined, {
+      onSuccess: () => {
+        setIsCancelConfirmOpen(false);
+      },
+    });
   };
 
   return (

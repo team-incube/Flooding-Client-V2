@@ -55,8 +55,11 @@ export default function StudyApplyCard() {
       return;
     }
 
-    cancelMutation.mutate();
-    setIsCancelConfirmOpen(false);
+    cancelMutation.mutate(undefined, {
+      onSuccess: () => {
+        setIsCancelConfirmOpen(false);
+      },
+    });
   };
 
   return (

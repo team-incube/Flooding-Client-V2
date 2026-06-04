@@ -96,8 +96,11 @@ export function SelfStudySection() {
       return;
     }
 
-    cancelMutation.mutate();
-    setIsCancelConfirmOpen(false);
+    cancelMutation.mutate(undefined, {
+      onSuccess: () => {
+        setIsCancelConfirmOpen(false);
+      },
+    });
   };
 
   const handleToggleAttendance = (studentId: number, isChecked: boolean) => {
