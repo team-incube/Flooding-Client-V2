@@ -46,7 +46,7 @@ export function MusicFilterDropdown({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`text-caption-1 flex cursor-pointer items-center gap-1 rounded px-2 py-1 transition-colors ${
-          hasFilter ? "bg-p-1 text-sub-4" : "text-sub-2 hover:bg-surface"
+          hasFilter ? "text-p-1" : "text-sub-2 hover:bg-surface"
         }`}
       >
         <span>{currentFilterLabel}</span>
