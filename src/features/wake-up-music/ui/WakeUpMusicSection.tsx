@@ -62,7 +62,7 @@ export function WakeUpMusicSection({
 
   return (
     <section
-      className={`bg-background-surface relative flex h-auto flex-col gap-6 rounded-2xl p-5 sm:h-[424px] sm:p-6 2xl:h-[520px] ${className ?? ""}`}
+      className={`bg-background-surface relative flex h-auto flex-col gap-6 rounded-2xl p-5 sm:p-6 lg:h-[424px] 2xl:h-[520px] ${className ?? ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -96,9 +96,9 @@ export function WakeUpMusicSection({
       </div>
 
       {/* min-h-0 추가 — flexbox에서 overflow-y-auto가 동작하려면 필수 */}
-      <div className="flex min-h-0 flex-1 flex-col-reverse gap-6 overflow-hidden sm:flex-row">
-        <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto sm:pr-2">
-          <div className="flex flex-col">
+      <div className="flex min-h-0 flex-1 flex-col-reverse gap-6 overflow-hidden lg:flex-row">
+        <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto lg:pr-2">
+          <div className="flex min-w-0 flex-col">
             {songs.map((music) => (
               <MusicListItem
                 key={music.id}
@@ -122,7 +122,7 @@ export function WakeUpMusicSection({
           </div>
         </div>
 
-        <div className="flex w-full flex-col gap-6 sm:w-auto sm:max-w-[340px] sm:min-w-0 sm:gap-20 md:max-w-[360px] lg:max-w-[380px]">
+        <div className="flex w-full flex-col gap-6 lg:w-auto lg:max-w-[380px] lg:min-w-0 lg:gap-20">
           <div className="flex flex-col gap-3">
             <span className="text-main-text text-text-2">음악 신청</span>
             <TextField

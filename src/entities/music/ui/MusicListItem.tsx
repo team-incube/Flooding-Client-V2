@@ -46,21 +46,21 @@ export function MusicListItem({
             />
           )}
           {music.durationText && (
-            <span className="text-caption-3 absolute right-1.5 bottom-1.5 rounded bg-black/70 px-1.5 py-0.5 text-white">
+            <span className="text-caption-3 absolute right-1.5 bottom-1.5 line-clamp-1 rounded bg-black/70 px-1.5 py-0.5 text-white">
               {music.durationText}
             </span>
           )}
         </a>
 
         <div className="flex min-w-0 flex-1 flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:gap-6">
-          <p className="text-text-1 text-main-text line-clamp-2 font-semibold break-all 2xl:min-w-0 2xl:flex-1">
+          <p className="text-text-1 text-main-text scrollbar-hide line-clamp-1 min-w-0 overflow-x-auto mask-[linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] font-semibold whitespace-nowrap [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] 2xl:flex-1">
             {title}
           </p>
           <div className="flex flex-wrap gap-x-3 gap-y-1 2xl:flex-nowrap 2xl:gap-6">
-            <span className="text-caption-2 text-sub-2">
+            <span className="text-caption-2 text-sub-2 line-clamp-1">
               {formatAppliedDate(music.appliedAt)}
             </span>
-            <span className="text-caption-2 text-sub-1">
+            <span className="text-caption-2 text-sub-1 line-clamp-1">
               {music.studentNumber} {music.userName}
             </span>
           </div>
