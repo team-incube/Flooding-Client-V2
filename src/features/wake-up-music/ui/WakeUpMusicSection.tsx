@@ -29,14 +29,8 @@ export function WakeUpMusicSection({
   compact,
   className,
 }: WakeUpMusicSectionProps) {
-  const {
-    filterParams,
-    filterState,
-    filterButtonLabel,
-    hasFilter,
-    setFilter,
-    clearFilter,
-  } = useMusicFilter();
+  const { sort, setSort, filterParams, filterButtonLabel, hasFilter } =
+    useMusicFilter();
 
   const {
     urlInput,
@@ -84,11 +78,10 @@ export function WakeUpMusicSection({
             크게 보기
           </button>
           <MusicFilterDropdown
-            onFilterChange={setFilter}
-            onClear={clearFilter}
+            sort={sort}
+            onSortChange={setSort}
             currentFilterLabel={filterButtonLabel}
             hasFilter={hasFilter}
-            filterState={filterState}
           />
         </div>
       </div>
@@ -167,6 +160,10 @@ export function WakeUpMusicSection({
           songs={songs}
           meId={me?.id}
           canDeleteAnyMusic={canDeleteAnyMusic}
+          sort={sort}
+          onSortChange={setSort}
+          filterButtonLabel={filterButtonLabel}
+          hasFilter={hasFilter}
           onClose={() => setIsListModalOpen(false)}
           onToggleLike={(music) => likeMutation.mutate(music)}
           onDelete={(musicId) => cancelMutation.mutate(musicId)}

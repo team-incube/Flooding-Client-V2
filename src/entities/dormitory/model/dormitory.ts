@@ -56,11 +56,7 @@ export interface UpdatePenaltyRequest {
 }
 
 export interface DormitoryMusicQueryParams {
-  sort?: "time" | "name";
-  order?: "asc" | "desc";
-  secondarySort?: "time" | "name";
-  secondaryOrder?: "asc" | "desc";
-  grade?: number;
+  sort?: "TIME" | "LIKE";
 }
 
 export interface CreateCleaningZoneRequest {

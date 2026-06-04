@@ -1,4 +1,8 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import {
+  mutationOptions,
+  queryOptions,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import { instance } from "@/shared/api/instance";
 import {
   getDormitoryMusic,
@@ -20,17 +24,9 @@ import type {
 export const dormitoryQueries = {
   music: (date?: string, queryParams?: DormitoryMusicQueryParams) =>
     queryOptions({
-      queryKey: [
-        "dormitory",
-        "music",
-        date,
-        queryParams?.sort,
-        queryParams?.order,
-        queryParams?.secondarySort,
-        queryParams?.secondaryOrder,
-        queryParams?.grade,
-      ],
+      queryKey: ["dormitory", "music", date, queryParams?.sort],
       queryFn: () => getDormitoryMusic(date, queryParams),
+      placeholderData: keepPreviousData,
     }),
 
   massage: () =>
