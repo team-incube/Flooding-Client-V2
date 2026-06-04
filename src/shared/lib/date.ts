@@ -1,3 +1,4 @@
+import type { Temporal } from "temporal-polyfill";
 import { parseKstWallClock } from "@/shared/lib/kst";
 
 interface FormatDateParamOptions {

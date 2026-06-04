@@ -1,3 +1,4 @@
+import type { Temporal } from "temporal-polyfill";
 import {
   MEAL_TYPE_END_MINUTES,
   type MealType,

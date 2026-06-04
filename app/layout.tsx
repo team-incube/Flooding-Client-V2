@@ -1,4 +1,3 @@
-import "temporal-polyfill/global";
 import type { Metadata } from "next";
 import "@sun-typeface/suit/fonts/variable/woff2/SUIT-Variable.css";
 import "./globals.css";
