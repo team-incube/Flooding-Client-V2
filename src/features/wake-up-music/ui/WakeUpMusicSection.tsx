@@ -12,6 +12,7 @@ import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendM
 import { MusicListModal } from "@/features/wake-up-music/ui/MusicListModal";
 import { MusicRecommendButton } from "@/features/wake-up-music/ui/MusicRecommendButton";
 import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
+import { useWakeUpMusicSubscription } from "@/features/wake-up-music/model/useWakeUpMusicSubscription";
 import { MusicFilterDropdown } from "@/features/wake-up-music/ui/MusicFilterDropdown";
 import { useMusicFilter } from "@/features/wake-up-music/model/useMusicFilter";
 
@@ -48,6 +49,8 @@ export function WakeUpMusicSection({
     likeMutation,
     cancelMutation,
   } = useWakeUpMusic(filterParams);
+
+  useWakeUpMusicSubscription();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
