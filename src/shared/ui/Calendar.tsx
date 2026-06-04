@@ -67,7 +67,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
           }}
           className="text-main-text text-text-4 cursor-pointer"
         >
-          {formatHeader(todayKst())}
+          {formatHeader(selectedDate ?? todayKst())}
         </button>
         <button
           type="button"
@@ -82,7 +82,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
         {DAY_LABELS.map((d) => (
           <div
             key={d}
-            className="text-sub-1 text-caption-2 flex h-10 w-10 items-center justify-center p-2 sm:h-7 sm:w-7 sm:p-1.5 lg:h-10 lg:w-10"
+            className="text-sub-1 text-caption-2 flex size-10 items-center justify-center p-2 sm:size-7 sm:p-1.5 lg:size-10"
           >
             {d}
           </div>
