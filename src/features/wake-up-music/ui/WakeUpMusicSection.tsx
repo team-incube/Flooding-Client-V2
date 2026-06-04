@@ -21,8 +21,14 @@ export function WakeUpMusicSection({
   icon,
   className,
 }: WakeUpMusicSectionProps) {
-  const { filterParams, filterState, setFilter, clearFilter } =
-    useMusicFilter();
+  const {
+    filterParams,
+    filterState,
+    filterButtonLabel,
+    hasFilter,
+    setFilter,
+    clearFilter,
+  } = useMusicFilter();
 
   const {
     urlInput,
@@ -39,30 +45,6 @@ export function WakeUpMusicSection({
     likeMutation,
     cancelMutation,
   } = useWakeUpMusic(filterParams);
-
-  const filterButtonLabel = (() => {
-    if (filterState.filterType === "none") {
-      return "필터링";
-    }
-
-    if (filterState.filterType === "time") {
-      return filterState.filterValue === "asc"
-        ? "시간순 (오래된)"
-        : "시간순 (최근)";
-    }
-
-    if (filterState.filterType === "grade") {
-      return `${filterState.filterValue}학년`;
-    }
-
-    if (filterState.filterType === "name") {
-      return filterState.filterValue === "asc"
-        ? "이름 오름차순"
-        : "이름 내림차순";
-    }
-
-    return "필터링";
-  })();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
@@ -96,41 +78,41 @@ export function WakeUpMusicSection({
           <MusicFilterDropdown
             onFilterChange={setFilter}
             onClear={clearFilter}
-            currentFilter={filterState.filterType}
             currentFilterLabel={filterButtonLabel}
+            hasFilter={hasFilter}
+            filterState={filterState}
           />
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col-reverse gap-6 overflow-hidden sm:flex-row">
-        <div className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto sm:pr-2">
+      {/* min-h-0 추가 — flexbox에서 overflow-y-auto가 동작하려면 필수 */}
+      <div className="flex min-h-0 flex-1 flex-col-reverse gap-6 overflow-hidden sm:flex-row">
+        <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto sm:pr-2">
           <div className="flex flex-col">
-            {songs.map((music) => {
-              return (
-                <MusicListItem
-                  key={music.id}
-                  music={music}
-                  isLikePending={
-                    likeMutation.isPending &&
-                    likeMutation.variables?.id === music.id
-                  }
-                  onToggleLike={() => likeMutation.mutate(music)}
-                  onDelete={
-                    me?.id && me.id === music.userId
-                      ? () => cancelMutation.mutate(music.id)
-                      : undefined
-                  }
-                  isDeletePending={
-                    cancelMutation.isPending &&
-                    cancelMutation.variables === music.id
-                  }
-                />
-              );
-            })}
+            {songs.map((music) => (
+              <MusicListItem
+                key={music.id}
+                music={music}
+                isLikePending={
+                  likeMutation.isPending &&
+                  likeMutation.variables?.id === music.id
+                }
+                onToggleLike={() => likeMutation.mutate(music)}
+                onDelete={
+                  me?.id && me.id === music.userId
+                    ? () => cancelMutation.mutate(music.id)
+                    : undefined
+                }
+                isDeletePending={
+                  cancelMutation.isPending &&
+                  cancelMutation.variables === music.id
+                }
+              />
+            ))}
           </div>
         </div>
 
-        <div className="flex w-full flex-col gap-6 sm:max-w-[260px] sm:min-w-[240px] sm:flex-none sm:gap-20 md:max-w-[280px] md:min-w-[260px] lg:max-w-[330px] lg:min-w-[280px]">
+        <div className="flex w-full flex-col gap-6 sm:w-auto sm:max-w-[340px] sm:min-w-0 sm:gap-20 md:max-w-[360px] lg:max-w-[380px]">
           <div className="flex flex-col gap-3">
             <span className="text-main-text text-text-2">음악 신청</span>
             <TextField
@@ -167,7 +149,7 @@ export function WakeUpMusicSection({
           onClick={() => setIsModalOpen(true)}
         >
           {isHovered && (
-            <div className="pointer-events-none absolute right-0 bottom-full mb-4">
+            <div className="pointer-events-none absolute right-0 bottom-full mb-4 max-w-[calc(100vw-3rem)]">
               <div className="bg-surface text-sub-1 relative rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap shadow-[0_0_24px_rgba(0,0,0,0.1)]">
                 내가 최근 <span className="text-p-1">신청한 3곡</span>을
                 바탕으로 노래를 추천받아봐요!

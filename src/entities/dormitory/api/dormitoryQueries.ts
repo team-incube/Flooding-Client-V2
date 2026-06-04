@@ -26,6 +26,8 @@ export const dormitoryQueries = {
         date,
         queryParams?.sort,
         queryParams?.order,
+        queryParams?.secondarySort,
+        queryParams?.secondaryOrder,
         queryParams?.grade,
       ],
       queryFn: () => getDormitoryMusic(date, queryParams),
