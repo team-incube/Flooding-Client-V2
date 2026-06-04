@@ -4,6 +4,7 @@ import { ReactNode, useState } from "react";
 import dynamic from "next/dynamic";
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import { NoteText } from "@/shared/ui/NoteText";
 import TextField from "@/shared/ui/textField";
 import Music from "@/shared/asset/svg/Music";
 import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendModal";
@@ -54,6 +55,8 @@ export function WakeUpMusicSection({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+
+  const isApplyDisabled = !isToday || !canApply || applyMutation.isPending;
 
   return (
     <section
@@ -126,17 +129,16 @@ export function WakeUpMusicSection({
               onChange={(e) => setUrlInput(e.target.value)}
             />
             <TextButton
-              variant={
-                !canApply || applyMutation.isPending || !isToday
-                  ? "disabled"
-                  : "filled"
-              }
+              variant={isApplyDisabled ? "disabled" : "filled"}
               size="wide"
               className="w-full"
               onClick={handleApplyMusic}
             >
-              신청하기
+              {isToday ? "신청하기" : "신청 불가"}
             </TextButton>
+            <div className="flex flex-col gap-1">
+              <NoteText>※ 기상음악은 오늘 날짜에만 신청할 수 있어요</NoteText>
+            </div>
           </div>
 
           {!icon && (
