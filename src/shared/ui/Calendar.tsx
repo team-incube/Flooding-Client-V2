@@ -11,8 +11,6 @@ interface CalendarProps {
 
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 
-const DAY_KO = ["일", "월", "화", "수", "목", "금", "토"];
-
 function buildCalendarGrid(viewDate: Temporal.PlainDate): Temporal.PlainDate[] {
   const firstOfMonth = viewDate.with({ day: 1 });
   // dayOfWeek: 1(월)~7(일) → 월요일 시작 그리드 오프셋
@@ -32,10 +30,7 @@ function isSameMonth(a: Temporal.PlainDate, b: Temporal.PlainDate): boolean {
 
 function formatHeader(viewDate: Temporal.PlainDate): string {
   const yy = String(viewDate.year).slice(2);
-  const mm = String(viewDate.month).padStart(2, "0");
-  const dd = String(viewDate.day).padStart(2, "0");
-  const day = DAY_KO[viewDate.dayOfWeek % 7];
-  return `${yy}.${mm}.${dd} (${day})`;
+  return `${yy}년 ${viewDate.month}월`;
 }
 
 export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
@@ -67,7 +62,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
           }}
           className="text-main-text text-text-4 cursor-pointer"
         >
-          {formatHeader(selectedDate ?? todayKst())}
+          {formatHeader(viewDate)}
         </button>
         <button
           type="button"
