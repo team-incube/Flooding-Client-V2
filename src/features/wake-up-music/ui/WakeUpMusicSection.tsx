@@ -1,3 +1,4 @@
+"use no memo";
 "use client";
 
 import { ReactNode, useState } from "react";
@@ -45,6 +46,7 @@ export function WakeUpMusicSection({
     setSelectedDate,
     songs,
     me,
+    canDeleteAnyMusic,
     applyMutation,
     handleApplyMusic,
     handleSubmitRecommendedMusic,
@@ -107,7 +109,7 @@ export function WakeUpMusicSection({
                 }
                 onToggleLike={() => likeMutation.mutate(music)}
                 onDelete={
-                  me?.id && me.id === music.userId
+                  me?.id && (me.id === music.userId || canDeleteAnyMusic)
                     ? () => cancelMutation.mutate(music.id)
                     : undefined
                 }
@@ -173,6 +175,7 @@ export function WakeUpMusicSection({
           isOpen={isListModalOpen}
           songs={songs}
           meId={me?.id}
+          canDeleteAnyMusic={canDeleteAnyMusic}
           onClose={() => setIsListModalOpen(false)}
           onToggleLike={(music) => likeMutation.mutate(music)}
           onDelete={(musicId) => cancelMutation.mutate(musicId)}

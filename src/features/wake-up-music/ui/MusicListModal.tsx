@@ -1,3 +1,4 @@
+"use no memo";
 "use client";
 
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
@@ -7,6 +8,7 @@ interface MusicListModalProps {
   isOpen: boolean;
   songs: DormitoryMusic[];
   meId?: number | null;
+  canDeleteAnyMusic?: boolean;
   onClose: () => void;
   onToggleLike: (music: DormitoryMusic) => void;
   onDelete: (musicId: number) => void;
@@ -24,6 +26,7 @@ export function MusicListModal({
   isOpen,
   songs,
   meId,
+  canDeleteAnyMusic = false,
   onClose,
   onToggleLike,
   onDelete,
@@ -78,7 +81,7 @@ export function MusicListModal({
                   }
                   onToggleLike={() => onToggleLike(music)}
                   onDelete={
-                    meId && meId === music.userId
+                    meId && (meId === music.userId || canDeleteAnyMusic)
                       ? () => onDelete(music.id)
                       : undefined
                   }

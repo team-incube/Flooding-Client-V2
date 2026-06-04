@@ -14,6 +14,7 @@ import {
 import { userQueries } from "@/entities/user/api/userQueries";
 import { formatDateParam } from "@/shared/lib/date";
 import { todayKst } from "@/shared/lib/kst";
+import { createMusicPermission } from "@/entities/dormitory/lib/musicPermission";
 import { getInitialMusicDate } from "@/features/wake-up-music/lib/date";
 import { musicUrlSchema } from "@/features/wake-up-music/lib/wakeUpMusicSchema";
 
@@ -155,6 +156,8 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
     },
   });
 
+  const { canDeleteAnyMusic } = createMusicPermission({ role: me?.role });
+
   return {
     urlInput,
     setUrlInput,
@@ -164,6 +167,7 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
     setSelectedDate,
     songs,
     me,
+    canDeleteAnyMusic,
     applyMutation,
     handleApplyMusic,
     handleSubmitRecommendedMusic,
