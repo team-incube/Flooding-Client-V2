@@ -1,3 +1,5 @@
+import { parseKstWallClock } from "@/shared/lib/kst";
+
 interface FormatDateParamOptions {
   hour?: boolean;
   minute?: boolean;
@@ -44,9 +46,9 @@ export function formatDisplayDate(date: DateLike): string {
 }
 
 export const formatTime = (dateString: string) => {
-  return new Date(dateString).toLocaleTimeString("ko-KR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  const dateTime = parseKstWallClock(dateString);
+  if (!dateTime) {
+    return "";
+  }
+  return `${String(dateTime.hour).padStart(2, "0")}:${String(dateTime.minute).padStart(2, "0")}`;
 };
