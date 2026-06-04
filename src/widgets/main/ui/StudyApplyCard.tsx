@@ -4,11 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import BookIcon from "@/shared/asset/svg/ApplyStudy";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
+import { STUDY_CAPACITY } from "@/entities/dormitory/model/constants";
 import { useApplyStudy } from "@/features/self-study/model/useApplyStudy";
 import { useCancelStudy } from "@/features/self-study/model/useCancelStudy";
 import ApplyCard from "./ApplyCard";
-
-const STUDY_MAX = 50;
 
 export default function StudyApplyCard() {
   const studyQuery = dormitoryQueries.study();
@@ -29,6 +28,7 @@ export default function StudyApplyCard() {
     isCancelled: isStudyCancelled,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
+    isFull: students.length >= STUDY_CAPACITY,
   });
 
   const handleApplyStudy = () => {
@@ -52,7 +52,7 @@ export default function StudyApplyCard() {
       title="자습신청"
       icon={<BookIcon />}
       current={students.length}
-      total={STUDY_MAX}
+      total={STUDY_CAPACITY}
       timeText="※ 자습 신청 시간은 20:00 ~ 21:00에 신청이 가능해요"
       buttonText={
         isStudyBanned

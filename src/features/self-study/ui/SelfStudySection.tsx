@@ -11,6 +11,7 @@ import TextField from "@/shared/ui/textField";
 import { NoteTooltip } from "@/shared/ui/NoteTooltip";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
+import { STUDY_CAPACITY } from "@/entities/dormitory/model/constants";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useStudyFilter } from "../model/useStudyFilter";
@@ -52,6 +53,7 @@ export function SelfStudySection() {
     isCancelled: isStudyCancelled,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
+    isFull: students.length >= STUDY_CAPACITY,
   });
   const studyPermission = createStudyPermission({ role: user?.role });
 

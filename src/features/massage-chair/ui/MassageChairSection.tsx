@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
+import { MASSAGE_CAPACITY } from "@/entities/dormitory/model/constants";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
@@ -35,6 +36,7 @@ export function MassageChairSection() {
     isCancelled: isMassageCancelled,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
+    isFull: applicants.length >= MASSAGE_CAPACITY,
   });
 
   const handleApplyMassage = () => {

@@ -4,11 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import ChairIcon from "@/shared/asset/svg/Chair";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
+import { MASSAGE_CAPACITY } from "@/entities/dormitory/model/constants";
 import { useApplyMassage } from "@/features/massage-chair/model/useApplyMassage";
 import { useCancelMassage } from "@/features/massage-chair/model/useCancelMassage";
 import ApplyCard from "./ApplyCard";
-
-const MASSAGE_MAX = 5;
 
 export default function MassageApplyCard() {
   const massageQuery = dormitoryQueries.massage();
@@ -29,6 +28,7 @@ export default function MassageApplyCard() {
     isCancelled: isMassageCancelled,
     isActionPending: applyMutation.isPending || cancelMutation.isPending,
     isApplicationOpen,
+    isFull: applicants.length >= MASSAGE_CAPACITY,
   });
   const handleApplyMassage = () => {
     if (!massageActionState.canApply) {
@@ -51,7 +51,7 @@ export default function MassageApplyCard() {
       title="안마의자"
       icon={<ChairIcon />}
       current={applicants.length}
-      total={MASSAGE_MAX}
+      total={MASSAGE_CAPACITY}
       timeText="※ 안마의자 신청 시간은 20:20 ~ 21:00에 신청이 가능해요"
       buttonText={
         isMassageLoading
