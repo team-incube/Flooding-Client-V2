@@ -29,8 +29,8 @@ export function MusicListItem({
   const title = music.title ?? music.musicUrl;
 
   return (
-    <div className="border-sub-3 flex min-w-0 items-center justify-between gap-2 overflow-hidden border-b py-3 pr-2 last:border-b-0 sm:gap-4 sm:pr-6">
-      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
+    <div className="border-sub-3 flex items-center justify-between gap-2 overflow-hidden border-b py-3 pr-2 last:border-b-0 sm:gap-4 sm:pr-6">
+      <div className="scrollbar-hide flex flex-1 items-center gap-2 overflow-x-auto sm:gap-4">
         <a
           href={music.videoUrl ?? music.musicUrl}
           target="_blank"
@@ -52,15 +52,15 @@ export function MusicListItem({
           )}
         </a>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:gap-6">
-          <p className="text-text-1 text-main-text scrollbar-hide line-clamp-1 min-w-0 overflow-x-auto mask-[linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] font-semibold whitespace-nowrap [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] 2xl:flex-1">
+        <div className="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:gap-6">
+          <p className="text-text-1 text-main-text font-semibold whitespace-nowrap 2xl:flex-1">
             {title}
           </p>
           <div className="flex flex-wrap gap-x-3 gap-y-1 2xl:flex-nowrap 2xl:gap-6">
-            <span className="text-caption-2 text-sub-2 line-clamp-1">
+            <span className="text-caption-2 text-sub-2 whitespace-nowrap">
               {formatAppliedDate(music.appliedAt)}
             </span>
-            <span className="text-caption-2 text-sub-1 line-clamp-1">
+            <span className="text-caption-2 text-sub-1 whitespace-nowrap">
               {music.studentNumber} {music.userName}
             </span>
           </div>
