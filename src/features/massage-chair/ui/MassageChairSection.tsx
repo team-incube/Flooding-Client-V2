@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
+import { sortByOrder } from "@/entities/dormitory/lib/sortByOrder";
 import { MASSAGE_CAPACITY } from "@/entities/dormitory/model/constants";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -21,7 +22,7 @@ export function MassageChairSection() {
   const massageQuery = dormitoryQueries.massage();
   const { data: massageApplicants, isLoading: isMassageLoading } =
     useQuery(massageQuery);
-  const applicants = massageApplicants?.applicants ?? [];
+  const applicants = sortByOrder(massageApplicants?.applicants ?? []);
   const isApplicationOpen = massageApplicants?.isApplicationOpen ?? false;
   const applyMutation = useApplyMassage();
   const cancelMutation = useCancelMassage();
