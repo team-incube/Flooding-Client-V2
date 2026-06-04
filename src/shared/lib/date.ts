@@ -1,3 +1,5 @@
+import { parseKstWallClock } from "@/shared/lib/kst";
+
 interface FormatDateParamOptions {
   hour?: boolean;
   minute?: boolean;
@@ -42,3 +44,11 @@ export function formatDisplayDate(date: DateLike): string {
   const day = DAYS[date.dayOfWeek % 7];
   return `${yy}.${mm}.${dd} (${day})`;
 }
+
+export const formatTime = (dateString: string) => {
+  const dateTime = parseKstWallClock(dateString);
+  if (!dateTime) {
+    return "";
+  }
+  return `${String(dateTime.hour).padStart(2, "0")}:${String(dateTime.minute).padStart(2, "0")}`;
+};
