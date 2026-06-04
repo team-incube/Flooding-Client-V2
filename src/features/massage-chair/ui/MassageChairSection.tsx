@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Chair from "@/shared/asset/svg/Chair";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
@@ -7,6 +8,7 @@ import { sortByOrder } from "@/entities/dormitory/lib/sortByOrder";
 import { MASSAGE_CAPACITY } from "@/entities/dormitory/model/constants";
 import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import { ConfirmModal } from "@/shared/ui/ConfirmModal";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { NoteText } from "@/shared/ui/NoteText";
 import { NoteTooltip } from "@/shared/ui/NoteTooltip";
@@ -26,6 +28,7 @@ export function MassageChairSection() {
   const isApplicationOpen = massageApplicants?.isApplicationOpen ?? false;
   const applyMutation = useApplyMassage();
   const cancelMutation = useCancelMassage();
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
   const hasAppliedMassage =
     massageApplicants?.myApplicationStatus === "APPLIED";
   const isMassageCancelled =
@@ -48,12 +51,21 @@ export function MassageChairSection() {
     applyMutation.mutate();
   };
 
-  const handleCancelMassage = () => {
+  const handleOpenCancelConfirm = () => {
+    if (!massageActionState.canCancel) {
+      return;
+    }
+
+    setIsCancelConfirmOpen(true);
+  };
+
+  const handleConfirmCancelMassage = () => {
     if (!massageActionState.canCancel) {
       return;
     }
 
     cancelMutation.mutate();
+    setIsCancelConfirmOpen(false);
   };
 
   return (
@@ -101,7 +113,7 @@ export function MassageChairSection() {
             className="w-full"
             disabled={massageActionState.isActionDisabled}
             onClick={
-              hasAppliedMassage ? handleCancelMassage : handleApplyMassage
+              hasAppliedMassage ? handleOpenCancelConfirm : handleApplyMassage
             }
           >
             {isMassageLoading
@@ -118,6 +130,18 @@ export function MassageChairSection() {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        open={isCancelConfirmOpen}
+        title="안마의자 신청 취소"
+        titleVariant="negative"
+        description="정말 안마의자 신청을 취소하시겠어요?"
+        confirmLabel="취소하기"
+        confirmVariant="negative"
+        isPending={cancelMutation.isPending}
+        onClose={() => setIsCancelConfirmOpen(false)}
+        onConfirm={handleConfirmCancelMassage}
+      />
     </section>
   );
 }

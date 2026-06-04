@@ -13,6 +13,7 @@ import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { STUDY_CAPACITY } from "@/entities/dormitory/model/constants";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
+import { ConfirmModal } from "@/shared/ui/ConfirmModal";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
@@ -31,6 +32,7 @@ const STUDY_NOTES = ["※ 자습 신청 시간은 20:00 ~ 21:00 입니다"];
 
 export function SelfStudySection() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
   const studyQuery = dormitoryQueries.study();
   const { data: studyApplicants, isLoading: isStudyLoading } =
     useQuery(studyQuery);
@@ -81,12 +83,21 @@ export function SelfStudySection() {
     applyMutation.mutate();
   };
 
-  const handleCancelStudy = () => {
+  const handleOpenCancelConfirm = () => {
+    if (!studyActionState.canCancel) {
+      return;
+    }
+
+    setIsCancelConfirmOpen(true);
+  };
+
+  const handleConfirmCancelStudy = () => {
     if (!studyActionState.canCancel) {
       return;
     }
 
     cancelMutation.mutate();
+    setIsCancelConfirmOpen(false);
   };
 
   const handleToggleAttendance = (studentId: number, isChecked: boolean) => {
@@ -263,7 +274,9 @@ export function SelfStudySection() {
             size="wide"
             className="w-full"
             disabled={studyActionState.isActionDisabled}
-            onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
+            onClick={
+              hasAppliedStudy ? handleOpenCancelConfirm : handleApplyStudy
+            }
           >
             {isStudyBanned
               ? "자습 금지를 당했어요!"
@@ -300,7 +313,7 @@ export function SelfStudySection() {
           size="wide"
           className="w-full"
           disabled={studyActionState.isActionDisabled}
-          onClick={hasAppliedStudy ? handleCancelStudy : handleApplyStudy}
+          onClick={hasAppliedStudy ? handleOpenCancelConfirm : handleApplyStudy}
         >
           {isStudyBanned
             ? "자습 금지를 당했어요!"
@@ -324,6 +337,18 @@ export function SelfStudySection() {
         onToggleGrade={handleToggleGrade}
         onToggleClass={handleToggleClass}
         onToggleGender={handleToggleGender}
+      />
+
+      <ConfirmModal
+        open={isCancelConfirmOpen}
+        title="자습 신청 취소"
+        titleVariant="negative"
+        description="정말 자습 신청을 취소하시겠어요?"
+        confirmLabel="취소하기"
+        confirmVariant="negative"
+        isPending={cancelMutation.isPending}
+        onClose={() => setIsCancelConfirmOpen(false)}
+        onConfirm={handleConfirmCancelStudy}
       />
     </section>
   );
