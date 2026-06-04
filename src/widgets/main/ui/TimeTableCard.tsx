@@ -4,7 +4,6 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Back from "@/shared/asset/svg/Back";
 import Calendar from "@/shared/asset/svg/Calender";
-import { getTimetables } from "@/entities/neis/api/getNeis";
 import { neisQueries } from "@/entities/neis/api/neisQueries";
 import {
   NEIS_OFFICE_CODE,
@@ -82,7 +81,6 @@ function TimeTableContentLoading() {
 }
 
 interface TimeTableCardContentProps {
-  canFetchTimetable: boolean;
   timetableParams: {
     officeCode: string;
     schoolCode: string;
@@ -94,31 +92,22 @@ interface TimeTableCardContentProps {
 }
 
 function TimeTableCardContent({
-  canFetchTimetable,
   timetableParams,
   currentPeriod,
 }: TimeTableCardContentProps) {
   const activeRef = useRef<HTMLDivElement>(null);
 
-  const timetableQuery = neisQueries.timetables(timetableParams);
-  const { data: timetables } = useSuspenseQuery({
-    ...timetableQuery,
-    queryKey: canFetchTimetable
-      ? timetableQuery.queryKey
-      : ["neis", "timetables", "empty", timetableParams.date],
-    queryFn: () =>
-      canFetchTimetable ? getTimetables(timetableParams) : Promise.resolve([]),
-  });
+  const { data: timetables } = useSuspenseQuery(
+    neisQueries.timetables(timetableParams),
+  );
 
   useEffect(() => {
     activeRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [currentPeriod, timetables]);
 
   return (
-    <div className="flex h-[262px] flex-col gap-3 overflow-auto">
-      {!canFetchTimetable ? (
-        <TimeTableCard.Empty />
-      ) : timetables.length > 0 ? (
+    <div className="scrollbar-hide flex h-[262px] flex-col gap-3 overflow-auto">
+      {timetables.length > 0 ? (
         timetables.map((it) => {
           const active = it.period === currentPeriod;
           const times = PERIOD_TIMES[it.period];
@@ -126,7 +115,7 @@ function TimeTableCardContent({
             <div
               key={it.period}
               ref={active ? activeRef : undefined}
-              className={`bg-sub-4 flex items-center gap-3 rounded-lg px-6 py-4 ${
+              className={`bg-sub-4 flex min-w-0 items-center gap-3 rounded-lg px-6 py-4 ${
                 active ? "border-p-1 border" : ""
               }`}
             >
@@ -171,7 +160,6 @@ const TimeTableCard = () => {
   const currentPeriod = debouncedOffset === 0 ? getCurrentPeriod() : null;
 
   const { data: user } = useSuspenseQuery(userQueries.me());
-  const canFetchTimetable = !!user.grade && !!user.classNumber;
   const timetableParams = {
     officeCode: NEIS_OFFICE_CODE,
     schoolCode: NEIS_SCHOOL_CODE,
@@ -181,7 +169,7 @@ const TimeTableCard = () => {
   };
 
   return (
-    <div className="bg-background-surface flex h-[354px] w-full flex-col rounded-2xl p-5 sm:p-6">
+    <div className="bg-background-surface flex h-[354px] w-full min-w-0 flex-col rounded-2xl p-5 sm:p-6">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Calendar />
@@ -211,7 +199,6 @@ const TimeTableCard = () => {
 
       <Suspense fallback={<TimeTableContentLoading />}>
         <TimeTableCardContent
-          canFetchTimetable={canFetchTimetable}
           timetableParams={timetableParams}
           currentPeriod={currentPeriod}
         />

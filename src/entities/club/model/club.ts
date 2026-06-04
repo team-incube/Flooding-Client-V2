@@ -3,6 +3,7 @@ import { Sex } from "@/entities/user/model/user";
 export type ClubType = "MAJOR_CLUB" | "AUTONOMOUS_CLUB";
 export type ClubStatus = "MAINTAIN" | "NEW";
 export type RegistrationType = "NEW" | "MAINTAIN" | null;
+export type ClubApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export interface Club {
   id: number;
@@ -12,6 +13,7 @@ export interface Club {
   description: string;
   imageUrl?: string;
   totalMember: number;
+  approvalStatus?: ClubApprovalStatus;
 }
 
 export interface ClubListResponse {
