@@ -1,3 +1,5 @@
+import { Temporal } from "temporal-polyfill";
+
 const KST_TIME_ZONE = "Asia/Seoul";
 
 /**

@@ -3,6 +3,7 @@ import { getYoutubeThumbnailUrl } from "@/entities/music/lib/youtube";
 import Heart from "@/shared/asset/svg/Heart";
 import Delete from "@/shared/asset/svg/Delete";
 import Image from "next/image";
+import { formatTime } from "@/shared/lib/date";
 
 interface MusicListItemProps {
   music: Music;
@@ -13,7 +14,7 @@ interface MusicListItemProps {
 }
 
 function formatAppliedDate(appliedAt: string) {
-  return appliedAt.split("T")[0] || appliedAt;
+  return formatTime(appliedAt);
 }
 
 export function MusicListItem({
@@ -28,13 +29,13 @@ export function MusicListItem({
   const title = music.title ?? music.musicUrl;
 
   return (
-    <div className="border-sub-3 flex items-center justify-between gap-4 border-b py-3 pr-6 last:border-b-0">
-      <div className="flex min-w-0 flex-1 items-center gap-4">
+    <div className="border-sub-3 flex items-center justify-between gap-2 overflow-hidden border-b py-3 pr-2 last:border-b-0 sm:gap-4 sm:pr-6">
+      <div className="scrollbar-hide flex flex-1 items-center gap-2 overflow-x-auto sm:gap-4">
         <a
           href={music.videoUrl ?? music.musicUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-sub-4 relative h-17 w-30 shrink-0 overflow-hidden rounded-lg 2xl:h-22 2xl:w-39"
+          className="bg-sub-4 relative h-14 w-24 shrink-0 overflow-hidden rounded-lg sm:h-17 sm:w-30 2xl:h-22 2xl:w-39"
         >
           {thumbnailUrl && (
             <Image
@@ -45,21 +46,21 @@ export function MusicListItem({
             />
           )}
           {music.durationText && (
-            <span className="text-caption-3 absolute right-1.5 bottom-1.5 rounded bg-black/70 px-1.5 py-0.5 text-white">
+            <span className="text-caption-3 absolute right-1.5 bottom-1.5 line-clamp-1 rounded bg-black/70 px-1.5 py-0.5 text-white">
               {music.durationText}
             </span>
           )}
         </a>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:gap-6">
-          <p className="text-text-1 text-main-text line-clamp-2 font-semibold break-all 2xl:min-w-0 2xl:flex-1">
+        <div className="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:gap-6">
+          <p className="text-text-1 text-main-text font-semibold whitespace-nowrap 2xl:flex-1">
             {title}
           </p>
-          <div className="flex shrink-0 items-center justify-between gap-3 2xl:justify-start 2xl:gap-6">
-            <span className="text-caption-2 text-sub-2 shrink-0">
+          <div className="flex flex-wrap gap-x-3 gap-y-1 2xl:flex-nowrap 2xl:gap-6">
+            <span className="text-caption-2 text-sub-2 whitespace-nowrap">
               {formatAppliedDate(music.appliedAt)}
             </span>
-            <span className="text-caption-2 text-sub-1 shrink-0">
+            <span className="text-caption-2 text-sub-1 whitespace-nowrap">
               {music.studentNumber} {music.userName}
             </span>
           </div>

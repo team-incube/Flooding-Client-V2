@@ -1,3 +1,4 @@
+import type { Temporal } from "temporal-polyfill";
 import { minutesOfDay } from "@/shared/lib/kst";
 
 export interface TimeOfDay {

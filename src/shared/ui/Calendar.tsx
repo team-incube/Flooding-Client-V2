@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { Temporal } from "temporal-polyfill";
 import Back from "@/shared/asset/svg/Back";
 import { todayKst } from "@/shared/lib/kst";
 
@@ -10,8 +11,6 @@ interface CalendarProps {
 }
 
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
-
-const DAY_KO = ["일", "월", "화", "수", "목", "금", "토"];
 
 function buildCalendarGrid(viewDate: Temporal.PlainDate): Temporal.PlainDate[] {
   const firstOfMonth = viewDate.with({ day: 1 });
@@ -32,10 +31,7 @@ function isSameMonth(a: Temporal.PlainDate, b: Temporal.PlainDate): boolean {
 
 function formatHeader(viewDate: Temporal.PlainDate): string {
   const yy = String(viewDate.year).slice(2);
-  const mm = String(viewDate.month).padStart(2, "0");
-  const dd = String(viewDate.day).padStart(2, "0");
-  const day = DAY_KO[viewDate.dayOfWeek % 7];
-  return `${yy}.${mm}.${dd} (${day})`;
+  return `${yy}년 ${viewDate.month}월`;
 }
 
 export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
@@ -67,7 +63,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
           }}
           className="text-main-text text-text-4 cursor-pointer"
         >
-          {formatHeader(todayKst())}
+          {formatHeader(viewDate)}
         </button>
         <button
           type="button"
@@ -78,18 +74,18 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5">
+      <div className="grid grid-cols-7 gap-1.5 sm:gap-1">
         {DAY_LABELS.map((d) => (
           <div
             key={d}
-            className="text-sub-1 text-caption-2 flex size-10 items-center justify-center p-2"
+            className="text-sub-1 text-caption-2 flex size-10 items-center justify-center p-2 sm:size-7 sm:p-1.5 lg:size-10"
           >
             {d}
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-x-1.5 gap-y-3">
+      <div className="grid grid-cols-7 gap-x-1.5 gap-y-3 sm:gap-x-1">
         {cells.map((date) => {
           const isCurrentMonth = isSameMonth(date, viewDate);
           const isSelected = selectedDate && selectedDate.equals(date);
@@ -102,7 +98,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
                 if (!isCurrentMonth) setViewDate(date);
                 onDateSelect?.(date);
               }}
-              className={`text-caption-1 flex size-10 cursor-pointer items-center justify-center rounded-lg p-2 outline-none ${
+              className={`text-caption-1 flex size-10 cursor-pointer items-center justify-center rounded-lg p-2 outline-none sm:w-7 lg:w-10 ${
                 isSelected
                   ? "bg-p-1 text-sub-4"
                   : isCurrentMonth

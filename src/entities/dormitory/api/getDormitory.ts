@@ -1,6 +1,7 @@
 import { instance } from "@/shared/api/instance";
 import type {
   DormitoryMusic,
+  DormitoryMusicQueryParams,
   MassageApplicants,
   StudyApplicants,
   MyPenaltyResponse,
@@ -12,23 +13,24 @@ import type {
 type DormitoryMusicResponseItem = Omit<DormitoryMusic, "isLiked"> & {
   isLiked?: boolean;
 };
-type DormitoryMusicResponse =
-  | DormitoryMusicResponseItem[]
-  | { data?: DormitoryMusicResponseItem[] };
+
+type DormitoryMusicResponse = ApiResponse<DormitoryMusicResponseItem[]>;
 
 export async function getDormitoryMusic(
   date?: string,
+  queryParams?: DormitoryMusicQueryParams,
 ): Promise<DormitoryMusic[]> {
   const { data } = await instance.get<DormitoryMusicResponse>(
     "/dormitory/music",
     {
-      params: date ? { date } : undefined,
+      params: {
+        date,
+        ...queryParams,
+      },
     },
   );
 
-  const musicList = Array.isArray(data) ? data : (data.data ?? []);
-
-  return musicList.map((music) => ({
+  return data.data.map((music) => ({
     ...music,
     isLiked: music.isLiked ?? false,
   }));

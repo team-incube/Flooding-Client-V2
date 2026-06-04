@@ -1,4 +1,8 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import {
+  mutationOptions,
+  queryOptions,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import { instance } from "@/shared/api/instance";
 import {
   getDormitoryMusic,
@@ -10,6 +14,7 @@ import {
   getCleaningZoneDetail,
 } from "@/entities/dormitory/api/getDormitory";
 import type {
+  DormitoryMusicQueryParams,
   MusicApplyRequest,
   UpdatePenaltyRequest,
   CreateCleaningZoneRequest,
@@ -17,10 +22,11 @@ import type {
 } from "@/entities/dormitory/model/dormitory";
 
 export const dormitoryQueries = {
-  music: (date?: string) =>
+  music: (date?: string, queryParams?: DormitoryMusicQueryParams) =>
     queryOptions({
-      queryKey: ["dormitory", "music", date],
-      queryFn: () => getDormitoryMusic(date),
+      queryKey: ["dormitory", "music", date, queryParams?.sort],
+      queryFn: () => getDormitoryMusic(date, queryParams),
+      placeholderData: keepPreviousData,
     }),
 
   massage: () =>

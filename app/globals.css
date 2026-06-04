@@ -8,6 +8,8 @@
   --background: #f7f7f9;
   --background-surface: #fdfdfd;
   --color-negative: #e23a24;
+  --color-positive: #10b981;
+  --color-warning: #f59e0b;
   --color-main-text: #292e3d;
   --color-sub-4: #f2f2f4;
   --color-sub-3: #e2e2ee;
@@ -49,6 +51,8 @@
   --color-sub-4: var(--color-sub-4);
 
   --color-negative: var(--color-negative);
+  --color-positive: var(--color-positive);
+  --color-warning: var(--color-warning);
 
   /* Fonts */
   --font-sans: "SUIT Variable", sans-serif;

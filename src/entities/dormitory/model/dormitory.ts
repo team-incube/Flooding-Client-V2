@@ -55,6 +55,10 @@ export interface UpdatePenaltyRequest {
   reason: string;
 }
 
+export interface DormitoryMusicQueryParams {
+  sort?: "TIME" | "LIKE";
+}
+
 export interface CreateCleaningZoneRequest {
   name: string;
   description: string;
