@@ -13,10 +13,8 @@ export function useWakeUpMusicSubscription() {
 
   useEffect(() => {
     const accessToken = sessionStorage.getItem("access_token");
-    if (!accessToken) return;
-
     const searchParams = new URLSearchParams();
-    searchParams.set("accessToken", accessToken);
+    if (accessToken) searchParams.set("accessToken", accessToken);
 
     const invalidateToday = () => {
       // 자정 롤오버에 대응하기 위해 이벤트 수신 시점에 오늘 날짜를 계산한다.
