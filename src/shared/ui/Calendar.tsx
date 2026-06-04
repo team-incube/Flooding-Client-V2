@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { Temporal } from "temporal-polyfill";
 import Back from "@/shared/asset/svg/Back";
 import { todayKst } from "@/shared/lib/kst";
 
