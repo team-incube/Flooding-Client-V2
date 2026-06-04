@@ -1,8 +1,8 @@
 "use client";
 
 import { ReactNode, useState } from "react";
+import dynamic from "next/dynamic";
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
-import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import TextField from "@/shared/ui/textField";
 import Music from "@/shared/asset/svg/Music";
@@ -11,6 +11,11 @@ import { MusicListModal } from "@/features/wake-up-music/ui/MusicListModal";
 import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
 import { MusicFilterDropdown } from "@/features/wake-up-music/ui/MusicFilterDropdown";
 import { useMusicFilter } from "@/features/wake-up-music/model/useMusicFilter";
+
+const Calendar = dynamic(
+  () => import("@/shared/ui/Calendar").then((m) => m.Calendar),
+  { ssr: false },
+);
 
 interface WakeUpMusicSectionProps {
   icon?: ReactNode;

@@ -20,8 +20,7 @@ import { musicUrlSchema } from "@/features/wake-up-music/lib/wakeUpMusicSchema";
 export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
   const queryClient = useQueryClient();
   const [urlInput, setUrlInput] = useState("");
-  const [selectedDate, setSelectedDate] =
-    useState<Temporal.PlainDate>(getInitialMusicDate);
+  const [selectedDate, setSelectedDate] = useState(getInitialMusicDate);
 
   const canApply = musicUrlSchema.safeParse(urlInput).success;
 
