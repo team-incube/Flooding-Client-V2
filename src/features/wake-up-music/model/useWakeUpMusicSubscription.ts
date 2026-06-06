@@ -31,6 +31,7 @@ export function useWakeUpMusicSubscription() {
     eventSource.addEventListener("init", invalidateToday);
     eventSource.addEventListener("music-applied", invalidateToday);
     eventSource.addEventListener("music-cancelled", invalidateToday);
+    eventSource.addEventListener("music-like-updated", invalidateToday);
 
     return () => {
       eventSource.removeEventListener("init", invalidateToday);
