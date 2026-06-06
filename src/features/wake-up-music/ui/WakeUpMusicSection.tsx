@@ -12,6 +12,7 @@ import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendM
 import { MusicListModal } from "@/features/wake-up-music/ui/MusicListModal";
 import { MusicRecommendButton } from "@/features/wake-up-music/ui/MusicRecommendButton";
 import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
+import { useWakeUpMusicSubscription } from "@/features/wake-up-music/model/useWakeUpMusicSubscription";
 import { MusicFilterDropdown } from "@/features/wake-up-music/ui/MusicFilterDropdown";
 import { useMusicFilter } from "@/features/wake-up-music/model/useMusicFilter";
 
@@ -48,6 +49,8 @@ export function WakeUpMusicSection({
     likeMutation,
     cancelMutation,
   } = useWakeUpMusic(filterParams);
+
+  useWakeUpMusicSubscription();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
@@ -87,7 +90,7 @@ export function WakeUpMusicSection({
       </div>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col-reverse gap-6 overflow-hidden lg:flex-row">
-        <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto lg:pr-2">
+        <div className="max-h-[360px] min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto lg:max-h-none lg:pr-2">
           <div className="flex min-w-0 flex-col">
             {songs.map((music) => (
               <MusicListItem

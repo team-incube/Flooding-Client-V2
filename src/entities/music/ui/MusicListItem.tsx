@@ -52,16 +52,16 @@ export function MusicListItem({
           )}
         </a>
 
-        <div className="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:gap-6">
-          <p className="text-text-1 text-main-text font-semibold whitespace-nowrap 2xl:flex-1">
+        <div className="flex flex-col gap-3">
+          <p className="text-text-1 text-main-text font-semibold whitespace-nowrap">
             {title}
           </p>
-          <div className="flex flex-wrap gap-x-3 gap-y-1 2xl:flex-nowrap 2xl:gap-6">
-            <span className="text-caption-2 text-sub-2 whitespace-nowrap">
-              {formatAppliedDate(music.appliedAt)}
-            </span>
+          <div className="flex items-center gap-3">
             <span className="text-caption-2 text-sub-1 whitespace-nowrap">
               {music.studentNumber} {music.userName}
+            </span>
+            <span className="text-caption-2 text-sub-2 whitespace-nowrap">
+              {formatAppliedDate(music.appliedAt)}
             </span>
           </div>
         </div>
