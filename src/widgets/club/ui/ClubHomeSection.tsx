@@ -25,6 +25,7 @@ import {
   filterClubs,
   type ClubTypeFilter,
 } from "@/features/club/lib/filterClubs";
+import { useClubViewMode } from "@/features/club/model/useClubViewMode";
 import { createClubPermission } from "@/entities/club/lib/permission";
 
 function ClubCardSkeleton() {
@@ -106,7 +107,6 @@ function ClubHomeSectionError({ resetErrorBoundary }: QueryErrorFallbackProps) {
 function ClubHomeSection() {
   const queryClient = useQueryClient();
 
-  const [viewMode, setViewMode] = useState<"form" | "list">("list");
   const [query, setQuery] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [selectedType, setSelectedType] = useState<ClubTypeFilter>("ALL");
@@ -116,6 +116,10 @@ function ClubHomeSection() {
 
   const clubPermission = createClubPermission({
     role: user.role,
+  });
+
+  const { viewMode, setViewMode } = useClubViewMode({
+    canViewForm: clubPermission.canViewOpeningRequests,
   });
 
   const { data: openingStatus } = useQuery({
