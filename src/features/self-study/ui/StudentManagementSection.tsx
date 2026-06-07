@@ -91,6 +91,10 @@ const StudentManagementSection = () => {
   );
   const [selectedRole, setSelectedRole] = useState<UserRole | "">("");
   const students = studentPage?.content ?? [];
+  const selectedStudent = students.find(
+    (student) => student.id === selectedStudentId,
+  );
+  const isSelectedStudentAdmin = selectedStudent?.role === "ADMIN";
 
   const filteredStudents = filterManagedStudents({
     students,
@@ -141,8 +145,10 @@ const StudentManagementSection = () => {
   };
 
   const handleToggleStudentSelect = (studentId: number) => {
-    setSelectedStudentId((prev) => (prev === studentId ? null : studentId));
-    setSelectedRole("");
+    const isDeselect = selectedStudentId === studentId;
+    setSelectedStudentId(isDeselect ? null : studentId);
+    const nextRole = students.find((student) => student.id === studentId)?.role;
+    setSelectedRole(isDeselect || !nextRole ? "" : nextRole);
   };
 
   const handleBanStudent = () => {
@@ -227,13 +233,15 @@ const StudentManagementSection = () => {
             onUnbanStudent={handleUnbanStudent}
           />
 
-          <StudentRoleActionPanel
-            hasSelectedStudent={selectedStudentId !== null}
-            selectedRole={selectedRole}
-            isPending={patchUserRoleMutation.isPending}
-            onSelectRole={setSelectedRole}
-            onChangeRole={handleChangeRole}
-          />
+          {!isSelectedStudentAdmin && (
+            <StudentRoleActionPanel
+              hasSelectedStudent={selectedStudentId !== null}
+              selectedRole={selectedRole}
+              isPending={patchUserRoleMutation.isPending}
+              onSelectRole={setSelectedRole}
+              onChangeRole={handleChangeRole}
+            />
+          )}
         </aside>
       </div>
     </section>
