@@ -1,23 +1,38 @@
+"use no memo";
 "use client";
 
-import { ReactNode, useState } from "react";
+import { useState } from "react";
+import dynamic from "next/dynamic";
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
-import { Calendar } from "@/shared/ui/Calendar";
 import { TextButton } from "@/shared/ui/Button/TextButton";
+import { NoteText } from "@/shared/ui/NoteText";
 import TextField from "@/shared/ui/textField";
 import Music from "@/shared/asset/svg/Music";
 import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendModal";
+import { MusicListModal } from "@/features/wake-up-music/ui/MusicListModal";
+import { MusicRecommendButton } from "@/features/wake-up-music/ui/MusicRecommendButton";
 import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
+import { useWakeUpMusicSubscription } from "@/features/wake-up-music/model/useWakeUpMusicSubscription";
+import { MusicFilterDropdown } from "@/features/wake-up-music/ui/MusicFilterDropdown";
+import { useMusicFilter } from "@/features/wake-up-music/model/useMusicFilter";
+
+const Calendar = dynamic(
+  () => import("@/shared/ui/Calendar").then((m) => m.Calendar),
+  { ssr: false },
+);
 
 interface WakeUpMusicSectionProps {
-  icon?: ReactNode;
+  compact?: boolean;
   className?: string;
 }
 
 export function WakeUpMusicSection({
-  icon,
+  compact,
   className,
 }: WakeUpMusicSectionProps) {
+  const { sort, setSort, filterParams, filterButtonLabel, hasFilter } =
+    useMusicFilter();
+
   const {
     urlInput,
     setUrlInput,
@@ -27,63 +42,81 @@ export function WakeUpMusicSection({
     setSelectedDate,
     songs,
     me,
+    canDeleteAnyMusic,
     applyMutation,
     handleApplyMusic,
     handleSubmitRecommendedMusic,
     likeMutation,
     cancelMutation,
-  } = useWakeUpMusic();
+  } = useWakeUpMusic(filterParams);
+
+  useWakeUpMusicSubscription();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isListModalOpen, setIsListModalOpen] = useState(false);
+
+  const isApplyDisabled = !isToday || !canApply || applyMutation.isPending;
 
   return (
     <section
-      className={`bg-background-surface relative flex h-auto flex-col gap-6 rounded-2xl p-5 sm:h-[424px] sm:p-6 2xl:h-[520px] ${className ?? ""}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className={`bg-background-surface relative flex h-auto flex-col gap-6 rounded-2xl p-5 sm:p-6 lg:h-[424px] 2xl:h-[520px] ${className ?? ""}`}
     >
-      <div className="flex items-end gap-3">
-        <div className="flex items-center gap-2">
-          <Music />
-          <span className="text-main-text text-text-1">기상음악 신청</span>
+      <div className="flex items-end justify-between gap-2">
+        <div className="flex min-w-0 flex-1 flex-wrap items-end gap-x-3 gap-y-1">
+          <div className="flex shrink-0 items-center gap-2">
+            <Music />
+            <span className="text-main-text text-text-1">기상음악 신청</span>
+          </div>
+          <div className="flex shrink-0 items-center gap-1">
+            <span className="text-sub-1 text-caption-1">신청 음악</span>
+            <span className="text-p-1 text-caption-1">{songs.length}개</span>
+          </div>
         </div>
-        <div className="flex items-center gap-1">
-          <span className="text-sub-1 text-caption-1">신청 음악</span>
-          <span className="text-p-1 text-caption-1">{songs.length}개</span>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsListModalOpen(true)}
+            className="text-caption-1 text-sub-1 hover:bg-surface cursor-pointer rounded px-2 py-1 transition-colors"
+          >
+            크게 보기
+          </button>
+          <MusicFilterDropdown
+            sort={sort}
+            onSortChange={setSort}
+            currentFilterLabel={filterButtonLabel}
+            hasFilter={hasFilter}
+          />
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col-reverse gap-6 overflow-hidden sm:flex-row">
-        <div className="min-w-0 flex-1 overflow-y-auto sm:pr-2">
-          <div className="flex flex-col">
-            {songs.map((music) => {
-              return (
-                <MusicListItem
-                  key={music.id}
-                  music={music}
-                  isLikePending={
-                    likeMutation.isPending &&
-                    likeMutation.variables?.id === music.id
-                  }
-                  onToggleLike={() => likeMutation.mutate(music)}
-                  onDelete={
-                    me?.id && me.id === music.userId
-                      ? () => cancelMutation.mutate(music.id)
-                      : undefined
-                  }
-                  isDeletePending={
-                    cancelMutation.isPending &&
-                    cancelMutation.variables === music.id
-                  }
-                />
-              );
-            })}
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col-reverse gap-6 overflow-hidden lg:flex-row">
+        <div className="max-h-[360px] min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto lg:max-h-none lg:pr-2">
+          <div className="flex min-w-0 flex-col">
+            {songs.map((music) => (
+              <MusicListItem
+                key={music.id}
+                music={music}
+                isLikePending={
+                  likeMutation.isPending &&
+                  likeMutation.variables?.id === music.id
+                }
+                onToggleLike={() => likeMutation.mutate(music)}
+                onDelete={
+                  me?.id && (me.id === music.userId || canDeleteAnyMusic)
+                    ? () => cancelMutation.mutate(music.id)
+                    : undefined
+                }
+                isDeletePending={
+                  cancelMutation.isPending &&
+                  cancelMutation.variables === music.id
+                }
+              />
+            ))}
           </div>
         </div>
 
-        <div className="flex w-full flex-col gap-6 sm:w-[240px] sm:shrink-0 sm:gap-20 lg:w-[330px]">
-          <div className="flex flex-col gap-3">
+        <div className="flex w-full min-w-0 flex-col gap-6 lg:w-auto lg:max-w-[380px] lg:gap-20">
+          <div className="flex min-w-0 flex-col gap-3">
             <span className="text-main-text text-text-2">음악 신청</span>
             <TextField
               placeholder="URL을 입력해주세요"
@@ -91,44 +124,55 @@ export function WakeUpMusicSection({
               onChange={(e) => setUrlInput(e.target.value)}
             />
             <TextButton
-              variant={
-                !canApply || applyMutation.isPending || !isToday
-                  ? "disabled"
-                  : "filled"
-              }
+              variant={isApplyDisabled ? "disabled" : "filled"}
               size="wide"
               className="w-full"
               onClick={handleApplyMusic}
             >
-              신청하기
+              {isToday ? "신청하기" : "신청 불가"}
             </TextButton>
+            <div className="flex flex-col gap-1">
+              <NoteText>※ 기상음악은 오늘 날짜에만 신청할 수 있어요</NoteText>
+            </div>
           </div>
 
-          {!icon && (
+          {!compact && (
             <Calendar
               selectedDate={selectedDate}
               onDateSelect={setSelectedDate}
             />
           )}
+
+          {!compact && (
+            <div className="flex justify-end">
+              <MusicRecommendButton onClick={() => setIsModalOpen(true)} />
+            </div>
+          )}
         </div>
       </div>
 
-      {icon && (
-        <button
-          className="bg-p-2 absolute right-6 bottom-6 flex size-13 cursor-pointer items-center justify-center rounded-full"
-          onClick={() => setIsModalOpen(true)}
-        >
-          {isHovered && (
-            <div className="pointer-events-none absolute right-0 bottom-full mb-4">
-              <div className="bg-surface text-sub-1 relative rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap shadow-[0_0_24px_rgba(0,0,0,0.1)]">
-                오늘의 노래를 <span className="text-p-1">AI</span>한테 추천
-                받아봐요!
-                <div className="bg-background-surface absolute right-[22px] -bottom-1.5 size-3 rotate-45"></div>
-              </div>
-            </div>
-          )}
-          {icon}
-        </button>
+      {compact && (
+        <div className="absolute right-6 bottom-6">
+          <MusicRecommendButton onClick={() => setIsModalOpen(true)} />
+        </div>
+      )}
+
+      {isListModalOpen && (
+        <MusicListModal
+          isOpen={isListModalOpen}
+          songs={songs}
+          meId={me?.id}
+          canDeleteAnyMusic={canDeleteAnyMusic}
+          sort={sort}
+          onSortChange={setSort}
+          filterButtonLabel={filterButtonLabel}
+          hasFilter={hasFilter}
+          onClose={() => setIsListModalOpen(false)}
+          onToggleLike={(music) => likeMutation.mutate(music)}
+          onDelete={(musicId) => cancelMutation.mutate(musicId)}
+          likeMutation={likeMutation}
+          cancelMutation={cancelMutation}
+        />
       )}
 
       {isModalOpen && (

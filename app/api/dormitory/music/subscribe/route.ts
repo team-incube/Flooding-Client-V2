@@ -4,5 +4,5 @@ import { proxySse } from "@/shared/api/sseProxy";
 export const runtime = "nodejs";
 
 export function GET(request: NextRequest) {
-  return proxySse(request, "/dormitory/studies/attendance");
+  return proxySse(request, "/dormitory/music/subscribe");
 }

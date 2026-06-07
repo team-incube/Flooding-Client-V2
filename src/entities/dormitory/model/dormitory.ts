@@ -11,6 +11,7 @@ export interface DormitoryStudent {
 }
 
 export interface StudyApplicant {
+  order: number;
   userId: number;
   name: string;
   studentNumber: number;
@@ -53,6 +54,10 @@ export interface MusicApplyRequest {
 export interface UpdatePenaltyRequest {
   score: number;
   reason: string;
+}
+
+export interface DormitoryMusicQueryParams {
+  sort?: "TIME" | "LIKE";
 }
 
 export interface CreateCleaningZoneRequest {

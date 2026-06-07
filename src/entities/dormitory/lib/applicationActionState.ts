@@ -6,6 +6,7 @@ interface CreateApplicationActionStateParams {
   isApplicationOpen: boolean;
   isBanned?: boolean;
   isCancelled?: boolean;
+  isFull?: boolean;
 }
 
 export function createApplicationActionState({
@@ -16,6 +17,7 @@ export function createApplicationActionState({
   isApplicationOpen,
   isBanned = false,
   isCancelled = false,
+  isFull = false,
 }: CreateApplicationActionStateParams) {
   const isApplyDisabled =
     isUserLoading ||
@@ -23,6 +25,7 @@ export function createApplicationActionState({
     isBanned ||
     isCancelled ||
     isActionPending ||
+    isFull ||
     !isApplicationOpen;
   const isCancelDisabled =
     isUserLoading ||

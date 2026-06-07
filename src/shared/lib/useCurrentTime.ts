@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Temporal } from "temporal-polyfill";
 import { nowKst } from "@/shared/lib/kst";
 
 export function useCurrentTime(intervalMs = 5_000): Temporal.PlainDateTime {
