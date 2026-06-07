@@ -33,7 +33,7 @@ export interface SearchUser {
   classNumber: number;
   number: number;
   isBanned: boolean;
-  role?: UserRole;
+  role: UserRole;
 }
 
 export interface SearchUsersPage {
