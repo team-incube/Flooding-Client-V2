@@ -7,9 +7,25 @@ import {
   MOCK_CLEANING_ZONES,
   MOCK_CLEANING_ZONE_DETAIL,
 } from "@/entities/dormitory/model/mock";
+import { MOCK_SONGS } from "@/entities/music/model/mock";
 
 export const dormitoryHandlers = [
   // GET — 목록 조회
+  http.get("*/dormitory/music", ({ request }) => {
+    const sort = new URL(request.url).searchParams.get("sort");
+    const songs = [...MOCK_SONGS].sort((a, b) =>
+      sort === "LIKE"
+        ? b.likeCount - a.likeCount
+        : new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime(),
+    );
+
+    return HttpResponse.json({
+      status: "OK",
+      code: 200,
+      message: "기상음악 목록 조회 성공",
+      data: songs,
+    });
+  }),
   http.get("*/dormitory/massages", () =>
     HttpResponse.json({
       status: "OK",
@@ -40,6 +56,18 @@ export const dormitoryHandlers = [
   ),
 
   // POST — 신청
+  http.post("*/dormitory/music/:musicId/like", () =>
+    HttpResponse.json({ success: true }, { status: 201 }),
+  ),
+  http.delete("*/dormitory/music/:musicId/like", () =>
+    HttpResponse.json({ success: true }),
+  ),
+  http.delete("*/dormitory/music/:musicId", () =>
+    HttpResponse.json({ success: true }),
+  ),
+  http.post("*/dormitory/music", () =>
+    HttpResponse.json({ success: true }, { status: 201 }),
+  ),
   http.post("*/dormitory/inquiry", () =>
     HttpResponse.json({ success: true }, { status: 201 }),
   ),
