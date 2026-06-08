@@ -5,6 +5,7 @@ import CheckCircle from "@/shared/asset/svg/CheckCircle";
 import Checkbox from "@/shared/asset/svg/Checkbox";
 import Gender from "@/shared/asset/svg/Gender";
 import Profile from "@/shared/asset/svg/Profile";
+import Medal, { isMedalRank } from "@/shared/asset/svg/Medal";
 
 interface StudyApplicantCardProps {
   index: number;
@@ -28,6 +29,9 @@ export function StudyApplicantCard({
       <span className="text-caption-3 text-sub-1 absolute top-4 left-4">
         {index}
       </span>
+      {isMedalRank(index) && (
+        <Medal rank={index} size={32} className="absolute top-3 right-3" />
+      )}
       {canCheck && (
         <button
           type="button"
