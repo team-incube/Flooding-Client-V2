@@ -90,8 +90,8 @@ export function WakeUpMusicSection({
       </div>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col-reverse gap-6 overflow-hidden lg:flex-row">
-        <div className="relative max-h-[360px] min-h-0 min-w-0 flex-1 lg:max-h-none">
-          <div className="h-full overflow-x-hidden overflow-y-auto lg:absolute lg:inset-0 lg:pr-2">
+        <div className="relative min-h-0 min-w-0 flex-1">
+          <div className="max-h-[360px] overflow-x-hidden overflow-y-auto lg:absolute lg:inset-0 lg:max-h-none lg:pr-2">
             <div className="flex min-w-0 flex-col">
               {songs.map((music) => (
                 <MusicListItem
