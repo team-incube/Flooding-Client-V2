@@ -6,7 +6,7 @@ import Chair from "@/shared/asset/svg/Chair";
 import { createApplicationActionState } from "@/entities/dormitory/lib/applicationActionState";
 import { sortByOrder } from "@/entities/dormitory/lib/sortByOrder";
 import { MASSAGE_CAPACITY } from "@/entities/dormitory/model/constants";
-import { StudentProfileCard } from "@/entities/user/ui/StudentProfileCard";
+import { ProfileCard } from "@/entities/user/ui/ProfileCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { ConfirmModal } from "@/shared/ui/ConfirmModal";
 import { dormitoryQueries } from "@/entities/dormitory/api/dormitoryQueries";
@@ -97,7 +97,7 @@ export function MassageChairSection() {
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap gap-4">
               {applicants.map((student) => (
-                <StudentProfileCard
+                <ProfileCard
                   key={student.studentNumber}
                   index={student.order}
                   student={student}
