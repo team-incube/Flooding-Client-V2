@@ -57,12 +57,12 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
                   <span className="2xl:hidden">{user?.name ?? ""}</span>
                 </span>
                 <div className="flex items-center gap-1">
-                  <span className="text-text-3 text-sub-1 leading-none font-medium">
+                  <span className="text-text-3 text-sub-1 font-medium">
                     {user?.studentNumber ?? ""}
                   </span>
                   {roleLabel && (
                     <span
-                      className={`text-text-3 ${user?.role == "GENERAL_STUDENT" ? "text-sub-1" : "text-negative"} leading-none font-medium`}
+                      className={`text-text-3 ${user?.role == "GENERAL_STUDENT" ? "text-sub-1" : "text-negative"} font-medium`}
                     >
                       {roleLabel}
                     </span>
