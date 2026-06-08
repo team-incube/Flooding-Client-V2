@@ -150,7 +150,9 @@ const StudentManagementSection = () => {
     if (isDeselect) {
       setSelectedRole("");
     } else {
-      const targetStudent = students.find((student) => student.id === studentId);
+      const targetStudent = students.find(
+        (student) => student.id === studentId,
+      );
       setSelectedRole(targetStudent?.role ?? "");
     }
   };
