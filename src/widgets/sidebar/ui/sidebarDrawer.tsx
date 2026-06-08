@@ -61,7 +61,9 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
                     {user?.studentNumber ?? ""}
                   </span>
                   {roleLabel && (
-                    <span className="text-text-3 text-negative font-medium">
+                    <span
+                      className={`text-text-3 ${user?.role === "GENERAL_STUDENT" ? "text-sub-1" : "text-negative"} font-medium`}
+                    >
                       {roleLabel}
                     </span>
                   )}

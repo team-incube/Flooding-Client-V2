@@ -13,7 +13,7 @@ export default function DormitoryPage() {
       <section id="massage" className="scroll-mt-4">
         <MassageChairSection />
       </section>
-      <section id="wake-up-music" className="flex flex-1 scroll-mt-4">
+      <section id="wake-up-music" className="scroll-mt-4">
         <WakeUpMusicSection className="h-auto! w-full" />
       </section>
     </main>
