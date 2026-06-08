@@ -30,7 +30,7 @@ export function StudyApplicantCard({
         {index}
       </span>
       {isMedalRank(index) && (
-        <Medal rank={index} size={32} className="absolute top-3 right-3" />
+        <Medal rank={index} size={32} className="absolute right-3 bottom-3" />
       )}
       {canCheck && (
         <button
