@@ -28,7 +28,7 @@ export default function MyProfileCard() {
           </span>
           {roleLabel && (
             <span
-              className={`text-text-3 ${user?.role == "GENERAL_STUDENT" ? "text-sub-1" : "text-negative"} font-medium`}
+              className={`text-text-3 ${user?.role === "GENERAL_STUDENT" ? "text-sub-1" : "text-negative"} font-medium`}
             >
               {roleLabel}
             </span>

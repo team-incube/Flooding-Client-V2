@@ -16,7 +16,7 @@ export const dormitoryHandlers = [
     const songs = [...MOCK_SONGS].sort((a, b) =>
       sort === "LIKE"
         ? b.likeCount - a.likeCount
-        : new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime(),
+        : b.appliedAt.localeCompare(a.appliedAt),
     );
 
     return HttpResponse.json({
