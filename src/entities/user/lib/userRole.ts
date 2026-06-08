@@ -1,6 +1,7 @@
 import type { User, UserRole } from "@/entities/user/model/user";
 
-const roleLabels: Partial<Record<UserRole, string>> = {
+const roleLabels: Record<UserRole, string> = {
+  GENERAL_STUDENT: "일반 학생",
   ADMIN: "관리자",
   DORMITORY_MANAGER: "기자위",
   STUDENT_COUNCIL: "학생회",
@@ -11,7 +12,7 @@ export function getRoleLabel(role?: UserRole): string | null {
     return null;
   }
 
-  return roleLabels[role] ?? null;
+  return roleLabels[role];
 }
 
 const DORMITORY_TEACHER_NAME = "사감선생님";
