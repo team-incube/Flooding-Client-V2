@@ -2,6 +2,8 @@ import type { SearchUser, Sex } from "@/entities/user/model/user";
 
 export type StudyBanFilter = "ALLOWED" | "BANNED";
 
+const EXCLUDED_NAMES = ["사감선생님"];
+
 interface FilterManagedStudentsParams {
   students: SearchUser[];
   searchQuery: string;
@@ -22,6 +24,7 @@ export function filterManagedStudents({
   const normalizedSearchQuery = searchQuery.trim();
 
   return students.filter((student) => {
+    const isStudent = !EXCLUDED_NAMES.includes(student.name);
     const matchesSearchQuery =
       !normalizedSearchQuery ||
       student.name.includes(normalizedSearchQuery) ||
@@ -38,6 +41,7 @@ export function filterManagedStudents({
         : !student.isBanned;
 
     return (
+      isStudent &&
       matchesSearchQuery &&
       matchesGrade &&
       matchesClass &&

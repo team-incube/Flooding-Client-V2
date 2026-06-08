@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { userQueries } from "@/entities/user/api/userQueries";
-import type { Sex } from "@/entities/user/model/user";
+import type { Sex, UserRole } from "@/entities/user/model/user";
 import Student from "@/shared/asset/svg/Student";
 import { useDebouncedValue } from "@/shared/lib/useDebouncedValue";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -14,9 +14,11 @@ import {
   type StudyBanFilter,
 } from "@/features/self-study/lib/filterManagedStudents";
 import { useBanStudy } from "@/features/self-study/model/useBanStudy";
+import { usePatchUserRole } from "@/features/self-study/model/usePatchUserRole";
 import { useUnbanStudy } from "@/features/self-study/model/useUnbanStudy";
 import { ManagedStudentCard } from "./ManagedStudentCard";
 import { StudentManagementFilterPanel } from "./StudentManagementFilterPanel";
+import { StudentRoleActionPanel } from "./StudentRoleActionPanel";
 import { StudyBanActionPanel } from "./StudyBanActionPanel";
 
 const SEARCH_DEBOUNCE_DELAY = 300;
@@ -73,6 +75,7 @@ const StudentManagementSection = () => {
   const { data: studentPage } = useSuspenseQuery(userQueries.list());
   const banStudyMutation = useBanStudy();
   const unbanStudyMutation = useUnbanStudy();
+  const patchUserRoleMutation = usePatchUserRole();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebouncedValue(
     searchQuery,
@@ -86,7 +89,12 @@ const StudentManagementSection = () => {
   const [selectedStudentId, setSelectedStudentId] = useState<number | null>(
     null,
   );
+  const [selectedRole, setSelectedRole] = useState<UserRole | "">("");
   const students = studentPage?.content ?? [];
+  const selectedStudent = students.find(
+    (student) => student.id === selectedStudentId,
+  );
+  const isSelectedStudentAdmin = selectedStudent?.role === "ADMIN";
 
   const filteredStudents = filterManagedStudents({
     students,
@@ -133,10 +141,20 @@ const StudentManagementSection = () => {
     if (filter === selectedStudyBanFilter) return;
     setSelectedStudyBanFilter(filter);
     setSelectedStudentId(null);
+    setSelectedRole("");
   };
 
   const handleToggleStudentSelect = (studentId: number) => {
-    setSelectedStudentId((prev) => (prev === studentId ? null : studentId));
+    const isDeselect = selectedStudentId === studentId;
+    setSelectedStudentId(isDeselect ? null : studentId);
+    if (isDeselect) {
+      setSelectedRole("");
+    } else {
+      const targetStudent = students.find(
+        (student) => student.id === studentId,
+      );
+      setSelectedRole(targetStudent?.role ?? "");
+    }
   };
 
   const handleBanStudent = () => {
@@ -149,6 +167,16 @@ const StudentManagementSection = () => {
     if (selectedStudentId === null) return;
     setSelectedStudentId(null);
     unbanStudyMutation.mutate([selectedStudentId]);
+  };
+
+  const handleChangeRole = () => {
+    if (selectedStudentId === null || selectedRole === "") return;
+    patchUserRoleMutation.mutate({
+      userId: selectedStudentId,
+      role: selectedRole,
+    });
+    setSelectedStudentId(null);
+    setSelectedRole("");
   };
 
   const isStudyBanActionPending =
@@ -210,6 +238,16 @@ const StudentManagementSection = () => {
             onBanStudent={handleBanStudent}
             onUnbanStudent={handleUnbanStudent}
           />
+
+          {!isSelectedStudentAdmin && (
+            <StudentRoleActionPanel
+              hasSelectedStudent={selectedStudentId !== null}
+              selectedRole={selectedRole}
+              isPending={patchUserRoleMutation.isPending}
+              onSelectRole={setSelectedRole}
+              onChangeRole={handleChangeRole}
+            />
+          )}
         </aside>
       </div>
     </section>

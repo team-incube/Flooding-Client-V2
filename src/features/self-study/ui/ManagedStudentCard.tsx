@@ -1,6 +1,7 @@
 "use client";
 
 import type { SearchUser } from "@/entities/user/model/user";
+import { getRoleLabel } from "@/entities/user/lib/userRole";
 import Gender from "@/shared/asset/svg/Gender";
 import Profile from "@/shared/asset/svg/Profile";
 
@@ -32,6 +33,7 @@ export function ManagedStudentCard({
   const variantKey = student.isBanned ? "banned" : "normal";
   const stateKey = isSelected ? "selected" : "default";
   const cardClassName = `${cardStyles.base} ${cardStyles[variantKey][stateKey]}`;
+  const roleLabel = getRoleLabel(student.role);
 
   return (
     <button
@@ -64,6 +66,7 @@ export function ManagedStudentCard({
         <span className="text-caption-1 text-sub-1">
           {student.studentNumber}
         </span>
+        <span className="text-caption-3 text-p-1">{roleLabel}</span>
       </div>
     </button>
   );

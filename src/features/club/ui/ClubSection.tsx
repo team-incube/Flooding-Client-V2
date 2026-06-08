@@ -1,15 +1,17 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import ClubCard from "@/entities/club/ui/ClubCard";
 import type { Club as ClubModel } from "@/entities/club/model/club";
 import FileOff from "@/shared/asset/svg/FileOff";
 
 interface ClubSectionProps {
   clubs: ClubModel[];
-  onClubClick: (clubId: number) => void;
 }
 
-function ClubSection({ clubs, onClubClick }: ClubSectionProps) {
+function ClubSection({ clubs }: ClubSectionProps) {
+  const router = useRouter();
+
   if (clubs.length === 0) {
     return (
       <div className="flex h-full min-h-60 flex-1 flex-col items-center justify-center gap-2">
@@ -25,7 +27,7 @@ function ClubSection({ clubs, onClubClick }: ClubSectionProps) {
         <ClubCard
           key={club.id}
           club={club}
-          onClick={() => onClubClick(club.id)}
+          onClick={() => router.push(`/club/${club.id}`)}
         />
       ))}
     </div>

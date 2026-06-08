@@ -48,6 +48,7 @@ export const userHandlers = [
         classNumber,
         number,
         isBanned,
+        role,
       }) => ({
         id,
         name: sName,
@@ -57,6 +58,7 @@ export const userHandlers = [
         classNumber,
         number,
         isBanned,
+        role,
       }),
     );
 

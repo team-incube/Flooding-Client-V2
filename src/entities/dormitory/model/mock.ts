@@ -37,6 +37,7 @@ export const MOCK_STUDY_APPLICANTS: StudyApplicants = {
   myApplicationStatus: null,
   applicants: [
     {
+      order: 1,
       userId: 1,
       name: "김민솔",
       studentNumber: 3411,
@@ -45,6 +46,7 @@ export const MOCK_STUDY_APPLICANTS: StudyApplicants = {
       isChecked: false,
     },
     {
+      order: 2,
       userId: 2,
       name: "이도윤",
       studentNumber: 2208,
@@ -53,6 +55,7 @@ export const MOCK_STUDY_APPLICANTS: StudyApplicants = {
       isChecked: true,
     },
     {
+      order: 3,
       userId: 3,
       name: "최서연",
       studentNumber: 1304,
@@ -61,6 +64,7 @@ export const MOCK_STUDY_APPLICANTS: StudyApplicants = {
       isChecked: false,
     },
     {
+      order: 4,
       userId: 4,
       name: "박지훈",
       studentNumber: 2307,

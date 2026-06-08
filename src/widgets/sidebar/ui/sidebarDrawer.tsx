@@ -9,7 +9,7 @@ import Signout from "@/shared/asset/svg/Signout";
 import { DarkModeToggle } from "@/shared/ui/Toggle/DarkModeToggle";
 import { MENU_ITEMS } from "../config/menuItems";
 import { SidebarDrawerMenu } from "./sidebarDrawerMenu";
-import { getRoleLabel } from "@/entities/user/lib/userRole";
+import { getGreetingName, getRoleLabel } from "@/entities/user/lib/userRole";
 import Profile from "@/shared/asset/svg/Profile";
 
 interface SidebarDrawerProps {
@@ -52,7 +52,7 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
               <div className="flex flex-col">
                 <span className="text-title-4 font-medium">
                   <span className="hidden 2xl:inline">
-                    안녕하세요! {user ? `${user.name.slice(1)}님` : ""}
+                    안녕하세요! {getGreetingName(user)}
                   </span>
                   <span className="2xl:hidden">{user?.name ?? ""}</span>
                 </span>
