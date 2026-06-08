@@ -6,7 +6,7 @@ import Profile from "@/shared/asset/svg/Profile";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { getGreetingName, getRoleLabel } from "@/entities/user/lib/userRole";
 
-export default function ProfileCard() {
+export default function MyProfileCard() {
   const { data: user } = useQuery(userQueries.me());
   const roleLabel = getRoleLabel(user?.role);
 
@@ -27,7 +27,9 @@ export default function ProfileCard() {
             {user?.studentNumber ?? ""}
           </span>
           {roleLabel && (
-            <span className="text-text-3 text-negative font-medium">
+            <span
+              className={`text-text-3 ${user?.role == "GENERAL_STUDENT" ? "text-sub-1" : "text-negative"} font-medium`}
+            >
               {roleLabel}
             </span>
           )}
