@@ -147,8 +147,12 @@ const StudentManagementSection = () => {
   const handleToggleStudentSelect = (studentId: number) => {
     const isDeselect = selectedStudentId === studentId;
     setSelectedStudentId(isDeselect ? null : studentId);
-    const nextRole = students.find((student) => student.id === studentId)?.role;
-    setSelectedRole(isDeselect || !nextRole ? "" : nextRole);
+    if (isDeselect) {
+      setSelectedRole("");
+    } else {
+      const targetStudent = students.find((student) => student.id === studentId);
+      setSelectedRole(targetStudent?.role ?? "");
+    }
   };
 
   const handleBanStudent = () => {
