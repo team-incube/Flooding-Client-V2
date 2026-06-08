@@ -6,7 +6,7 @@ import Profile from "@/shared/asset/svg/Profile";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { getGreetingName, getRoleLabel } from "@/entities/user/lib/userRole";
 
-export default function ProfileCard() {
+export default function MyProfileCard() {
   const { data: user } = useQuery(userQueries.me());
   const roleLabel = getRoleLabel(user?.role);
 
