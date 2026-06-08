@@ -66,9 +66,7 @@ export function ManagedStudentCard({
         <span className="text-caption-1 text-sub-1">
           {student.studentNumber}
         </span>
-        {roleLabel && (
-          <span className="text-caption-3 text-p-1">{roleLabel}</span>
-        )}
+        <span className="text-caption-3 text-p-1">{roleLabel}</span>
       </div>
     </button>
   );
