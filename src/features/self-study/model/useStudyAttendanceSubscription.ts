@@ -10,6 +10,7 @@ import type { UserRole } from "@/entities/user/model/user";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { openAuthorizedSse } from "@/shared/api/authorizedSse";
 
 export function useStudyAttendanceSubscription(role?: UserRole) {
   const queryClient = useQueryClient();
@@ -17,10 +18,6 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
   useEffect(() => {
     const studyPermission = createStudyPermission({ role });
     if (!studyPermission.canCheckAttendance) return;
-
-    const accessToken = sessionStorage.getItem("access_token");
-    const searchParams = new URLSearchParams();
-    if (accessToken) searchParams.set("accessToken", accessToken);
 
     const streamKey = dormitoryQueries.studyAttendanceStream().queryKey;
 
@@ -87,34 +84,17 @@ export function useStudyAttendanceSubscription(role?: UserRole) {
       }));
     };
 
-    const handleOpen = () => setStreamStatus("open");
-    const handleError = () => setStreamStatus("error");
-
     setStreamStatus("connecting");
 
-    const eventSource = new EventSource(
-      `/api/dormitory/studies/attendance?${searchParams.toString()}`,
-    );
-
-    eventSource.addEventListener("open", handleOpen);
-    eventSource.addEventListener("error", handleError);
-    eventSource.addEventListener("init", handleInitEvent);
-    eventSource.addEventListener("attendance", handleAttendanceEvent);
-    eventSource.addEventListener(
-      "cancel-attendance",
-      handleCancelAttendanceEvent,
-    );
-
-    return () => {
-      eventSource.removeEventListener("open", handleOpen);
-      eventSource.removeEventListener("error", handleError);
-      eventSource.removeEventListener("init", handleInitEvent);
-      eventSource.removeEventListener("attendance", handleAttendanceEvent);
-      eventSource.removeEventListener(
-        "cancel-attendance",
-        handleCancelAttendanceEvent,
-      );
-      eventSource.close();
-    };
+    return openAuthorizedSse({
+      path: "/api/dormitory/studies/attendance",
+      listeners: {
+        init: handleInitEvent,
+        attendance: handleAttendanceEvent,
+        "cancel-attendance": handleCancelAttendanceEvent,
+      },
+      onOpen: () => setStreamStatus("open"),
+      onError: () => setStreamStatus("error"),
+    });
   }, [queryClient, role]);
 }

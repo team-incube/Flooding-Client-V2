@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { openAuthorizedSse } from "@/shared/api/authorizedSse";
 import { formatDateParam } from "@/shared/lib/date";
 import { todayKst } from "@/shared/lib/kst";
 
@@ -12,10 +13,6 @@ export function useWakeUpMusicSubscription() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("access_token");
-    const searchParams = new URLSearchParams();
-    if (accessToken) searchParams.set("accessToken", accessToken);
-
     const invalidateToday = () => {
       // 자정 롤오버에 대응하기 위해 이벤트 수신 시점에 오늘 날짜를 계산한다.
       const today = formatDateParam(todayKst());
@@ -24,20 +21,14 @@ export function useWakeUpMusicSubscription() {
       });
     };
 
-    const eventSource = new EventSource(
-      `/api/dormitory/music/subscribe?${searchParams.toString()}`,
-    );
-
-    eventSource.addEventListener("init", invalidateToday);
-    eventSource.addEventListener("music-applied", invalidateToday);
-    eventSource.addEventListener("music-cancelled", invalidateToday);
-    eventSource.addEventListener("music-like-updated", invalidateToday);
-
-    return () => {
-      eventSource.removeEventListener("init", invalidateToday);
-      eventSource.removeEventListener("music-applied", invalidateToday);
-      eventSource.removeEventListener("music-cancelled", invalidateToday);
-      eventSource.close();
-    };
+    return openAuthorizedSse({
+      path: "/api/dormitory/music/subscribe",
+      listeners: {
+        init: invalidateToday,
+        "music-applied": invalidateToday,
+        "music-cancelled": invalidateToday,
+        "music-like-updated": invalidateToday,
+      },
+    });
   }, [queryClient]);
 }

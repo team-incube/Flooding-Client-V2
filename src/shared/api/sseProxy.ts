@@ -3,32 +3,6 @@ import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { serverInstance } from "@/shared/api/instance";
 
-async function getAccessToken(request: NextRequest) {
-  const queryToken = request.nextUrl.searchParams.get("accessToken");
-
-  if (queryToken) {
-    return queryToken;
-  }
-
-  return getRefreshedAccessToken(request);
-}
-
-async function getRefreshedAccessToken(request: NextRequest) {
-  const refreshToken = request.cookies.get("refresh_token")?.value;
-
-  if (!refreshToken) {
-    return null;
-  }
-
-  const reissueUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}/auth/reissue`;
-
-  const { data } = await serverInstance.post(reissueUrl, {
-    refreshToken,
-  });
-
-  return data.data?.accessToken ?? data.accessToken ?? null;
-}
-
 /**
  * 업스트림 SSE 엔드포인트와의 연결을 수립합니다.
  * @param url 업스트림 SSE 절대 URL
@@ -101,7 +75,11 @@ function createSseProxyResponse(upstream: Readable, signal: AbortSignal) {
 
 /**
  * 백엔드 SSE 엔드포인트를 프록시합니다.
- * 토큰 획득 → 스트림 연결 → 401 시 토큰 재발급 재시도 → 에러/취소 처리 흐름을 공통으로 처리합니다.
+ * 토큰 검증 → 스트림 연결 → 에러/취소 처리 흐름을 공통으로 처리합니다.
+ *
+ * 토큰 재발급은 클라이언트의 공유 refreshAccessToken()(/api/auth/refresh)에 단일화한다.
+ * 프록시는 reissue하지 않으며, access token이 없거나 업스트림 401이면 그대로 401을
+ * 반환해 클라이언트가 새 토큰으로 재연결하도록 한다.
  * @param request
  * @param upstreamPath NEXT_PUBLIC_BASE_URL 기준 업스트림 경로 (예: "/dormitory/music/subscribe")
  */
@@ -113,7 +91,7 @@ export async function proxySse(request: NextRequest, upstreamPath: string) {
   const upstreamUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}${upstreamPath}`;
 
   try {
-    const accessToken = await getAccessToken(request);
+    const accessToken = request.nextUrl.searchParams.get("accessToken");
 
     if (!accessToken) {
       return NextResponse.json(
@@ -122,44 +100,15 @@ export async function proxySse(request: NextRequest, upstreamPath: string) {
       );
     }
 
-    try {
-      const response = await getSseStream(
-        upstreamUrl,
-        accessToken,
-        request.signal,
-      );
+    const response = await getSseStream(
+      upstreamUrl,
+      accessToken,
+      request.signal,
+    );
 
-      return createSseProxyResponse(response.data, request.signal);
-    } catch (error) {
-      console.error("[SSE] 최초 SSE 연결 실패");
-
-      if (
-        !axios.isAxiosError(error) ||
-        error.response?.status !== HttpStatusCode.Unauthorized
-      ) {
-        throw error;
-      }
-
-      const refreshedAccessToken = await getRefreshedAccessToken(request);
-
-      if (!refreshedAccessToken) {
-        throw error;
-      }
-
-      if (request.signal.aborted) {
-        return new Response(null, { status: HttpStatusCode.NoContent });
-      }
-
-      const response = await getSseStream(
-        upstreamUrl,
-        refreshedAccessToken,
-        request.signal,
-      );
-
-      return createSseProxyResponse(response.data, request.signal);
-    }
+    return createSseProxyResponse(response.data, request.signal);
   } catch (error) {
-    console.error("[SSE] 최종 에러");
+    console.error("[SSE] 연결 실패");
 
     if (axios.isAxiosError(error) && error.code === "ERR_CANCELED") {
       return new Response(null, { status: HttpStatusCode.NoContent });

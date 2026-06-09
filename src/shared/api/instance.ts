@@ -33,6 +33,32 @@ function redirectToSignin() {
   }
 }
 
+/**
+ * refresh_token 쿠키로 access_token을 재발급한다.
+ * 동시 호출은 하나의 요청으로 합쳐, rotating refresh token이 중복 호출로
+ * 무효화되는 것을 방지한다. (인터셉터와 선제 복구가 함께 사용)
+ */
+export function refreshAccessToken(): Promise<string> {
+  if (!refreshPromise) {
+    refreshPromise = axios
+      .post("/api/auth/refresh", undefined, {
+        timeout: DEFAULT_ROUTE_TIMEOUT_MS,
+      })
+      .then(({ data }) => {
+        const token = data.data?.accessToken;
+        if (!token) {
+          throw new Error("Access token is missing");
+        }
+        sessionStorage.setItem("access_token", token);
+        return token as string;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+}
+
 instance.interceptors.request.use((config) => {
   if (config.url?.startsWith("/api/")) {
     config.baseURL = undefined;
@@ -62,25 +88,7 @@ instance.interceptors.response.use(
       config.headers["x-retried"] = "true";
 
       try {
-        if (!refreshPromise) {
-          refreshPromise = axios
-            .post("/api/auth/refresh", undefined, {
-              timeout: DEFAULT_ROUTE_TIMEOUT_MS,
-            })
-            .then(({ data }) => {
-              const token = data.data?.accessToken;
-              if (!token) {
-                throw new Error("Access token is missing");
-              }
-              sessionStorage.setItem("access_token", token);
-              return token;
-            })
-            .finally(() => {
-              refreshPromise = null;
-            });
-        }
-
-        const accessToken = await refreshPromise;
+        const accessToken = await refreshAccessToken();
         config.headers.Authorization = `Bearer ${accessToken}`;
         return instance(config);
       } catch (refreshError) {
