@@ -91,20 +91,28 @@ function MealCardContent({ dateStr, selectedTab }: MealCardContentProps) {
     (m) => m.mealType === MEAL_TYPE_MAP[selectedTab],
   );
   const menuItems = selectedMeal?.menus ?? [];
+  const calories = selectedMeal?.calories?.trim();
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto">
+    <div className="flex min-h-0 flex-1 flex-col">
       {menuItems.length > 0 ? (
-        <ul className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:flex lg:flex-col lg:gap-3">
-          {menuItems.map((item, index) => (
-            <li
-              key={`${item}-${index}`}
-              className="text-text-1 text-sub-1 font-semibold"
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="grid min-h-0 flex-1 grid-cols-1 gap-x-6 gap-y-3 overflow-y-auto sm:grid-cols-2 lg:flex lg:flex-col lg:gap-3">
+            {menuItems.map((item, index) => (
+              <li
+                key={`${item}-${index}`}
+                className="text-text-1 text-sub-1 font-semibold"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+          {calories && (
+            <p className="border-sub-4 text-text-3 text-sub-2 mt-3 shrink-0 border-t pt-3 font-medium">
+              총 {calories}
+            </p>
+          )}
+        </>
       ) : (
         <MealCard.Empty />
       )}
