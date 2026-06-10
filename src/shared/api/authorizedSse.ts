@@ -1,27 +1,25 @@
+import { HttpStatusCode } from "axios";
+import { EventSource, type FetchLike } from "eventsource";
 import { refreshAccessToken } from "@/shared/api/instance";
 
 interface AuthorizedSseConfig {
-  /** NEXT_PUBLIC 기준 SSE 라우트 경로 (예: "/api/dormitory/music/subscribe") */
   path: string;
-  /** 이벤트 타입 → 핸들러. open/error는 onOpen/onError로 전달한다. */
   listeners: Record<string, (event: MessageEvent<string>) => void>;
   onOpen?: () => void;
   onError?: () => void;
 }
 
-const INITIAL_RECONNECT_DELAY_MS = 1000;
-const MAX_RECONNECT_DELAY_MS = 30000;
-
 /**
- * access_token을 쿼리 파라미터로 실어 인증된 SSE에 연결한다.
+ * 인증된 SSE에 연결한다.
  *
- * EventSource는 Authorization 헤더를 보낼 수 없어 토큰을 쿼리로 전달하며,
- * 토큰 재발급은 전적으로 공유 refreshAccessToken()(/api/auth/refresh)에 위임한다.
- * 프록시는 더 이상 독립적으로 reissue하지 않으므로 refresh token 회전 경쟁이 없다.
+ * 표준 EventSource는 Authorization 헤더를 보낼 수 없어 토큰을 URL 쿼리로 싣고
+ * 재연결마다 만료된 토큰을 그대로 재사용하는 한계가 있다. 여기서는 fetch 주입을
+ * 지원하는 eventsource 라이브러리를 사용해, 재연결마다 호출되는 fetch가
+ * sessionStorage의 최신 access_token을 Authorization 헤더로 싣는다.
  *
- * 재연결 정책:
- * - 연결이 한 번도 open되지 않고 끊기면(=인증 실패 가능성) 토큰을 새로 받아 재연결한다.
- * - open된 뒤 끊기면(=스트림 드롭/백엔드 init 종료) 토큰 회전 없이 재연결해 회전 폭주를 막는다.
+ * - 401이면 공유 refreshAccessToken()으로 갱신해 1회 재시도한다.
+ * - 갱신까지 실패하면 401을 그대로 반환해 라이브러리가 재연결을 멈춘다(무한 루프 방지).
+ * - 단순 네트워크 드롭의 재연결·Last-Event-ID는 라이브러리에 위임한다.
  *
  * @returns 정리(cleanup) 함수
  */
@@ -31,56 +29,29 @@ export function openAuthorizedSse({
   onOpen,
   onError,
 }: AuthorizedSseConfig): () => void {
-  let eventSource: EventSource | null = null;
-  let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-  let reconnectDelay = INITIAL_RECONNECT_DELAY_MS;
-  let closed = false;
+  const fetchWithAuth: FetchLike = async (url, init) => {
+    const request = (accessToken: string | null) =>
+      fetch(url, {
+        ...init,
+        headers: accessToken
+          ? { ...init.headers, Authorization: `Bearer ${accessToken}` }
+          : init.headers,
+      });
 
-  const scheduleReconnect = (forceRefresh: boolean) => {
-    if (closed || reconnectTimer) return;
-    reconnectTimer = setTimeout(() => {
-      reconnectTimer = null;
-      void connect(forceRefresh);
-    }, reconnectDelay);
-    reconnectDelay = Math.min(reconnectDelay * 2, MAX_RECONNECT_DELAY_MS);
+    const response = await request(sessionStorage.getItem("access_token"));
+    if (response.status !== HttpStatusCode.Unauthorized) return response;
+
+    const refreshed = await refreshAccessToken().catch(() => null);
+    return refreshed ? request(refreshed) : response;
   };
 
-  const connect = async (forceRefresh: boolean) => {
-    let token = sessionStorage.getItem("access_token");
-    if (!token || forceRefresh) {
-      token = await refreshAccessToken().catch(() => null);
-    }
-    if (closed || !token) return;
+  const eventSource = new EventSource(path, { fetch: fetchWithAuth });
 
-    const params = new URLSearchParams({ accessToken: token });
-    const source = new EventSource(`${path}?${params.toString()}`);
-    eventSource = source;
+  eventSource.addEventListener("open", () => onOpen?.());
+  eventSource.addEventListener("error", () => onError?.());
+  for (const [type, handler] of Object.entries(listeners)) {
+    eventSource.addEventListener(type, handler);
+  }
 
-    let opened = false;
-
-    source.addEventListener("open", () => {
-      opened = true;
-      reconnectDelay = INITIAL_RECONNECT_DELAY_MS;
-      onOpen?.();
-    });
-
-    for (const [type, handler] of Object.entries(listeners)) {
-      source.addEventListener(type, handler as EventListener);
-    }
-
-    source.addEventListener("error", () => {
-      onError?.();
-      source.close();
-      // open조차 못 했으면 토큰 만료/인증 실패 가능성 → 새 토큰으로 재연결
-      scheduleReconnect(!opened);
-    });
-  };
-
-  void connect(false);
-
-  return () => {
-    closed = true;
-    if (reconnectTimer) clearTimeout(reconnectTimer);
-    eventSource?.close();
-  };
+  return () => eventSource.close();
 }

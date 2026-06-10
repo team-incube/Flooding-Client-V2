@@ -56,6 +56,7 @@ function createSseProxyResponse(upstream: Readable, signal: AbortSignal) {
  * 토큰 재발급은 클라이언트의 공유 refreshAccessToken()(/api/auth/refresh)에 단일화한다.
  * 프록시는 reissue하지 않으며, access token이 없거나 업스트림 401이면 그대로 401을
  * 반환해 클라이언트가 새 토큰으로 재연결하도록 한다.
+ * access token은 Authorization 헤더(Bearer)로 전달받는다.
  * @param request
  * @param upstreamPath NEXT_PUBLIC_BASE_URL 기준 업스트림 경로 (예: "/dormitory/music/subscribe")
  */
@@ -67,7 +68,10 @@ export async function proxySse(request: NextRequest, upstreamPath: string) {
   const upstreamUrl = `${process.env.NEXT_PUBLIC_BASE_URL!}${upstreamPath}`;
 
   try {
-    const accessToken = request.nextUrl.searchParams.get("accessToken");
+    const authorization = request.headers.get("authorization");
+    const accessToken = authorization?.startsWith("Bearer ")
+      ? authorization.slice("Bearer ".length)
+      : null;
 
     if (!accessToken) {
       return NextResponse.json(
