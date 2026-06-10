@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const publicPages = ["/signin", "/callback"];
+import { COOKIE_CONFIG } from "@/shared/config/cookie";
+import { PUBLIC_ROUTES } from "@/shared/config/routes";
 
 export const config = {
   matcher: [
@@ -14,7 +14,9 @@ function isSafeRedirectPath(path: string): boolean {
 
 export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
-  const refreshToken = request.cookies.get("refresh_token")?.value;
+  const refreshToken = request.cookies.get(
+    COOKIE_CONFIG.refreshToken.name,
+  )?.value;
 
   if (pathname === "/signin" && refreshToken) {
     const redirectTo = searchParams.get("redirectTo");
@@ -26,7 +28,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (!publicPages.includes(pathname) && !refreshToken) {
+  if (!PUBLIC_ROUTES.some((page) => page === pathname) && !refreshToken) {
     const signinUrl = new URL("/signin", request.url);
     const intendedPath = request.nextUrl.pathname + request.nextUrl.search;
 
