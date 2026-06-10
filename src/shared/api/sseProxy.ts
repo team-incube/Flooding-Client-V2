@@ -1,31 +1,7 @@
 import { Readable } from "node:stream";
 import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { serverInstance } from "@/shared/api/instance";
-
-/**
- * 업스트림 SSE 엔드포인트와의 연결을 수립합니다.
- * @param url 업스트림 SSE 절대 URL
- * @param accessToken
- * @param signal
- * @returns AxiosResponse
- */
-async function getSseStream(
-  url: string,
-  accessToken: string,
-  signal?: AbortSignal,
-) {
-  // SSE는 무제한 연결이므로 자동 연결 끊김 방지를 위해 timeout 0을 사용합니다.
-  return serverInstance.get(url, {
-    headers: {
-      Accept: "text/event-stream",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    responseType: "stream",
-    timeout: 0,
-    signal,
-  });
-}
+import { sseInstance } from "@/shared/api/instance";
 
 /**
  * Node.js가 전송하는 데이터(청크 = 버퍼(타입: Uint8Array)를) 브라우저 표준 ReadableStream으로 변환합니다.
@@ -100,11 +76,10 @@ export async function proxySse(request: NextRequest, upstreamPath: string) {
       );
     }
 
-    const response = await getSseStream(
-      upstreamUrl,
-      accessToken,
-      request.signal,
-    );
+    const response = await sseInstance.get(upstreamUrl, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      signal: request.signal,
+    });
 
     return createSseProxyResponse(response.data, request.signal);
   } catch (error) {
