@@ -17,15 +17,18 @@ interface RenderOgImageOptions {
   eyebrow?: string;
   title: string;
   subtitle?: string;
+  thumbnailUrl?: string;
 }
 
 /**
  * 플러딩 브랜드 OG 이미지를 1200×630 PNG로 렌더링한다.
+ * thumbnailUrl을 넘기면 텍스트 우측에 썸네일을 함께 렌더링한다.
  */
 export async function renderOgImage({
   eyebrow,
   title,
   subtitle,
+  thumbnailUrl,
 }: RenderOgImageOptions): Promise<ImageResponse> {
   const fonts = await loadOgFonts();
 
@@ -44,47 +47,73 @@ export async function renderOgImage({
     >
       <Logo height={78} fill={COLOR_POINT} />
 
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        {eyebrow ? (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: "48px",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {eyebrow ? (
+            <div
+              style={{
+                display: "flex",
+                alignSelf: "flex-start",
+                backgroundColor: COLOR_SURFACE,
+                color: COLOR_POINT,
+                border: `2px solid ${COLOR_POINT}`,
+                borderRadius: "9999px",
+                padding: "8px 24px",
+                fontSize: "32px",
+                fontWeight: 700,
+                marginBottom: "24px",
+              }}
+            >
+              {eyebrow}
+            </div>
+          ) : null}
           <div
             style={{
-              display: "flex",
-              alignSelf: "flex-start",
-              backgroundColor: COLOR_SURFACE,
-              color: COLOR_POINT,
-              border: `2px solid ${COLOR_POINT}`,
-              borderRadius: "9999px",
-              padding: "8px 24px",
-              fontSize: "32px",
+              color: COLOR_MAIN_TEXT,
+              fontSize: "84px",
               fontWeight: 700,
-              marginBottom: "24px",
+              lineHeight: 1.2,
             }}
           >
-            {eyebrow}
+            {title}
           </div>
-        ) : null}
-        <div
-          style={{
-            color: COLOR_MAIN_TEXT,
-            fontSize: "84px",
-            fontWeight: 700,
-            lineHeight: 1.2,
-          }}
-        >
-          {title}
+          {subtitle ? (
+            <div
+              style={{
+                color: COLOR_SUB_TEXT,
+                fontSize: "36px",
+                fontWeight: 400,
+                marginTop: "24px",
+                lineHeight: 1.4,
+              }}
+            >
+              {subtitle}
+            </div>
+          ) : null}
         </div>
-        {subtitle ? (
-          <div
+        {thumbnailUrl ? (
+          // Satori(ImageResponse)는 next/image를 지원하지 않아 <img>만 사용 가능하다.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={thumbnailUrl}
+            alt=""
+            width={260}
+            height={260}
             style={{
-              color: COLOR_SUB_TEXT,
-              fontSize: "36px",
-              fontWeight: 400,
-              marginTop: "24px",
-              lineHeight: 1.4,
+              flexShrink: 0,
+              borderRadius: "32px",
+              objectFit: "cover",
+              border: `4px solid ${COLOR_SURFACE}`,
             }}
-          >
-            {subtitle}
-          </div>
+          />
         ) : null}
       </div>
     </div>,
