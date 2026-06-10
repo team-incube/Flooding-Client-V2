@@ -6,7 +6,6 @@ export const useSignOut = () => {
   const handleSignout = async () => {
     await fetch("/api/auth/signout", { method: "POST" });
     sessionStorage.removeItem("access_token");
-    sessionStorage.removeItem("user");
     router.push("/signin");
   };
 
