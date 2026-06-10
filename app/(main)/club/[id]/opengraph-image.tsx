@@ -43,38 +43,14 @@ async function getClubOgData(id: string): Promise<ClubOgData> {
   }
 }
 
-/**
- * Satori가 원격 이미지를 직접 가져오지 못하는 경우를 대비해
- * 썸네일을 base64 데이터 URI로 미리 받아둔다. 실패 시 썸네일을 생략한다.
- */
-async function getThumbnailDataUri(
-  imageUrl: string | null,
-): Promise<string | null> {
-  if (!imageUrl) return null;
-
-  try {
-    const response = await fetch(imageUrl, { next: { revalidate: 3600 } });
-    if (!response.ok) return null;
-
-    const contentType = response.headers.get("content-type") ?? "image/png";
-    if (!contentType.startsWith("image/")) return null;
-
-    const buffer = Buffer.from(await response.arrayBuffer());
-    return `data:${contentType};base64,${buffer.toString("base64")}`;
-  } catch {
-    return null;
-  }
-}
-
 export default async function Image({ params }: OgImageProps) {
   const { id } = await params;
   const { name, imageUrl } = await getClubOgData(id);
-  const thumbnailUrl = await getThumbnailDataUri(imageUrl);
 
   return renderOgImage({
     eyebrow: "동아리",
     title: name ?? "동아리",
     subtitle: "GSM 통합 관리 시스템, 플러딩",
-    thumbnailUrl: thumbnailUrl ?? undefined,
+    thumbnailUrl: imageUrl ?? undefined,
   });
 }
