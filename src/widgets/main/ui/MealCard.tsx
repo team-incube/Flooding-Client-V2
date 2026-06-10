@@ -94,10 +94,10 @@ function MealCardContent({ dateStr, selectedTab }: MealCardContentProps) {
   const calories = selectedMeal?.calories?.trim();
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto">
+    <div className="flex min-h-0 flex-1 flex-col">
       {menuItems.length > 0 ? (
         <>
-          <ul className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:flex lg:flex-col lg:gap-3">
+          <ul className="grid min-h-0 flex-1 grid-cols-1 gap-x-6 gap-y-3 overflow-y-auto sm:grid-cols-2 lg:flex lg:flex-col lg:gap-3">
             {menuItems.map((item, index) => (
               <li
                 key={`${item}-${index}`}
@@ -108,7 +108,7 @@ function MealCardContent({ dateStr, selectedTab }: MealCardContentProps) {
             ))}
           </ul>
           {calories && (
-            <p className="border-sub-4 text-text-3 text-sub-2 mt-auto border-t pt-3 font-medium">
+            <p className="border-sub-4 text-text-3 text-sub-2 mt-3 shrink-0 border-t pt-3 font-medium">
               총 {calories}
             </p>
           )}
