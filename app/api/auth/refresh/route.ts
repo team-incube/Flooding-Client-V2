@@ -1,9 +1,12 @@
 import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { serverInstance } from "@/shared/api/instance";
+import { COOKIE_CONFIG } from "@/shared/config/cookie";
 
 export async function POST(request: NextRequest) {
-  const refreshToken = request.cookies.get("refresh_token")?.value;
+  const refreshToken = request.cookies.get(
+    COOKIE_CONFIG.refreshToken.name,
+  )?.value;
 
   if (!refreshToken) {
     return NextResponse.json(
@@ -23,13 +26,11 @@ export async function POST(request: NextRequest) {
     const res = NextResponse.json(response.data, { status: response.status });
 
     if (newRefreshToken) {
-      res.cookies.set("refresh_token", newRefreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 14,
-      });
+      res.cookies.set(
+        COOKIE_CONFIG.refreshToken.name,
+        newRefreshToken,
+        COOKIE_CONFIG.refreshToken.options,
+      );
     }
 
     return res;
@@ -45,11 +46,8 @@ export async function POST(request: NextRequest) {
         status === HttpStatusCode.Unauthorized
       ) {
         const res = NextResponse.json(body, { status });
-        res.cookies.set("refresh_token", "", {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          path: "/",
+        res.cookies.set(COOKIE_CONFIG.refreshToken.name, "", {
+          ...COOKIE_CONFIG.refreshToken.options,
           maxAge: 0,
         });
         return res;

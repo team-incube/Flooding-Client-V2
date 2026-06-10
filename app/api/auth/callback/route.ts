@@ -1,6 +1,7 @@
 import axios, { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { LONG_API_TIMEOUT_MS, serverInstance } from "@/shared/api/instance";
+import { COOKIE_CONFIG } from "@/shared/config/cookie";
 
 export async function POST(request: NextRequest) {
   const { code } = await request.json();
@@ -21,13 +22,11 @@ export async function POST(request: NextRequest) {
     const res = NextResponse.json(response.data, { status: response.status });
 
     if (refreshToken) {
-      res.cookies.set("refresh_token", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 14,
-      });
+      res.cookies.set(
+        COOKIE_CONFIG.refreshToken.name,
+        refreshToken,
+        COOKIE_CONFIG.refreshToken.options,
+      );
     }
 
     return res;
@@ -38,15 +37,11 @@ export async function POST(request: NextRequest) {
       const { data, status } = error.response;
       const body = data ?? fallbackBody;
 
-      if (status === HttpStatusCode.BadRequest) {
-        return NextResponse.json(body, { status });
-      }
-
-      if (status === HttpStatusCode.Unauthorized) {
-        return NextResponse.json(body, { status });
-      }
-
-      if (status === HttpStatusCode.InternalServerError) {
+      if (
+        status === HttpStatusCode.BadRequest ||
+        status === HttpStatusCode.Unauthorized ||
+        status === HttpStatusCode.InternalServerError
+      ) {
         return NextResponse.json(body, { status });
       }
     }

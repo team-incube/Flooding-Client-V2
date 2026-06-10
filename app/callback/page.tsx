@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { instance, LONG_ROUTE_TIMEOUT_MS } from "@/shared/api/instance";
+import { AUTH_ROUTES } from "@/shared/config/routes";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 
 type CallbackStatus = "loading" | "error";
@@ -29,7 +30,7 @@ function CallbackInner() {
     (async () => {
       try {
         const { data } = await instance.post(
-          "/api/auth/callback",
+          AUTH_ROUTES.callback,
           {
             code,
           },
