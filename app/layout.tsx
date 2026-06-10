@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "플러딩은 GSM의 학교생활과 기숙사 생활을 하나로 연결하는 통합 관리 시스템입니다. 동아리 개설과 모집, 자습 관리, 안마의자 예약, 기상음악 신청, AI 추천과 챗봇 기능을 한 곳에서 제공해 학생들의 편리한 생활을 지원합니다.",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://flooding.kr",
     siteName: "플러딩",
-    locale: "kr",
+    locale: "ko_KR",
     type: "website",
   },
 };
