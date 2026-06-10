@@ -2,9 +2,6 @@ import axios, { HttpStatusCode } from "axios";
 import { captureFeatureError } from "@/shared/lib/sentry";
 import { AUTH_ROUTES, PUBLIC_ROUTES } from "@/shared/config/routes";
 
-/** access_token 자동 재발급 인터셉터에서 제외할 인증 경로 */
-const authRoutesWithoutRefresh = Object.values(AUTH_ROUTES);
-
 export const DEFAULT_API_TIMEOUT_MS = 10 * 1000;
 export const LONG_API_TIMEOUT_MS = 30 * 1000;
 export const DEFAULT_ROUTE_TIMEOUT_MS = DEFAULT_API_TIMEOUT_MS + 2000;
@@ -28,12 +25,6 @@ export const sseInstance = axios.create({
 });
 
 let refreshPromise: Promise<string> | null = null;
-
-function redirectToSignin() {
-  if (!PUBLIC_ROUTES.some((page) => page === window.location.pathname)) {
-    window.location.replace("/signin");
-  }
-}
 
 /**
  * refresh_token 쿠키로 access_token을 재발급한다.
@@ -74,17 +65,17 @@ instance.interceptors.request.use(async (config) => {
 
   if (typeof window === "undefined") return config;
 
-  const skipAuth = authRoutesWithoutRefresh.some((path) =>
-    config.url?.includes(path),
-  );
+  let accessToken = sessionStorage.getItem("access_token");
 
-  let token = sessionStorage.getItem("access_token");
-  if (!token && !skipAuth) {
-    token = await refreshAccessToken().catch(() => null);
+  if (
+    !accessToken &&
+    !Object.values(AUTH_ROUTES).some((path) => config.url?.includes(path))
+  ) {
+    accessToken = await refreshAccessToken().catch(() => null);
   }
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
@@ -103,7 +94,7 @@ instance.interceptors.response.use(
     if (
       error.response?.status === HttpStatusCode.Unauthorized &&
       !config.headers["x-retried"] &&
-      !authRoutesWithoutRefresh.some((path) => config.url?.includes(path))
+      !Object.values(AUTH_ROUTES).some((path) => config.url?.includes(path))
     ) {
       config.headers["x-retried"] = "true";
 
@@ -117,7 +108,11 @@ instance.interceptors.response.use(
           action: "refresh",
         });
         sessionStorage.removeItem("access_token");
-        redirectToSignin();
+
+        if (!PUBLIC_ROUTES.some((page) => page === window.location.pathname)) {
+          window.location.replace("/signin");
+        }
+
         return Promise.reject(refreshError);
       }
     }
