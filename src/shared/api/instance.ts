@@ -1,5 +1,6 @@
 import axios, { HttpStatusCode } from "axios";
 import { captureFeatureError } from "@/shared/lib/sentry";
+import { AUTH_ROUTES, PUBLIC_ROUTES } from "@/shared/config/routes";
 
 export const DEFAULT_API_TIMEOUT_MS = 10 * 1000;
 export const LONG_API_TIMEOUT_MS = 30 * 1000;
@@ -17,36 +18,72 @@ export const serverInstance = axios.create({
   timeout: DEFAULT_API_TIMEOUT_MS,
 });
 
-const authPathsWithoutRefresh = [
-  "/api/auth/callback",
-  "/api/auth/refresh",
-  "/api/auth/signout",
-];
+export const sseInstance = axios.create({
+  headers: { Accept: "text/event-stream" },
+  responseType: "stream",
+  timeout: 0,
+});
 
 let refreshPromise: Promise<string> | null = null;
 
-function redirectToSignin() {
-  const authPages = ["/signin", "/callback"];
-
-  if (!authPages.includes(window.location.pathname)) {
-    window.location.replace("/signin");
+/**
+ * refresh_token 쿠키로 access_token을 재발급한다.
+ * 동시 호출은 하나의 요청으로 합쳐, rotating refresh token이 중복 호출로
+ * 무효화되는 것을 방지한다. (요청 인터셉터의 선제 재발급, 응답 인터셉터의 401 복구,
+ * SSE 연결이 모두 이 프로미스를 공유한다.)
+ */
+export function refreshAccessToken(): Promise<string> {
+  if (!refreshPromise) {
+    refreshPromise = axios
+      .post(AUTH_ROUTES.refresh, undefined, {
+        timeout: DEFAULT_ROUTE_TIMEOUT_MS,
+      })
+      .then(({ data }) => {
+        const token = data.data?.accessToken;
+        if (!token) {
+          throw new Error("Access token is missing");
+        }
+        sessionStorage.setItem("access_token", token);
+        return token as string;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
   }
+  return refreshPromise;
 }
 
-instance.interceptors.request.use((config) => {
+/**
+ * 요청 인터셉터: access_token이 없으면 공유 refreshAccessToken()에 합류해
+ * 토큰이 준비된 뒤 요청을 보낸다(요청 레벨 대기). 진입 시 401 폭포를 방지하며
+ * 화면 렌더링에는 관여하지 않는다.
+ */
+instance.interceptors.request.use(async (config) => {
   if (config.url?.startsWith("/api/")) {
     config.baseURL = undefined;
   }
 
-  if (typeof window !== "undefined") {
-    const token = sessionStorage.getItem("access_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  if (typeof window === "undefined") return config;
+
+  let accessToken = sessionStorage.getItem("access_token");
+
+  if (
+    !accessToken &&
+    !Object.values(AUTH_ROUTES).some((path) => config.url?.includes(path))
+  ) {
+    accessToken = await refreshAccessToken().catch(() => null);
+  }
+
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
 
+/**
+ * 응답 인터셉터: 사용 중 access_token이 만료돼 401이 나면 1회 재발급·재시도한다.
+ * 재발급도 실패하면 세션을 정리하고 /signin으로 보낸다.
+ */
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -57,30 +94,12 @@ instance.interceptors.response.use(
     if (
       error.response?.status === HttpStatusCode.Unauthorized &&
       !config.headers["x-retried"] &&
-      !authPathsWithoutRefresh.some((path) => config.url?.includes(path))
+      !Object.values(AUTH_ROUTES).some((path) => config.url?.includes(path))
     ) {
       config.headers["x-retried"] = "true";
 
       try {
-        if (!refreshPromise) {
-          refreshPromise = axios
-            .post("/api/auth/refresh", undefined, {
-              timeout: DEFAULT_ROUTE_TIMEOUT_MS,
-            })
-            .then(({ data }) => {
-              const token = data.data?.accessToken;
-              if (!token) {
-                throw new Error("Access token is missing");
-              }
-              sessionStorage.setItem("access_token", token);
-              return token;
-            })
-            .finally(() => {
-              refreshPromise = null;
-            });
-        }
-
-        const accessToken = await refreshPromise;
+        const accessToken = await refreshAccessToken();
         config.headers.Authorization = `Bearer ${accessToken}`;
         return instance(config);
       } catch (refreshError) {
@@ -89,7 +108,11 @@ instance.interceptors.response.use(
           action: "refresh",
         });
         sessionStorage.removeItem("access_token");
-        redirectToSignin();
+
+        if (!PUBLIC_ROUTES.some((page) => page === window.location.pathname)) {
+          window.location.replace("/signin");
+        }
+
         return Promise.reject(refreshError);
       }
     }
