@@ -11,11 +11,6 @@ export const uploadProfileImage = async (image: File) => {
   const { data } = await instance.post<{ data: UploadProfileImageResponse }>(
     "/users/me/profile-image",
     formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    },
   );
 
   return data.data;

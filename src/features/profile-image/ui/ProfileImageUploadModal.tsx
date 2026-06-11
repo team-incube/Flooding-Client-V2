@@ -20,12 +20,12 @@ export function ProfileImageUploadModal({
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [isCropping, setIsCropping] = useState(false);
   const { mutate, isPending } = useUploadProfileImage();
 
   const handleDrop = (acceptedFiles: File[]) => {
     const nextFile = acceptedFiles[0];
     if (!nextFile) return;
-    if (imageSrc) URL.revokeObjectURL(imageSrc);
     setImageSrc(URL.createObjectURL(nextFile));
     setCrop({ x: 0, y: 0 });
     setZoom(1);
@@ -45,20 +45,22 @@ export function ProfileImageUploadModal({
     };
   }, [imageSrc]);
 
-  const canSubmit = !!croppedAreaPixels && !isPending;
+  const canSubmit = !!croppedAreaPixels && !isPending && !isCropping;
 
   const handleCropComplete = (_: Area, areaPixels: Area) => {
     setCroppedAreaPixels(areaPixels);
   };
 
   const handleSubmit = () => {
-    if (!imageSrc || !croppedAreaPixels) return;
+    if (!imageSrc || !croppedAreaPixels || isCropping) return;
+    setIsCropping(true);
     const src = imageSrc;
     const area = croppedAreaPixels;
 
     void getCroppedImage(src, area)
       .then((cropped) => mutate(cropped, { onSuccess: onClose }))
-      .catch(() => toast.error("이미지 처리에 실패했습니다."));
+      .catch(() => toast.error("이미지 처리에 실패했습니다."))
+      .finally(() => setIsCropping(false));
   };
 
   return (
