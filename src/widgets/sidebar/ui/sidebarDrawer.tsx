@@ -1,16 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import { useSignOut } from "@/features/sign-out/lib/useSignOut";
+import { ProfileImageUploadModal } from "@/features/profile-image/ui/ProfileImageUploadModal";
 import Signout from "@/shared/asset/svg/Signout";
 import { DarkModeToggle } from "@/shared/ui/Toggle/DarkModeToggle";
 import { MENU_ITEMS } from "../config/menuItems";
 import { SidebarDrawerMenu } from "./sidebarDrawerMenu";
 import { getGreetingName, getRoleLabel } from "@/entities/user/lib/userRole";
 import Profile from "@/shared/asset/svg/Profile";
+import Pencil from "@/shared/asset/svg/Pencil";
 
 interface SidebarDrawerProps {
   isOpen: boolean;
@@ -22,6 +26,10 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
   const { data: user } = useQuery(userQueries.me());
   const roleLabel = getRoleLabel(user?.role);
   const { handleSignout } = useSignOut();
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  const handleOpenProfileModal = () => setIsProfileModalOpen(true);
+  const handleCloseProfileModal = () => setIsProfileModalOpen(false);
 
   const studyPermission = createStudyPermission({ role: user?.role });
   const menuItems = MENU_ITEMS.filter(
@@ -46,9 +54,27 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
             <div className="flex w-full items-center gap-4 rounded-2xl">
-              <div className="flex w-14 items-center justify-center">
-                <Profile />
-              </div>
+              <button
+                type="button"
+                onClick={handleOpenProfileModal}
+                className="relative flex size-14 shrink-0 cursor-pointer"
+                aria-label="프로필 사진 등록"
+              >
+                {user?.profileImageUrl ? (
+                  <Image
+                    src={user.profileImageUrl}
+                    alt="프로필 사진"
+                    fill
+                    unoptimized
+                    className="rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="size-full overflow-hidden rounded-full [&_svg]:size-full">
+                    <Profile />
+                  </div>
+                )}
+                <Pencil className="absolute right-0 bottom-0 size-6" />
+              </button>
               <div className="flex flex-col">
                 <span className="text-title-4 font-medium">
                   <span className="hidden 2xl:inline">
@@ -99,6 +125,10 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
           </div>
         </button>
       </aside>
+
+      {isProfileModalOpen && (
+        <ProfileImageUploadModal onClose={handleCloseProfileModal} />
+      )}
     </div>
   );
 }

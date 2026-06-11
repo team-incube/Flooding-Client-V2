@@ -1,20 +1,40 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import Profile from "@/shared/asset/svg/Profile";
-// import More from "@/shared/asset/svg/MoreVertical";
+import More from "@/shared/asset/svg/MoreVertical";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { getGreetingName, getRoleLabel } from "@/entities/user/lib/userRole";
+import { ProfileImageUploadModal } from "@/features/profile-image/ui/ProfileImageUploadModal";
 
 export default function MyProfileCard() {
   const { data: user } = useQuery(userQueries.me());
   const roleLabel = getRoleLabel(user?.role);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   return (
     <div className="bg-background-surface flex h-24 w-full items-center gap-4 rounded-2xl p-6 sm:h-35 sm:gap-6 sm:p-6 2xl:h-30">
-      <div className="flex w-14 items-center justify-center sm:w-18">
-        <Profile />
+      <div className="relative flex size-14 shrink-0 sm:size-18">
+        {user?.profileImageUrl ? (
+          <Image
+            src={user.profileImageUrl}
+            alt="프로필 사진"
+            fill
+            unoptimized
+            className="rounded-full object-cover"
+          />
+        ) : (
+          <div className="size-full overflow-hidden rounded-full [&_svg]:size-full">
+            <Profile />
+          </div>
+        )}
       </div>
+
       <div className="flex flex-col">
         <span className="text-title-4 font-medium">
           <span className="hidden 2xl:inline">
@@ -35,9 +55,17 @@ export default function MyProfileCard() {
           )}
         </div>
       </div>
-      {/* <div className="ml-auto">
+
+      <button
+        type="button"
+        onClick={handleOpenModal}
+        className="ml-auto hidden cursor-pointer sm:block"
+        aria-label="프로필 사진 등록"
+      >
         <More />
-      </div> */}
+      </button>
+
+      {isModalOpen && <ProfileImageUploadModal onClose={handleCloseModal} />}
     </div>
   );
 }
