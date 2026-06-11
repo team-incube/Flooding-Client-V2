@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import Profile from "@/shared/asset/svg/Profile";
 import More from "@/shared/asset/svg/MoreVertical";
+import { UserAvatar } from "@/shared/ui/UserAvatar";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { getGreetingName, getRoleLabel } from "@/entities/user/lib/userRole";
 import { ProfileImageUploadModal } from "@/features/profile-image/ui/ProfileImageUploadModal";
@@ -19,21 +18,10 @@ export default function MyProfileCard() {
 
   return (
     <div className="bg-background-surface flex h-24 w-full items-center gap-4 rounded-2xl p-6 sm:h-35 sm:gap-6 sm:p-6 2xl:h-30">
-      <div className="relative flex size-14 shrink-0 sm:size-18">
-        {user?.profileImageUrl ? (
-          <Image
-            src={user.profileImageUrl}
-            alt="프로필 사진"
-            fill
-            unoptimized
-            className="rounded-full object-cover"
-          />
-        ) : (
-          <div className="size-full overflow-hidden rounded-full [&_svg]:size-full">
-            <Profile />
-          </div>
-        )}
-      </div>
+      <UserAvatar
+        imageUrl={user?.profileImageUrl}
+        className="size-14 sm:size-18"
+      />
 
       <div className="flex flex-col">
         <span className="text-title-4 font-medium">

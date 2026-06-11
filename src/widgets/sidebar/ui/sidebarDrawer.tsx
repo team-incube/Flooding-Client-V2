@@ -3,17 +3,16 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { createStudyPermission } from "@/entities/dormitory/lib/studyPermission";
 import { useSignOut } from "@/features/sign-out/lib/useSignOut";
 import { ProfileImageUploadModal } from "@/features/profile-image/ui/ProfileImageUploadModal";
 import Signout from "@/shared/asset/svg/Signout";
 import { DarkModeToggle } from "@/shared/ui/Toggle/DarkModeToggle";
+import { UserAvatar } from "@/shared/ui/UserAvatar";
 import { MENU_ITEMS } from "../config/menuItems";
 import { SidebarDrawerMenu } from "./sidebarDrawerMenu";
 import { getGreetingName, getRoleLabel } from "@/entities/user/lib/userRole";
-import Profile from "@/shared/asset/svg/Profile";
 import Pencil from "@/shared/asset/svg/Pencil";
 
 interface SidebarDrawerProps {
@@ -60,19 +59,10 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
                 className="relative flex size-14 shrink-0 cursor-pointer"
                 aria-label="프로필 사진 등록"
               >
-                {user?.profileImageUrl ? (
-                  <Image
-                    src={user.profileImageUrl}
-                    alt="프로필 사진"
-                    fill
-                    unoptimized
-                    className="rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="size-full overflow-hidden rounded-full [&_svg]:size-full">
-                    <Profile />
-                  </div>
-                )}
+                <UserAvatar
+                  imageUrl={user?.profileImageUrl}
+                  className="size-full"
+                />
                 <Pencil className="absolute right-0 bottom-0 size-6" />
               </button>
               <div className="flex flex-col">
