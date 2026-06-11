@@ -24,7 +24,10 @@ export function useUploadProfileImage() {
         ? error.response?.status
         : undefined;
 
-      if (status === HttpStatusCode.BadRequest) {
+      if (
+        status === HttpStatusCode.BadRequest ||
+        status === HttpStatusCode.UnsupportedMediaType
+      ) {
         toast.error("지원하지 않는 이미지 파일입니다.");
         return;
       }
