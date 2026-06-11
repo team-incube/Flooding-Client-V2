@@ -1,8 +1,9 @@
 # 기여 가이드
 
-Flooding-Client-V2에 기여해 주셔서 감사합니다. 이 문서는 기여에 필요한 규칙 문서로 가는 길잡이와 릴리즈 절차를 안내합니다.
+Flooding-Client-V2에 기여해 주셔서 감사합니다. 이 문서는 기여 가이드와 릴리즈 절차를 안내합니다.
 
-기여하기 전에 [행동 강령](./CODE_OF_CONDUCT.md)을 먼저 읽어 주세요. 모든 참여자는 이를 준수해야 합니다.
+> [!IMPORTANT]
+> 기여하기 전에 [행동 강령](./CODE_OF_CONDUCT.md)을 먼저 읽어 주세요. 모든 참여자는 이를 준수해야 합니다.
 
 ## 시작하기
 
@@ -34,6 +35,7 @@ npm run format   # Prettier 포맷팅
 ## 릴리즈
 
 릴리즈는 `develop` → `main` PR로 진행하며 릴리즈 PR 제목은 한국 표준시(KST) 기준 **`vYYYY.MMDD.HHmm`** 형식을 사용합니다(예: `v2026.0611.0908`).
+
 릴리즈 PR 본문 형식은 [`.agents/pr-format.md`](./.agents/pr-format.md)를 따릅니다.
 
 릴리즈 노트 초안은 **Release Drafter** 워크플로우([`.github/workflows/release-drafter.yml`](./.github/workflows/release-drafter.yml))가 작성합니다.
@@ -44,22 +46,20 @@ npm run format   # Prettier 포맷팅
 
 **누가 트리거할 수 있나요?**
 
-- 저장소에서 권한이 **OWNER**, **MEMBER**, **COLLABORATOR** 중 하나인 사람만 트리거할 수 있습니다.
-- 외부 기여자(`CONTRIBUTOR`, `NONE` 등)가 명령 댓글을 달아도 워크플로우는 무시합니다.
+> [!NOTE]
+> **OWNER**, **MEMBER**, **COLLABORATOR** 중 하나의 권한을 가진 경우 트리거할 수 있습니다.
+> 외부 기여자(`CONTRIBUTOR`, `NONE` 등)가 명령 댓글을 달아도 워크플로우는 무시합니다.
 
 **어떻게 트리거하나요?**
 
-1. **댓글 명령 (권장)** — 릴리즈 PR(`develop` → `main`)에 아래 댓글을 답니다.
+> [!TIP]
+> **댓글 명령 (권장)** — 릴리즈 PR(`develop` → `main`)에 `/release-draft` 댓글을 답니다.
+>
+> - 버전을 직접 지정하려면 뒤에 버전을 붙입니다: `/release-draft 2.1.0`
+> - 버전을 생략하면 직전 릴리즈 태그를 기준으로 **patch 버전이 자동 증가**합니다(예: `v2.0.5` → `v2.0.6`).
+> - 실행이 끝나면 봇이 생성된 draft 릴리즈 링크를 해당 PR에 댓글로 회신합니다.
 
-   ```text
-   /release-draft
-   ```
-
-   - 버전을 직접 지정하려면 뒤에 버전을 붙입니다: `/release-draft 2.1.0`
-   - 버전을 생략하면 직전 릴리즈 태그를 기준으로 **patch 버전이 자동 증가**합니다(예: `v2.0.5` → `v2.0.6`).
-   - 실행이 끝나면 봇이 생성된 draft 릴리즈 링크를 해당 PR에 댓글로 회신합니다.
-
-2. **Actions 탭** — `Actions → Release Drafter → Run workflow` 버튼으로도 실행할 수 있으며, 이때 `version` 입력란에 버전을 직접 넣을 수 있습니다.
+**Actions 탭** — `Actions → Release Drafter → Run workflow` 버튼으로도 실행할 수 있으며, 이때 `version` 입력란에 버전을 직접 넣을 수 있습니다.
 
 **무엇이 일어나나요?**
 
