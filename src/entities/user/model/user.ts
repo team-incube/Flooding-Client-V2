@@ -22,6 +22,7 @@ export interface User {
   penaltyScore: number;
   isBanned: boolean;
   hasClubApplication: boolean;
+  profileImageUrl?: string;
 }
 
 export interface SearchUser {
