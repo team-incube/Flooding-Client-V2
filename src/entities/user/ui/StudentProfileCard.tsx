@@ -1,8 +1,11 @@
 import type { User } from "@/entities/user/model/user";
 import Gender from "@/shared/asset/svg/Gender";
-import Profile from "@/shared/asset/svg/Profile";
+import { UserAvatar } from "@/shared/ui/UserAvatar";
 
-type StudentProfileCardStudent = Pick<User, "name" | "studentNumber" | "sex">;
+type StudentProfileCardStudent = Pick<
+  User,
+  "name" | "studentNumber" | "sex" | "profileImageUrl"
+>;
 
 interface StudentProfileCardProps {
   index: number;
@@ -19,9 +22,7 @@ export function StudentProfileCard({
         {index}
       </span>
       <div className="flex flex-col items-center justify-center gap-2 py-6">
-        <div className="flex size-[64px] items-center justify-center">
-          <Profile />
-        </div>
+        <UserAvatar imageUrl={student.profileImageUrl} className="size-16" />
         <div className="flex items-center">
           <span className="text-text-3 text-main-text">{student.name}</span>
           <Gender

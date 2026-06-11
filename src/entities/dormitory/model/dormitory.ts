@@ -18,6 +18,7 @@ export interface StudyApplicant {
   sex: Sex;
   isBanned: boolean;
   isChecked: boolean;
+  profileImageUrl?: string;
 }
 
 export type MassageApplicationStatus = "APPLIED" | "CANCELLED";
