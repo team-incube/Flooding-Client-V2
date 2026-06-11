@@ -1,0 +1,29 @@
+name: Release Drafter
+
+# 자동 실행이 아니라, 릴리즈 PR(develop → main) 머지 후
+# 원하는 시점에 Actions 탭에서 직접 실행한다.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "릴리즈 버전 (예: 2.0.6). 비워두면 직전 태그를 기준으로 patch 버전이 자동 증가한다."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  draft:
+    name: Update Release Draft
+    runs-on: ubuntu-latest
+    steps:
+      - name: Draft release notes
+        uses: release-drafter/release-drafter@v6
+        with:
+          config-name: release-drafter.yml
+          commitish: refs/heads/main
+          version: ${{ inputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

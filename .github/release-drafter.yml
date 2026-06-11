@@ -1,0 +1,24 @@
+name-template: 'v$RESOLVED_VERSION Release'
+tag-template: 'v$RESOLVED_VERSION'
+
+# 라벨에 별도 bump 규칙이 없으므로 직전 태그 기준 patch 자동 증가
+version-resolver:
+  default: patch
+
+# 릴리즈 PR(vYYYY.MMDD.HHmm) 자신은 변경 목록에서 제외
+exclude-labels:
+  - '🪽 Type: Release'
+
+change-template: '* $TITLE by @$AUTHOR in #$NUMBER'
+change-title-escapes: '\<*_&'
+
+template: |
+  ## 📝작업 내용
+
+  <!-- 이슈별 작업 내용을 한국어로 작성하세요 -->
+
+  ## What's Changed
+
+  $CHANGES
+
+  **Full Changelog**: https://github.com/team-incube/Flooding-Client-V2/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
