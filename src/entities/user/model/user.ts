@@ -35,6 +35,7 @@ export interface SearchUser {
   number: number;
   isBanned: boolean;
   role: UserRole;
+  profileImageUrl?: string;
 }
 
 export interface SearchUsersPage {
