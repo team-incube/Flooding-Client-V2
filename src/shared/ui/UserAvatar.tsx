@@ -5,23 +5,25 @@ interface UserAvatarProps {
   imageUrl?: string;
   alt?: string;
   className?: string;
+  sizes?: string;
 }
 
 export function UserAvatar({
   imageUrl,
   alt = "프로필 사진",
   className,
+  sizes = "72px",
 }: UserAvatarProps) {
   return (
     <div
-      className={`relative shrink-0 overflow-hidden rounded-full [&_svg]:size-full ${className ?? ""}`}
+      className={`bg-sub-3 relative shrink-0 overflow-hidden rounded-full [&_svg]:size-full ${className ?? ""}`}
     >
       {imageUrl ? (
         <Image
           src={imageUrl}
           alt={alt}
           fill
-          unoptimized
+          sizes={sizes}
           className="object-cover"
         />
       ) : (
