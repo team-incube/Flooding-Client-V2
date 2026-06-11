@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Cropper, { type Area, type Point } from "react-easy-crop";
 import { toast } from "sonner";
 import Camera from "@/shared/asset/svg/Camera";
+import Edit from "@/shared/asset/svg/Edit";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import { useUploadProfileImage } from "@/features/profile-image/model/useUploadProfileImage";
 import { getCroppedImage } from "@/features/profile-image/lib/getCroppedImage";
@@ -21,6 +22,7 @@ export function ProfileImageUploadModal({
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
+  const backdropMouseDownRef = useRef(false);
   const { mutate, isPending } = useUploadProfileImage();
 
   const handleDrop = (acceptedFiles: File[]) => {
@@ -32,7 +34,7 @@ export function ProfileImageUploadModal({
     setCroppedAreaPixels(null);
   };
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, open } = useDropzone({
     onDrop: handleDrop,
     accept: { "image/*": [] },
     multiple: false,
@@ -51,6 +53,16 @@ export function ProfileImageUploadModal({
     setCroppedAreaPixels(areaPixels);
   };
 
+  const handleBackdropMouseDown = (e: React.MouseEvent) => {
+    backdropMouseDownRef.current = e.target === e.currentTarget;
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget && backdropMouseDownRef.current) {
+      onClose();
+    }
+  };
+
   const handleSubmit = () => {
     if (!imageSrc || !croppedAreaPixels || isCropping) return;
     setIsCropping(true);
@@ -65,13 +77,11 @@ export function ProfileImageUploadModal({
 
   return (
     <div
-      onClick={onClose}
+      onMouseDown={handleBackdropMouseDown}
+      onClick={handleBackdropClick}
       className="bg-background/50 fixed inset-0 z-100 flex items-center justify-center"
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="bg-background-surface flex w-[90%] max-w-[448px] flex-col gap-3 rounded-2xl p-6"
-      >
+      <div className="bg-background-surface flex w-[90%] max-w-[448px] flex-col gap-3 rounded-2xl p-6">
         <span className="text-text-1 text-main-text">프로필 사진 등록</span>
 
         {imageSrc ? (
@@ -88,6 +98,15 @@ export function ProfileImageUploadModal({
               onZoomChange={setZoom}
               onCropComplete={handleCropComplete}
             />
+            <input {...getInputProps()} />
+            <button
+              type="button"
+              onClick={open}
+              aria-label="다른 사진 선택"
+              className="bg-background-surface absolute top-2 right-2 z-20 flex size-9 cursor-pointer items-center justify-center rounded-full shadow-md [&_svg]:size-5"
+            >
+              <Edit color="var(--color-p-1)" />
+            </button>
           </div>
         ) : (
           <div
