@@ -4,8 +4,8 @@ import type { StudyApplicant } from "@/entities/dormitory/model/dormitory";
 import CheckCircle from "@/shared/asset/svg/CheckCircle";
 import Checkbox from "@/shared/asset/svg/Checkbox";
 import Gender from "@/shared/asset/svg/Gender";
-import Profile from "@/shared/asset/svg/Profile";
 import Medal, { isMedalRank } from "@/shared/asset/svg/Medal";
+import { UserAvatar } from "@/shared/ui/UserAvatar";
 
 interface StudyApplicantCardProps {
   index: number;
@@ -50,9 +50,7 @@ export function StudyApplicantCard({
         </div>
       )}
       <div className="flex h-full flex-col items-center justify-center gap-2">
-        <div className="flex size-[64px] items-center justify-center">
-          <Profile />
-        </div>
+        <UserAvatar imageUrl={student.profileImageUrl} className="size-16" />
         <div className="flex items-center">
           <span className="text-text-3 text-main-text">{student.name}</span>
           <Gender
