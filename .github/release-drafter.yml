@@ -1,5 +1,5 @@
-name-template: 'v$RESOLVED_VERSION Release'
-tag-template: 'v$RESOLVED_VERSION'
+name-template: "v$RESOLVED_VERSION Release"
+tag-template: "v$RESOLVED_VERSION"
 
 # 라벨에 별도 bump 규칙이 없으므로 직전 태그 기준 patch 자동 증가
 version-resolver:
@@ -7,9 +7,9 @@ version-resolver:
 
 # 릴리즈 PR(vYYYY.MMDD.HHmm) 자신은 변경 목록에서 제외
 exclude-labels:
-  - '🪽 Type: Release'
+  - "🪽 Type: Release"
 
-change-template: '* $TITLE by @$AUTHOR in #$NUMBER'
+change-template: "* $TITLE by @$AUTHOR in #$NUMBER"
 change-title-escapes: '\<*_&'
 
 template: |
