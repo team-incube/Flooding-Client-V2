@@ -7,6 +7,7 @@ import { Header } from "@/widgets/header/ui/header";
 import { AiChatButton } from "@/features/ai-chat/ui/AiChatButton";
 import { AiChatModal } from "@/features/ai-chat/ui/AiChatModal";
 import { useAiChatPanel } from "@/features/ai-chat/model/useAiChatPanel";
+import { RealtimeSubscriptions } from "@/widgets/realtime-subscription/ui/RealtimeSubscriptions";
 
 export default function MainLayout({
   children,
@@ -18,6 +19,7 @@ export default function MainLayout({
 
   return (
     <div className="bg-background flex h-dvh overflow-hidden">
+      <RealtimeSubscriptions />
       <div className="hidden sm:flex">
         <Sidebar />
       </div>
