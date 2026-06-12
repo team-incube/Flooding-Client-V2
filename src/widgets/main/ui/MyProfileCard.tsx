@@ -1,20 +1,28 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Profile from "@/shared/asset/svg/Profile";
-// import More from "@/shared/asset/svg/MoreVertical";
+import More from "@/shared/asset/svg/MoreVertical";
+import { UserAvatar } from "@/shared/ui/UserAvatar";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { getGreetingName, getRoleLabel } from "@/entities/user/lib/userRole";
+import { ProfileImageUploadModal } from "@/features/profile-image/ui/ProfileImageUploadModal";
 
 export default function MyProfileCard() {
   const { data: user } = useQuery(userQueries.me());
   const roleLabel = getRoleLabel(user?.role);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   return (
     <div className="bg-background-surface flex h-24 w-full items-center gap-4 rounded-2xl p-6 sm:h-35 sm:gap-6 sm:p-6 2xl:h-30">
-      <div className="flex w-14 items-center justify-center sm:w-18">
-        <Profile />
-      </div>
+      <UserAvatar
+        imageUrl={user?.profileImageUrl}
+        className="size-14 sm:size-18"
+      />
+
       <div className="flex flex-col">
         <span className="text-title-4 font-medium">
           <span className="hidden 2xl:inline">
@@ -35,9 +43,17 @@ export default function MyProfileCard() {
           )}
         </div>
       </div>
-      {/* <div className="ml-auto">
+
+      <button
+        type="button"
+        onClick={handleOpenModal}
+        className="ml-auto hidden cursor-pointer sm:block"
+        aria-label="프로필 사진 등록"
+      >
         <More />
-      </div> */}
+      </button>
+
+      {isModalOpen && <ProfileImageUploadModal onClose={handleCloseModal} />}
     </div>
   );
 }

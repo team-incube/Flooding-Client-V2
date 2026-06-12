@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   transpilePackages: ["msw"],
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2678400,
     remotePatterns: [
       {
         protocol: "https",
@@ -17,6 +19,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "*.r2.dev",
+      },
+      {
+        protocol: "https",
+        hostname: "*.flooding.kr",
       },
     ],
   },
