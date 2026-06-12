@@ -4,13 +4,9 @@ import { PUBLIC_ROUTES } from "@/shared/config/routes";
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api|images|video|files).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api|monitoring|images|video|files).*)",
   ],
 };
-
-function isSafeRedirectPath(path: string): boolean {
-  return path.startsWith("/") && !path.startsWith("//") && path !== "/signin";
-}
 
 /**
  * 링크 미리보기·검색 색인을 위한 소셜/SEO 크롤러 User-Agent.
@@ -21,12 +17,10 @@ function isSafeRedirectPath(path: string): boolean {
 const CRAWLER_USER_AGENT_PATTERN =
   /facebookexternalhit|facebot|twitterbot|slackbot|slack-imgproxy|discordbot|kakaotalk-scrap|daumoa|telegrambot|whatsapp|linkedinbot|redditbot|pinterest|applebot|googlebot|bingbot|yeti|naverbot|line-podcast|skypeuripreview|embedly|google-inspectiontool/i;
 
-function isCrawler(userAgent: string | null): boolean {
-  return userAgent ? CRAWLER_USER_AGENT_PATTERN.test(userAgent) : false;
-}
-
 export function proxy(request: NextRequest) {
-  if (isCrawler(request.headers.get("user-agent"))) {
+  const userAgent = request.headers.get("user-agent");
+
+  if (userAgent && CRAWLER_USER_AGENT_PATTERN.test(userAgent)) {
     return NextResponse.next();
   }
 
@@ -38,7 +32,12 @@ export function proxy(request: NextRequest) {
   if (pathname === "/signin" && refreshToken) {
     const redirectTo = searchParams.get("redirectTo");
 
-    if (redirectTo && isSafeRedirectPath(redirectTo)) {
+    if (
+      redirectTo &&
+      redirectTo.startsWith("/") &&
+      !redirectTo.startsWith("//") &&
+      redirectTo !== "/signin"
+    ) {
       return NextResponse.redirect(new URL(redirectTo, request.url));
     }
 
