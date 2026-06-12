@@ -20,7 +20,6 @@ import { useStudyFilter } from "../model/useStudyFilter";
 import { useApplyStudy } from "../model/useApplyStudy";
 import { useCancelStudy } from "../model/useCancelStudy";
 import { useCheckStudyAttendance } from "../model/useCheckStudyAttendance";
-import { useStudyAttendanceSubscription } from "../model/useStudyAttendanceSubscription";
 import { useUncheckStudyAttendance } from "../model/useUncheckStudyAttendance";
 import { NoteText } from "@/shared/ui/NoteText";
 import { StudyApplicantCard } from "./StudyApplicantCard";
@@ -60,7 +59,6 @@ export function SelfStudySection() {
   });
   const studyPermission = createStudyPermission({ role: user?.role });
 
-  useStudyAttendanceSubscription(user?.role);
   const checkAttendanceMutation = useCheckStudyAttendance();
   const uncheckAttendanceMutation = useUncheckStudyAttendance();
 
