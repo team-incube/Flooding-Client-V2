@@ -5,6 +5,7 @@ export interface HomebaseMember {
 
 export interface HomebaseReservation {
   id: number;
+  reservationDate: string;
   startPeriod: number;
   endPeriod: number;
   homebaseId: number;
