@@ -80,7 +80,7 @@ export function useHomebaseReservationActions({
     }) => homebaseMutations.apply(homebaseId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: homebaseQueries.list().queryKey,
+        queryKey: homebaseQueries.list(reservationDate).queryKey,
       });
       onApplySuccess();
       toast.success("홈베이스 신청이 완료되었습니다");
@@ -93,7 +93,7 @@ export function useHomebaseReservationActions({
       homebaseMutations.cancel(reservationId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: homebaseQueries.list().queryKey,
+        queryKey: homebaseQueries.list(reservationDate).queryKey,
       });
       toast.success("예약이 취소되었습니다");
     },
