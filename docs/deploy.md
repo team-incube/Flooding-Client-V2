@@ -10,11 +10,11 @@ Flooding 프론트엔드를 GSM SV(Ubuntu VM)에 Docker 로 배포한다. Vercel
 
 ## 환경변수 두 종류
 
-| 종류 | 예 | 주입 시점 |
-|---|---|---|
+| 종류                                | 예                                                            | 주입 시점                 |
+| ----------------------------------- | ------------------------------------------------------------- | ------------------------- |
 | `NEXT_PUBLIC_*` (공개, 번들 인라인) | BASE_URL, DG_CLIENT_ID, DG_REDIRECT_URL, SITE_URL, SENTRY_DSN | **빌드 시 `--build-arg`** |
-| `SENTRY_AUTH_TOKEN` (소스맵 업로드) | — | **빌드 시만** |
-| 서버 시크릿 | `YOUTUBE_API_KEY`, 서버 `SENTRY_DSN` | **런타임** (`.env`) |
+| `SENTRY_AUTH_TOKEN` (소스맵 업로드) | —                                                             | **빌드 시만**             |
+| 서버 시크릿                         | `YOUTUBE_API_KEY`, 서버 `SENTRY_DSN`                          | **런타임** (`.env`)       |
 
 > `NEXT_PUBLIC_*` 는 빌드에 박히므로 환경(dev/prod)별로 redirect/site URL 을 바꿔 **각각 빌드**한다(태그 분리).
 
