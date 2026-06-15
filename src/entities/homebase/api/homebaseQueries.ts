@@ -4,10 +4,10 @@ import { getHomebaseReservations } from "@/entities/homebase/api/getHomebase";
 import type { HomebaseApplyRequest } from "@/entities/homebase/model/homebase";
 
 export const homebaseQueries = {
-  list: () =>
+  list: (date: string) =>
     queryOptions({
-      queryKey: ["homebase", "list"],
-      queryFn: getHomebaseReservations,
+      queryKey: ["homebase", "list", date],
+      queryFn: () => getHomebaseReservations(date),
     }),
 } as const;
 

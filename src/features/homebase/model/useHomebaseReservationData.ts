@@ -11,12 +11,14 @@ import {
 } from "@/features/homebase/lib/homebaseReservationPolicy";
 
 interface UseHomebaseReservationDataParams {
+  reservationDate: string;
   selectedFloor: string;
   selectedStartNum: number;
   selectedEndNum: number;
 }
 
 export function useHomebaseReservationData({
+  reservationDate,
   selectedFloor,
   selectedStartNum,
   selectedEndNum,
@@ -26,7 +28,7 @@ export function useHomebaseReservationData({
     data: reservations = [],
     isLoading,
     isError,
-  } = useQuery(homebaseQueries.list());
+  } = useQuery(homebaseQueries.list(reservationDate));
   const reservedTables = getReservedTableMembers({
     reservations,
     selectedFloor,
