@@ -17,6 +17,8 @@ import { todayKst } from "@/shared/lib/kst";
 import { createMusicPermission } from "@/entities/dormitory/lib/musicPermission";
 import { getInitialMusicDate } from "@/features/wake-up-music/lib/date";
 import { musicUrlSchema } from "@/features/wake-up-music/lib/wakeUpMusicSchema";
+import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
+import { youtubeQueries } from "@/entities/music/api/youtubeQueries";
 
 export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
   const queryClient = useQueryClient();
@@ -31,6 +33,27 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
 
   const { data: songs = [] } = useQuery(musicQuery);
   const { data: me } = useQuery(userQueries.me());
+
+  const videoIds = songs
+    .map((music) => extractYoutubeVideoId(music.videoUrl ?? music.musicUrl))
+    .filter((id): id is string => Boolean(id));
+
+  const { data: youtubeVideos = {} } = useQuery(
+    youtubeQueries.videos(videoIds),
+  );
+
+  const enrichedSongs = songs.map((music) => {
+    const videoId = extractYoutubeVideoId(music.videoUrl ?? music.musicUrl);
+    const meta = videoId ? youtubeVideos[videoId] : undefined;
+
+    if (!meta) return music;
+
+    return {
+      ...music,
+      duration: music.duration ?? meta.duration,
+      durationText: music.durationText ?? meta.durationText,
+    };
+  });
 
   const applyMutation = useMutation({
     mutationKey: dormitoryMutations.applyMusic().mutationKey,
@@ -55,35 +78,9 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
     },
   });
 
-  const applyRecommendedMutation = useMutation({
-    ...dormitoryMutations.applyMusic(),
-    mutationKey: ["dormitory", "music-apply-recommended"],
-    meta: {
-      getExtras: (body: { musicUrl: string }) => ({ musicUrl: body.musicUrl }),
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
-    },
-    onError: (error) => {
-      const status = axios.isAxiosError(error)
-        ? error.response?.status
-        : undefined;
-
-      if (status === HttpStatusCode.Conflict) {
-        toast.error("이미 기상음악을 신청했습니다.");
-        return;
-      }
-      toast.error("기상음악 신청에 실패했습니다.");
-    },
-  });
-
   const handleApplyMusic = () => {
     if (!canApply || applyMutation.isPending) return;
     applyMutation.mutate();
-  };
-
-  const handleSubmitRecommendedMusic = async (selectedUrl: string) => {
-    await applyRecommendedMutation.mutateAsync({ musicUrl: selectedUrl });
   };
 
   const likeMutation = useMutation({
@@ -165,12 +162,11 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
     isToday,
     selectedDate,
     setSelectedDate,
-    songs,
+    songs: enrichedSongs,
     me,
     canDeleteAnyMusic,
     applyMutation,
     handleApplyMusic,
-    handleSubmitRecommendedMusic,
     likeMutation,
     cancelMutation,
   };
