@@ -1,0 +1,105 @@
+# ─────────────────────────────────────────────────────────────────
+# Deploy — Flooding-Client-V2
+# develop → preview 환경 / main → production 환경
+#
+# 필요한 GitHub Environments: `preview`, `production`
+#  - Variables(공개값): NEXT_PUBLIC_BASE_URL, NEXT_PUBLIC_DG_CLIENT_ID,
+#      NEXT_PUBLIC_DG_REDIRECT_URL, NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_SENTRY_DSN,
+#      IMAGE_TAG(develop|main), SERVER_NAME, COOKIE_SECURE
+#  - Secrets: SENTRY_AUTH_TOKEN, YOUTUBE_API_KEY, SENTRY_DSN,
+#      VM_HOST, VM_PORT, VM_USER, VM_SSH_KEY, (선택)GHCR_PULL_TOKEN
+#
+# VM 일회성 준비: deploy 공개키를 VM authorized_keys 에 등록, docker 설치
+# ─────────────────────────────────────────────────────────────────
+name: Deploy
+
+on:
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/team-incube/flooding-client
+
+jobs:
+  build:
+    name: Build & Push (GHCR)
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR (GITHUB_TOKEN, no PAT)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push (amd64)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ${{ env.IMAGE }}:${{ github.ref_name }}
+            ${{ env.IMAGE }}:${{ github.ref_name }}-${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_BASE_URL=${{ vars.NEXT_PUBLIC_BASE_URL }}
+            NEXT_PUBLIC_DG_CLIENT_ID=${{ vars.NEXT_PUBLIC_DG_CLIENT_ID }}
+            NEXT_PUBLIC_DG_REDIRECT_URL=${{ vars.NEXT_PUBLIC_DG_REDIRECT_URL }}
+            NEXT_PUBLIC_SITE_URL=${{ vars.NEXT_PUBLIC_SITE_URL }}
+            NEXT_PUBLIC_SENTRY_DSN=${{ vars.NEXT_PUBLIC_SENTRY_DSN }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+
+  deploy:
+    name: Deploy to VM
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # compose.yaml + nginx/ 를 VM 으로 동기화 (레포가 source of truth)
+      - name: Sync deploy files to VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_HOST }}
+          port: ${{ secrets.VM_PORT }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          source: "compose.yaml,nginx/"
+          target: "flooding"
+          overwrite: true
+
+      - name: Pull image & restart
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VM_HOST }}
+          port: ${{ secrets.VM_PORT }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            set -e
+            cd ~/flooding
+            # 런타임 .env 를 환경 변수/시크릿에서 생성 (VM 에 수기 보관 안 함)
+            cat > .env <<EOF
+            IMAGE_TAG=${{ vars.IMAGE_TAG }}
+            SERVER_NAME=${{ vars.SERVER_NAME }}
+            COOKIE_SECURE=${{ vars.COOKIE_SECURE }}
+            YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}
+            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            EOF
+            # private 패키지면 로그인 (public 이면 GHCR_PULL_TOKEN 미설정 → 건너뜀)
+            if [ -n "${{ secrets.GHCR_PULL_TOKEN }}" ]; then
+              echo "${{ secrets.GHCR_PULL_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            fi
+            docker compose pull
+            docker compose up -d
+            docker image prune -f
