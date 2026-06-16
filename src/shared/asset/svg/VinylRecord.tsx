@@ -24,7 +24,7 @@ export default function VinylRecord({
         </radialGradient>
       </defs>
 
-      <circle cx="40" cy="40" r="38" fill="var(--color-main-text)" />
+      <circle cx="40" cy="40" r="38" fill="var(--color-sub-1)" />
 
       <circle
         cx="40"
