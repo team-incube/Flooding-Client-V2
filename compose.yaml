@@ -1,0 +1,47 @@
+# GSM SV VM 배포 구성 (app + nginx 리버스 프록시).
+# - dev: HTTP만 사용 (nginx 80 → app:3000).
+# - prod: certbot 프로파일로 인증서 발급 후 nginx/templates 를 TLS 템플릿으로 교체하고 443 활성화.
+# 환경값/시크릿은 같은 디렉터리의 .env 에서 주입 (.env.example 참고).
+services:
+  app:
+    image: ghcr.io/team-incube/flooding-client:${IMAGE_TAG:-develop}
+    pull_policy: always
+    env_file:
+      - .env
+    expose:
+      - "3000" # nginx 가 프론트, 외부로 직접 공개하지 않음
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      # 프로덕션 TLS 시 주석 해제
+      # - "443:443"
+    environment:
+      # nginx 공식 이미지의 envsubst 는 "환경에 정의된 변수"만 치환하므로
+      # SERVER_NAME 만 정의 → 템플릿의 $host 등 nginx 변수는 그대로 보존됨.
+      - SERVER_NAME=${SERVER_NAME:-_}
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - acme-challenge:/var/www/certbot:ro
+      - letsencrypt:/etc/letsencrypt:ro
+    restart: unless-stopped
+
+  # 프로덕션 전용. 평소엔 안 뜬다. 사용: docker compose --profile prod up -d
+  # 최초 발급: docker compose run --rm certbot certonly --webroot -w /var/www/certbot -d <DOMAIN>
+  certbot:
+    image: certbot/certbot
+    profiles:
+      - prod
+    volumes:
+      - acme-challenge:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt
+    # 인증서 자동 갱신 루프
+    entrypoint: /bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'
+
+volumes:
+  acme-challenge:
+  letsencrypt:
