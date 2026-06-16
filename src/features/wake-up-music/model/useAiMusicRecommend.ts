@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { HttpStatusCode } from "axios";
 import { toast } from "sonner";
 import { aiMutations } from "@/entities/ai/api/aiMutations";
@@ -12,6 +12,7 @@ const MAX_RETRY = 3;
 type RecommendEmptyReason = "NO_HISTORY" | "NO_RECOMMENDATIONS";
 
 export function useAiMusicRecommend() {
+  const queryClient = useQueryClient();
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [youtubeLinks, setYoutubeLinks] = useState<string[]>([]);
@@ -19,9 +20,16 @@ export function useAiMusicRecommend() {
     null,
   );
 
+  const videoIds = youtubeLinks
+    .map(extractYoutubeVideoId)
+    .filter((id): id is string => Boolean(id));
+
   const { mutate: recommendMusic, isPending } = useMutation({
     ...aiMutations.recommendSong(),
     onMutate: () => {
+      queryClient.cancelQueries({
+        queryKey: youtubeQueries.videos(videoIds).queryKey,
+      });
       setYoutubeLinks([]);
       setSelectedUrl(null);
       setEmptyReason(null);
@@ -70,10 +78,6 @@ export function useAiMusicRecommend() {
       toast.error("AI 노래 추천에 실패했습니다.");
     },
   });
-
-  const videoIds = youtubeLinks
-    .map(extractYoutubeVideoId)
-    .filter((id): id is string => Boolean(id));
 
   const { data: youtubeVideos = {}, isFetching: isYoutubeFetching } = useQuery(
     youtubeQueries.videos(videoIds),

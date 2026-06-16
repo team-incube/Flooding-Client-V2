@@ -15,6 +15,7 @@ interface YoutubeVideosResponse {
 
 export async function getYoutubeVideos(
   videoIds: string[],
+  signal?: AbortSignal,
 ): Promise<Record<string, YoutubeVideoMetadata>> {
   const ids = Array.from(new Set(videoIds)).filter(Boolean);
 
@@ -27,6 +28,7 @@ export async function getYoutubeVideos(
     {
       baseURL: undefined,
       params: { ids: ids.join(",") },
+      signal,
     },
   );
 
@@ -39,7 +41,7 @@ export const youtubeQueries = {
 
     return queryOptions({
       queryKey: ["music", "youtube-videos", ids.join(",")],
-      queryFn: () => getYoutubeVideos(ids),
+      queryFn: ({ signal }) => getYoutubeVideos(ids, signal),
       enabled: ids.length > 0,
     });
   },
