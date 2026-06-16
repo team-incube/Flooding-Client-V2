@@ -80,6 +80,11 @@ export function useAiMusicRecommend() {
   );
 
   const isLoading = isPending || (videoIds.length > 0 && isYoutubeFetching);
+  const loadingStage: "recommend" | "youtube" | null = isPending
+    ? "recommend"
+    : videoIds.length > 0 && isYoutubeFetching
+      ? "youtube"
+      : null;
 
   const displayCards = youtubeLinks.map((url) => {
     const id = extractYoutubeVideoId(url) ?? "";
@@ -97,6 +102,7 @@ export function useAiMusicRecommend() {
   };
 
   const handleRetry = () => {
+    if (isLoading) return;
     if (retryCount < MAX_RETRY) {
       setRetryCount((prev) => prev + 1);
       recommendMusic();
@@ -111,6 +117,7 @@ export function useAiMusicRecommend() {
     maxRetry: MAX_RETRY,
     isActive: selectedUrl !== null,
     isPending: isLoading,
+    loadingStage,
     handleSelect,
     handleRetry,
   };

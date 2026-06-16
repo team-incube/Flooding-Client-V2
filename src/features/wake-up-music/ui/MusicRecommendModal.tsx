@@ -7,21 +7,12 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
 import { useAiMusicRecommend } from "@/features/wake-up-music/model/useAiMusicRecommend";
 import { NoteText } from "@/shared/ui/NoteText";
-import { Skeleton } from "@/shared/ui/Skeleton";
+import { MusicRecommendLoading } from "@/features/wake-up-music/ui/MusicRecommendLoading";
 
 interface MusicRecommendModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (selectedUrl: string) => Promise<void> | void;
-}
-
-function MusicRecommendCardSkeleton() {
-  return (
-    <div className="w-full shrink-0 sm:w-[calc((100%-0.75rem)/2)] lg:w-[calc((100%-1.5rem)/3)]">
-      <Skeleton className="h-[203px] w-full rounded-xl" />
-      <Skeleton className="mt-2 h-5 w-4/5" />
-    </div>
-  );
 }
 
 interface MusicRecommendEmptyProps {
@@ -60,6 +51,7 @@ export function MusicRecommendModal({
     maxRetry,
     isActive,
     isPending,
+    loadingStage,
     handleSelect,
     handleRetry,
   } = useAiMusicRecommend();
@@ -106,9 +98,7 @@ export function MusicRecommendModal({
 
         <div className="scrollbar-hide flex min-h-[230px] gap-3 overflow-x-auto">
           {isPending ? (
-            Array.from({ length: 3 }).map((_, i) => (
-              <MusicRecommendCardSkeleton key={i} />
-            ))
+            <MusicRecommendLoading stage={loadingStage ?? "recommend"} />
           ) : displayCards.length === 0 ? (
             <MusicRecommendEmpty reason={emptyReason} />
           ) : (
@@ -130,6 +120,7 @@ export function MusicRecommendModal({
             onClick={handleRetry}
             count={retryCount}
             max={maxRetry}
+            disabled={isPending}
           />
           <div
             className={
