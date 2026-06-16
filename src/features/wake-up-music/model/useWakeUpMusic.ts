@@ -78,35 +78,9 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
     },
   });
 
-  const applyRecommendedMutation = useMutation({
-    ...dormitoryMutations.applyMusic(),
-    mutationKey: ["dormitory", "music-apply-recommended"],
-    meta: {
-      getExtras: (body: { musicUrl: string }) => ({ musicUrl: body.musicUrl }),
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: musicQuery.queryKey });
-    },
-    onError: (error) => {
-      const status = axios.isAxiosError(error)
-        ? error.response?.status
-        : undefined;
-
-      if (status === HttpStatusCode.Conflict) {
-        toast.error("이미 기상음악을 신청했습니다.");
-        return;
-      }
-      toast.error("기상음악 신청에 실패했습니다.");
-    },
-  });
-
   const handleApplyMusic = () => {
     if (!canApply || applyMutation.isPending) return;
     applyMutation.mutate();
-  };
-
-  const handleSubmitRecommendedMusic = async (selectedUrl: string) => {
-    await applyRecommendedMutation.mutateAsync({ musicUrl: selectedUrl });
   };
 
   const likeMutation = useMutation({
@@ -193,7 +167,6 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
     canDeleteAnyMusic,
     applyMutation,
     handleApplyMusic,
-    handleSubmitRecommendedMusic,
     likeMutation,
     cancelMutation,
   };
