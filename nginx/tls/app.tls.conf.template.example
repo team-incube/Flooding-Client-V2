@@ -29,19 +29,32 @@ server {
 
     client_max_body_size 10m;
 
-    location / {
-        proxy_pass http://app:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Host              $host;
-        proxy_set_header X-Real-IP         $remote_addr;
-        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+    # 공통 프록시 헤더 (server 레벨 → 하위 location 이 상속)
+    proxy_http_version 1.1;
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Connection        "";
 
-        # SSE/스트리밍 대응
-        proxy_set_header Connection        "";
+    # SSE 전용: 버퍼링 끄고 장시간 연결 유지
+    location = /api/dormitory/music/subscribe {
+        proxy_pass http://app:3000;
         proxy_buffering    off;
         proxy_cache        off;
         proxy_read_timeout 3600s;
         proxy_send_timeout 3600s;
+    }
+    location = /api/dormitory/studies/attendance {
+        proxy_pass http://app:3000;
+        proxy_buffering    off;
+        proxy_cache        off;
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+    }
+
+    # 일반 요청: 기본 버퍼링 유지
+    location / {
+        proxy_pass http://app:3000;
     }
 }

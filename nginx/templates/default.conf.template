@@ -6,25 +6,38 @@ server {
     # 이미지 업로드(아바타·클럽 썸네일) 대비. nginx 기본 1m 초과 거부 방지.
     client_max_body_size 10m;
 
+    # 공통 프록시 헤더 (server 레벨 → 하위 location 이 상속)
+    proxy_http_version 1.1;
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Connection        "";
+
     # Let's Encrypt HTTP-01 챌린지 경로 (TLS 준비용, dev 에선 빈 볼륨이라 무해)
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
     }
 
-    location / {
+    # SSE 전용: 버퍼링 끄고 장시간 연결 유지.
+    # (앱도 X-Accel-Buffering: no 를 보내지만, 장시간 read/send timeout 은 여기서만 지정 가능)
+    location = /api/dormitory/music/subscribe {
         proxy_pass http://app:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Host              $host;
-        proxy_set_header X-Real-IP         $remote_addr;
-        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-
-        # SSE/스트리밍 대응: 버퍼링 끄고 장시간 연결 유지
-        # (/api/dormitory/music/subscribe, /api/dormitory/studies/attendance)
-        proxy_set_header Connection        "";
         proxy_buffering    off;
         proxy_cache        off;
         proxy_read_timeout 3600s;
         proxy_send_timeout 3600s;
+    }
+    location = /api/dormitory/studies/attendance {
+        proxy_pass http://app:3000;
+        proxy_buffering    off;
+        proxy_cache        off;
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+    }
+
+    # 일반 요청: 기본 버퍼링 유지
+    location / {
+        proxy_pass http://app:3000;
     }
 }
