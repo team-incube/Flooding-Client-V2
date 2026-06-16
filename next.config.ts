@@ -2,8 +2,12 @@ import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   reactCompiler: true,
   transpilePackages: ["msw"],
+  outputFileTracingIncludes: {
+    "/**": ["./src/shared/lib/og/fonts/*.ttf"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 2678400,

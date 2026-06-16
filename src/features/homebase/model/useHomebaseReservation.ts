@@ -35,6 +35,7 @@ export function useHomebaseReservation() {
     myReservationIds,
     isError,
   } = useHomebaseReservationData({
+    reservationDate,
     selectedFloor,
     selectedStartNum,
     selectedEndNum,
