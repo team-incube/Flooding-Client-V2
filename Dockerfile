@@ -42,7 +42,7 @@ ENV NODE_ENV=production \
 RUN groupadd -r nodejs && useradd -r -g nodejs nextjs
 
 # public assets + standalone server + static chunks
-COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
