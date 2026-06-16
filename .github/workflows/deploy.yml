@@ -7,8 +7,9 @@
 #  - Variables(공개값): NEXT_PUBLIC_BASE_URL, NEXT_PUBLIC_DG_CLIENT_ID,
 #      NEXT_PUBLIC_DG_REDIRECT_URL, NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_SENTRY_DSN,
 #      IMAGE_TAG(develop|main), SERVER_NAME, COOKIE_SECURE
-#  - Secrets: SENTRY_AUTH_TOKEN, YOUTUBE_API_KEY, SENTRY_DSN,
+#  - Secrets: SENTRY_AUTH_TOKEN, YOUTUBE_API_KEY,
 #      VM_HOST, VM_PORT, VM_USER, VM_SSH_KEY
+# (서버 SENTRY_DSN 은 빌드에 박힌 NEXT_PUBLIC_SENTRY_DSN 으로 폴백 → 불필요)
 # (GHCR pull 은 배포 시점 GITHUB_TOKEN 으로 처리 → 별도 토큰 불필요)
 #
 # VM 일회성 준비: deploy 공개키를 VM authorized_keys 에 등록, docker 설치
@@ -96,7 +97,6 @@ jobs:
             SERVER_NAME=${{ vars.SERVER_NAME }}
             COOKIE_SECURE=${{ vars.COOKIE_SECURE }}
             YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}
-            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
             EOF
             # GHCR 로그인: 배포 시점에만 유효한 GITHUB_TOKEN 사용 (별도 PAT 불필요)
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
