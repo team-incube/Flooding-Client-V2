@@ -8,9 +8,8 @@ import { TextButton } from "@/shared/ui/Button/TextButton";
 import { NoteText } from "@/shared/ui/NoteText";
 import TextField from "@/shared/ui/textField";
 import Music from "@/shared/asset/svg/Music";
-import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendModal";
 import { MusicListModal } from "@/features/wake-up-music/ui/MusicListModal";
-import { MusicRecommendButton } from "@/features/wake-up-music/ui/MusicRecommendButton";
+import { WakeUpMusicRecommend } from "@/features/wake-up-music/ui/WakeUpMusicRecommend";
 import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
 import { MusicFilterDropdown } from "@/features/wake-up-music/ui/MusicFilterDropdown";
 import { useMusicFilter } from "@/features/wake-up-music/model/useMusicFilter";
@@ -44,12 +43,10 @@ export function WakeUpMusicSection({
     canDeleteAnyMusic,
     applyMutation,
     handleApplyMusic,
-    handleSubmitRecommendedMusic,
     likeMutation,
     cancelMutation,
   } = useWakeUpMusic(filterParams);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
 
   const isApplyDisabled = !isToday || !canApply || applyMutation.isPending;
@@ -143,17 +140,13 @@ export function WakeUpMusicSection({
           )}
 
           {!compact && (
-            <div className="flex justify-end">
-              <MusicRecommendButton onClick={() => setIsModalOpen(true)} />
-            </div>
+            <WakeUpMusicRecommend className="hidden lg:flex lg:justify-end" />
           )}
         </div>
       </div>
 
       {compact && (
-        <div className="absolute right-6 bottom-6">
-          <MusicRecommendButton onClick={() => setIsModalOpen(true)} />
-        </div>
+        <WakeUpMusicRecommend className="hidden lg:absolute lg:right-6 lg:bottom-6 lg:block" />
       )}
 
       {isListModalOpen && (
@@ -171,14 +164,6 @@ export function WakeUpMusicSection({
           onDelete={(musicId) => cancelMutation.mutate(musicId)}
           likeMutation={likeMutation}
           cancelMutation={cancelMutation}
-        />
-      )}
-
-      {isModalOpen && (
-        <MusicRecommendModal
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onSubmit={handleSubmitRecommendedMusic}
         />
       )}
     </section>

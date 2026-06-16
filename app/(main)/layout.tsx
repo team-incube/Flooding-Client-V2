@@ -7,6 +7,7 @@ import { Header } from "@/widgets/header/ui/header";
 import { AiChatButton } from "@/features/ai-chat/ui/AiChatButton";
 import { AiChatModal } from "@/features/ai-chat/ui/AiChatModal";
 import { useAiChatPanel } from "@/features/ai-chat/model/useAiChatPanel";
+import { WakeUpMusicRecommend } from "@/features/wake-up-music/ui/WakeUpMusicRecommend";
 import { RealtimeSubscriptions } from "@/widgets/realtime-subscription/ui/RealtimeSubscriptions";
 
 export default function MainLayout({
@@ -32,6 +33,7 @@ export default function MainLayout({
       </div>
       <SidebarDrawer isOpen={isOpen} onClose={close} />
       {!chat.isOpen && <AiChatButton onClick={chat.open} />}
+      <WakeUpMusicRecommend className="fixed right-6 bottom-22 z-30 lg:hidden" />
     </div>
   );
 }
