@@ -62,7 +62,7 @@ export function MusicRecommendModal({
     isPending,
     handleSelect,
     handleRetry,
-  } = useAiMusicRecommend(open);
+  } = useAiMusicRecommend();
 
   if (!open) return null;
 
@@ -117,6 +117,7 @@ export function MusicRecommendModal({
                 key={card.url}
                 title={card.title}
                 thumbnailUrl={card.thumbnailUrl}
+                durationText={card.durationText}
                 checked={selectedUrl === card.url}
                 onChange={() => handleSelect(card.url)}
               />
