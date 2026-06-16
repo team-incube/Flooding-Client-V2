@@ -1,8 +1,9 @@
 # ─────────────────────────────────────────────────────────────────
 # Deploy — Flooding-Client-V2
-# develop → preview 환경 / main → production 환경
+# develop → gsmsv-preview 환경 / main → gsmsv-production 환경
 #
-# 필요한 GitHub Environments: `preview`, `production`
+# 필요한 GitHub Environments: `gsmsv-preview`, `gsmsv-production`
+# (Vercel 연동이 만든 `Preview`/`Production` 과 이름을 구분한다)
 #  - Variables(공개값): NEXT_PUBLIC_BASE_URL, NEXT_PUBLIC_DG_CLIENT_ID,
 #      NEXT_PUBLIC_DG_REDIRECT_URL, NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_SENTRY_DSN,
 #      IMAGE_TAG(develop|main), SERVER_NAME, COOKIE_SECURE
@@ -28,7 +29,7 @@ jobs:
   build:
     name: Build & Push (GHCR)
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+    environment: ${{ github.ref_name == 'main' && 'gsmsv-production' || 'gsmsv-preview' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -62,7 +63,7 @@ jobs:
     name: Deploy to VM
     needs: build
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+    environment: ${{ github.ref_name == 'main' && 'gsmsv-production' || 'gsmsv-preview' }}
     steps:
       - uses: actions/checkout@v4
 
