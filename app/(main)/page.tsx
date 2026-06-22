@@ -6,6 +6,8 @@ import { TimeTableCardBoundary } from "@/widgets/main/ui/TimeTableCard";
 import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
 import { WakeUpMusicSection } from "@/features/wake-up-music/ui/WakeUpMusicSection";
 
+export const dynamic = "force-dynamic";
+
 export default function MainPage() {
   return (
     <main className="flex-1 overflow-auto px-5 pb-25 sm:px-8 lg:px-10 2xl:px-18">
