@@ -1,4 +1,9 @@
-import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
+"use client";
+
+import dynamic from "next/dynamic";
+const HomebaseCard = dynamic(() => import("@/widgets/main/ui/HomebaseCard"), {
+  ssr: false,
+});
 
 export default function SchoolPage() {
   return (

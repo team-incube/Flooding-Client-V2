@@ -1,9 +1,16 @@
+"use client";
+
+import dynamic from "next/dynamic";
+const HomebaseCard = dynamic(() => import("@/widgets/main/ui/HomebaseCard"), {
+  ssr: false,
+});
+
 import MassageApplyCard from "@/widgets/main/ui/MassageApplyCard";
 import StudyApplyCard from "@/widgets/main/ui/StudyApplyCard";
 import { MealCardBoundary } from "@/widgets/main/ui/MealCard";
 import MyProfileCard from "@/widgets/main/ui/MyProfileCard";
 import { TimeTableCardBoundary } from "@/widgets/main/ui/TimeTableCard";
-import HomebaseCard from "@/widgets/main/ui/HomebaseCard";
+
 import { WakeUpMusicSection } from "@/features/wake-up-music/ui/WakeUpMusicSection";
 
 export default function MainPage() {
