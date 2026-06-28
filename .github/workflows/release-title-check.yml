@@ -1,0 +1,25 @@
+name: Release Title Check
+
+on:
+  pull_request:
+    types: [opened, reopened, edited]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  release-version-check:
+    name: Release ID Check
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.ref == 'develop'
+    steps:
+      - name: 릴리즈 PR 제목 검사
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ ! "$PR_TITLE" =~ ^v[0-9]{4}\.[0-9]{4}\.[0-9]{4}$ ]]; then
+            echo "develop → main PR 제목은 vYYYY.MMDD.HHmm 형식이어야 합니다. 예: v2026.0510.0109"
+            echo "현재 PR 제목: $PR_TITLE"
+            exit 1
+          fi
