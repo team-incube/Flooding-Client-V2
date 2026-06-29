@@ -18,7 +18,7 @@ export type YoutubeTranscriptResult =
   | YoutubeTranscriptSuccess
   | YoutubeTranscriptFailure;
 
-const PREFERRED_LANGS = ["en", "ko"];
+const PREFERRED_LANGS = ["ko", "en"];
 const YT_DLP_CONCURRENCY = Number(process.env.YT_DLP_CONCURRENCY ?? 20);
 const YT_DLP_BIN = process.env.YT_DLP_PATH ?? "yt-dlp";
 const YT_DLP_TIMEOUT_MS = 60_000;
