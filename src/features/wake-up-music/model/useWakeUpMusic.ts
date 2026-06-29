@@ -15,7 +15,6 @@ import { userQueries } from "@/entities/user/api/userQueries";
 import { formatDateParam } from "@/shared/lib/date";
 import { todayKst } from "@/shared/lib/kst";
 import { createMusicPermission } from "@/entities/dormitory/lib/musicPermission";
-import { getInitialMusicDate } from "@/features/wake-up-music/lib/date";
 import { musicUrlSchema } from "@/features/wake-up-music/lib/wakeUpMusicSchema";
 import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
 import { youtubeQueries } from "@/entities/music/api/youtubeQueries";
@@ -23,7 +22,7 @@ import { youtubeQueries } from "@/entities/music/api/youtubeQueries";
 export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
   const queryClient = useQueryClient();
   const [urlInput, setUrlInput] = useState("");
-  const [selectedDate, setSelectedDate] = useState(getInitialMusicDate);
+  const [selectedDate, setSelectedDate] = useState(todayKst);
 
   const canApply = musicUrlSchema.safeParse(urlInput).success;
 
@@ -155,6 +154,7 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
 
   const { canDeleteAnyMusic, canUseAiAnalysis } = createMusicPermission({
     role: me?.role,
+    name: me?.name,
   });
 
   return {
