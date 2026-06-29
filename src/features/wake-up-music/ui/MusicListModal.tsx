@@ -224,9 +224,7 @@ export function MusicListModal({
                       <MusicListItem
                         key={music.id}
                         music={music}
-                        isSelected={
-                          selectedIndex >= 0 && music.id === selectedMusicId
-                        }
+                        isSelected={music.id === selectedSong?.id}
                         onSelect={() => goToSong(music.id)}
                         aiStatus={
                           showAi && aiState ? (

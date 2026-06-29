@@ -24,9 +24,10 @@ export async function GET(request: NextRequest) {
   const videoId =
     idParam ?? (urlParam ? extractYoutubeVideoId(urlParam) : null);
 
-  if (!videoId) {
+  const youtubeIdRegex = /^[a-zA-Z0-9_-]{11}$/;
+  if (!videoId || !youtubeIdRegex.test(videoId)) {
     return NextResponse.json(
-      { error: "videoId(id) 또는 url이 필요합니다." },
+      { error: "올바른 형식의 videoId(id) 또는 url이 필요합니다." },
       { status: HttpStatusCode.BadRequest },
     );
   }
