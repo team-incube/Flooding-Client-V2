@@ -7,5 +7,6 @@ interface CreateMusicPermissionParams {
 export function createMusicPermission({ role }: CreateMusicPermissionParams) {
   return {
     canDeleteAnyMusic: role === "ADMIN" || role === "DORMITORY_MANAGER",
+    canUseAiAnalysis: role === "ADMIN" || role === "DORMITORY_MANAGER",
   };
 }
