@@ -7,7 +7,7 @@ import { Header } from "@/widgets/header/ui/header";
 import { AiChatButton } from "@/features/ai-chat/ui/AiChatButton";
 import { AiChatModal } from "@/features/ai-chat/ui/AiChatModal";
 import { useAiChatPanel } from "@/features/ai-chat/model/useAiChatPanel";
-import { WakeUpMusicRecommend } from "@/features/wake-up-music/ui/WakeUpMusicRecommend";
+import { WakeUpMusicRecommend } from "@/features/wake-up-music-recommend/ui/WakeUpMusicRecommend";
 import { RealtimeSubscriptions } from "@/widgets/realtime-subscription/ui/RealtimeSubscriptions";
 
 export default function MainLayout({
