@@ -65,7 +65,15 @@ export function MusicPlayerPanel({
 
       {showAi && (
         <div className="flex min-h-0 flex-1 flex-col gap-2">
-          <span className="text-caption-2 text-sub-1 font-medium">AI 분석</span>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-caption-2 text-sub-1 font-medium">
+              AI 분석
+            </span>
+            <span className="text-caption-2 text-sub-2">
+              해당 분석 결과는 AI로 생성되었으며 실수할 수 있습니다. 응답을 다시
+              한번 확인해 주세요.
+            </span>
+          </div>
           <AiIssuesPanel state={aiState} onSeek={onSeek} />
         </div>
       )}
