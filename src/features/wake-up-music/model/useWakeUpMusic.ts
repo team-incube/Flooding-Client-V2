@@ -153,7 +153,9 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
     },
   });
 
-  const { canDeleteAnyMusic } = createMusicPermission({ role: me?.role });
+  const { canDeleteAnyMusic, canUseAiAnalysis } = createMusicPermission({
+    role: me?.role,
+  });
 
   return {
     urlInput,
@@ -165,6 +167,7 @@ export function useWakeUpMusic(filterParams?: DormitoryMusicQueryParams) {
     songs: enrichedSongs,
     me,
     canDeleteAnyMusic,
+    canUseAiAnalysis,
     applyMutation,
     handleApplyMusic,
     likeMutation,
