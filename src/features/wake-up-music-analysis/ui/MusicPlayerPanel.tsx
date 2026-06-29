@@ -30,7 +30,7 @@ export function MusicPlayerPanel({
   onSeek,
 }: MusicPlayerPanelProps) {
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4">
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">
       <div className="bg-sub-4 overflow-hidden rounded-2xl">
         {videoId ? (
           <YoutubeEmbed videoId={videoId} start={start} autoPlay={autoPlay} />
