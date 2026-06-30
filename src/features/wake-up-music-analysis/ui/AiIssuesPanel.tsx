@@ -1,5 +1,6 @@
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { parseLeadingTimestamp } from "@/features/wake-up-music-analysis/lib/songAnalysis";
+import type { SongAnalysis } from "@/features/wake-up-music-analysis/lib/songAnalysis";
 import type { AiSongState } from "@/features/wake-up-music-analysis/model/useWakeUpMusicAiAnalysis";
 
 interface AiIssuesPanelProps {
@@ -7,45 +8,44 @@ interface AiIssuesPanelProps {
   onSeek: (seconds: number) => void;
 }
 
-function AiIssuesMessage({
-  children,
-  isError = false,
-}: {
-  children: string;
-  isError?: boolean;
-}) {
+function AiIssuesPanelEmpty() {
   return (
-    <div className="flex flex-1 items-center justify-center">
-      <span
-        className={`text-text-3 font-medium ${isError ? "text-negative" : "text-sub-1"}`}
-      >
-        {children}
+    <div className="flex flex-1 items-center justify-center px-4">
+      <span className="text-text-3 text-sub-1 line-clamp-2 max-w-full text-center font-medium break-all">
+        AI 분석 결과가 없습니다.
       </span>
     </div>
   );
 }
 
-export function AiIssuesPanel({ state, onSeek }: AiIssuesPanelProps) {
-  if (!state) {
-    return <AiIssuesMessage>AI 분석 결과가 없습니다.</AiIssuesMessage>;
-  }
+function AiIssuesPanelLoading() {
+  return (
+    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
+      <Skeleton className="h-4 w-2/3 rounded" />
+      {Array.from({ length: 4 }).map((_, index) => (
+        <Skeleton key={index} className="h-12 w-full rounded-xl" />
+      ))}
+    </div>
+  );
+}
 
-  if (state.status === "transcript" || state.status === "analyzing") {
-    return (
-      <div className="flex flex-col gap-2">
-        {Array.from({ length: 3 }).map((_, index) => (
-          <Skeleton key={index} className="h-12 w-full rounded-xl" />
-        ))}
-      </div>
-    );
-  }
+function AiIssuesPanelError({ message }: { message: string }) {
+  return (
+    <div className="flex flex-1 items-center justify-center px-4">
+      <span className="text-text-3 text-negative line-clamp-2 max-w-full text-center font-medium break-all">
+        {message}
+      </span>
+    </div>
+  );
+}
 
-  if (state.status === "error") {
-    return <AiIssuesMessage isError>{state.message}</AiIssuesMessage>;
-  }
-
-  const { analysis } = state;
-
+function AiIssuesPanelResult({
+  analysis,
+  onSeek,
+}: {
+  analysis: SongAnalysis;
+  onSeek: (seconds: number) => void;
+}) {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
       {analysis.summary && (
@@ -80,8 +80,30 @@ export function AiIssuesPanel({ state, onSeek }: AiIssuesPanelProps) {
           })}
         </ul>
       ) : (
-        <AiIssuesMessage>지적된 표현이 없습니다.</AiIssuesMessage>
+        <AiIssuesPanel.Empty />
       )}
     </div>
   );
 }
+
+function AiIssuesPanel({ state, onSeek }: AiIssuesPanelProps) {
+  if (!state) {
+    return <AiIssuesPanel.Empty />;
+  }
+
+  if (state.status === "transcript" || state.status === "analyzing") {
+    return <AiIssuesPanel.Loading />;
+  }
+
+  if (state.status === "error") {
+    return <AiIssuesPanel.Error message={state.message} />;
+  }
+
+  return <AiIssuesPanelResult analysis={state.analysis} onSeek={onSeek} />;
+}
+
+AiIssuesPanel.Empty = AiIssuesPanelEmpty;
+AiIssuesPanel.Loading = AiIssuesPanelLoading;
+AiIssuesPanel.Error = AiIssuesPanelError;
+
+export { AiIssuesPanel };
