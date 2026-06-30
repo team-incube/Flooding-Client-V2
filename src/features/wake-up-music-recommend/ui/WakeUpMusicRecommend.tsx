@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { MusicRecommendButton } from "@/features/wake-up-music/ui/MusicRecommendButton";
-import { MusicRecommendModal } from "@/features/wake-up-music/ui/MusicRecommendModal";
-import { useApplyRecommendedMusic } from "@/features/wake-up-music/model/useApplyRecommendedMusic";
+import { MusicRecommendButton } from "@/features/wake-up-music-recommend/ui/MusicRecommendButton";
+import { MusicRecommendModal } from "@/features/wake-up-music-recommend/ui/MusicRecommendModal";
+import { useApplyRecommendedMusic } from "@/features/wake-up-music-recommend/model/useApplyRecommendedMusic";
 
 interface WakeUpMusicRecommendProps {
   className?: string;

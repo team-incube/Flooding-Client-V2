@@ -2,12 +2,12 @@
 
 import SmallStar from "@/shared/asset/svg/SmallStar";
 import Cancel from "@/shared/asset/svg/Cancel";
-import MusicRecommendCard from "@/features/wake-up-music/ui/MusicRecommendCard";
+import MusicRecommendCard from "@/features/wake-up-music-recommend/ui/MusicRecommendCard";
 import { TextButton } from "@/shared/ui/Button/TextButton";
 import RetryButton from "@/shared/ui/Button/RetryButton";
-import { useAiMusicRecommend } from "@/features/wake-up-music/model/useAiMusicRecommend";
+import { useAiMusicRecommend } from "@/features/wake-up-music-recommend/model/useAiMusicRecommend";
 import { NoteText } from "@/shared/ui/NoteText";
-import { MusicRecommendLoading } from "@/features/wake-up-music/ui/MusicRecommendLoading";
+import { MusicRecommendLoading } from "@/features/wake-up-music-recommend/ui/MusicRecommendLoading";
 
 interface MusicRecommendModalProps {
   open: boolean;

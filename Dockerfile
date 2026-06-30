@@ -39,6 +39,10 @@ ENV NODE_ENV=production \
     PORT=3000 \
     HOSTNAME=0.0.0.0
 
+# yt-dlp
+ADD https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux /usr/local/bin/yt-dlp
+RUN chmod a+rx /usr/local/bin/yt-dlp
+
 RUN groupadd -r nodejs && useradd -r -g nodejs nextjs
 
 # public assets + standalone server + static chunks
