@@ -9,8 +9,9 @@ import { NoteText } from "@/shared/ui/NoteText";
 import TextField from "@/shared/ui/textField";
 import Music from "@/shared/asset/svg/Music";
 import { MusicListModal } from "@/features/wake-up-music/ui/MusicListModal";
-import { WakeUpMusicRecommend } from "@/features/wake-up-music/ui/WakeUpMusicRecommend";
+import { WakeUpMusicRecommend } from "@/features/wake-up-music-recommend/ui/WakeUpMusicRecommend";
 import { useWakeUpMusic } from "@/features/wake-up-music/model/useWakeUpMusic";
+import { useWakeUpMusicAiAnalysis } from "@/features/wake-up-music-analysis/model/useWakeUpMusicAiAnalysis";
 import { MusicFilterDropdown } from "@/features/wake-up-music/ui/MusicFilterDropdown";
 import { useMusicFilter } from "@/features/wake-up-music/model/useMusicFilter";
 
@@ -41,15 +42,22 @@ export function WakeUpMusicSection({
     songs,
     me,
     canDeleteAnyMusic,
+    canUseAiAnalysis,
     applyMutation,
     handleApplyMusic,
     likeMutation,
     cancelMutation,
   } = useWakeUpMusic(filterParams);
 
+  const aiAnalysis = useWakeUpMusicAiAnalysis(songs);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
 
   const isApplyDisabled = !isToday || !canApply || applyMutation.isPending;
+
+  const handleOpenList = () => {
+    setIsListModalOpen(true);
+    if (canUseAiAnalysis) aiAnalysis.loadCachedAnalyses();
+  };
 
   return (
     <section
@@ -69,7 +77,7 @@ export function WakeUpMusicSection({
         <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
-            onClick={() => setIsListModalOpen(true)}
+            onClick={handleOpenList}
             className="text-caption-1 text-sub-1 hover:bg-surface cursor-pointer rounded px-2 py-1 transition-colors"
           >
             크게 보기
@@ -155,6 +163,8 @@ export function WakeUpMusicSection({
           songs={songs}
           meId={me?.id}
           canDeleteAnyMusic={canDeleteAnyMusic}
+          canUseAiAnalysis={canUseAiAnalysis}
+          aiAnalysis={aiAnalysis}
           sort={sort}
           onSortChange={setSort}
           filterButtonLabel={filterButtonLabel}
