@@ -5,8 +5,8 @@ import { useState } from "react";
 import { MusicListItem } from "@/entities/music/ui/MusicListItem";
 import type { DormitoryMusic } from "@/entities/dormitory/model/dormitory";
 import { extractYoutubeVideoId } from "@/entities/music/lib/youtube";
-import { TextButton } from "@/shared/ui/Button/TextButton";
 import { MusicFilterDropdown } from "@/features/wake-up-music/ui/MusicFilterDropdown";
+import { NoteText } from "@/shared/ui/NoteText";
 import type { WakeUpMusicSort } from "@/features/wake-up-music/model/useMusicFilter";
 import type {
   AiAnalysisController,
@@ -14,13 +14,14 @@ import type {
 } from "@/features/wake-up-music-analysis/model/useWakeUpMusicAiAnalysis";
 import { AiSongThumbnailLoading } from "@/features/wake-up-music-analysis/ui/AiSongThumbnailLoading";
 import { AiRatingBadge } from "@/features/wake-up-music-analysis/ui/AiRatingBadge";
+import { AiModelIndicator } from "@/features/wake-up-music-analysis/ui/AiModelIndicator";
 import { MusicPlayerPanel } from "@/features/wake-up-music-analysis/ui/MusicPlayerPanel";
+import { useModelState } from "@/entities/ai/model/useModelState";
 import Sidebar from "@/shared/asset/svg/Sidebar";
 
 const AI_BUTTON_LABELS = {
   idle: "AI 분석",
   transcript: "자막 수집 중…",
-  model: "모델 로드",
   analyze: "분석 중…",
 } as const satisfies Record<AnalysisStage, string>;
 
@@ -71,6 +72,7 @@ export function MusicListModal({
   const [seekStart, setSeekStart] = useState(0);
   const [seekAutoplay, setSeekAutoplay] = useState(false);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
+  const modelState = useModelState();
 
   if (!isOpen) return null;
 
@@ -87,7 +89,6 @@ export function MusicListModal({
     : undefined;
   const selectedTitle = selectedSong?.title ?? selectedSong?.musicUrl ?? "";
 
-  // 타임스탬프 클릭만 자동재생, 곡 선택·이동·열기는 0에서 정지
   const handleSeek = (seconds: number) => {
     setSeekStart(seconds);
     setSeekAutoplay(true);
@@ -129,7 +130,7 @@ export function MusicListModal({
       }}
     >
       <div
-        className="bg-background-surface mx-auto flex h-[calc(100vh-120px)] w-full max-w-[1400px] flex-col gap-6 overflow-hidden rounded-3xl p-8 shadow-[0_16px_80px_rgba(0,0,0,0.18)] sm:my-6"
+        className="bg-background-surface mx-auto flex h-[calc(100vh-120px)] w-full max-w-[1400px] flex-col gap-6 overflow-hidden rounded-3xl p-8 shadow-[0_16px_80px_rgba(0,0,0,0.18)]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -148,24 +149,27 @@ export function MusicListModal({
               <span className="text-main-text text-text-1 font-semibold">
                 기상음악 신청 목록
               </span>
-              <div className="text-sub-1 text-caption-1 mt-1">
+              <NoteText multiline>
                 현재 {songs.length}개의 신청 곡을 한꺼번에 확인할 수 있습니다.
-              </div>
+              </NoteText>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             {showAi && aiAnalysis && (
-              <TextButton
-                variant={aiAnalysis.isAnalyzing ? "disabled" : "filled"}
-                size="fit"
-                onClick={aiAnalysis.handleAnalyze}
-                disabled={aiAnalysis.isAnalyzing}
-              >
-                {aiAnalysis.stage === "model"
-                  ? `${AI_BUTTON_LABELS.model} ${Math.round(aiAnalysis.modelProgress * 100)}%`
-                  : AI_BUTTON_LABELS[aiAnalysis.stage]}
-              </TextButton>
+              <div className="flex items-center gap-2">
+                <AiModelIndicator />
+                <button
+                  type="button"
+                  onClick={aiAnalysis.handleAnalyze}
+                  disabled={
+                    aiAnalysis.isAnalyzing || modelState.status === "error"
+                  }
+                  className="text-caption-1 text-p-1 hover:bg-surface disabled:text-sub-3 cursor-pointer rounded px-2 py-1 transition-colors disabled:cursor-default disabled:hover:bg-transparent"
+                >
+                  {AI_BUTTON_LABELS[aiAnalysis.stage]}
+                </button>
+              </div>
             )}
             <MusicFilterDropdown
               sort={sort}
@@ -183,14 +187,14 @@ export function MusicListModal({
           </div>
         </div>
 
-        <div className="border-sub-4 bg-background flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border p-6 shadow-inner">
+        <div className="border-sub-4 bg-background flex min-h-0 flex-1 flex-col rounded-3xl border p-6 shadow-inner max-lg:overflow-y-auto">
           {songs.length === 0 ? (
             <div className="text-sub-1 text-caption-1 py-16 text-center">
               신청된 음악이 없습니다.
             </div>
           ) : (
             <div
-              className={`flex min-h-0 min-w-0 flex-1 ${
+              className={`flex h-full min-w-0 flex-1 lg:min-h-0 ${
                 isPlayerOpen ? "flex-col gap-6 lg:flex-row" : "flex-col"
               }`}
             >
@@ -210,7 +214,7 @@ export function MusicListModal({
                 />
               )}
 
-              <aside className="flex min-h-0 flex-1 flex-col overflow-hidden">
+              <aside className="flex min-h-0 flex-1 flex-col overflow-hidden max-lg:min-h-40">
                 <div className="border-sub-4 min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto rounded-2xl border">
                   {songs.map((music) => {
                     const videoId = extractYoutubeVideoId(
