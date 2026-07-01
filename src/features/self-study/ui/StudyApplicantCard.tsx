@@ -44,7 +44,7 @@ export function StudyApplicantCard({
           <Checkbox isActive={isChecked} />
         </button>
       )}
-      {isChecked && (
+      {canCheck && isChecked && (
         <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center rounded-2xl">
           <CheckCircle />
         </div>
