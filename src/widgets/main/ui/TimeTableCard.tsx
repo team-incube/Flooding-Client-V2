@@ -5,11 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import Back from "@/shared/asset/svg/Back";
 import Calendar from "@/shared/asset/svg/Calender";
 import { neisQueries } from "@/entities/neis/api/neisQueries";
-import {
-  NEIS_OFFICE_CODE,
-  NEIS_SCHOOL_CODE,
-  PERIOD_TIMES,
-} from "@/entities/neis/model/neis";
+import { PERIOD_TIMES } from "@/entities/neis/model/neis";
 import { getCurrentPeriod } from "@/entities/neis/lib/getCurrentPeriod";
 import { userQueries } from "@/entities/user/api/userQueries";
 import { TextButton } from "@/shared/ui/Button/TextButton";
@@ -82,8 +78,6 @@ function TimeTableContentLoading() {
 
 interface TimeTableCardContentProps {
   timetableParams: {
-    officeCode: string;
-    schoolCode: string;
     grade: number;
     classNumber: number;
     date: string;
@@ -161,8 +155,6 @@ const TimeTableCard = () => {
 
   const { data: user } = useSuspenseQuery(userQueries.me());
   const timetableParams = {
-    officeCode: NEIS_OFFICE_CODE,
-    schoolCode: NEIS_SCHOOL_CODE,
     grade: user.grade ?? 0,
     classNumber: user.classNumber ?? 0,
     date: dateStr,

@@ -1,6 +1,3 @@
-export const NEIS_OFFICE_CODE = "F10";
-export const NEIS_SCHOOL_CODE = "7380292";
-
 export interface MealItem {
   mealType: string;
   menus: string[];
@@ -10,13 +7,11 @@ export interface MealItem {
 export interface Period {
   period: number;
   subject: string;
-  teacher: string;
-  classroom: number;
+  teacher: string | null;
+  classroom: string | null;
 }
 
 export interface TimetableParams {
-  officeCode: string;
-  schoolCode: string;
   grade: number;
   classNumber: number;
   date: string;
